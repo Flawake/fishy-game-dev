@@ -1,0 +1,518 @@
+Original script from fishao:
+com.ax3.fishao.display.panels.BiteProcessPanelAsset
+
+package com.ax3.fishao.display.panels
+{
+   import assets.general.BitePanel;
+   import com.ax3.display.wrappers.impl.MiddleTextFieldWrapper;
+   import com.ax3.events.Listeners;
+   import com.ax3.fishao.control.managers.FishaoSoundManager;
+   import com.ax3.fishao.utils.I18n;
+   import com.ax3.fishao.view.dialogs.notCaughtFish.DialogImproveLine;
+   import com.ax3.fishao.view.dialogs.notCaughtFish.DialogImproveRod;
+   import com.ax3.fishao.view.dialogs.notCaughtFish.DialogImproveRodAndLine;
+   import com.ax3.fishao.view.dialogs.notCaughtFish.DialogImproveSkills;
+   import com.ax3.utils.ColorMatrix;
+   import com.ax3.utils.Input;
+   import com.ax3.utils.math.limit;
+   import com.ax3.utils.removeFromParent;
+   import com.ax3.utils.timer.IUpdate;
+   import com.ax3.utils.timer.UpdateGroup;
+   import com.ax3.utils.timer.UpdateManager;
+   import flash.display.GradientType;
+   import flash.display.SpreadMethod;
+   import flash.events.Event;
+   import flash.filters.BitmapFilter;
+   import flash.filters.BitmapFilterQuality;
+   import flash.filters.ColorMatrixFilter;
+   import flash.filters.DropShadowFilter;
+   import flash.filters.GlowFilter;
+   import flash.geom.Matrix;
+   import flash.ui.Keyboard;
+   import flash.utils.getTimer;
+   
+   public class BiteProcessPanelAsset extends BitePanel implements IUpdate
+   {
+      
+      public static const RIGHT_PADDING:int = 150;
+      
+      public static const BOTTOM_PADDING:int = 150;
+      
+      private static var _redFilters:Array;
+       
+      
+      private const BAR_WIDTH:int = 285;
+      
+      private const UPDATE_DELAY_MS:int = 35;
+      
+      private var _fishRate:int = 1;
+      
+      private var _greenZoneFrom:int;
+      
+      private var _greenZoneTo:int;
+      
+      private var _greenZoneCenter:int;
+      
+      private var _description:MiddleTextFieldWrapper;
+      
+      private var _isProgressBarRed:Boolean = false;
+      
+      private var _redBorder:Number = 0;
+      
+      private var _orangeBorder:Number = 0;
+      
+      private var _greenBorder:Number = 0;
+      
+      private var _inGame:Boolean = false;
+      
+      private var _gameSize:int;
+      
+      private var _realGameSize:int = 0;
+      
+      protected var _fishRandom:Number = 0.5;
+      
+      private var _sailRandom:Number = 0.5;
+      
+      private var _sensitivity:Number = 0.5;
+      
+      private var _progress:Number = 0;
+      
+      private var _sail:Number = 0;
+      
+      private var _relativePos:Number = 0;
+      
+      public var rarity:Number;
+      
+      protected var _fishSizeCm:Number;
+      
+      protected var _fishSizeCmFactor:Number;
+      
+      public var left_down:Boolean = false;
+      
+      public var right_down:Boolean = false;
+      
+      private var idle:int;
+      
+      private var _processUpdateTimestampMs:int;
+      
+      private var _minigameDurationMultiplier:Number;
+      
+      private var _rodSizeCm:Number;
+      
+      private var _fishingLineLength:Number;
+      
+      private var _boosterMultiplier:Number;
+      
+      private var _biteFactor:Number;
+      
+      private var _fishIsShiny:Boolean;
+      
+      private var _filtersNormal:Array;
+      
+      private var _filtersNeon:Array;
+      
+      private var _loseDispatched:Boolean = false;
+      
+      public function BiteProcessPanelAsset()
+      {
+         var filter:BitmapFilter = null;
+         var colorMatrix:ColorMatrix = null;
+         var colorMatrixFilter:ColorMatrixFilter = null;
+         var glowFilter:GlowFilter = null;
+         var matrix:ColorMatrix = null;
+         super();
+         titleField.text = I18n.getUpper("bitePopupTitle");
+         progressField.text = I18n.getUpper("biteProgressLabel");
+         descriptionField.text = I18n.get("bitePopupDescription");
+         this._description = new MiddleTextFieldWrapper();
+         this._description.process(descriptionField);
+         this._description.text = I18n.get("bitePopupDescription");
+         if(_redFilters == null)
+         {
+            matrix = new ColorMatrix();
+            matrix.adjustHue(-170);
+            _redFilters = [matrix.filter];
+         }
+         this._greenZoneCenter = this.BAR_WIDTH * 0.5;
+         this._filtersNormal = titleField.filters;
+         this._filtersNeon = [];
+         for each(filter in this._filtersNormal)
+         {
+            this._filtersNeon.push(filter);
+         }
+         colorMatrix = new ColorMatrix();
+         colorMatrix.adjustHue(150);
+         colorMatrix.adjustSaturation(2);
+         colorMatrix.adjustBrightness(0.2);
+         colorMatrixFilter = new ColorMatrixFilter(colorMatrix.matrix);
+         this._filtersNeon.push(colorMatrixFilter);
+         glowFilter = new GlowFilter(59903,1,5,5,1,BitmapFilterQuality.HIGH);
+         this._filtersNeon.push(glowFilter);
+      }
+      
+      public function set fishSizeCm(value:Number) : void
+      {
+         if(this._fishSizeCm == value)
+         {
+            return;
+         }
+         this._fishSizeCm = value;
+         this._fishSizeCmFactor = 50 + this._fishSizeCm * (11 + this._fishRandom - 0.33) / 11;
+      }
+      
+      public function set minigameDurationMultiplier(value:Number) : void
+      {
+         if(this._minigameDurationMultiplier == value)
+         {
+            return;
+         }
+         this._minigameDurationMultiplier = value;
+      }
+      
+      public function set boosterMultiplier(value:Number) : void
+      {
+         if(this._boosterMultiplier == value)
+         {
+            return;
+         }
+         this._boosterMultiplier = value;
+      }
+      
+      public function set fishingLineLength(value:Number) : void
+      {
+         if(this._fishingLineLength == value)
+         {
+            return;
+         }
+         this._fishingLineLength = value;
+      }
+      
+      public function set rodSizeCm(value:Number) : void
+      {
+         if(this._rodSizeCm == value)
+         {
+            return;
+         }
+         this._rodSizeCm = value;
+      }
+      
+      public function get dialogToShowClass() : Class
+      {
+         var result:Class = DialogImproveSkills;
+         var isNeedImproveLine:* = this._fishSizeCm > this._fishingLineLength;
+         var isNeedImproveRod:* = this._fishSizeCm > this._rodSizeCm;
+         if(isNeedImproveLine && !isNeedImproveRod)
+         {
+            result = DialogImproveLine;
+         }
+         else if(isNeedImproveLine && isNeedImproveRod)
+         {
+            result = DialogImproveRodAndLine;
+         }
+         else if(isNeedImproveRod)
+         {
+            result = DialogImproveRod;
+         }
+         return result;
+      }
+      
+      private function get biteFactorDefault() : Number
+      {
+         return (this._rodSizeCm + this._fishingLineLength) / 2 * this._boosterMultiplier;
+      }
+      
+      public function set fishIsShiny(value:Boolean) : void
+      {
+         if(this._fishIsShiny == value)
+         {
+            return;
+         }
+         this._fishIsShiny = value;
+         titleField.filters = this._fishIsShiny ? this._filtersNeon : this._filtersNormal;
+      }
+      
+      private function get randomGameSize() : Number
+      {
+         var result:Number = Math.floor(100 + Math.random() * 100);
+         return result * this._minigameDurationMultiplier;
+      }
+      
+      public function drawGradient(cellSize:Number) : void
+      {
+         colorBar.graphics.clear();
+         var matrix:Matrix = new Matrix();
+         matrix.createGradientBox(this.BAR_WIDTH,32,0,0,0);
+         var greenBorder:int = 40 + 50 * (1 - cellSize);
+         colorBar.graphics.beginGradientFill(GradientType.LINEAR,[16711680,16776960,65280,16776960,16711680],[1,1,1,1,1],[0,greenBorder,127,255 - greenBorder,255],matrix,SpreadMethod.PAD);
+         colorBar.graphics.drawRoundRect(0,0,this.BAR_WIDTH,32,10);
+         colorBar.graphics.endFill();
+         colorBar.filters = [new DropShadowFilter(1,90,0,1,2,2,1,1,true,false,false)];
+         colorBar.addChild(pointer);
+         pointer.y = 0;
+         pointer.x = this._greenZoneCenter;
+         var greenSectionSize:Number = this.BAR_WIDTH * cellSize * 0.7;
+         this._greenZoneFrom = this._greenZoneCenter - greenSectionSize * 0.5 - this._fishRate * 5;
+         this._greenZoneTo = this._greenZoneCenter + greenSectionSize * 0.5 + this._fishRate * 5;
+      }
+      
+      public function start() : void
+      {
+         if(this._inGame)
+         {
+            return;
+         }
+         this._loseDispatched = false;
+         this.drawGradient(1 - (limit(this.rarity,1,5) - 1) / 5);
+         this._redBorder = this.rarity * 5.7 + 15;
+         this._orangeBorder = this.rarity * 8.6 + 23;
+         this._greenBorder = this.rarity * 11.4 + 32;
+         FishaoSoundManager.lowerBgSound(0.02);
+         FishaoSoundManager.playLoop(FishaoSoundManager.SFX_047_MUS_Catch_music);
+         this._inGame = true;
+         this._gameSize = this.randomGameSize;
+         this._realGameSize = 0;
+         this._progress = 0;
+         this.idle = 0;
+         pointer.x = this._greenZoneCenter;
+         this._relativePos = 50;
+         this._sail = 0;
+         this.makeProgressNormal();
+         this._fishRandom = Math.random();
+         this._sailRandom = Math.random();
+         this._sensitivity = Math.random();
+         this._biteFactor = 50 + this.biteFactorDefault;
+         Input.initialize(stage);
+         UpdateManager.getInstance().getGroup(UpdateGroup.ENTER_FRAME).add(this);
+         this._processUpdateTimestampMs = getTimer();
+      }
+      
+      public function update(timerMS:uint, timeLeftMS:uint) : void
+      {
+         var newSail:Number = NaN;
+         var sail1:Number = NaN;
+         var sail2:Number = NaN;
+         var power:Number = NaN;
+         if(!this._inGame)
+         {
+            return;
+         }
+         while(this._processUpdateTimestampMs < getTimer())
+         {
+            this._processUpdateTimestampMs += this.UPDATE_DELAY_MS;
+            if(Input.isKeyDown(Keyboard.LEFT,Keyboard.A))
+            {
+               leftButton.gotoAndStop("down");
+               this.left_down = true;
+            }
+            else
+            {
+               leftButton.gotoAndStop("normal");
+               this.left_down = false;
+            }
+            if(Input.isKeyDown(Keyboard.RIGHT,Keyboard.D))
+            {
+               rightButton.gotoAndStop("down");
+               this.right_down = true;
+            }
+            else
+            {
+               rightButton.gotoAndStop("normal");
+               this.right_down = false;
+            }
+            ++this._realGameSize;
+            sail1 = Math.random() - 0.5;
+            sail2 = Math.random() - 0.5;
+            if(Math.abs(sail1) > Math.abs(sail2))
+            {
+               newSail = sail1;
+            }
+            else
+            {
+               newSail = sail2;
+            }
+            if(this.left_down || this.right_down)
+            {
+               this.idle = 0;
+            }
+            else
+            {
+               ++this.idle;
+            }
+            if(this._progress < 40)
+            {
+               newSail = newSail * this._progress / 40;
+            }
+            if(this.idle > 40)
+            {
+               newSail = newSail * this.idle / 40;
+            }
+            if(Math.random() < 0.5 && (newSail < 0 && this._sail > 0 || newSail > 0 && this._sail < 0))
+            {
+               newSail = -newSail;
+            }
+            if(this._fishSizeCmFactor > this._biteFactor * 1.2)
+            {
+               power = this._fishSizeCmFactor / this._biteFactor * 2.4;
+               if((this.left_down || this.right_down) && Math.random() < 0.12 + this.rarity / 60)
+               {
+                  this._sail = -2.2 * this._sail;
+               }
+            }
+            else if(this._fishSizeCmFactor > this._biteFactor)
+            {
+               power = this._fishSizeCmFactor / this._biteFactor * 1.8;
+               if((this.left_down || this.right_down) && Math.random() < 0.08 + this.rarity / 60)
+               {
+                  this._sail = -1.6 * this._sail;
+               }
+            }
+            else
+            {
+               power = this._fishSizeCmFactor / this._biteFactor * 0.8;
+               if((this.left_down || this.right_down) && Math.random() < 0.04 + this.rarity / 70)
+               {
+                  this._sail = -0.4 * this._sail;
+               }
+            }
+            if(power < 0.03)
+            {
+               power = 0.03;
+            }
+            power *= 0.7 + this.rarity / 3;
+            power += this._realGameSize / this._gameSize / 3;
+            this._sail += newSail * power;
+            this._sail = this._sail * (7 + this._sailRandom - 0.5) / 7;
+            if(this.left_down && !this.right_down)
+            {
+               this._relativePos -= 0.4 - this.rarity / 40 + this._sensitivity / 4;
+               this._sail *= 0.8;
+               if(this._sail > 0 && Math.random() < 0.08)
+               {
+                  this._sail = -0.8 * this._sail;
+               }
+            }
+            else if(!this.left_down && this.right_down)
+            {
+               this._relativePos += 0.4 - this.rarity / 40 + this._sensitivity / 4;
+               this._sail *= 0.8;
+               if(this._sail < 0 && Math.random() < 0.08)
+               {
+                  this._sail = -0.8 * this._sail;
+               }
+            }
+            this._relativePos += this._sail;
+            pointer.x = this._relativePos / 100 * this.BAR_WIDTH;
+            if(pointer.x < this._redBorder || pointer.x > this.BAR_WIDTH - this._redBorder)
+            {
+               this._progress -= 5;
+               this.makeProgressRed();
+            }
+            else if(pointer.x < this._orangeBorder || pointer.x > this.BAR_WIDTH - this._orangeBorder)
+            {
+               this._progress -= 3;
+               this.makeProgressRed();
+            }
+            else if(pointer.x < this._greenBorder || pointer.x > this.BAR_WIDTH - this._greenBorder)
+            {
+               --this._progress;
+               this.makeProgressRed();
+            }
+            else
+            {
+               this.makeProgressNormal();
+               ++this._progress;
+            }
+            if(this._progress < 0)
+            {
+               this._progress = 0;
+               this._inGame = false;
+            }
+            if(this._progress >= this._gameSize)
+            {
+               this._progress = this._gameSize;
+               this._inGame = false;
+            }
+            if(pointer.x < 2)
+            {
+               pointer.x = 2;
+               this._progress = Math.floor(this._progress / 3);
+            }
+            if(pointer.x > this.BAR_WIDTH - 2)
+            {
+               pointer.x = this.BAR_WIDTH - 2;
+               this._progress = Math.floor(this._progress / 3);
+            }
+            if(this._inGame == false)
+            {
+               if(this._progress)
+               {
+                  this.stopWithWin();
+               }
+               else
+               {
+                  this.stopWithLose();
+               }
+            }
+            progressBar.gotoAndStop(int(this._progress / this._gameSize * 200));
+         }
+      }
+      
+      private function stopWithLose() : void
+      {
+         if(this._loseDispatched)
+         {
+            return;
+         }
+         this._loseDispatched = true;
+         FishaoSoundManager.stopLoop(FishaoSoundManager.SFX_047_MUS_Catch_music);
+         FishaoSoundManager.play(FishaoSoundManager.SFX_047_MUS_Catch_fail);
+         UpdateManager.getInstance().getGroup(UpdateGroup.ENTER_FRAME).remove(this);
+         dispatchEvent(new Event(Event.CANCEL));
+      }
+      
+      public function cancel() : void
+      {
+         this._inGame = false;
+         if(this.parent)
+         {
+            FishaoSoundManager.stopLoop(FishaoSoundManager.SFX_047_MUS_Catch_music);
+            FishaoSoundManager.play(FishaoSoundManager.SFX_047_MUS_Catch_fail);
+            UpdateManager.getInstance().getGroup(UpdateGroup.ENTER_FRAME).remove(this);
+            dispatchEvent(new Event(Event.CLOSE));
+         }
+      }
+      
+      private function stopWithWin() : void
+      {
+         UpdateManager.getInstance().getGroup(UpdateGroup.ENTER_FRAME).remove(this);
+         FishaoSoundManager.stopLoop(FishaoSoundManager.SFX_047_MUS_Catch_music);
+         FishaoSoundManager.play(FishaoSoundManager.SFX_047_MUS_Catch_success);
+         dispatchEvent(new Event(Event.COMPLETE));
+      }
+      
+      private function makeProgressRed() : void
+      {
+         if(this._isProgressBarRed == false)
+         {
+            this._isProgressBarRed = true;
+            progressBar.filters = _redFilters;
+         }
+      }
+      
+      private function makeProgressNormal() : void
+      {
+         if(this._isProgressBarRed)
+         {
+            this._isProgressBarRed = false;
+            progressBar.filters = null;
+         }
+      }
+      
+      public function destroy() : void
+      {
+         removeFromParent(this);
+         Listeners.destroyAllSubscriptions(this);
+         UpdateManager.getInstance().getGroup(UpdateGroup.ENTER_FRAME).remove(this);
+      }
+   }
+}

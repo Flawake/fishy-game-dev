@@ -1,0 +1,106 @@
+(Ocean Fish)
+1. Parrot Fish
+2. Mackerel
+3. Clown Fish
+4. Plaice
+5. Silver Eel
+6. Sea Horse
+7. Lionfish
+8. Cowfish
+9. Tuna
+10. Banded Butterflyfish
+11. Atlantic Bass
+12. Blue Tang
+13. Pollock
+14. Ballan Wrasse
+15. Weaver Fish
+16. Bream
+17. Pufferfish
+18. Cod
+19. Dab
+20. Flounder
+21. Whiting
+22. Halibut
+23. Herring
+24. Stingray
+25. Wolfish
+26. Bonefish
+27. Cobia
+28. Black Drum
+29. Blobfish
+30. Pompano
+31. Sardine
+32. Angelfish
+33. Red Snapper
+34. Salmon
+35. Anglerfish
+(Ocean Creatures)
+36. Shrimp
+37. Squid
+38. Dumbo Octopus
+39. Crab
+40. Lobster
+41. Sea Angel
+42. Turtle
+43. Octopus
+44. Pink Fantasia
+45. Sea Spider
+46. Jellyfish
+47. Sea Cucumber
+48. Christmas Tree Worm
+49. Sea Pen
+50. Sea Urchin
+51. Blue Lobster
+52. Saltwater Snail
+(River Fish)
+53. Crucian Carp
+54. Bluegill
+55. Tilapia
+56. Smelt
+57. Trout
+58. Betta
+59. Rainbow Trout
+60. Yellow Perch
+61. Char
+62. Guppy
+63. King Salmon
+64. Neon Tetra
+65. Piranha
+66. Bitterling
+67. Black  Bass
+68. Eel
+69. Chub
+70. Perch
+71. Crappie
+72. Catfish
+73. Walleye
+74. Dace
+75. Loach
+76. Largemouth Bass
+(River Creatures)
+77. Water Beetle
+78. Crayfish
+79. Snake
+80. Freshwater Snail
+(Pond Fish)
+81. Goldfish
+82. Koi
+83. Grass Carp
+84. Fathead Minnow
+85. Green Sunfish
+86. Plecostomus
+87. Red Shiner
+88. Pumpkin Seed Fish
+89. Goby
+90. Shubukin
+91. Fancy Goldfish
+92. High Fin Banded Shark
+93. Paradise Fish
+94. Gizzard Shad
+95. Rosette
+96. Golden Tench
+97. Molly
+(Pond Creatures)
+98. Frog
+99. Tadpole
+100. Axolotl

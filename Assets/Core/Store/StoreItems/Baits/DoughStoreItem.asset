@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08b6f23abfb26664b907fba7bf044c75, type: 3}
+  m_Name: DoughStoreItem
+  m_EditorClassIdentifier: 
+  itemObject: {fileID: 11400000, guid: af20aff1535c20e4b9fa980b7763f68c, type: 2}
+  itemPriceFishCoins: 5
+  itemPriceFishBucks: 123

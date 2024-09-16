@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b5141122112dac4b99e5eae6103348e, type: 3}
+  m_Name: Mandarinfish
+  m_EditorClassIdentifier: 
+  id: 2
+  name: Mandarinfish
+  description: A mandarinfish like never seen before.
+  fishImage: {fileID: 21300000, guid: f60bc0feb62169549b7629f163db9e73, type: 3}
+  minimumLength: 0
+  maximumLength: 0
+  avarageLength: 0
+  minimumWeightGrams: 0
+  maximumWeightGrams: 0
+  avarageWeightGrams: 0
+  minMartketPrice: 0
+  maxMarketPrice: 0
+  rarityFactor: 0
+  Time: 
+  Date: 
+  breedSuccessRate: 0
+  breedPrice: 0
+  rarity: 0
+  locations: 0
