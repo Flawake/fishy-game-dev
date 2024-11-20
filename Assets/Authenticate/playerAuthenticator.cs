@@ -125,11 +125,6 @@ public class playerAuthenticator : NetworkAuthenticator
 
     void OnRegisterRequestMessage(NetworkConnectionToClient conn, RegisterRequestMessage msg)
     {
-        Debug.Log("Registering...");
-        Debug.Log(msg.registerUsername);
-        Debug.Log(msg.registerPassword);
-        Debug.Log(msg.registerEmail);
-
         if (connectionsPendingDisconnect.Contains(conn))
         {
             return;

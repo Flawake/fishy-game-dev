@@ -1,7 +1,5 @@
 using UnityEngine;
 using Mirror;
-using System;
-using UnityEditorInternal.Profiling.Memory.Experimental;
 
 //TODO: can this class be static and should we make it static?
 public class DatabaseCommunications : NetworkBehaviour

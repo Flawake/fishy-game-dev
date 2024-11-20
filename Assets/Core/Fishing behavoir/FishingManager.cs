@@ -3,10 +3,6 @@ using UnityEngine;
 using Mirror;
 using System;
 using static UserData;
-
-
-
-
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -270,8 +266,6 @@ public class FishingManager : NetworkBehaviour
 
         SelectNewRod(rodInventoryReference, fromDatabase);
     }
-
-
 
     [Server]
     public void SelectNewBait(baitObject newBait, bool fromDatabase)

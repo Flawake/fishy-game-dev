@@ -1196,7 +1196,7 @@ MonoBehaviour:
   sslCertJson: ./cert.json
   port: 24468
   batchSend: 1
-  waitBeforeSend: 0
+  waitBeforeSend: 1
   clientUseWss: 0
   clientWebsocketSettings:
     ClientPortOption: 0
