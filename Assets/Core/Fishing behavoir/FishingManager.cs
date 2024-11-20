@@ -63,7 +63,7 @@ public class FishingManager : NetworkBehaviour
         if(!isLocalPlayer) {
             return; 
         }
-        //TODO: use Canvas instead of Canvas(Clone)
+        //TODO: don't make this code dependent on string paths
         fishFightDialog = GameObject.Find("Player(Clone)/Canvas(Clone)/Fish fight dialog");
         caughtDialog = GameObject.Find("Player(Clone)/Canvas(Clone)/Fish caught dialog");
         fishFight = fishFightDialog.GetComponent<fishFight>();
@@ -361,6 +361,7 @@ public class FishingManager : NetworkBehaviour
             minFishingTimeMs = UnityEngine.Random.Range(6, 11) * 1000;
             startedFishingTime = new System.Diagnostics.Stopwatch();
             startedFishingTime.Start();
+            //TODO: start after a certain amount of time has passed.
             StartFight(currentFish, minFishingTimeMs);
         }
         else
