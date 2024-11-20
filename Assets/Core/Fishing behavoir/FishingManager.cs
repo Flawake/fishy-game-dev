@@ -183,6 +183,7 @@ public class FishingManager : NetworkBehaviour
         //Throw the line on the localplayer, the position needs to be validated on the
         //server before sent to clients and before a fish is being generated.
         localPlayerLine.StartFishing(placeToThrow);
+        player.SetPlayerAnimationForDirection(placeToThrow - (Vector2)player.transform.position);
         CmdStartFishing(placeToThrow);
         Debug.Log($"bait left: {selectedBait.throwIns}");
     }
@@ -370,6 +371,8 @@ public class FishingManager : NetworkBehaviour
         networkedPlayerLine.placeToThrow = placeToThrow;
         networkedPlayerLine.isFishing = true;
         isFishing = true;
+
+        player.RpcSetPlayerAnimationForDirection(placeToThrow - (Vector2)player.transform.position);
 
         if (water)
         {

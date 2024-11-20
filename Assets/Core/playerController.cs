@@ -4,6 +4,7 @@ using Mirror;
 using UnityEngine.AI;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
+using System.Runtime.CompilerServices;
 
 public class playerController : NetworkBehaviour
 {
@@ -287,6 +288,17 @@ public class playerController : NetworkBehaviour
             playerAnimator.SetFloat("Vertical", lastTimeMovedDiagonallyVector.y);
         }
         playerAnimator.SetFloat("Speed", hasVelocity ? 1 : 0);
+    }
+
+    [ClientRpc]
+    public void RpcSetPlayerAnimationForDirection(Vector2 dir)
+    {
+        SetPlayerAnimationForDirection(dir);
+    }
+
+    public void SetPlayerAnimationForDirection(Vector2 dir) {
+        playerAnimator.SetFloat("Horizontal", dir.x);
+        playerAnimator.SetFloat("Vertical", dir.y);
     }
 
     public void Move(Vector2 dir)
