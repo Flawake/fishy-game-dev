@@ -25,7 +25,7 @@ public class DrawLineOthers : NetworkBehaviour
         {
             return;
         }
-        startedFishing();
+        StartedFishing();
     }
 
     private void Update()
@@ -44,7 +44,7 @@ public class DrawLineOthers : NetworkBehaviour
         }
     }
 
-    public void startedFishing()
+    public void StartedFishing()
     {
         if (isLocalPlayer || isServer)
             return;

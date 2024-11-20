@@ -2,10 +2,6 @@ using System.Collections;
 using UnityEngine;
 using Mirror;
 using System;
-using static UserData;
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
 
 public class FishingManager : NetworkBehaviour
 {
@@ -37,14 +33,22 @@ public class FishingManager : NetworkBehaviour
 
     //Variables
     public bool isFishing = false;
+    public bool fightStarted = false;
+
+    bool fishGenerated = false;
 
     [SyncVar]
     CurrentFish currentFish;
     [SyncVar]
-    System.Diagnostics.Stopwatch startedFishingTime;
+    System.Diagnostics.Stopwatch startedFishFightTime = new System.Diagnostics.Stopwatch();
+
+    System.Diagnostics.Stopwatch startedFishingTime = new System.Diagnostics.Stopwatch();
 
     //count in ms, since this is more precise
     int minFishingTimeMs;
+
+    //Time till the fishing result can be send to the player
+    int timeTillResultsSeconds = int.MaxValue;
 
     public bool nearWater = false;
 
@@ -55,6 +59,7 @@ public class FishingManager : NetworkBehaviour
     {
         caughtFish,
         lostFish,
+        noFishGenerated,
         stoppedFishing,
     }
 
@@ -71,6 +76,13 @@ public class FishingManager : NetworkBehaviour
         if( fishFightDialog == null || caughtDialog == null)
         {
             Debug.LogError("Could not find a canvas dialog");
+        }
+    }
+
+    private void Update()
+    {
+        if (isServer) {
+            ProgressFishing();
         }
     }
 
@@ -182,6 +194,19 @@ public class FishingManager : NetworkBehaviour
         localPlayerLine.EndFishing();
         CmdEndFishing();
         if(reason == EndFishingReason.caughtFish)
+        {
+            CmdRegisterCaughtFish();
+        }
+        isFishing = false;
+    }
+
+    [ClientRpc]
+    //Function is called from the server to the client to stop fishing, happens if no fish bait the hook.
+    public void RpcEndFishing(EndFishingReason reason)
+    {
+        StartCoroutine(EndFight());
+        localPlayerLine.EndFishing();
+        if (reason == EndFishingReason.caughtFish)
         {
             CmdRegisterCaughtFish();
         }
@@ -313,9 +338,9 @@ public class FishingManager : NetworkBehaviour
 
     [Command]
     void CmdRegisterCaughtFish() {
-        if (startedFishingTime.ElapsedMilliseconds < minFishingTimeMs)
+        if (startedFishFightTime.ElapsedMilliseconds < minFishingTimeMs)
         {
-            Debug.LogWarning("The fishing period was too short. Should be " + minFishingTimeMs + " ms, but was " + startedFishingTime.ElapsedMilliseconds);
+            Debug.LogWarning("The fishing period was too short. Should be " + minFishingTimeMs + " ms, but was " + startedFishFightTime.ElapsedMilliseconds);
             return;
         }
         else
@@ -344,25 +369,18 @@ public class FishingManager : NetworkBehaviour
         networkedPlayerLine.lineSegLength = Mathf.Sqrt(xFactor + yFactor) / networkedPlayerLine.lineSegmentsAmount;
         networkedPlayerLine.placeToThrow = placeToThrow;
         networkedPlayerLine.isFishing = true;
+        isFishing = true;
 
         if (water)
         {
             spawnableFishes spawnable = water.collider.gameObject.GetComponent<spawnableFishes>();
-            bool wasSuccesfull;
-            (currentFish, wasSuccesfull) = spawnable.GenerateFish();
 
-            if(!wasSuccesfull)
-            {
-                //TODO: stop fishing after some time.
-                Debug.Log("No fish could be generated at FishingManager.CmdStartFishing");
-                return;
-            }
+            (currentFish, fishGenerated) = spawnable.GenerateFish();
 
-            minFishingTimeMs = UnityEngine.Random.Range(6, 11) * 1000;
-            startedFishingTime = new System.Diagnostics.Stopwatch();
+            timeTillResultsSeconds = UnityEngine.Random.Range(5, 11);
+
+            startedFishingTime.Reset();
             startedFishingTime.Start();
-            //TODO: start after a certain amount of time has passed.
-            StartFight(currentFish, minFishingTimeMs);
         }
         else
         {
@@ -370,9 +388,47 @@ public class FishingManager : NetworkBehaviour
         }
     }
 
+    //Don't do a Enumerator with yield return new waitforseconds(), we can't handle the player stopping the fishing progress that way.
+    void ProgressFishing() 
+    {
+        //Only run the function when the player is fishing AND the fight is has already started
+        if (!isFishing || fightStarted) {
+            return;
+        }
+
+        //Check if the rod is in the water for long enough
+        if(startedFishingTime.ElapsedMilliseconds < timeTillResultsSeconds * 1000)
+        {
+            return;
+        }
+
+        if (!fishGenerated)
+        {
+            Debug.Log("No fish could be generated at FishingManager.CmdStartFishing");
+
+            RpcEndFishing(EndFishingReason.noFishGenerated);
+            ServerEndFishing();
+            return;
+        }
+
+        minFishingTimeMs = UnityEngine.Random.Range(6, 11) * 1000;
+        startedFishFightTime.Reset();
+        startedFishFightTime.Start();
+        StartFight(currentFish, minFishingTimeMs);
+        fightStarted = true;
+    }
+
     [Command]
+    //Tell the server that the fishing should be stopped
     void CmdEndFishing()
     {
+        ServerEndFishing();
+    }
+
+    [Server]
+    void ServerEndFishing() {
+        isFishing = false;
+        fightStarted = false;
         networkedPlayerLine.isFishing = false;
         networkedPlayerLine.RpcEndedFishing();
     }

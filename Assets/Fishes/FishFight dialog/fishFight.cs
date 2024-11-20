@@ -38,7 +38,7 @@ public class fishFight : MonoBehaviour
     float relativePos;
     [SerializeField]
     float sensitivity = 0.5f;
-    bool initialized = false;
+    public bool initialized = false;
 
     float minFishingTime;
 
