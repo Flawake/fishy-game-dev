@@ -267,7 +267,7 @@ public class playerController : NetworkBehaviour
     void ApplyAnimation(Vector2 dir) 
     {
         float delayTime = 0.07f;
-        bool moving = dir.x != 0 || dir.y != 0;
+        bool moving = dir != Vector2.zero;
         if (moving)
         {
             if (Time.time - lastTimeMovedDiagonally > delayTime || (lastTimeMovedDiagonallyVector != dir && dir.x != 0 && dir.y != 0))
@@ -314,8 +314,8 @@ public class playerController : NetworkBehaviour
             return;
         }
         hasVelocity = dir != Vector2.zero;
-        ApplyAnimation(dir);
-        foreach(Collider2D col in objectsCollidingPlayer)
+        movementVector = dir.normalized;
+        foreach (Collider2D col in objectsCollidingPlayer)
         {
             //Only walk if not walking into a collider
             Vector2 collisionDirection = (col.ClosestPoint(playerCollider.bounds.center) - (Vector2)playerCollider.bounds.center).normalized;
@@ -323,10 +323,10 @@ public class playerController : NetworkBehaviour
             if (angle < 50f)
             {
                 movementVector = Vector2.zero;
-                return;
+                hasVelocity = false;
             }
         }
-        movementVector = dir.normalized;
+        ApplyAnimation(dir);
     }
 
     public void MoveOtherPlayerLocally(Vector2 dir, Vector2 targetPos)
@@ -455,7 +455,7 @@ public class playerController : NetworkBehaviour
         transform.position = position;
     }
 
-    //TODO: make a job for this and run it on a different thread
+    //TODO: maybe make a job for this and run it on a different thread, if collision detection can be done on a different thread.
     bool CheckMoveCollision(Vector3 position)
     {
         Vector3 prevPos = transform.position;
