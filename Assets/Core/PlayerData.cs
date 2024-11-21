@@ -14,6 +14,8 @@ public class PlayerData : NetworkBehaviour
     [SyncVar, SerializeField]
     string playerName;
     [SyncVar, SerializeField]
+    int playerXp;
+    [SyncVar, SerializeField]
     bool showInventory;
     [SyncVar, SerializeField]
     int lastItemUID;
@@ -32,6 +34,17 @@ public class PlayerData : NetworkBehaviour
     public string GetUsername()
     {
         return playerName;
+    }
+    
+    [Server]
+    public void SetXp(int xp)
+    {
+        playerXp = xp;
+    }
+
+    public int GetXp()
+    {
+        return playerXp;
     }
 
     //The show inventory on profile setting, this is not yet implemented
@@ -72,6 +85,7 @@ public class PlayerData : NetworkBehaviour
         SetFishBucks(playerData.stats.bucks);
         SetLastitemUID(playerData.lastItemUID);
         SetShowInventory(playerData.showInv);
+        //todo: add XP here
     }
 
     [Server]

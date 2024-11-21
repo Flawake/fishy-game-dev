@@ -71,3 +71,8 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 /Assets/Sprites/Sprites van robert
+.idea/
+.idea/*
+.idea
+/.idea/
+/.idea/*

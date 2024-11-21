@@ -19,7 +19,7 @@ public class playerController : NetworkBehaviour
     [SerializeField] FishingManager fishingManager;
     [SerializeField] GameObject playerCanvasPrefab;
     [SerializeField] BoxCollider2D playerCollider;
-
+    [SerializeField] ViewPlayerStats viewPlayerStats;
     public float movementSpeed = 10;
 
     PlayerControls playerControls;
@@ -198,15 +198,17 @@ public class playerController : NetworkBehaviour
 
     //This function is being called from the PlayerController input system. It triggers when the left mouse button in clicked.
     public void ProcessMouseClick(InputAction.CallbackContext context)
-    {
+    {   
+        Debug.Log("ProcessMouseClick");
         if (!isLocalPlayer || !gameOnForeground || !context.performed) {
             return; 
         }
+        
         Vector2 clickedPos = playerCamera.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-        if (!fishingManager.ProcessFishing(clickedPos) || objectsPreventingFishing > 0)
-        {
-            return;
-        }
+        //viewPlayerStats.ProcesPlayerCheck(clickedPos);
+        if (!viewPlayerStats.ProcesPlayerCheck(clickedPos)) ;
+        if (!fishingManager.ProcessFishing(clickedPos) || objectsPreventingFishing > 0) ;
+
         //We should not return but look what else the click could have been for.
     }
 
