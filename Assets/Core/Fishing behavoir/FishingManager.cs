@@ -196,6 +196,7 @@ public class FishingManager : NetworkBehaviour
     {
         StartCoroutine(EndFight());
         localPlayerLine.EndFishing();
+        rodAnimator.DisableRod();
         CmdEndFishing();
         if(reason == EndFishingReason.caughtFish)
         {
@@ -210,6 +211,7 @@ public class FishingManager : NetworkBehaviour
     {
         StartCoroutine(EndFight());
         localPlayerLine.EndFishing();
+        rodAnimator.DisableRod();
         if (reason == EndFishingReason.caughtFish)
         {
             CmdRegisterCaughtFish();
@@ -437,6 +439,7 @@ public class FishingManager : NetworkBehaviour
         fightStarted = false;
         networkedPlayerLine.isFishing = false;
         networkedPlayerLine.RpcEndedFishing();
+        rodAnimator.RpcDisableRod();
     }
 
     [Server]

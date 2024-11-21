@@ -212,7 +212,6 @@ public class playerController : NetworkBehaviour
         //We should not return but look what else the click could have been for.
     }
 
-    //TODO: Verify movement on the server.
     float lastTimeMovedDiagonally = 0;
     Vector2 lastTimeMovedDiagonallyVector = new Vector2();
 
