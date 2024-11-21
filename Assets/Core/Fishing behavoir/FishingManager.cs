@@ -16,9 +16,8 @@ public class FishingManager : NetworkBehaviour
     public baitObject selectedBait;                     //bit2 (1 << 1)
 
     //script classes
-    [SerializeField] DrawLineOthers networkedPlayerLine;
     [SerializeField] playerController player;
-    [SerializeField] FishingLine localPlayerLine;
+    [SerializeField] FishingLine fishingLine;
     [SerializeField] fishFight fishFight;                   //change
     [SerializeField] caughtDialogData caughtData;           //change
     [SerializeField] ItemManager itemManager;
@@ -183,7 +182,7 @@ public class FishingManager : NetworkBehaviour
     {
         //Throw the line on the localplayer, the position needs to be validated on the
         //server before sent to clients and before a fish is being generated.
-        localPlayerLine.StartFishing(placeToThrow);
+        fishingLine.StartFishing(placeToThrow);
         Vector2 throwDirection = (placeToThrow - (Vector2)player.transform.position).normalized;
         rodAnimator.ThrowRod(throwDirection);
         player.SetPlayerAnimationForDirection(throwDirection);
@@ -195,7 +194,7 @@ public class FishingManager : NetworkBehaviour
     public void EndFishing(EndFishingReason reason)
     {
         StartCoroutine(EndFight());
-        localPlayerLine.EndFishing();
+        fishingLine.EndFishing();
         rodAnimator.DisableRod();
         CmdEndFishing();
         if(reason == EndFishingReason.caughtFish)
@@ -210,7 +209,7 @@ public class FishingManager : NetworkBehaviour
     public void RpcEndFishing(EndFishingReason reason)
     {
         StartCoroutine(EndFight());
-        localPlayerLine.EndFishing();
+        fishingLine.EndFishing();
         rodAnimator.DisableRod();
         if (reason == EndFishingReason.caughtFish)
         {
@@ -370,11 +369,8 @@ public class FishingManager : NetworkBehaviour
         ReduceSelectedRodQuality(selectedRod);
         ReduceSelectedBaitQuality(selectedBait);
 
-        float xFactor = Mathf.Pow((transform.position.x - placeToThrow.x), 2);
-        float yFactor = Mathf.Pow((transform.position.y - placeToThrow.y), 2);
-        networkedPlayerLine.lineSegLength = Mathf.Sqrt(xFactor + yFactor) / networkedPlayerLine.lineSegmentsAmount;
-        networkedPlayerLine.placeToThrow = placeToThrow;
-        networkedPlayerLine.isFishing = true;
+        fishingLine.RpcStartFishing(placeToThrow);
+
         isFishing = true;
 
         player.RpcSetPlayerAnimationForDirection(placeToThrow - (Vector2)player.transform.position);
@@ -437,8 +433,7 @@ public class FishingManager : NetworkBehaviour
     void ServerEndFishing() {
         isFishing = false;
         fightStarted = false;
-        networkedPlayerLine.isFishing = false;
-        networkedPlayerLine.RpcEndedFishing();
+        fishingLine.RpcEndedFishing();
         rodAnimator.RpcDisableRod();
     }
 

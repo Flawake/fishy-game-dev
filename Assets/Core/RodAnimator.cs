@@ -28,8 +28,6 @@ public class RodAnimator : NetworkBehaviour
             angle += 360;
         }
 
-        Debug.Log($"angle: {angle}");
-
 
         if (angle >= 337.5 || angle < 22.5) {
             animator.Play("rod_throw_in_up", 0, 0f);

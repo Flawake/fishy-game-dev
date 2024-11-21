@@ -582,6 +582,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0eb44ae31fc38f847bf07482561f2830, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   lineRenderer: {fileID: 4775064897571447478}
   linePoint: {fileID: 8352990903765824801}
 --- !u!1 &3919505114107174795
@@ -1281,7 +1284,6 @@ GameObject:
   - component: {fileID: 6893647734338712267}
   - component: {fileID: 7552454366341880308}
   - component: {fileID: 4128126692504098922}
-  - component: {fileID: 8327231205928655893}
   - component: {fileID: 4714916547234725786}
   - component: {fileID: 642131257449331877}
   - component: {fileID: 5229511421800194380}
@@ -1419,26 +1421,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 4
---- !u!114 &8327231205928655893
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7976679866149745988}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa9b5754bb8fde34e9605c8b5c7304b6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0.1
-  lineRendererOther: {fileID: 4775064897571447478}
-  placeToThrow: {x: 0, y: 0}
-  lineSegLength: 0.25
-  isFishing: 0
-  lineSegmentsAmount: 30
 --- !u!114 &4714916547234725786
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1456,9 +1438,8 @@ MonoBehaviour:
   syncInterval: 0.1
   selectedRod: {fileID: 0}
   selectedBait: {fileID: 0}
-  networkedPlayerLine: {fileID: 8327231205928655893}
   player: {fileID: 7552454366341880308}
-  localPlayerLine: {fileID: 6357037151091281462}
+  fishingLine: {fileID: 6357037151091281462}
   fishFight: {fileID: 0}
   caughtData: {fileID: 0}
   itemManager: {fileID: 2600673011262952092}

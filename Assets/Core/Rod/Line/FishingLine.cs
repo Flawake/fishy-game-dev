@@ -1,8 +1,8 @@
+using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
-public class FishingLine : MonoBehaviour
+public class FishingLine : NetworkBehaviour
 {
 
     [SerializeField] LineRenderer lineRenderer;
@@ -37,6 +37,12 @@ public class FishingLine : MonoBehaviour
         }
     }
 
+    [ClientRpc(includeOwner = false)]
+    public void RpcStartFishing(Vector2 placeToThrow)
+    {
+        StartFishing(placeToThrow);
+    }
+
     public void StartFishing(Vector2 placeToThrow) 
     {
         //sets all line states to their initial value
@@ -57,6 +63,12 @@ public class FishingLine : MonoBehaviour
         currentDrawnSegments = 2;
     }
 
+    [ClientRpc(includeOwner = false)]
+    public void RpcEndedFishing()
+    {
+        EndFishing();
+    }
+
     public void EndFishing()
     {
         lineSegments.Clear();
@@ -68,7 +80,12 @@ public class FishingLine : MonoBehaviour
     }
 
     //Simulates the fishing line
-    private void Simulate() {
+    private void Simulate() 
+    {
+        //Don't even try to simulate the rod on the server
+        if (isServer) {
+            return;
+        }
 
         if (currentDrawnSegments < lineSegmentsAmount) {
             lineSegments.Add(new LineSegment(lineSegments[lineSegments.Count - 1].currentPos));
