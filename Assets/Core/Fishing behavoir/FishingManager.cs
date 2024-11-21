@@ -24,6 +24,7 @@ public class FishingManager : NetworkBehaviour
     [SerializeField] ItemManager itemManager;
     [SerializeField] DatabaseCommunications database;
     [SerializeField] PlayerInventory inventory;
+    [SerializeField] RodAnimator rodAnimator;
 
     //gameObjects
     [SerializeField] Camera playerCamera;
@@ -183,7 +184,9 @@ public class FishingManager : NetworkBehaviour
         //Throw the line on the localplayer, the position needs to be validated on the
         //server before sent to clients and before a fish is being generated.
         localPlayerLine.StartFishing(placeToThrow);
-        player.SetPlayerAnimationForDirection(placeToThrow - (Vector2)player.transform.position);
+        Vector2 throwDirection = (placeToThrow - (Vector2)player.transform.position).normalized;
+        rodAnimator.ThrowRod(throwDirection);
+        player.SetPlayerAnimationForDirection(throwDirection);
         CmdStartFishing(placeToThrow);
         Debug.Log($"bait left: {selectedBait.throwIns}");
     }

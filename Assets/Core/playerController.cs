@@ -123,6 +123,7 @@ public class playerController : NetworkBehaviour
                 return;
             }
         }
+
         float cameraHeight = playerCamera.orthographicSize;
         float cameraWidth = cameraHeight * playerCamera.aspect;
 
@@ -198,8 +199,7 @@ public class playerController : NetworkBehaviour
 
     //This function is being called from the PlayerController input system. It triggers when the left mouse button in clicked.
     public void ProcessMouseClick(InputAction.CallbackContext context)
-    {   
-        Debug.Log("ProcessMouseClick");
+    {
         if (!isLocalPlayer || !gameOnForeground || !context.performed) {
             return; 
         }
@@ -258,7 +258,7 @@ public class playerController : NetworkBehaviour
 
     void MovePlayer(Vector2 moveDir, float speed)
     {
-        playerRigidbody.velocity = moveDir * speed;
+        playerRigidbody.velocity = moveDir.normalized * speed;
     }
 
     void ApplyAnimation()
@@ -270,6 +270,7 @@ public class playerController : NetworkBehaviour
     {
         float delayTime = 0.07f;
         bool moving = dir != Vector2.zero;
+        dir = dir.normalized;
         if (moving)
         {
             if (Time.time - lastTimeMovedDiagonally > delayTime || (lastTimeMovedDiagonallyVector != dir && dir.x != 0 && dir.y != 0))
@@ -298,7 +299,9 @@ public class playerController : NetworkBehaviour
         SetPlayerAnimationForDirection(dir);
     }
 
+    //Function is called while throwing in the rod to make the player face the direction that the line is thrown.
     public void SetPlayerAnimationForDirection(Vector2 dir) {
+        dir = dir.normalized;
         playerAnimator.SetFloat("Horizontal", dir.x);
         playerAnimator.SetFloat("Vertical", dir.y);
     }
