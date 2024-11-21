@@ -583,6 +583,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lineRenderer: {fileID: 4775064897571447478}
+  linePoint: {fileID: 8352990903765824801}
 --- !u!1 &3919505114107174795
 GameObject:
   m_ObjectHideFlags: 0

@@ -6,6 +6,7 @@ public class FishingLine : MonoBehaviour
 {
 
     [SerializeField] LineRenderer lineRenderer;
+    [SerializeField] GameObject linePoint;
 
     private List<LineSegment> lineSegments = new List<LineSegment>();
 
@@ -106,12 +107,12 @@ public class FishingLine : MonoBehaviour
 
         //constrain the first and last segment of the line.
         LineSegment firstSegment = lineSegments[0];
-        firstSegment.currentPos = transform.position;
+        firstSegment.currentPos = linePoint.transform.position;
         lineSegments[0] = firstSegment;
 
         LineSegment lastSegment = lineSegments[lineSegments.Count - 1];
-        //some random math to have the right offsets from the player.
-        lastSegment.currentPos = new Vector2(transform.position.x + (placeToThrow.x - transform.position.x) / lineSegmentsAmount * currentDrawnSegments, transform.position.y + (placeToThrow.y - transform.position.y) / lineSegmentsAmount * currentDrawnSegments);
+        //some random math to have the right offsets from the rod tip.
+        lastSegment.currentPos = new Vector2(linePoint.transform.position.x + (placeToThrow.x - linePoint.transform.position.x) / lineSegmentsAmount * currentDrawnSegments, linePoint.transform.position.y + (placeToThrow.y - linePoint.transform.position.y) / lineSegmentsAmount * currentDrawnSegments);
         lineSegments[lineSegments.Count - 1] = lastSegment;
             
         for (int i = 0; i < currentDrawnSegments - 1; i++) {
