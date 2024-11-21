@@ -371,6 +371,9 @@ public class FishingManager : NetworkBehaviour
 
         fishingLine.RpcStartFishing(placeToThrow);
 
+        Vector2 throwDirection = (placeToThrow - (Vector2)player.transform.position).normalized;
+        rodAnimator.RpcThrowRod(throwDirection);
+
         isFishing = true;
 
         player.RpcSetPlayerAnimationForDirection(placeToThrow - (Vector2)player.transform.position);

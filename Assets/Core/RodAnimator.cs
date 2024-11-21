@@ -7,7 +7,7 @@ public class RodAnimator : NetworkBehaviour
     [SerializeField] SpriteRenderer spriteRenderer;
     [SerializeField] Animator animator;
 
-    [ClientRpc]
+    [ClientRpc(includeOwner = false)]
     public void RpcThrowRod(Vector2 dir)
     {
         ThrowRod(dir);
@@ -27,7 +27,6 @@ public class RodAnimator : NetworkBehaviour
         if (angle < 0) {
             angle += 360;
         }
-
 
         if (angle >= 337.5 || angle < 22.5) {
             animator.Play("rod_throw_in_up", 0, 0f);
