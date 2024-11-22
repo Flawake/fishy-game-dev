@@ -1753,6 +1753,7 @@ MonoBehaviour:
   syncInterval: 0
   spriteRenderer: {fileID: 4565075311978307407}
   animator: {fileID: 5806051217864826675}
+  fishLine: {fileID: 6357037151091281462}
 --- !u!1 &9107448490408615298
 GameObject:
   m_ObjectHideFlags: 0

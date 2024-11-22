@@ -182,7 +182,7 @@ public class FishingManager : NetworkBehaviour
     {
         //Throw the line on the localplayer, the position needs to be validated on the
         //server before sent to clients and before a fish is being generated.
-        fishingLine.StartFishing(placeToThrow);
+        fishingLine.InitThrowFishingLine(placeToThrow);
         Vector2 throwDirection = (placeToThrow - (Vector2)player.transform.position).normalized;
         rodAnimator.ThrowRod(throwDirection);
         player.SetPlayerAnimationForDirection(throwDirection);
@@ -369,7 +369,7 @@ public class FishingManager : NetworkBehaviour
         ReduceSelectedRodQuality(selectedRod);
         ReduceSelectedBaitQuality(selectedBait);
 
-        fishingLine.RpcStartFishing(placeToThrow);
+        fishingLine.RpcInitThrowFishingLine(placeToThrow);
 
         Vector2 throwDirection = (placeToThrow - (Vector2)player.transform.position).normalized;
         rodAnimator.RpcThrowRod(throwDirection);

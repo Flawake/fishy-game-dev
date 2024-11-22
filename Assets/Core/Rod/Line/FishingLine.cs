@@ -38,16 +38,15 @@ public class FishingLine : NetworkBehaviour
     }
 
     [ClientRpc(includeOwner = false)]
-    public void RpcStartFishing(Vector2 placeToThrow)
+    public void RpcInitThrowFishingLine(Vector2 placeToThrow)
     {
-        StartFishing(placeToThrow);
+        InitThrowFishingLine(placeToThrow);
     }
 
-    public void StartFishing(Vector2 placeToThrow) 
+    public void InitThrowFishingLine(Vector2 placeToThrow) 
     {
         //sets all line states to their initial value
         lineSegments.Clear();
-        isFishing = true;
         lineRenderer.enabled = true;
 
         this.placeToThrow = placeToThrow;
@@ -61,6 +60,10 @@ public class FishingLine : NetworkBehaviour
         lineSegments.Add(new LineSegment(placeToThrow));
         lineSegments.Add(new LineSegment(placeToThrow));
         currentDrawnSegments = 2;
+    }
+
+    public void ThrowLine() {
+        isFishing = true;
     }
 
     [ClientRpc(includeOwner = false)]

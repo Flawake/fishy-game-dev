@@ -6,6 +6,7 @@ public class RodAnimator : NetworkBehaviour
 {
     [SerializeField] SpriteRenderer spriteRenderer;
     [SerializeField] Animator animator;
+    [SerializeField] FishingLine fishLine;
 
     [ClientRpc(includeOwner = false)]
     public void RpcThrowRod(Vector2 dir)
@@ -63,6 +64,11 @@ public class RodAnimator : NetworkBehaviour
         {
             Debug.LogWarning($"This code should never execute, angle was: {dir}");
         }
+    }
+
+    public void ThrowLine()
+    {
+        fishLine.ThrowLine();
     }
 
     [ClientRpc]
