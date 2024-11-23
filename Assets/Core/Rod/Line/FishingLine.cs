@@ -51,15 +51,20 @@ public class FishingLine : NetworkBehaviour
 
         this.placeToThrow = placeToThrow;
 
-        //calculates the length of 1 single segment
-        float xFactor = Mathf.Pow((transform.position.x - placeToThrow.x), 2);
-        float yFactor = Mathf.Pow((transform.position.y - placeToThrow.y), 2);
-        lineSegLength = Mathf.Sqrt(xFactor + yFactor) / lineSegmentsAmount;
+        CalculateSegLength();
 
         //adds the first 2 segments of the line
         lineSegments.Add(new LineSegment(placeToThrow));
         lineSegments.Add(new LineSegment(placeToThrow));
         currentDrawnSegments = 2;
+    }
+
+    void CalculateSegLength()
+    {
+        //calculates the length of 1 single segment
+        float xFactor = Mathf.Pow((linePoint.transform.position.x - placeToThrow.x), 2);
+        float yFactor = Mathf.Pow((linePoint.transform.position.y - placeToThrow.y), 2);
+        lineSegLength = Mathf.Sqrt(xFactor + yFactor) / lineSegmentsAmount;
     }
 
     public void ThrowLine() {
@@ -89,6 +94,8 @@ public class FishingLine : NetworkBehaviour
         if (isServer) {
             return;
         }
+
+        CalculateSegLength();
 
         if (currentDrawnSegments < lineSegmentsAmount) {
             lineSegments.Add(new LineSegment(lineSegments[lineSegments.Count - 1].currentPos));
