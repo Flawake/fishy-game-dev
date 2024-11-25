@@ -47,8 +47,6 @@ public class PlayerInventory : NetworkBehaviour
             //TODO: find a better place for this.
             if (inventoryBait.id == playerData.selectedBaitId)
             {
-                Debug.Log($"Inventory bait: {inventoryBait.id}");
-                Debug.Log($"Selected bait: {playerData.selectedBaitId}");
                 fishingManager.SelectNewBait(inventoryBait, true);
             }
         }

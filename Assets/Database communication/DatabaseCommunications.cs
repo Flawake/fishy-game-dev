@@ -151,19 +151,22 @@ public class DatabaseCommunications : NetworkBehaviour
     public void ReduceItem(ItemObject item, int amount)
     {
         string type;
-        int uid = item.uid;
+        int id = int.MinValue;
 
         if (item is rodObject)
         {
             type = rodObject.AsString();
+            id = item.uid;
         }
         else if (item is baitObject)
         {
             type = baitObject.AsString();
+            id = item.id;
         }
         else if(item is FishObject)
         {
             type = FishObject.AsString();
+            id = item.id;
         }
         else
         {
@@ -176,7 +179,7 @@ public class DatabaseCommunications : NetworkBehaviour
         addItemInventory.AddField("auth_token", DatabaseEndpoints.databaseAccessToken);
         addItemInventory.AddField("user", data.GetUsername());
         addItemInventory.AddField("type", type);
-        addItemInventory.AddField("uid", uid);
+        addItemInventory.AddField("uid", id);
         addItemInventory.AddField("amount", amount);
 
         string endpoint = DatabaseEndpoints.reduceItemEndpoint;
