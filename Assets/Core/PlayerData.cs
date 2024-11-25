@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class PlayerData : NetworkBehaviour
 {
+    //Not all variables that should be synced between the client and the player are a syncVar
+    //For example: no player except yourself should know how much fishcoins or fishbucks you have.
+
+    //Variables that are not synced between ALL players
     [SerializeField]
     PlayerInventory inventory;
     [SerializeField]
@@ -11,6 +15,7 @@ public class PlayerData : NetworkBehaviour
     [SerializeField]
     int availableFishBucks;
 
+    //Variables that are synced between ALL players
     [SyncVar, SerializeField]
     string playerName;
     [SyncVar, SerializeField]
@@ -214,7 +219,7 @@ public class PlayerData : NetworkBehaviour
     private void Start()
     {
         //Retrieve coins and bucks amount from server when spawned
-        if(NetworkClient.active)
+        if(isLocalPlayer)
         {
             CmdGetFishCoins();
             CmdGetFishBucks();
