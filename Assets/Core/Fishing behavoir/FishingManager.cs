@@ -313,7 +313,7 @@ public class FishingManager : NetworkBehaviour
     {
         if(selectedBait != null)
         {
-            if (selectedBait.uid == newBait.uid)
+            if (selectedBait.id == newBait.id)
             {
                 return;
             }
@@ -450,8 +450,8 @@ public class FishingManager : NetworkBehaviour
         if(rod.throwIns == 1)
         {
             //Remove item from database and select new one
-            //Item with id 0, this should be the standard beginners rod
-            ItemObject rodItem = inventory.GetRodByID(0);
+            //Item with id -1, this should be the standard beginners rod
+            ItemObject rodItem = inventory.GetRodByID(-1);
             rodObject newRod = null;
             if(rodItem != null)
             {
@@ -477,19 +477,19 @@ public class FishingManager : NetworkBehaviour
     [Server]
     private void ReduceSelectedBaitQuality(baitObject bait)
     {
-        if (bait.durabilityIsInfinite || bait.uid < 0)
+        if (bait.durabilityIsInfinite || bait.id < 0)
         {
             return;
         }
         if (bait.throwIns == 1)
         {
             //Remove item from database and select new one
-            //Item with id 0, this should be the standard beginners rod
-            ItemObject rodItem = inventory.GetBaitByID(0);
+            //Item with id -1, this should be the standard beginners rod
+            ItemObject baitItem = inventory.GetBaitByID(-1);
             baitObject newBait = null;
-            if (rodItem != null)
+            if (baitItem != null)
             {
-                newBait = rodItem as baitObject;
+                newBait = baitItem as baitObject;
             }
             if (newBait == null)
             {

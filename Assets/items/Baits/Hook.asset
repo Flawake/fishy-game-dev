@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   uid: 0
   type: 1
-  id: 0
+  id: -1
   sprite: {fileID: 1991904390, guid: 348fd75c34b094f4c8e92ac960402ba7, type: 3}
   description: Not a lot of fishes do like the hook
   stackable: 1

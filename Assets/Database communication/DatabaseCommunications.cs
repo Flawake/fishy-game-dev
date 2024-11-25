@@ -121,13 +121,17 @@ public class DatabaseCommunications : NetworkBehaviour
     public void SelectOtherItem(ItemObject item)
     {
         string type;
+        int id;
+
         if (item is rodObject)
         {
             type = rodObject.AsString();
+            id = item.uid;
         }
         else if (item is baitObject)
         {
             type = baitObject.AsString();
+            id = item.id;
         }
         else
         {
@@ -139,7 +143,7 @@ public class DatabaseCommunications : NetworkBehaviour
         otherItemSelectForm.AddField("auth_token", DatabaseEndpoints.databaseAccessToken);
         otherItemSelectForm.AddField("user", data.GetUsername());
         otherItemSelectForm.AddField("type", type);
-        otherItemSelectForm.AddField("uid", item.uid);
+        otherItemSelectForm.AddField("uid", id);
         WebRequestHandler.SendWebRequest(DatabaseEndpoints.selectOtherItemEndpoint, otherItemSelectForm);
     }
 

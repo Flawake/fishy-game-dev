@@ -45,8 +45,10 @@ public class PlayerInventory : NetworkBehaviour
             }
             AddItem(inventoryBait);
             //TODO: find a better place for this.
-            if (inventoryBait.uid == playerData.selectedBaitUid)
+            if (inventoryBait.id == playerData.selectedBaitId)
             {
+                Debug.Log($"Inventory bait: {inventoryBait.id}");
+                Debug.Log($"Selected bait: {playerData.selectedBaitId}");
                 fishingManager.SelectNewBait(inventoryBait, true);
             }
         }
@@ -228,7 +230,6 @@ public class PlayerInventory : NetworkBehaviour
         SyncList<InventoryItem> container;
         if (type == rodObject.AsString())
         {
-
             container = rodContainer;
         }
         else if (type == baitObject.AsString())
@@ -265,8 +266,8 @@ public class PlayerInventory : NetworkBehaviour
         }
         else if (type == ItemType.bait)
         {
-            Debug.LogWarning("Should this bait be found bu UID, remove this warning if a case has been found.");
-            container = baitContainer;
+            Debug.LogWarning("A bait should not be found by i'ts UID but by it's ID instead");
+            return null;
         }
         else
         {

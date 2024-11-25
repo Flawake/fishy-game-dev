@@ -8,7 +8,7 @@ public struct UserData
     public bool showInv;
     public int lastItemUID;
     public int selectedRodUid;
-    public int selectedBaitUid;
+    public int selectedBaitId;
 
     [System.Serializable]
     public struct PlayerInventory
