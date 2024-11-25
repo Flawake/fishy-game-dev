@@ -1,5 +1,4 @@
 using Mirror;
-using System.Collections;
 using UnityEngine;
 
 public class RodAnimator : NetworkBehaviour
@@ -8,14 +7,8 @@ public class RodAnimator : NetworkBehaviour
     [SerializeField] Animator animator;
     [SerializeField] FishingLine fishLine;
 
-    [ClientRpc(includeOwner = false)]
-    public void RpcThrowRod(Vector2 dir)
-    {
-        ThrowRod(dir);
-    }
-
     [Client]
-    public void ThrowRod(Vector2 dir)
+    public void AnimateRod(Vector2 dir)
     {
         spriteRenderer.enabled = true;
         animator.enabled = true;
@@ -66,6 +59,7 @@ public class RodAnimator : NetworkBehaviour
         }
     }
 
+    //Called from a rod animation frame
     public void ThrowLine()
     {
         fishLine.ThrowLine();

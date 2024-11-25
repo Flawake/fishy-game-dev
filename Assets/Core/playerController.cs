@@ -292,12 +292,6 @@ public class playerController : NetworkBehaviour
         playerAnimator.SetFloat("Speed", hasVelocity ? 1 : 0);
     }
 
-    [ClientRpc]
-    public void RpcSetPlayerAnimationForDirection(Vector2 dir)
-    {
-        SetPlayerAnimationForDirection(dir);
-    }
-
     //Function is called while throwing in the rod to make the player face the direction that the line is thrown.
     public void SetPlayerAnimationForDirection(Vector2 dir) {
         dir = dir.normalized;

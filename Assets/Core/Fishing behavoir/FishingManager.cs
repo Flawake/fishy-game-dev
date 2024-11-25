@@ -182,12 +182,9 @@ public class FishingManager : NetworkBehaviour
     {
         //Throw the line on the localplayer, the position needs to be validated on the
         //server before sent to clients and before a fish is being generated.
-        fishingLine.InitThrowFishingLine(placeToThrow);
-        Vector2 throwDirection = (placeToThrow - (Vector2)player.transform.position).normalized;
-        rodAnimator.ThrowRod(throwDirection);
-        player.SetPlayerAnimationForDirection(throwDirection);
+        ThrowRod(placeToThrow);
+
         CmdStartFishing(placeToThrow);
-        Debug.Log($"bait left: {selectedBait.throwIns}");
     }
 
     [Client]
@@ -369,14 +366,9 @@ public class FishingManager : NetworkBehaviour
         ReduceSelectedRodQuality(selectedRod);
         ReduceSelectedBaitQuality(selectedBait);
 
-        fishingLine.RpcInitThrowFishingLine(placeToThrow);
-
-        Vector2 throwDirection = (placeToThrow - (Vector2)player.transform.position).normalized;
-        rodAnimator.RpcThrowRod(throwDirection);
+        RpcThrowRod(placeToThrow);
 
         isFishing = true;
-
-        player.RpcSetPlayerAnimationForDirection(placeToThrow - (Vector2)player.transform.position);
 
         if (water)
         {
@@ -393,6 +385,22 @@ public class FishingManager : NetworkBehaviour
         {
             Debug.LogError("Water should never be able to be null, it happened now tough");
         }
+    }
+
+    [ClientRpc(includeOwner = false)]
+    void RpcThrowRod(Vector2 placeToThrow) {
+        ThrowRod(placeToThrow);
+    }
+
+    void ThrowRod(Vector2 placeToThrow)
+    {
+        //Initialize the fishingline, the play the animation to throw the rod. The rod animation calls a function to actually start throwing the fishing line
+        fishingLine.InitThrowFishingLine(placeToThrow);
+
+        Vector2 throwDirection = (placeToThrow - (Vector2)player.transform.position).normalized;
+
+        player.SetPlayerAnimationForDirection(throwDirection);
+        rodAnimator.AnimateRod(throwDirection);
     }
 
     //Don't do a Enumerator with yield return new waitforseconds(), we can't handle the player stopping the fishing progress that way.

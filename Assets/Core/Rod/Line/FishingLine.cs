@@ -37,12 +37,6 @@ public class FishingLine : NetworkBehaviour
         }
     }
 
-    [ClientRpc(includeOwner = false)]
-    public void RpcInitThrowFishingLine(Vector2 placeToThrow)
-    {
-        InitThrowFishingLine(placeToThrow);
-    }
-
     public void InitThrowFishingLine(Vector2 placeToThrow) 
     {
         //sets all line states to their initial value

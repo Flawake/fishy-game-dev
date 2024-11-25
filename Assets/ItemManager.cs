@@ -34,10 +34,6 @@ public class ItemManager : MonoBehaviour
         inventory.AddItem(item);
     }
 
-    void RemoveItem() { 
-    
-    }
-
     public void DestroyItem(ItemObject item) {
         inventory.RemoveItem(item);
         database.DestroyItem(item);
