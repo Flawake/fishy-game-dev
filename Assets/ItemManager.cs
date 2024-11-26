@@ -11,8 +11,8 @@ public class ItemManager : MonoBehaviour
     DatabaseCommunications database;
 
     public void ChangeFishCoinsAmount(int amount) {
-        database.ChangeFishBucksAmount(amount);
-        playerData.ChangeFishBucksAmount(amount);
+        database.ChangeFishCoinsAmount(amount);
+        playerData.ChangeFishCoinsAmount(amount);
     }
 
     public void ChangeFishBucksAmount(int amount)
