@@ -3,8 +3,10 @@ using TMPro;
 
 public class ViewPlayerStats : MonoBehaviour
 {
-
-
+    PlayerStatsUIManager _playerStatsUIManager;
+    PlayerData _playerData;
+    GameObject _player;
+    
     public bool ProcesPlayerCheck(Vector2 clickedPos)
     {
         //Debug.Log("Checking for other player");
@@ -33,11 +35,11 @@ public class ViewPlayerStats : MonoBehaviour
     
     void PlayerStatMenu(GameObject menu)
     {
-        var player = GetTopmostParent(menu);
-        var playerStats = player.GetComponent<PlayerData>();
+        _player = GetTopmostParent(menu);
+        _playerData = _player.GetComponent<PlayerData>();
         var canvas = menu.transform.parent.GetChild(1).gameObject.transform;
-        canvas.Find("PlayerName").gameObject.GetComponent<TMP_Text>().text = playerStats.GetUsername();
-        canvas.Find("PlayerXp").gameObject.GetComponent<TMP_Text>().text = playerStats.GetXp().ToString();
+        canvas.Find("PlayerName").gameObject.GetComponent<TMP_Text>().text = _playerData.GetUsername();
+        canvas.Find("PlayerXp").gameObject.GetComponent<TMP_Text>().text = _playerData.GetXp().ToString();
         canvas.gameObject.SetActive(!canvas.gameObject.activeSelf);
     }
     
@@ -51,4 +53,20 @@ public class ViewPlayerStats : MonoBehaviour
         }
         return current.gameObject;
     }
+
+    public void More()
+    {
+        _playerStatsUIManager = _player.transform.Find("Canvas(Clone)").Find("PlayerStats").gameObject.GetComponent<PlayerStatsUIManager>();
+        if (_playerData != null && _playerStatsUIManager != null)
+        {
+            _playerStatsUIManager.ToggleStore();
+        }
+        else
+        {
+            (_playerStatsUIManager).TestFunction();
+        }
+        
+    }
+
+
 }
