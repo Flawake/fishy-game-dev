@@ -1,5 +1,6 @@
 using UnityEngine;
 
+//Item manager should manage the syncronisation of items between the server and client.
 public class ItemManager : MonoBehaviour
 {
     [SerializeField]

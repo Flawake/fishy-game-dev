@@ -15,4 +15,5 @@ public static class DatabaseEndpoints
     //TODO: make this /stats/...
     public static string addStatEndpoint = serverAddress + "increaseStat";
     public static string selectOtherItemEndpoint = serverAddress + "selectItem";
+    public static string adjustMoneyAmount = serverAddress + "adjustMoney";
 }

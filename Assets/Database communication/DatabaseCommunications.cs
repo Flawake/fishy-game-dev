@@ -108,13 +108,23 @@ public class DatabaseCommunications : NetworkBehaviour
     [Server]
     public void ChangeFishCoinsAmount(int amount)
     {
-        Debug.LogWarning("ChangeFishCoinsAmount() has not been implemented yet");
+        WWWForm adjustMoneyForm = new WWWForm();
+        adjustMoneyForm.AddField("auth_token", DatabaseEndpoints.databaseAccessToken);
+        adjustMoneyForm.AddField("user", data.GetUsername());
+        adjustMoneyForm.AddField("type", "coin");
+        adjustMoneyForm.AddField("amount", amount);
+        WebRequestHandler.SendWebRequest(DatabaseEndpoints.adjustMoneyAmount, adjustMoneyForm);
     }
 
     [Server]
     public void ChangeFishBucksAmount(int amount)
     {
-        Debug.LogWarning("ChangeFishBucksAmount() has not been implemented yet");
+        WWWForm adjustMoneyForm = new WWWForm();
+        adjustMoneyForm.AddField("auth_token", DatabaseEndpoints.databaseAccessToken);
+        adjustMoneyForm.AddField("user", data.GetUsername());
+        adjustMoneyForm.AddField("type", "buck");
+        adjustMoneyForm.AddField("amount", amount);
+        WebRequestHandler.SendWebRequest(DatabaseEndpoints.adjustMoneyAmount, adjustMoneyForm);
     }
 
     [Server]
