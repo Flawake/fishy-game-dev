@@ -15,6 +15,12 @@ public class FishingManager : NetworkBehaviour
     [SyncVar(hook = nameof(SelectedBaitChanged))]
     public baitObject selectedBait;                     //bit2 (1 << 1)
 
+    public struct syncedFishingPos
+    {
+        public Vector2 fishingPos;
+        public bool stardedFishing;
+    }
+
     //script classes
     [SerializeField] playerController player;
     [SerializeField] FishingLine fishingLine;
@@ -36,6 +42,9 @@ public class FishingManager : NetworkBehaviour
     public bool fightStarted = false;
 
     bool fishGenerated = false;
+
+    [SyncVar(hook = nameof(SyncvarThrowRod))]
+    syncedFishingPos syncedPlaceToThrow;
 
     [SyncVar]
     CurrentFish currentFish;
@@ -366,7 +375,10 @@ public class FishingManager : NetworkBehaviour
         ReduceSelectedRodQuality(selectedRod);
         ReduceSelectedBaitQuality(selectedBait);
 
-        RpcThrowRod(placeToThrow);
+        syncedFishingPos pos;
+        pos.stardedFishing = true;
+        pos.fishingPos = placeToThrow;
+        syncedPlaceToThrow = pos;
 
         isFishing = true;
 
@@ -386,21 +398,28 @@ public class FishingManager : NetworkBehaviour
             Debug.LogError("Water should never be able to be null, it happened now tough");
         }
     }
+    void SyncvarThrowRod(syncedFishingPos _, syncedFishingPos newVal) {
+        if (isLocalPlayer) {
+            return;
+        }
 
-    [ClientRpc(includeOwner = false)]
-    void RpcThrowRod(Vector2 placeToThrow) {
-        ThrowRod(placeToThrow);
+        if (newVal.stardedFishing)
+        {
+            ThrowRod(newVal.fishingPos);
+        }
+        else {
+            fishingLine.EndFishing();
+        }
     }
 
     void ThrowRod(Vector2 placeToThrow)
     {
         //Initialize the fishingline, the play the animation to throw the rod. The rod animation calls a function to actually start throwing the fishing line
         fishingLine.InitThrowFishingLine(placeToThrow);
-
         Vector2 throwDirection = (placeToThrow - (Vector2)player.transform.position).normalized;
 
-        player.SetPlayerAnimationForDirection(throwDirection);
         rodAnimator.AnimateRod(throwDirection);
+        player.SetPlayerAnimationForDirection(throwDirection);
     }
 
     //Don't do a Enumerator with yield return new waitforseconds(), we can't handle the player stopping the fishing progress that way.
@@ -446,6 +465,11 @@ public class FishingManager : NetworkBehaviour
         fightStarted = false;
         fishingLine.RpcEndedFishing();
         rodAnimator.RpcDisableRod();
+
+        syncedFishingPos pos;
+        pos.stardedFishing = false;
+        pos.fishingPos = Vector2.zero;
+        syncedPlaceToThrow = pos;
     }
 
     [Server]
