@@ -40,17 +40,6 @@ public class PlayerData : NetworkBehaviour
     {
         return playerName;
     }
-    
-    [Server]
-    public void SetXp(int xp)
-    {
-        playerXp = xp;
-    }
-
-    public int GetXp()
-    {
-        return playerXp;
-    }
 
     //The show inventory on profile setting, this is not yet implemented
     [Server]
@@ -88,6 +77,7 @@ public class PlayerData : NetworkBehaviour
         inventory.SaveInventory(playerData);
         SetFishCoins(playerData.stats.coins);
         SetFishBucks(playerData.stats.bucks);
+        SetXp(playerData.stats.xp);
         SetLastitemUID(playerData.lastItemUID);
         SetShowInventory(playerData.showInv);
         //todo: add XP here
@@ -144,6 +134,23 @@ public class PlayerData : NetworkBehaviour
     public string GetChatColorAsRGBAString()
     {
         return ColorUtility.ToHtmlStringRGBA(chatColor);
+    }
+
+    [Server]
+    public void SetXp(int xp)
+    {
+        playerXp = xp;
+    }
+
+    [Server]
+    public void AddXp(int xp)
+    {
+        playerXp += xp;
+    }
+
+    public int GetXp()
+    {
+        return playerXp;
     }
 
     [Server]

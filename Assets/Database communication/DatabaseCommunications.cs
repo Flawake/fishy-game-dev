@@ -113,7 +113,7 @@ public class DatabaseCommunications : NetworkBehaviour
         adjustMoneyForm.AddField("user", data.GetUsername());
         adjustMoneyForm.AddField("type", "coin");
         adjustMoneyForm.AddField("amount", amount);
-        WebRequestHandler.SendWebRequest(DatabaseEndpoints.adjustMoneyAmount, adjustMoneyForm);
+        WebRequestHandler.SendWebRequest(DatabaseEndpoints.adjustMoneyEndpoint, adjustMoneyForm);
     }
 
     [Server]
@@ -124,7 +124,16 @@ public class DatabaseCommunications : NetworkBehaviour
         adjustMoneyForm.AddField("user", data.GetUsername());
         adjustMoneyForm.AddField("type", "buck");
         adjustMoneyForm.AddField("amount", amount);
-        WebRequestHandler.SendWebRequest(DatabaseEndpoints.adjustMoneyAmount, adjustMoneyForm);
+        WebRequestHandler.SendWebRequest(DatabaseEndpoints.adjustMoneyEndpoint, adjustMoneyForm);
+    }
+
+    [Server]
+    public void AddXP(int amount) {
+        WWWForm addXPForm = new WWWForm();
+        addXPForm.AddField("auth_token", DatabaseEndpoints.databaseAccessToken);
+        addXPForm.AddField("user", data.GetUsername());
+        addXPForm.AddField("amount", amount);
+        WebRequestHandler.SendWebRequest(DatabaseEndpoints.addXPEndpoint, addXPForm);
     }
 
     [Server]

@@ -26,7 +26,7 @@ public class FishingManager : NetworkBehaviour
     [SerializeField] FishingLine fishingLine;
     [SerializeField] fishFight fishFight;                   //change
     [SerializeField] caughtDialogData caughtData;           //change
-    [SerializeField] ItemManager itemManager;
+    [SerializeField] PlayerDataSyncManager playerDataManager;
     [SerializeField] DatabaseCommunications database;
     [SerializeField] PlayerInventory inventory;
     [SerializeField] RodAnimator rodAnimator;
@@ -358,7 +358,8 @@ public class FishingManager : NetworkBehaviour
         {
             TargetShowCaughtDialog();
             FishObject fishObject = ItemObjectGenerator.FishObjectFromMinimal(currentFish.id, 1);
-            itemManager.AddItem(fishObject, currentFish);
+            playerDataManager.AddItem(fishObject, currentFish);
+            playerDataManager.AddXP(currentFish.xp);
         }
     }
 
@@ -496,7 +497,7 @@ public class FishingManager : NetworkBehaviour
             }
             //TODO: only change to the new rod when the rod goes out of the water.
             SelectNewRod(newRod, false);
-            itemManager.DestroyItem(rod);
+            playerDataManager.DestroyItem(rod);
         }
         else
         {
@@ -530,7 +531,7 @@ public class FishingManager : NetworkBehaviour
             }
             //TODO: only change to the new bait when the rod goes out of the water.
             SelectNewBait(newBait, false);
-            itemManager.DestroyItem(bait);
+            playerDataManager.DestroyItem(bait);
         }
         else
         {

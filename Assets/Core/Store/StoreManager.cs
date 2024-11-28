@@ -12,7 +12,7 @@ public class StoreManager : NetworkBehaviour
     [SerializeField]
     PlayerInventory inventory;
     [SerializeField]
-    ItemManager itemManager;
+    PlayerDataSyncManager playerDataManager;
 
     public enum CurrencyType
     {
@@ -68,8 +68,8 @@ public class StoreManager : NetworkBehaviour
             {
                 return;
             }
-            itemManager.AddItem(itemToBuy.itemObject);
-            itemManager.ChangeFishCoinsAmount(-itemToBuy.itemPriceFishCoins);
+            playerDataManager.AddItem(itemToBuy.itemObject);
+            playerDataManager.ChangeFishCoinsAmount(-itemToBuy.itemPriceFishCoins);
         }
         else if(currencyType == CurrencyType.bucks)
         {
@@ -81,8 +81,8 @@ public class StoreManager : NetworkBehaviour
             {
                 return;
             }
-            itemManager.AddItem(itemToBuy.itemObject);
-            itemManager.ChangeFishBucksAmount(-itemToBuy.itemPriceFishBucks);
+            playerDataManager.AddItem(itemToBuy.itemObject);
+            playerDataManager.ChangeFishBucksAmount(-itemToBuy.itemPriceFishBucks);
         }
     }
 }

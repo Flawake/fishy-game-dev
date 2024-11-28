@@ -1,7 +1,7 @@
 using UnityEngine;
 
 //Item manager should manage the syncronisation of items between the server and client.
-public class ItemManager : MonoBehaviour
+public class PlayerDataSyncManager : MonoBehaviour
 {
     [SerializeField]
     PlayerData playerData;
@@ -19,6 +19,11 @@ public class ItemManager : MonoBehaviour
     {
         database.ChangeFishBucksAmount(amount);
         playerData.ChangeFishBucksAmount(amount);
+    }
+
+    public void AddXP(int amount) {
+        database.AddXP(amount);
+        playerData.AddXp(amount);
     }
 
     public void AddItem(ItemObject item)

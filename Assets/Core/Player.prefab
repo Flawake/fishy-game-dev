@@ -1576,7 +1576,7 @@ MonoBehaviour:
   fishingLine: {fileID: 6357037151091281462}
   fishFight: {fileID: 0}
   caughtData: {fileID: 0}
-  itemManager: {fileID: 2600673011262952092}
+  playerDataManager: {fileID: 2600673011262952092}
   database: {fileID: 7314606355610662428}
   inventory: {fileID: 1831225255022429458}
   rodAnimator: {fileID: 7029505193400487229}
@@ -1697,7 +1697,7 @@ MonoBehaviour:
   playerData: {fileID: 3625476836490181}
   database: {fileID: 7314606355610662428}
   inventory: {fileID: 1831225255022429458}
-  itemManager: {fileID: 2600673011262952092}
+  playerDataManager: {fileID: 0}
 --- !u!114 &2600673011262952092
 MonoBehaviour:
   m_ObjectHideFlags: 0

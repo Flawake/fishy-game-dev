@@ -19,6 +19,7 @@ public class playerController : NetworkBehaviour
     [SerializeField] GameObject playerCanvasPrefab;
     [SerializeField] BoxCollider2D playerCollider;
     [SerializeField] ViewPlayerStats viewPlayerStats;
+
     //Speed in units per seconds
     public float movementSpeed = 3.5f;
 
