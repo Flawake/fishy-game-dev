@@ -4,11 +4,10 @@ using Mirror;
 using UnityEngine.AI;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
-using System.Runtime.CompilerServices;
 
 public class playerController : NetworkBehaviour
 {
-    double lastVerifiedtime = double.MinValue;
+    float lastVerifiedtime = float.MinValue;
     Vector3? lastVerifiedPosition = null;
 
     public Rigidbody2D playerRigidbody;
@@ -20,7 +19,8 @@ public class playerController : NetworkBehaviour
     [SerializeField] GameObject playerCanvasPrefab;
     [SerializeField] BoxCollider2D playerCollider;
     [SerializeField] ViewPlayerStats viewPlayerStats;
-    public float movementSpeed = 10;
+    //Speed in units per seconds
+    public float movementSpeed = 3.5f;
 
     PlayerControls playerControls;
     InputAction moveAction;
@@ -380,48 +380,65 @@ public class playerController : NetworkBehaviour
         {
             transform.position = position;
             lastVerifiedPosition = transform.position;
-            lastVerifiedtime = NetworkTime.time;
+            lastVerifiedtime = Time.time;
             return;
         }
 
         Vector3 prevPos = (Vector3)lastVerifiedPosition;
 
-        //Check for a collision with an object
-        if (!CheckMoveCollision(position))
+        if (!CheckSpeedValid(position, prevPos))
         {
             transform.position = prevPos;
+            lastVerifiedPosition = transform.position;
             TargetSetPosition(transform.position);
             return;
         }
 
-        //Check for speed hacking
-        if (NetworkTime.time - lastVerifiedtime > 0.5)
-        {
-            Vector3 AbsoluteMovement = new Vector3(Mathf.Abs(position.x - prevPos.x), Mathf.Abs(position.y - prevPos.y), Mathf.Abs(position.z - prevPos.z));
-            float absoluteDistance = Mathf.Sqrt(Mathf.Pow(AbsoluteMovement.x, 2) + Mathf.Pow(AbsoluteMovement.y, 2));
-            //Times 1.2 for a little extra space
-            if (absoluteDistance > movementSpeed * Mathf.Min((float)(NetworkTime.time - lastVerifiedtime), 2f) * 1.2)
-            {
-                transform.position = prevPos;
-                TargetSetPosition(transform.position);
-                return;
-                //networkTransform.SetDirty();
-            }
-            else
-            {
-                lastVerifiedPosition = position;
-            }
-            lastVerifiedtime = NetworkTime.time;
+        Vector2 newValidPos;
+        if (!CheckNewPosValid(position, prevPos, out newValidPos)) {
+            transform.position = newValidPos;
+            lastVerifiedPosition = transform.position;
+            TargetSetPosition(transform.position);
+            return;
         }
-        
+
+        transform.position = position;
+    }
+
+    //Anti cheat function, should detect a client doing speed hacking
+    [Server]
+    bool CheckSpeedValid(Vector2 position, Vector2 prevPos) {
+        //Check for speed hacking
+
+        if (Time.time - lastVerifiedtime > 0.5f)
+        {
+            float checkTime = lastVerifiedtime;
+            lastVerifiedtime = Time.time;
+            lastVerifiedPosition = position;
+            Vector2 AbsoluteMovement = new Vector2(Mathf.Abs(position.x - prevPos.x), Mathf.Abs(position.y - prevPos.y));
+            float absoluteDistance = Mathf.Sqrt(Mathf.Pow(AbsoluteMovement.x, 2) + Mathf.Pow(AbsoluteMovement.y, 2));
+            //Times 1.2 to account for network latency related issues.
+            if (absoluteDistance > movementSpeed * Mathf.Min((float)(Time.time - checkTime), 2f) * 1.2)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    //Anti cheat function, should detect if a client tries to walk on something unwalkable
+    [Server]
+    bool CheckNewPosValid(Vector2 position, Vector2 prevPos, out Vector2 newValidPos) {
         //Check for unwalkable area's
         int areaIndex = NavMesh.GetAreaFromName(locatedScene.name);
+
+        newValidPos = Vector2.zero;
 
         if (areaIndex == -1)
         {
             Debug.LogWarning("No custom Area mask for the navmesh in this scene, can't check if player position is legal");
             transform.position = position;
-            return;
+            return true;
         }
 
         int areaMask = 1 << areaIndex;
@@ -434,49 +451,15 @@ public class playerController : NetworkBehaviour
         {
             if (NavMesh.SamplePosition(checkPosition, out NavMeshHit hit, float.MaxValue, areaMask))
             {
-                Debug.Log("Teleported to the closest walkable area.");
-                transform.position = new Vector3(hit.position.x, hit.position.y - playerCollider.offset.y, hit.position.z);
-                TargetSetPosition(transform.position);
-                return;
-                //networkTransform.SetDirty();
+                newValidPos = new Vector2(hit.position.x, hit.position.y - playerCollider.offset.y);
+                return false;
             }
             else
             {
-                Debug.Log("Teleported to the previous position.");
-                transform.position = prevPos;
-                TargetSetPosition(transform.position);
-                return;
-                //networkTransform.SetDirty();
-            }
-        }
-
-        transform.position = position;
-    }
-
-    //TODO: maybe make a job for this and run it on a different thread, if collision detection can be done on a different thread.
-    bool CheckMoveCollision(Vector3 position)
-    {
-        Vector3 prevPos = transform.position;
-        prevPos.y += playerCollider.offset.y;
-
-        Vector3 newPos = position;
-        newPos.y += playerCollider.offset.y;
-
-        float movementDistance = Vector3.Distance(prevPos, newPos);
-
-        int unwalkableLayerMask = LayerMask.GetMask("Water") + LayerMask.GetMask("Unwalkable");
-
-        RaycastHit2D[] hit = Physics2D.RaycastAll(prevPos, (newPos - prevPos).normalized, movementDistance, unwalkableLayerMask);
-
-        //Check if the hit happened in this scene
-        foreach(RaycastHit2D obstacle in hit)
-        {
-            if(obstacle.collider.gameObject.scene == locatedScene)
-            {
+                newValidPos = prevPos;
                 return false;
             }
         }
-
         return true;
     }
 
