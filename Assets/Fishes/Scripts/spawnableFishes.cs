@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using Unity.VisualScripting;
 
 public class spawnableFishes : NetworkBehaviour
 {
@@ -48,11 +49,43 @@ public class spawnableFishes : NetworkBehaviour
     }
 
     [Server]
-    (int, int, int) generateLengthWeightAndXp(FishConfiguration generatedFish)
+    (int, float, int) generateLengthWeightAndXp(FishConfiguration generatedFish)
     {
-        int length = (int)generatedFish.avarageLength;
-        int weight = (int)generatedFish.avarageWeightGrams;
+        int length = TriangularDistributionRandomInt(generatedFish.minimumLength, generatedFish.maximumLength, generatedFish.avarageLength);
+        float weight = LinearEqualValue(
+            generatedFish.minimumLength,
+            generatedFish.maximumLength,
+            generatedFish.minimumWeightGrams,
+            generatedFish.maximumWeightGrams,
+            length);
         int xp = 2;
         return (length, weight, xp);
+    }
+
+    [Server]
+    int TriangularDistributionRandomInt(int min, int max, int average) {
+
+        float range = min - max;
+        float averageProportion = (int)(average - min) / range;
+
+        float u = Random.value;
+
+        float result;
+        if (u < averageProportion)
+        {
+            result = min + Mathf.Sqrt(u * range * (average - min));
+        }
+        else
+        {
+            result = max - Mathf.Sqrt((1 - u) * range * (max - average));
+        }
+
+        // Round to nearest integer
+        return Mathf.RoundToInt(result);
+    }
+
+    [Server]
+    float LinearEqualValue(int xMin, int xMax, float yMin, float yMax, int val) {
+        return (val - xMin) * (yMax - yMin) / (xMax - xMin) + yMin;
     }
 }

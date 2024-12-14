@@ -1,7 +1,9 @@
+using System;
 #nullable enable
-[System.Serializable]
+[Serializable]
 public struct UserData
 {
+    public byte[] uuid;
     public string user;
     public PlayerInventory inventory;
     public PlayerStats stats;
@@ -10,7 +12,7 @@ public struct UserData
     public int selectedRodUid;
     public int selectedBaitId;
 
-    [System.Serializable]
+    [Serializable]
     public struct PlayerInventory
     {
         //Each item has 2 id's, one wich tells what item it is(id) and one to hold items apart from each other(uid)
@@ -19,7 +21,7 @@ public struct UserData
         public Fish[]? fishes;
     }
 
-    [System.Serializable]
+    [Serializable]
     public struct Rod
     {
         public int uid;
@@ -27,7 +29,7 @@ public struct UserData
         public int durability;
     }
 
-    [System.Serializable]
+    [Serializable]
     public struct Bait
     {
         public int uid;
@@ -35,14 +37,14 @@ public struct UserData
         public int amount;
     }
 
-    [System.Serializable]
+    [Serializable]
     public struct Fish
     {
         public int id;
         public int amount;
     }
 
-    [System.Serializable]
+    [Serializable]
     public struct PlayerStats
     {
         public int xp;
@@ -51,7 +53,7 @@ public struct UserData
         public int bucks;
     }
 
-    [System.Serializable]
+    [Serializable]
     public struct CaughtFish
     {
         public int id;

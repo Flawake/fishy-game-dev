@@ -30,6 +30,27 @@ public class PlayerData : NetworkBehaviour
     public event Action CoinsAmountChanged;
     public event Action BucksAmountChanged;
 
+    [SerializeField]
+    Guid uuid;
+    bool uuidSet = false;
+    [Server]
+    public void SetUuid(Guid playerUuid)
+    {
+        if(uuidSet)
+        {
+            Debug.LogWarning("Trying to set UUID again, a players UUID should only be set once");
+            return;
+        }
+        uuid = playerUuid;
+        Debug.Log(uuid);
+        uuidSet = true;
+    }
+
+    public Guid GetUuid()
+    {
+        return uuid;
+    }
+
     [Server]
     public void SetUsername(string username)
     {
@@ -71,10 +92,11 @@ public class PlayerData : NetworkBehaviour
     }
 
     [Server]
-    public void ParsePlayerData(string jsonInventory)
+    public void ParsePlayerData(string jsonPlayerData)
     {
-        UserData playerData = JsonUtility.FromJson<UserData>(jsonInventory);
+        UserData playerData = JsonUtility.FromJson<UserData>(jsonPlayerData);
         inventory.SaveInventory(playerData);
+        SetUuid(new Guid(playerData.uuid));
         SetFishCoins(playerData.stats.coins);
         SetFishBucks(playerData.stats.bucks);
         SetXp(playerData.stats.xp);
@@ -114,7 +136,7 @@ public class PlayerData : NetworkBehaviour
                 SetChatColor(new Color(140f / 255f, 50f / 255f, 161f / 255f, 255f / 255f));
                 break;
             default:
-                Debug.LogWarning("Random color did not return a color, defaulting to black");
+                UnityEngine.Debug.LogWarning("Random color did not return a color, defaulting to black");
                 SetChatColor(Color.black);
                 break;
         }

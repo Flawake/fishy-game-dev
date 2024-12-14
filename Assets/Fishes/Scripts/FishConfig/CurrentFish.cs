@@ -5,7 +5,7 @@ public class CurrentFish
     public int minLength;
     public int maxLength;
     public int length;
-    public int weight;
+    public float weight;
     public int xp;
     public FishRarity rarity;
 }
