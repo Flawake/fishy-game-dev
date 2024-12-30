@@ -170,8 +170,13 @@ public class GameNetworkManager : NetworkManager
             return;
         }
         PlayerData dataPlayer = data.Objects[0].GetComponent<PlayerData>();
-        dataPlayer.ParsePlayerData(data.ResponseData);
-        NetworkServer.AddPlayerForConnection(data.Connection, data.Objects[0]);
+        if (dataPlayer.ParsePlayerData(data.ResponseData)) {
+            NetworkServer.AddPlayerForConnection(data.Connection, data.Objects[0]);
+        }
+        else
+        {
+            data.Connection.Disconnect();
+        }
     }
 
     [Server]

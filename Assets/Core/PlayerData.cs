@@ -97,7 +97,7 @@ public class PlayerData : NetworkBehaviour
     }
 
     [Server]
-    public void ParsePlayerData(string jsonPlayerData)
+    public bool ParsePlayerData(string jsonPlayerData)
     {
         try
         {
@@ -111,8 +111,10 @@ public class PlayerData : NetworkBehaviour
             SetShowInventory(playerData.showInv);
         } catch (Exception e)
         {
-            Debug.LogException(e);
+            Debug.LogWarning(e);
+            return false;
         }
+        return true;
     }
 
     [Server]
