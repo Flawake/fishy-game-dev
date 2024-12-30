@@ -51,6 +51,11 @@ public class PlayerData : NetworkBehaviour
         return uuid;
     }
 
+    public string GetUuidAsString()
+    {
+       return GetUuid().ToString();
+    }
+
     [Server]
     public void SetUsername(string username)
     {
@@ -94,15 +99,20 @@ public class PlayerData : NetworkBehaviour
     [Server]
     public void ParsePlayerData(string jsonPlayerData)
     {
-        UserData playerData = JsonUtility.FromJson<UserData>(jsonPlayerData);
-        inventory.SaveInventory(playerData);
-        SetUuid(new Guid(playerData.uuid));
-        SetFishCoins(playerData.stats.coins);
-        SetFishBucks(playerData.stats.bucks);
-        SetXp(playerData.stats.xp);
-        SetLastitemUID(playerData.lastItemUID);
-        SetShowInventory(playerData.showInv);
-        //todo: add XP here
+        try
+        {
+            UserData playerData = JsonUtility.FromJson<UserData>(jsonPlayerData);
+            inventory.SaveInventory(playerData);
+            SetUuid(new Guid(playerData.uuid));
+            SetFishCoins(playerData.stats.coins);
+            SetFishBucks(playerData.stats.bucks);
+            SetXp(playerData.stats.xp);
+            SetLastitemUID(playerData.lastItemUID);
+            SetShowInventory(playerData.showInv);
+        } catch (Exception e)
+        {
+            Debug.LogException(e);
+        }
     }
 
     [Server]

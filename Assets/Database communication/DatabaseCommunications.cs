@@ -77,7 +77,7 @@ public class DatabaseCommunications : NetworkBehaviour
         }
         //Add a item to the inventory
         addItemInventory.AddField("auth_token", DatabaseEndpoints.databaseAccessToken);
-        addItemInventory.AddField("user", data.GetUsername());
+        addItemInventory.AddField("uuid", data.GetUuidAsString());
         addItemInventory.AddField("type", type);
         addItemInventory.AddField("amount", amount);
 
@@ -99,7 +99,7 @@ public class DatabaseCommunications : NetworkBehaviour
         string fishStat = "stat_fish{\"id\": " + fish.id + ", \"amount\": " + 1 + ", \"max_length\": " + fish.length + "}";
         WWWForm addFishStat = new WWWForm();
         addFishStat.AddField("auth_token", DatabaseEndpoints.databaseAccessToken);
-        addFishStat.AddField("user", data.GetUsername());
+        addFishStat.AddField("uuid", data.GetUuidAsString());
         addFishStat.AddField("stat", fishStat);
 
         WebRequestHandler.SendWebRequest(DatabaseEndpoints.addStatEndpoint, addFishStat);
@@ -110,7 +110,7 @@ public class DatabaseCommunications : NetworkBehaviour
     {
         WWWForm adjustMoneyForm = new WWWForm();
         adjustMoneyForm.AddField("auth_token", DatabaseEndpoints.databaseAccessToken);
-        adjustMoneyForm.AddField("user", data.GetUsername());
+        adjustMoneyForm.AddField("uuid", data.GetUuidAsString());
         adjustMoneyForm.AddField("type", "coin");
         adjustMoneyForm.AddField("amount", amount);
         WebRequestHandler.SendWebRequest(DatabaseEndpoints.adjustMoneyEndpoint, adjustMoneyForm);
@@ -121,7 +121,7 @@ public class DatabaseCommunications : NetworkBehaviour
     {
         WWWForm adjustMoneyForm = new WWWForm();
         adjustMoneyForm.AddField("auth_token", DatabaseEndpoints.databaseAccessToken);
-        adjustMoneyForm.AddField("user", data.GetUsername());
+        adjustMoneyForm.AddField("uuid", data.GetUuidAsString());
         adjustMoneyForm.AddField("type", "buck");
         adjustMoneyForm.AddField("amount", amount);
         WebRequestHandler.SendWebRequest(DatabaseEndpoints.adjustMoneyEndpoint, adjustMoneyForm);
@@ -131,7 +131,7 @@ public class DatabaseCommunications : NetworkBehaviour
     public void AddXP(int amount) {
         WWWForm addXPForm = new WWWForm();
         addXPForm.AddField("auth_token", DatabaseEndpoints.databaseAccessToken);
-        addXPForm.AddField("user", data.GetUsername());
+        addXPForm.AddField("uuid", data.GetUuidAsString());
         addXPForm.AddField("amount", amount);
         WebRequestHandler.SendWebRequest(DatabaseEndpoints.addXPEndpoint, addXPForm);
     }
@@ -160,7 +160,7 @@ public class DatabaseCommunications : NetworkBehaviour
         //Select a different item as using
         WWWForm otherItemSelectForm = new WWWForm();
         otherItemSelectForm.AddField("auth_token", DatabaseEndpoints.databaseAccessToken);
-        otherItemSelectForm.AddField("user", data.GetUsername());
+        otherItemSelectForm.AddField("uuid", data.GetUuidAsString());
         otherItemSelectForm.AddField("type", type);
         otherItemSelectForm.AddField("uid", id);
         WebRequestHandler.SendWebRequest(DatabaseEndpoints.selectOtherItemEndpoint, otherItemSelectForm);
@@ -196,7 +196,7 @@ public class DatabaseCommunications : NetworkBehaviour
         //Add a item to the inventory
         WWWForm addItemInventory = new WWWForm();
         addItemInventory.AddField("auth_token", DatabaseEndpoints.databaseAccessToken);
-        addItemInventory.AddField("user", data.GetUsername());
+        addItemInventory.AddField("uuid", data.GetUuidAsString());
         addItemInventory.AddField("type", type);
         addItemInventory.AddField("uid", id);
         addItemInventory.AddField("amount", amount);
@@ -235,7 +235,7 @@ public class DatabaseCommunications : NetworkBehaviour
 
         WWWForm addItemInventory = new WWWForm();
         addItemInventory.AddField("auth_token", DatabaseEndpoints.databaseAccessToken);
-        addItemInventory.AddField("user", data.GetUsername());
+        addItemInventory.AddField("uuid", data.GetUuidAsString());
         addItemInventory.AddField("type", type);
         addItemInventory.AddField("u/id", id);
 
