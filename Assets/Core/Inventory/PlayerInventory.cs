@@ -26,6 +26,7 @@ public class PlayerInventory : NetworkBehaviour
             rodObject inventoryRod = ItemObjectGenerator.RodObjectFromMinimal(item.uid, item.id, item.durability);
             if(inventoryRod == null)
             {
+                Debug.LogWarning($"Tried to create a rod from id: {item.id} failed");
                 continue;
             }
             AddItem(inventoryRod);
@@ -41,6 +42,7 @@ public class PlayerInventory : NetworkBehaviour
             baitObject inventoryBait = ItemObjectGenerator.BaitObjectFromMinimal(item.uid, item.id, item.amount);
             if (inventoryBait == null)
             {
+                Debug.LogWarning($"Tried to create a bait from id: {item.id} failed");
                 continue;
             }
             AddItem(inventoryBait);
@@ -55,6 +57,7 @@ public class PlayerInventory : NetworkBehaviour
             FishObject inventoryFish = ItemObjectGenerator.FishObjectFromMinimal(item.id, item.amount);
             if (inventoryFish == null)
             {
+                Debug.LogWarning($"Tried to create a fish from id: {item.id} failed");
                 continue;
             }
 
