@@ -20,4 +20,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Marshall.unity
     guid: bb15018e9c573464b9d587721e3f44d2
+  - enabled: 1
+    path: Assets/Scenes/OfflineScene.unity
+    guid: fc100458955ed874084f6f33b235f08a
   m_configObjects: {}

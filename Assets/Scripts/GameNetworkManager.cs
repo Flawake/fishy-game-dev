@@ -175,7 +175,11 @@ public class GameNetworkManager : NetworkManager
         }
         else
         {
-            data.Connection.Disconnect();
+            data.Connection.Send(new DisconnectMessage {
+                reason = ClientDisconnectReason.InvalidPlayerData,
+                reasonText = "Inventory data was invalid, please reconnect to the game.",
+            });
+            StartCoroutine(DelayedDisconnect(data.Connection, 1f));
         }
     }
 
@@ -199,6 +203,13 @@ public class GameNetworkManager : NetworkManager
         {
             yield return SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
         }
+    }
+
+    [Server]
+    private IEnumerator DelayedDisconnect(NetworkConnection connection, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        connection.Disconnect();
     }
 }
 

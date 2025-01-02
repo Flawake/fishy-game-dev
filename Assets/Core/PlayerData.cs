@@ -42,7 +42,6 @@ public class PlayerData : NetworkBehaviour
             return;
         }
         uuid = playerUuid;
-        Debug.Log(uuid);
         uuidSet = true;
     }
 

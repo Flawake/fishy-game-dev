@@ -236,9 +236,15 @@ public class playerAuthenticator : NetworkAuthenticator
 
     IEnumerator DelayedDisconnect(NetworkConnectionToClient conn, float waitTime)
     {
-        yield return new WaitForSeconds(waitTime);
+        conn.Send(new DisconnectMessage
+        {
+            reason = ClientDisconnectReason.InvalidLoginCredentials,
+            reasonText = "",
+        });
 
-        // Reject the unsuccessful authentication
+        yield return new WaitForSeconds(waitTime);
+        
+            // Reject the unsuccessful authentication
         ServerReject(conn);
 
         yield return null;

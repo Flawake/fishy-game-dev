@@ -3,14 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
-public class dontDestroyOnLoad : NetworkBehaviour
+public class dontDestroyOnLoad : MonoBehaviour
 {
     // Start is called before the first frame update
     void Start()
     {
-        if (isLocalPlayer || isServer) {
-            DontDestroyOnLoad(this.gameObject);
-        }
+        DontDestroyOnLoad(this.gameObject);
     }
 
     private void Awake()
