@@ -8,9 +8,18 @@ public class FishingLine : NetworkBehaviour
     [SerializeField] LineRenderer lineRenderer;
     [SerializeField] GameObject linePoint;
 
+    enum LineState
+    {
+        Extending,
+        Retracting,
+        Normal,
+    }
+
+    LineState lineState = LineState.Normal;
+
     private List<LineSegment> lineSegments = new List<LineSegment>();
 
-    private int lineSegmentsAmount = 30;
+    private const int maxLineSegmentsAmount = 30;
     private int currentDrawnSegments = 0;
 
     private bool isFishing = false;
@@ -51,6 +60,7 @@ public class FishingLine : NetworkBehaviour
         lineSegments.Add(new LineSegment(placeToThrow));
         lineSegments.Add(new LineSegment(placeToThrow));
         currentDrawnSegments = 2;
+        lineState = LineState.Extending;
     }
 
     void CalculateSegLength()
@@ -58,7 +68,7 @@ public class FishingLine : NetworkBehaviour
         //calculates the length of 1 single segment
         float xFactor = Mathf.Pow((linePoint.transform.position.x - placeToThrow.x), 2);
         float yFactor = Mathf.Pow((linePoint.transform.position.y - placeToThrow.y), 2);
-        lineSegLength = Mathf.Sqrt(xFactor + yFactor) / lineSegmentsAmount;
+        lineSegLength = Mathf.Sqrt(xFactor + yFactor) / maxLineSegmentsAmount;
     }
 
     public void ThrowLine() {
@@ -71,14 +81,29 @@ public class FishingLine : NetworkBehaviour
         EndFishing();
     }
 
-    public void EndFishing()
+    public void EndFishing(bool force = false)
     {
+        if(force)
+        {
+            EndFishingInternal();
+        }
+        else
+        {
+            RetractLine();
+        }
+    }
+
+    void EndFishingInternal() {
         lineSegments.Clear();
-        isFishing = false;
         currentDrawnSegments = 0;
+        isFishing = false;
         lineRenderer.positionCount = 0;
         lineRenderer.enabled = false;
-        return;
+    }
+
+    void RetractLine()
+    {
+        lineState = LineState.Retracting;
     }
 
     //Simulates the fishing line
@@ -91,15 +116,40 @@ public class FishingLine : NetworkBehaviour
 
         CalculateSegLength();
 
-        if (currentDrawnSegments < lineSegmentsAmount) {
+        if (currentDrawnSegments < maxLineSegmentsAmount && lineState == LineState.Extending) {
             lineSegments.Add(new LineSegment(lineSegments[lineSegments.Count - 1].currentPos));
             lineSegments.Add(new LineSegment(lineSegments[lineSegments.Count - 1].currentPos));
             currentDrawnSegments += 2;
         }
+        else if (currentDrawnSegments > 0 && lineState == LineState.Retracting)
+        {
+            if(lineSegments.Count >= 2)
+            {
+                lineSegments.RemoveAt(0);
+                lineSegments.RemoveAt(0);
+                currentDrawnSegments -= 2;
+            }
+            else
+            {
+                EndFishingInternal();
+                return;
+            }
+        }
+
+        if (currentDrawnSegments == maxLineSegmentsAmount && lineState == LineState.Extending)
+        {
+            lineState = LineState.Normal;
+        } 
+        else if (currentDrawnSegments == 0 && lineState == LineState.Retracting)
+        {
+            lineState = LineState.Normal;
+            EndFishingInternal();
+            return;
+        }
 
         Vector2 lineGravity;
 
-        if (currentDrawnSegments < lineSegmentsAmount)
+        if (currentDrawnSegments < maxLineSegmentsAmount)
         {
             lineGravity = new Vector2(0f, 1.0f);
         }
@@ -133,7 +183,7 @@ public class FishingLine : NetworkBehaviour
 
         LineSegment lastSegment = lineSegments[lineSegments.Count - 1];
         //some random math to have the right offsets from the rod tip.
-        lastSegment.currentPos = new Vector2(linePoint.transform.position.x + (placeToThrow.x - linePoint.transform.position.x) / lineSegmentsAmount * currentDrawnSegments, linePoint.transform.position.y + (placeToThrow.y - linePoint.transform.position.y) / lineSegmentsAmount * currentDrawnSegments);
+        lastSegment.currentPos = new Vector2(linePoint.transform.position.x + (placeToThrow.x - linePoint.transform.position.x) / maxLineSegmentsAmount * currentDrawnSegments, linePoint.transform.position.y + (placeToThrow.y - linePoint.transform.position.y) / maxLineSegmentsAmount * currentDrawnSegments);
         lineSegments[lineSegments.Count - 1] = lastSegment;
             
         for (int i = 0; i < currentDrawnSegments - 1; i++) {
