@@ -7,11 +7,34 @@ public class RodAnimator : NetworkBehaviour
     [SerializeField] Animator animator;
     [SerializeField] FishingLine fishLine;
 
+    Vector2 prevDir;
+
     [Client]
-    public void AnimateRod(Vector2 dir)
+    public void ThrowRod(Vector2 dir)
+    {
+        prevDir = dir;
+        AnimateRod(prevDir, false);
+    }
+
+    public void RetractRod()
+    {
+        AnimateRod(prevDir, true);
+    }
+
+
+    [Client]
+    public void AnimateRod(Vector2 dir, bool reverse)
     {
         spriteRenderer.enabled = true;
         animator.enabled = true;
+        if(reverse)
+        {
+            animator.speed = -1;
+        }
+        else
+        {
+            animator.speed = 1;
+        }
 
         dir.Normalize();
         float angle = (Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg);
@@ -63,11 +86,6 @@ public class RodAnimator : NetworkBehaviour
     public void ThrowLine()
     {
         fishLine.ThrowLine();
-    }
-
-    [ClientRpc]
-    public void RpcDisableRod() { 
-        DisableRod();
     }
 
     public void DisableRod() { 

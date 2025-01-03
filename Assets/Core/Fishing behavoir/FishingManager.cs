@@ -201,7 +201,6 @@ public class FishingManager : NetworkBehaviour
     {
         StartCoroutine(EndFight());
         fishingLine.EndFishing();
-        rodAnimator.DisableRod();
         CmdEndFishing();
         if(reason == EndFishingReason.caughtFish)
         {
@@ -216,7 +215,6 @@ public class FishingManager : NetworkBehaviour
     {
         StartCoroutine(EndFight());
         fishingLine.EndFishing();
-        rodAnimator.DisableRod();
         if (reason == EndFishingReason.caughtFish)
         {
             CmdRegisterCaughtFish();
@@ -419,7 +417,7 @@ public class FishingManager : NetworkBehaviour
         fishingLine.InitThrowFishingLine(placeToThrow);
         Vector2 throwDirection = (placeToThrow - (Vector2)player.transform.position).normalized;
 
-        rodAnimator.AnimateRod(throwDirection);
+        rodAnimator.ThrowRod(throwDirection);
         player.SetPlayerAnimationForDirection(throwDirection);
     }
 
@@ -465,7 +463,6 @@ public class FishingManager : NetworkBehaviour
         isFishing = false;
         fightStarted = false;
         fishingLine.RpcEndedFishing();
-        rodAnimator.RpcDisableRod();
 
         syncedFishingPos pos;
         pos.stardedFishing = false;

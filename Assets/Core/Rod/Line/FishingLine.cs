@@ -7,6 +7,7 @@ public class FishingLine : NetworkBehaviour
 
     [SerializeField] LineRenderer lineRenderer;
     [SerializeField] GameObject linePoint;
+    [SerializeField] RodAnimator rodAnimator;
 
     enum LineState
     {
@@ -99,11 +100,13 @@ public class FishingLine : NetworkBehaviour
         isFishing = false;
         lineRenderer.positionCount = 0;
         lineRenderer.enabled = false;
+        rodAnimator.DisableRod();
     }
 
     void RetractLine()
     {
         lineState = LineState.Retracting;
+        rodAnimator.RetractRod();
     }
 
     //Simulates the fishing line
