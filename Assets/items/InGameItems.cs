@@ -36,4 +36,16 @@ static class ItemsInGame
     public static StoreItemObject[] storeItemRods;
     public static StoreItemObject[] storeItemBaits;
     public static StoreItemObject[] storeItemMisc;
+
+    public static FishConfiguration getFishByID(int id)
+    {
+        foreach (FishConfiguration fish in fishesInGame)
+        {
+            if (fish.id == id)
+            {
+                return fish;
+            }
+        }
+        return null;
+    }
 }

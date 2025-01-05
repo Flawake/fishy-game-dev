@@ -11,6 +11,8 @@ public class PlayerData : NetworkBehaviour
     [SerializeField]
     PlayerInventory inventory;
     [SerializeField]
+    PlayerFishdexFishes fishdexFishes;
+    [SerializeField]
     int availableFishCoins;
     [SerializeField]
     int availableFishBucks;
@@ -33,6 +35,7 @@ public class PlayerData : NetworkBehaviour
     [SerializeField]
     Guid uuid;
     bool uuidSet = false;
+
     [Server]
     public void SetUuid(Guid playerUuid)
     {
@@ -102,6 +105,7 @@ public class PlayerData : NetworkBehaviour
         {
             UserData playerData = JsonUtility.FromJson<UserData>(jsonPlayerData);
             inventory.SaveInventory(playerData);
+            fishdexFishes.SaveFishStats(playerData);
             SetUuid(new Guid(playerData.uuid));
             SetFishCoins(playerData.stats.coins);
             SetFishBucks(playerData.stats.bucks);
