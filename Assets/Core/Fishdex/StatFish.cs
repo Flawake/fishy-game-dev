@@ -1,6 +1,5 @@
 using Mirror;
 using UnityEngine;
-using static UserData;
 
 public class StatFish
 {

@@ -29,4 +29,16 @@ public class PlayerFishdexFishes : NetworkBehaviour
         }
         return false;
     }
+
+    public StatFish GetStatFish(int id)
+    {
+        foreach (StatFish fish in statFishContainer)
+        {
+            if (fish.id == id)
+            {
+                return fish;
+            }
+        }
+        return null;
+    }
 }

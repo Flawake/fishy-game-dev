@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2b5141122112dac4b99e5eae6103348e, type: 3}
-  m_Name: Bluestriped grunt
+  m_Name: 0_Bluestriped grunt
   m_EditorClassIdentifier: 
   id: 0
   name: Bluestriped grunt
   description: A Bluestriped grunt like never seen before.
-  fishImage: {fileID: 1452670708, guid: 49451a7352426004db60846701f8941f, type: 3}
+  fishImage: {fileID: 1552086863, guid: 49451a7352426004db60846701f8941f, type: 3}
   minimumLength: 11
   maximumLength: 46
   avarageLength: 25
@@ -30,4 +30,4 @@ MonoBehaviour:
   breedSuccessRate: 0
   breedPrice: 0
   rarity: 1
-  locations: 1
+  locations: 0
