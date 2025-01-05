@@ -1715,6 +1715,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerData: {fileID: 3625476836490181}
   inventory: {fileID: 1831225255022429458}
+  fishdexFishes: {fileID: 1917053837910666563}
   database: {fileID: 7314606355610662428}
 --- !u!114 &1917053837910666563
 MonoBehaviour:
