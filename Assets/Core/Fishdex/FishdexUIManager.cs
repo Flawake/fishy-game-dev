@@ -12,7 +12,12 @@ public class FishdexUIManager : MonoBehaviour
     [SerializeField]
     GameObject fishdexContentPrefab;
 
-    void buildFishdex() {
+    void BuildFishdex() {
+        foreach (Transform child in fishdexContentHolder.transform)
+        {
+            Destroy(child.gameObject);
+        }
+
         foreach (FishConfiguration fish in ItemsInGame.fishesInGame) {
             GameObject newFishdexFish = Instantiate(fishdexContentPrefab, fishdexContentHolder.transform);
             newFishdexFish.GetComponent<FishdexFishUIBuilder>().BuildFishdexFish(fish);
@@ -28,7 +33,7 @@ public class FishdexUIManager : MonoBehaviour
         else
         {
             fishdexObject.SetActive(true);
-            buildFishdex();
+            BuildFishdex();
         }
     }
 
