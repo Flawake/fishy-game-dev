@@ -1,12 +1,13 @@
 using Mirror;
 using UnityEngine;
+using static UserData;
 
 public class StatFish
 {
     public int id;
     public int amount;
     public int maxCaughtLength;
-    public int avarageLength;
+    public int averageLength;
     //TODO: add caught area's
 
     public StatFish(UserData.CaughtFish fish)
@@ -17,21 +18,30 @@ public class StatFish
         FishConfiguration fishConfig = ItemsInGame.getFishByID(fish.id);
         if (fishConfig != null )
         {
-            avarageLength = fishConfig.avarageLength;
+            averageLength = fishConfig.avarageLength;
         }
         else
         {
-            avarageLength = 0;
+            averageLength = 0;
             Debug.LogWarning("Made a statfish with an ID that could not be found in the game");
         }
     }
 
-    public StatFish(StatFish fish)
+    public StatFish(int _id, int _amount, int _maxCaughtLength)
     {
-        id = fish.id;
-        amount = fish.amount;
-        maxCaughtLength = fish.maxCaughtLength;
-        avarageLength = fish.avarageLength;
+        id = _id;
+        amount = _amount;
+        maxCaughtLength = _maxCaughtLength;
+        FishConfiguration fishConfig = ItemsInGame.getFishByID(_id);
+        if (fishConfig != null)
+        {
+            averageLength = fishConfig.avarageLength;
+        }
+        else
+        {
+            averageLength = 0;
+            Debug.LogWarning("Made a statfish with an ID that could not be found in the game");
+        }
     }
 }
 
@@ -39,11 +49,13 @@ public static class StatFishReaderWriter
 {
     public static void WriteStatFish(this NetworkWriter writer, StatFish fish)
     {
-        writer.Write(fish);
+        writer.WriteInt(fish.id);
+        writer.WriteInt(fish.amount);
+        writer.WriteInt(fish.maxCaughtLength);
     }
 
     public static StatFish ReadStatFishm(this NetworkReader reader)
     {
-        return new StatFish(reader.Read<StatFish>());
+        return new StatFish(reader.ReadInt(), reader.ReadInt(), reader.ReadInt());
     }
 }

@@ -48,7 +48,7 @@ public struct UserData
     public struct PlayerStats
     {
         public int xp;
-        public CaughtFish[]? caughtFishes;
+        public CaughtFish[]? fishes;
         public int coins;
         public int bucks;
     }
