@@ -29,7 +29,7 @@ public class RodAnimator : NetworkBehaviour
         animator.enabled = true;
         if(reverse)
         {
-            animator.speed = -1;
+            animator.speed = 0;
         }
         else
         {
