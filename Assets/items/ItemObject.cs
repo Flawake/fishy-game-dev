@@ -58,7 +58,7 @@ public static class ItemObjectGenerator
         {
             inventoryBait.uid = uid;
             inventoryBait.id = id;
-            inventoryBait.baitType = baitType.dough;
+            inventoryBait.baitType = Array.Find(ItemsInGame.baitsInGame, element => element.id == id).baitType;
             inventoryBait.stackable = true;
             inventoryBait.durabilityIsInfinite = (amount == -1) ? true : false;
             inventoryBait.throwIns = amount;

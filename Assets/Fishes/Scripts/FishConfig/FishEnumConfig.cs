@@ -29,7 +29,7 @@ public class FishEnumConfig
         };
     }
 
-    public static string rarityToString(FishRarity rarity)
+    public static string RarityToString(FishRarity rarity)
     {
         return rarity switch
         {

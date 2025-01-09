@@ -28,7 +28,7 @@ public class caughtDialogData : MonoBehaviour
         fishSprite.sprite = Array.Find(ItemsInGame.fishesInGame, element => element.id == fishdata.id).fishImage;
 
         nameField.text = "";
-        rarityField.text = FishEnumConfig.rarityToString(fishdata.rarity);
+        rarityField.text = FishEnumConfig.RarityToString(fishdata.rarity);
         lengthField.text = fishdata.length.ToString();
         weightField.text = ((float)fishdata.weight / 100).ToString();
         xpField.text = fishdata.xp.ToString();

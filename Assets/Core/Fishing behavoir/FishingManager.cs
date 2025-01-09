@@ -385,7 +385,7 @@ public class FishingManager : NetworkBehaviour
         {
             spawnableFishes spawnable = water.collider.gameObject.GetComponent<spawnableFishes>();
 
-            (currentFish, fishGenerated) = spawnable.GenerateFish();
+            (currentFish, fishGenerated) = spawnable.GenerateFish(selectedBait.baitType);
 
             timeTillResultsSeconds = UnityEngine.Random.Range(5, 11);
 

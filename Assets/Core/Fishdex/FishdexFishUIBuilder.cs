@@ -18,7 +18,7 @@ public class FishdexFishUIBuilder : MonoBehaviour
         fishID = fish.id;
         nameField.text = fish.name;
         fishImage.sprite = fish.fishImage;
-        rarity.text = FishEnumConfig.rarityToString(fish.rarity);
+        rarity.text = FishEnumConfig.RarityToString(fish.rarity);
 
         if (NetworkClient.localPlayer.GetComponentInChildren<PlayerFishdexFishes>().ContainsFish(fish.id))
         {

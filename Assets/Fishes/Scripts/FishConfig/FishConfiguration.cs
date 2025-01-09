@@ -31,7 +31,7 @@ public class FishConfiguration : ScriptableObject
     public int breedPrice;
 
 
-    public baitType baitType;
+    public FishBaitType baitType;
     public FishRarity rarity;
     public Locations locations; 
 }

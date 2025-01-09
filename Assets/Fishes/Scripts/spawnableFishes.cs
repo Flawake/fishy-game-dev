@@ -31,9 +31,9 @@ public class spawnableFishes : NetworkBehaviour
 
     //returns a new fish if succesfull, second argument tells if generating was succesfull.
     [Server]
-    public (CurrentFish, bool) GenerateFish() {
+    public (CurrentFish, bool) GenerateFish(ItemBaitType bait) {
         // a fish is being generated and returned
-        FishConfiguration generatedFish = SpawnManager.instance.GenerateFish(fishes);
+        FishConfiguration generatedFish = SpawnManager.instance.GenerateFish(fishes, bait);
         CurrentFish fishToCatch = new CurrentFish();
         if (generatedFish == null)
         {

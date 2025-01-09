@@ -24,4 +24,4 @@ MonoBehaviour:
   throwIns: -1
   newPriceCoins: 0
   newPriceBucks: 0
-  baitType: 0
+  baitType: 1
