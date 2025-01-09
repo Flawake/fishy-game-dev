@@ -24,10 +24,11 @@ MonoBehaviour:
   avarageWeightGrams: 0
   minMartketPrice: 0
   maxMarketPrice: 0
-  rarityFactor: 0
+  rarityFactor: 1
   Time: 
   Date: 
   breedSuccessRate: 0
   breedPrice: 0
+  baitType: 10
   rarity: 16
   locations: 0

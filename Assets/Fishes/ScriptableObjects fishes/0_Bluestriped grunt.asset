@@ -29,5 +29,6 @@ MonoBehaviour:
   Date: 0
   breedSuccessRate: 0
   breedPrice: 0
+  baitType: 10
   rarity: 1
   locations: 0
