@@ -31,13 +31,14 @@ public static class ItemObjectGenerator
 
         try
         {
+            rodObject rod = Array.Find(ItemsInGame.rodsInGame, element => element.id == id);
             inventoryRod.uid = uid;
             inventoryRod.id = id;
             inventoryRod.stackable = false;
-            inventoryRod.name = Array.Find(ItemsInGame.rodsInGame, element => element.id == id).name;
-            inventoryRod.strength = Array.Find(ItemsInGame.rodsInGame, element => element.id == id).strength;
-            inventoryRod.description = Array.Find(ItemsInGame.rodsInGame, element => element.id == id).description;
-            inventoryRod.sprite = Array.Find(ItemsInGame.rodsInGame, element => element.id == id).sprite;
+            inventoryRod.name = rod.name;
+            inventoryRod.strength = rod.strength;
+            inventoryRod.description = rod.description;
+            inventoryRod.sprite = rod.sprite;
             inventoryRod.durabilityIsInfinite = (durability == -1) ? true : false;
             inventoryRod.throwIns = durability;
         }
@@ -56,15 +57,16 @@ public static class ItemObjectGenerator
 
         try
         {
+            baitObject bait = Array.Find(ItemsInGame.baitsInGame, element => element.id == id);
             inventoryBait.uid = uid;
             inventoryBait.id = id;
-            inventoryBait.baitType = Array.Find(ItemsInGame.baitsInGame, element => element.id == id).baitType;
+            inventoryBait.baitType = bait.baitType;
             inventoryBait.stackable = true;
             inventoryBait.durabilityIsInfinite = (amount == -1) ? true : false;
             inventoryBait.throwIns = amount;
-            inventoryBait.name = Array.Find(ItemsInGame.baitsInGame, element => element.id == id).name;
-            inventoryBait.description = Array.Find(ItemsInGame.baitsInGame, element => element.id == id).description;
-            inventoryBait.sprite = Array.Find(ItemsInGame.baitsInGame, element => element.id == id).sprite;
+            inventoryBait.name = bait.name;
+            inventoryBait.description = bait.description;
+            inventoryBait.sprite = bait.sprite;
         }
         catch (Exception err) 
         {
@@ -80,11 +82,12 @@ public static class ItemObjectGenerator
 
         try
         {
+            FishConfiguration fish = Array.Find(ItemsInGame.fishesInGame, element => element.id == id);
             inventoryFish.uid = 0;
             inventoryFish.id = id;
-            inventoryFish.name = Array.Find(ItemsInGame.fishesInGame, element => element.id == id).name;
-            inventoryFish.description = Array.Find(ItemsInGame.fishesInGame, element => element.id == id).description;
-            inventoryFish.sprite = Array.Find(ItemsInGame.fishesInGame, element => element.id == id).fishImage;
+            inventoryFish.name = fish.name;
+            inventoryFish.description = fish.description;
+            inventoryFish.sprite = fish.fishImage;
             inventoryFish.amount = amount;
             inventoryFish.stackable = true;
         }
@@ -167,7 +170,7 @@ public static class RodObjectReaderWriter
         writer.WriteInt(rod.throwIns);
     }
 
-    public static rodObject ReadDateTime(this NetworkReader reader)
+    public static rodObject ReadRodObject(this NetworkReader reader)
     {
         int uid = reader.ReadInt();
         int id = reader.ReadInt();
@@ -178,15 +181,14 @@ public static class RodObjectReaderWriter
 
 public static class BaitObjectReaderWriter
 {
-    public static void WriteRodObject(this NetworkWriter writer, baitObject bait)
+    public static void WriteBaitObject(this NetworkWriter writer, baitObject bait)
     {
         writer.WriteInt(bait.uid);
         writer.WriteInt(bait.id);
         writer.WriteInt(bait.throwIns);
     }
 
-    //TODO: why is this called DateTime???
-    public static baitObject ReadDateTime(this NetworkReader reader)
+    public static baitObject ReadBaitObject(this NetworkReader reader)
     {
         int uid = reader.ReadInt();
         int id = reader.ReadInt();
