@@ -100,7 +100,9 @@ public class DatabaseCommunications : NetworkBehaviour
         WWWForm addFishStat = new WWWForm();
         addFishStat.AddField("auth_token", DatabaseEndpoints.databaseAccessToken);
         addFishStat.AddField("uuid", data.GetUuidAsString());
-        addFishStat.AddField("stat", fishStat);
+        addFishStat.AddField("id", fish.id);
+        addFishStat.AddField("amount", 1);
+        addFishStat.AddField("length", fish.length);
         WebRequestHandler.SendWebRequest(DatabaseEndpoints.addFishStatEndpoint, addFishStat);
     }
 
