@@ -13,7 +13,7 @@ public static class DatabaseEndpoints
     public static string removeItemEndpoint = serverAddress + "removeItem";
     public static string reduceItemEndpoint = serverAddress + "reduceItem";
     //TODO: make this /stats/...
-    public static string addStatEndpoint = serverAddress + "increaseStat";
+    public static string addFishStatEndpoint = serverAddress + "increaseFishStat";
     public static string selectOtherItemEndpoint = serverAddress + "selectItem";
     public static string adjustMoneyEndpoint = serverAddress + "adjustMoney";
     public static string addXPEndpoint = serverAddress + "addXP";

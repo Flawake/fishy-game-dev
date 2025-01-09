@@ -101,8 +101,7 @@ public class DatabaseCommunications : NetworkBehaviour
         addFishStat.AddField("auth_token", DatabaseEndpoints.databaseAccessToken);
         addFishStat.AddField("uuid", data.GetUuidAsString());
         addFishStat.AddField("stat", fishStat);
-
-        WebRequestHandler.SendWebRequest(DatabaseEndpoints.addStatEndpoint, addFishStat);
+        WebRequestHandler.SendWebRequest(DatabaseEndpoints.addFishStatEndpoint, addFishStat);
     }
 
     [Server]

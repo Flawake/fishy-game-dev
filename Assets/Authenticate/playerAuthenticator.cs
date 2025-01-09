@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using Mirror;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Networking;
-using UnityEngine.UI;
 
 /*
     Documentation: https://mirror-networking.gitbook.io/docs/components/network-authenticators

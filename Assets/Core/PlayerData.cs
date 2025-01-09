@@ -1,5 +1,6 @@
 using Mirror;
 using System;
+using UnityEditor;
 using UnityEngine;
 
 public class PlayerData : NetworkBehaviour
@@ -39,7 +40,7 @@ public class PlayerData : NetworkBehaviour
     [Server]
     public void SetUuid(Guid playerUuid)
     {
-        if(uuidSet)
+        if (uuidSet)
         {
             Debug.LogWarning("Trying to set UUID again, a players UUID should only be set once");
             return;
@@ -106,7 +107,8 @@ public class PlayerData : NetworkBehaviour
             UserData playerData = JsonUtility.FromJson<UserData>(jsonPlayerData);
             inventory.SaveInventory(playerData);
             fishdexFishes.SaveFishStats(playerData);
-            SetUuid(new Guid(playerData.uuid));
+
+            SetUuid(GuidFromBytes(playerData.uuid));
             SetFishCoins(playerData.stats.coins);
             SetFishBucks(playerData.stats.bucks);
             SetXp(playerData.stats.xp);
@@ -118,6 +120,25 @@ public class PlayerData : NetworkBehaviour
             return false;
         }
         return true;
+    }
+
+    Guid GuidFromBytes(byte[] scrambled_uuid_bytes)
+    {
+        byte[] reorderedBytes = new byte[16];
+        // First 4 bytes (little-endian)
+        reorderedBytes[0] = scrambled_uuid_bytes[3];
+        reorderedBytes[1] = scrambled_uuid_bytes[2];
+        reorderedBytes[2] = scrambled_uuid_bytes[1];
+        reorderedBytes[3] = scrambled_uuid_bytes[0];
+        // Next 2 bytes (little-endian)
+        reorderedBytes[4] = scrambled_uuid_bytes[5];
+        reorderedBytes[5] = scrambled_uuid_bytes[4];
+        // Next 2 bytes (little-endian)
+        reorderedBytes[6] = scrambled_uuid_bytes[7];
+        reorderedBytes[7] = scrambled_uuid_bytes[6];
+        // Remaining 8 bytes (big-endian)
+        Array.Copy(scrambled_uuid_bytes, 8, reorderedBytes, 8, 8);
+        return new Guid(reorderedBytes);
     }
 
     [Server]
