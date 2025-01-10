@@ -13,6 +13,13 @@ public class FishdexFishUIBuilder : MonoBehaviour
     [SerializeField]
     TMP_Text rarity;
 
+    FishInfoUIManager fishInfoUI;
+
+    private void Start()
+    {
+        fishInfoUI = NetworkClient.localPlayer.GetComponentInChildren<FishInfoUIManager>();
+    }
+
     public void BuildFishdexFish(FishConfiguration fish)
     {
         fishID = fish.id;
@@ -32,8 +39,11 @@ public class FishdexFishUIBuilder : MonoBehaviour
 
     public void ShowFishInfo()
     {
-        Debug.Log("ShowFishInfo");
-        FishInfoUIManager fishInfoShowManager = NetworkClient.localPlayer.GetComponentInChildren<FishInfoUIManager>();
-        fishInfoShowManager.OpenFishInfo(fishID);
+        if (fishInfoUI.CurrentFishinfoFishID() == fishID)
+        {
+            fishInfoUI.CloseFishInfo();
+            return;
+        }
+        fishInfoUI.OpenFishInfo(fishID);
     }
 }

@@ -22,6 +22,8 @@ public class FishInfoUIManager : MonoBehaviour
     [SerializeField]
     TMP_Text amountCaught;
 
+    FishConfiguration curFish;
+
     public void CloseFishInfo()
     {
         fishInfoObject.SetActive(false);
@@ -29,7 +31,7 @@ public class FishInfoUIManager : MonoBehaviour
 
     public void OpenFishInfo(int fishID)
     {
-        FishConfiguration curFish = ItemsInGame.getFishByID(fishID);
+        curFish = ItemsInGame.getFishByID(fishID);
         if (curFish == null)
         {
             Debug.LogWarning($"Tries to show information about a fish with an ID of {fishID}, but this fish does not seem to be in the game");
@@ -50,5 +52,14 @@ public class FishInfoUIManager : MonoBehaviour
         fishName.text = curFish.name;
         fishimage.sprite = curFish.fishImage;
         fishInfoObject.SetActive(true);
+    }
+
+    public int CurrentFishinfoFishID()
+    {
+        if (fishInfoObject.activeInHierarchy == false)
+        {
+            return -1;
+        }
+        return curFish.id;
     }
 }
