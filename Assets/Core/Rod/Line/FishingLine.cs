@@ -84,7 +84,9 @@ public class FishingLine : NetworkBehaviour
 
     public void EndFishing(bool force = false)
     {
-        if(force)
+        //isFishing state might not yet have been set. This happens when a player throws their rod, but retracts it before the line is being thrown.
+        //We need to call EndFishingInternal to disable the rod.
+        if (force || !isFishing)
         {
             EndFishingInternal();
         }

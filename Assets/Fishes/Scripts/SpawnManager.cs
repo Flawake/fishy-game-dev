@@ -108,7 +108,7 @@ public class SpawnManager : NetworkBehaviour
             return null;
         }
 
-        int chooseFish = Random.Range(0, fishRarityFactor.Count);
-        return fishRarityFactor[chooseFish];
+        int chosenFish = Random.Range(0, fishRarityFactor.Count);
+        return fishRarityFactor[chosenFish];
     }
 }

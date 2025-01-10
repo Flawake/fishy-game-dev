@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
-using Unity.VisualScripting;
+using System;
 
 public class spawnableFishes : NetworkBehaviour
 {
@@ -64,11 +64,16 @@ public class spawnableFishes : NetworkBehaviour
 
     [Server]
     int TriangularDistributionRandomInt(int min, int max, int average) {
+#if UNITY_EDITOR
+        if (average < min || average > max)
+        {
+            throw new ArgumentOutOfRangeException(nameof(average), "The average must be between min and max.");
+        }
+#endif
+        float range = max - min;
+        float averageProportion = (float)(average - min) / range;
 
-        float range = min - max;
-        float averageProportion = (int)(average - min) / range;
-
-        float u = Random.value;
+        float u = UnityEngine.Random.value;
 
         float result;
         if (u < averageProportion)
@@ -80,8 +85,8 @@ public class spawnableFishes : NetworkBehaviour
             result = max - Mathf.Sqrt((1 - u) * range * (max - average));
         }
 
-        // Round to nearest integer
-        return Mathf.RoundToInt(result);
+        // Round to nearest integer and clamp it between te min and max value
+        return Mathf.Clamp(Mathf.RoundToInt(result), min, max);
     }
 
     [Server]
