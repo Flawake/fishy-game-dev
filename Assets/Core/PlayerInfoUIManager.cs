@@ -19,6 +19,10 @@ public class PlayerInfoUIManager : MonoBehaviour
     TMP_Text coins;
     [SerializeField]
     TMP_Text bucks;
+    [SerializeField]
+    TMP_Text levelField;
+    [SerializeField]
+    Slider levelProgress;
 
     [SerializeField]
     TMP_InputField chatInput;
@@ -48,14 +52,11 @@ public class PlayerInfoUIManager : MonoBehaviour
         playerData = GetComponentInParent<PlayerData>();
         playerData.CoinsAmountChanged += FishCoinsChanged;
         playerData.BucksAmountChanged += FishBucksChanged;
+        playerData.XPAmountChanged += XpAmountChanged;
+        XpAmountChanged();
         UpdateSelectedRodImage();
         UpdateSelectedBaitImage();
         HideCanvas();
-    }
-
-    private void PlayerData_BucksAmountChanged()
-    {
-        throw new System.NotImplementedException();
     }
 
     public static int GetMaxChatMessageLength()
@@ -87,6 +88,16 @@ public class PlayerInfoUIManager : MonoBehaviour
     void FishBucksChanged()
     {
         bucks.text = playerData.GetFishBucks().ToString();
+    }
+
+    void XpAmountChanged()
+    {
+        int xp = playerData.GetXp();
+        Debug.Log("XP: " + xp);
+        (int level, int xpBeginLevel, int curXP, int xpEndLevel) = LevelMath.XpToLevel(xp);
+        float progress = (float)curXP / (xpEndLevel - xpBeginLevel);
+        levelField.text = level.ToString();
+        levelProgress.value = progress;
     }
 
     //We're hiding the canvan by changing the rendering mode and then disabling the camera

@@ -21,7 +21,7 @@ public class PlayerData : NetworkBehaviour
     //Variables that are synced between ALL players
     [SyncVar, SerializeField]
     string playerName;
-    [SyncVar, SerializeField]
+    [SyncVar(hook = nameof(XpUpdatedClient)), SerializeField]
     int playerXp;
     [SyncVar, SerializeField]
     bool showInventory;
@@ -32,6 +32,7 @@ public class PlayerData : NetworkBehaviour
 
     public event Action CoinsAmountChanged;
     public event Action BucksAmountChanged;
+    public event Action XPAmountChanged;
 
     [SerializeField]
     Guid uuid;
@@ -203,12 +204,22 @@ public class PlayerData : NetworkBehaviour
     [Server]
     public void AddXp(int xp)
     {
-        playerXp += xp;
+        SetXp(GetXp() + xp);
     }
 
     public int GetXp()
     {
         return playerXp;
+    }
+
+    void XpUpdatedClient(int _old, int _new)
+    {
+        if (!isLocalPlayer)
+        {
+            return;
+        }
+
+        XPAmountChanged?.Invoke();
     }
 
     [Server]
