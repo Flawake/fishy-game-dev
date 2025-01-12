@@ -6,7 +6,6 @@ public class StatFish
     public int id;
     public int amount;
     public int maxCaughtLength;
-    public int averageLength;
     //TODO: add caught area's
 
     public StatFish(UserData.CaughtFish fish)
@@ -14,16 +13,6 @@ public class StatFish
         id = fish.id;
         amount = fish.amount;
         maxCaughtLength = fish.maxLength;
-        FishConfiguration fishConfig = ItemsInGame.getFishByID(fish.id);
-        if (fishConfig != null )
-        {
-            averageLength = fishConfig.avarageLength;
-        }
-        else
-        {
-            averageLength = 0;
-            Debug.LogWarning("Made a statfish with an ID that could not be found in the game");
-        }
     }
 
     public StatFish(int _id, int _amount, int _maxCaughtLength)
@@ -31,16 +20,6 @@ public class StatFish
         id = _id;
         amount = _amount;
         maxCaughtLength = _maxCaughtLength;
-        FishConfiguration fishConfig = ItemsInGame.getFishByID(_id);
-        if (fishConfig != null)
-        {
-            averageLength = fishConfig.avarageLength;
-        }
-        else
-        {
-            averageLength = 0;
-            Debug.LogWarning("Made a statfish with an ID that could not be found in the game");
-        }
     }
 }
 

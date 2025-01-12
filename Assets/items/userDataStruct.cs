@@ -1,4 +1,5 @@
 using System;
+
 #nullable enable
 [Serializable]
 public struct UserData
