@@ -27,8 +27,8 @@ public class FishingManager : NetworkBehaviour
     [SerializeField] fishFight fishFight;                   //change
     [SerializeField] caughtDialogData caughtData;           //change
     [SerializeField] PlayerDataSyncManager playerDataManager;
-    [SerializeField] DatabaseCommunications database;
     [SerializeField] PlayerInventory inventory;
+    [SerializeField] PlayerData playerData;
     [SerializeField] RodAnimator rodAnimator;
 
     //gameObjects
@@ -262,7 +262,7 @@ public class FishingManager : NetworkBehaviour
     {
         if (!fromDatabase)
         {
-            database.SelectOtherItem(newRod);
+            DatabaseCommunications.SelectOtherItem(newRod, playerData.GetUuidAsString());
         }
         //TODO: ask the database what the new rod is to see if the write has succeed
         selectedRod = newRod;
@@ -306,7 +306,7 @@ public class FishingManager : NetworkBehaviour
     {
         if (!fromDatabase)
         {
-            database.SelectOtherItem(newBait);
+            DatabaseCommunications.SelectOtherItem(newBait, playerData.GetUuidAsString());
         }
         //TODO: ask the database what the new rod is to see if the write has gone correctly
         selectedBait = newBait;
@@ -500,7 +500,7 @@ public class FishingManager : NetworkBehaviour
         {
             selectedRod.throwIns -= 1;
             SetSyncVarDirtyBit(1 << 0); //selected rod is only updated not changed, so we need to force a update manually
-            database.ReduceItem(rod, 1);
+            DatabaseCommunications.ReduceItem(rod, 1, playerData.GetUuidAsString());
         }
     }
 
@@ -534,7 +534,7 @@ public class FishingManager : NetworkBehaviour
         {
             selectedBait.throwIns -= 1;
             SetSyncVarDirtyBit(1 << 1); //selected bait is only updated not changed, so we need to force a update manually
-            database.ReduceItem(bait, 1);
+            DatabaseCommunications.ReduceItem(bait, 1, playerData.GetUuidAsString());
         }
     }
 }

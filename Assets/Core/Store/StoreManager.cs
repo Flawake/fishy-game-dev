@@ -8,8 +8,6 @@ public class StoreManager : NetworkBehaviour
     [SerializeField]
     PlayerData playerData;
     [SerializeField]
-    DatabaseCommunications database;
-    [SerializeField]
     PlayerInventory inventory;
     [SerializeField]
     PlayerDataSyncManager playerDataManager;

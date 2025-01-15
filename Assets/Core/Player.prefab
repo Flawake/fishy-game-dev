@@ -1422,7 +1422,6 @@ GameObject:
   - component: {fileID: 4128126692504098922}
   - component: {fileID: 4714916547234725786}
   - component: {fileID: 642131257449331877}
-  - component: {fileID: 7314606355610662428}
   - component: {fileID: 3625476836490181}
   - component: {fileID: 1831225255022429458}
   - component: {fileID: 3996301776217940549}
@@ -1579,8 +1578,8 @@ MonoBehaviour:
   fishFight: {fileID: 0}
   caughtData: {fileID: 0}
   playerDataManager: {fileID: 2600673011262952092}
-  database: {fileID: 7314606355610662428}
   inventory: {fileID: 1831225255022429458}
+  playerData: {fileID: 0}
   rodAnimator: {fileID: 7029505193400487229}
   playerCamera: {fileID: 2598969918979025384}
   playerCollider: {fileID: 3951641916827187384}
@@ -1624,22 +1623,6 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0.5}
   serializedVersion: 2
   m_Radius: 0.71
---- !u!114 &7314606355610662428
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7976679866149745988}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4d750176ddf2fae47bec642f4160d2f3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0.1
-  data: {fileID: 3625476836490181}
 --- !u!114 &3625476836490181
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1666,6 +1649,8 @@ MonoBehaviour:
   chatColor:
     serializedVersion: 2
     rgba: 0
+  playerStartPlayingTime: 0
+  playerPlayTimeAtStart: 0
 --- !u!114 &1831225255022429458
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1698,7 +1683,6 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   playerData: {fileID: 3625476836490181}
-  database: {fileID: 7314606355610662428}
   inventory: {fileID: 1831225255022429458}
   playerDataManager: {fileID: 2600673011262952092}
 --- !u!114 &2600673011262952092
@@ -1716,7 +1700,6 @@ MonoBehaviour:
   playerData: {fileID: 3625476836490181}
   inventory: {fileID: 1831225255022429458}
   fishdexFishes: {fileID: 1917053837910666563}
-  database: {fileID: 7314606355610662428}
 --- !u!114 &1917053837910666563
 MonoBehaviour:
   m_ObjectHideFlags: 0

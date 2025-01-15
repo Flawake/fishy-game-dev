@@ -52,6 +52,8 @@ public struct UserData
         public CaughtFish[]? fishes;
         public int coins;
         public int bucks;
+        public int biggestFishCm;
+        public ulong playtime;
     }
 
     [Serializable]

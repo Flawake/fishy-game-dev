@@ -1,16 +1,23 @@
 using Mirror;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 [AddComponentMenu("")]
 public class GameNetworkManager : NetworkManager
 {
+    internal struct playerConnectionInfo
+    {
+        public string uuid;
+        public double playerConnectionTime;
+    }
     // Server-only cross-reference of connections to player names
     internal static readonly Dictionary<NetworkConnectionToClient, string> connNames = new Dictionary<NetworkConnectionToClient, string>();
     internal static readonly HashSet<string> playerNames = new HashSet<string>();
+
+    //netID and start time (time.time);
+    internal static readonly Dictionary<int, playerConnectionInfo> connectedPlayersInfo = new Dictionary<int, playerConnectionInfo>();
 
     [Scene]
     [Tooltip("Add all sub-scenes to this list")]
@@ -43,18 +50,37 @@ public class GameNetworkManager : NetworkManager
         }
     }
 
+    [Server]
     public override void OnServerDisconnect(NetworkConnectionToClient conn)
     {
+        AddPlaytimeToDatabase(conn);
         // remove player name from the HashSet
         if (conn.authenticationData != null)
             playerNames.Remove((string)conn.authenticationData);
 
         // remove connection from Dictionary of conn > names
         connNames.Remove(conn);
+        connectedPlayersInfo.Remove(conn.connectionId);
+
+        conn.identity.GetComponent<PlayerData>();
 
         base.OnServerDisconnect(conn);
     }
 
+    [Server]
+    void AddPlaytimeToDatabase(NetworkConnectionToClient conn)
+    {
+        if (connectedPlayersInfo.TryGetValue(conn.connectionId, out playerConnectionInfo playerInfo))
+        {
+            DatabaseCommunications.AddPlaytime((int)(NetworkTime.time - playerInfo.playerConnectionTime), playerInfo.uuid);
+        }
+        else
+        {
+            Debug.LogWarning($"playerStartTime was not foud for a player {conn.connectionId}");
+        }
+    }
+
+    [Server]
     public override void OnStartServer()
     {
         base.OnStartServer();
@@ -66,6 +92,7 @@ public class GameNetworkManager : NetworkManager
         NetworkServer.RegisterHandler<MovePlayerMessage>(OnPlayerMoveMessage);
     }
 
+    [Client]
     public override void OnClientConnect()
     {
         //TODO: set all other character values like clothes
@@ -172,6 +199,12 @@ public class GameNetworkManager : NetworkManager
         PlayerData dataPlayer = data.Objects[0].GetComponent<PlayerData>();
         if (dataPlayer.ParsePlayerData(data.ResponseData)) {
             NetworkServer.AddPlayerForConnection(data.Connection, data.Objects[0]);
+            playerConnectionInfo playerConnection = new playerConnectionInfo
+            {
+                uuid = dataPlayer.GetUuidAsString(),
+                playerConnectionTime = NetworkTime.time,
+            };
+            connectedPlayersInfo.Add(data.Connection.connectionId, playerConnection);
         }
         else
         {
@@ -187,7 +220,7 @@ public class GameNetworkManager : NetworkManager
     void OnPlayerMoveMessage(NetworkConnectionToClient conn, MovePlayerMessage data)
     {
         SceneManager.MoveGameObjectToScene(conn.identity.gameObject, SceneManager.GetSceneByName(data.requestedScene));
-        conn.Send(new SceneMessage()
+            conn.Send(new SceneMessage()
         {
             sceneName = data.requestedScene,
             sceneOperation = SceneOperation.LoadAdditive

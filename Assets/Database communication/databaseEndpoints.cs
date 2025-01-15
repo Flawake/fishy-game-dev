@@ -17,4 +17,5 @@ public static class DatabaseEndpoints
     public static string selectOtherItemEndpoint = serverAddress + "selectItem";
     public static string adjustMoneyEndpoint = serverAddress + "adjustMoney";
     public static string addXPEndpoint = serverAddress + "addXP";
+    public static string addPlaytime = serverAddress + "addPlaytime";
 }

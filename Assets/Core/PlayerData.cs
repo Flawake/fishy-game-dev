@@ -29,6 +29,10 @@ public class PlayerData : NetworkBehaviour
     int lastItemUID;
     [SyncVar, SerializeField]
     Color32 chatColor;
+    [SyncVar, SerializeField]
+    double playerStartPlayingTime;
+    [SyncVar, SerializeField]
+    ulong playerPlayTimeAtStart;
 
     public event Action CoinsAmountChanged;
     public event Action BucksAmountChanged;
@@ -57,7 +61,7 @@ public class PlayerData : NetworkBehaviour
 
     public string GetUuidAsString()
     {
-       return GetUuid().ToString();
+        return GetUuid().ToString();
     }
 
     [Server]
@@ -113,6 +117,8 @@ public class PlayerData : NetworkBehaviour
             SetFishCoins(playerData.stats.coins);
             SetFishBucks(playerData.stats.bucks);
             SetXp(playerData.stats.xp);
+            SetStartPlayTime();
+            SetTotalPlayTimeAtStart(playerData.stats.playtime);
             SetLastitemUID(playerData.lastItemUID);
             SetShowInventory(playerData.showInv);
         } catch (Exception e)
@@ -145,7 +151,7 @@ public class PlayerData : NetworkBehaviour
     [Server]
     public void SetRandomColor()
     {
-        switch(UnityEngine.Random.Range(0, 6))
+        switch (UnityEngine.Random.Range(0, 6))
         {
             //TODO, can the devisions be done at compile time?
             case 0:
@@ -233,7 +239,7 @@ public class PlayerData : NetworkBehaviour
     {
         availableFishCoins = newAmount;
         //isServer does check if this object has also been spawned on clients
-        if(isServer)
+        if (isServer)
         {
             TargetSetFishCoins(newAmount);
         }
@@ -290,6 +296,43 @@ public class PlayerData : NetworkBehaviour
     public int GetFishBucks()
     {
         return availableFishBucks;
+    }
+
+
+    bool startPlaytimeSet = false;
+    [Server]
+    void SetStartPlayTime()
+    {
+        if(startPlaytimeSet)
+        {
+            Debug.LogWarning("playerStartPlayingTime was already set");
+            return;
+        }
+        startPlaytimeSet = true;
+        playerStartPlayingTime = NetworkTime.time;
+    }
+
+    bool totalPlaytimeSet = false;
+    [Server]
+    void SetTotalPlayTimeAtStart(ulong playtime)
+    {
+        if(totalPlaytimeSet)
+        {
+            Debug.LogWarning("playerPlayTimeAtStart was already set");
+            return;
+        }
+        totalPlaytimeSet = true;
+        playerPlayTimeAtStart = playtime;
+    }
+
+    ulong GetPlayTime()
+    {
+        return GetPlayTimeSinceStart() + playerPlayTimeAtStart;
+    }
+
+    ulong GetPlayTimeSinceStart()
+    {
+        return (ulong)(NetworkTime.time - playerStartPlayingTime);
     }
 
     private void Start()

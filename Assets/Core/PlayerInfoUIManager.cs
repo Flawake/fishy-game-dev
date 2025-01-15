@@ -93,7 +93,6 @@ public class PlayerInfoUIManager : MonoBehaviour
     void XpAmountChanged()
     {
         int xp = playerData.GetXp();
-        Debug.Log("XP: " + xp);
         (int level, int xpBeginLevel, int curXP, int xpEndLevel) = LevelMath.XpToLevel(xp);
         float progress = (float)curXP / (xpEndLevel - xpBeginLevel);
         levelField.text = level.ToString();

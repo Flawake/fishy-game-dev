@@ -2,14 +2,12 @@ using UnityEngine;
 using Mirror;
 
 //TODO: can this class be static and should we make it static?
-public class DatabaseCommunications : NetworkBehaviour
+public static class DatabaseCommunications
 {
-    [SerializeField]
-    PlayerData data;
 
     //TODO: we should do something when the request fails at the webrequesthandlers
     [Server]
-    public void RequestInventory(NetworkConnectionToClient conn, string userName)
+    public static void RequestInventory(NetworkConnectionToClient conn, string userName)
     {
         WWWForm getInventoryForm = new WWWForm();
         getInventoryForm.AddField("auth_token", DatabaseEndpoints.databaseAccessToken);
@@ -21,7 +19,7 @@ public class DatabaseCommunications : NetworkBehaviour
 
 
     [Server]
-    public void AddItem(ItemObject item, bool asNewItem)
+    public static void AddItem(ItemObject item, bool asNewItem, string uuid)
     {
         string type;
         int amount;
@@ -77,7 +75,7 @@ public class DatabaseCommunications : NetworkBehaviour
         }
         //Add a item to the inventory
         addItemInventory.AddField("auth_token", DatabaseEndpoints.databaseAccessToken);
-        addItemInventory.AddField("uuid", data.GetUuidAsString());
+        addItemInventory.AddField("uuid", uuid);
         addItemInventory.AddField("type", type);
         addItemInventory.AddField("amount", amount);
 
@@ -92,14 +90,14 @@ public class DatabaseCommunications : NetworkBehaviour
     }
 
     [Server]
-    public void AddStatFish(CurrentFish fish)
+    public static void AddStatFish(CurrentFish fish, string uuid)
     {
         //Add a fish to the player statistics
         //We are sending the length as max_length, the database server checks if it indeed is the new max length
         string fishStat = "stat_fish{\"id\": " + fish.id + ", \"amount\": " + 1 + ", \"max_length\": " + fish.length + "}";
         WWWForm addFishStat = new WWWForm();
         addFishStat.AddField("auth_token", DatabaseEndpoints.databaseAccessToken);
-        addFishStat.AddField("uuid", data.GetUuidAsString());
+        addFishStat.AddField("uuid", uuid);
         addFishStat.AddField("id", fish.id);
         addFishStat.AddField("amount", 1);
         addFishStat.AddField("length", fish.length);
@@ -107,38 +105,48 @@ public class DatabaseCommunications : NetworkBehaviour
     }
 
     [Server]
-    public void ChangeFishCoinsAmount(int amount)
+    public static  void ChangeFishCoinsAmount(int amount, string uuid)
     {
         WWWForm adjustMoneyForm = new WWWForm();
         adjustMoneyForm.AddField("auth_token", DatabaseEndpoints.databaseAccessToken);
-        adjustMoneyForm.AddField("uuid", data.GetUuidAsString());
+        adjustMoneyForm.AddField("uuid", uuid);
         adjustMoneyForm.AddField("type", "coin");
         adjustMoneyForm.AddField("amount", amount);
         WebRequestHandler.SendWebRequest(DatabaseEndpoints.adjustMoneyEndpoint, adjustMoneyForm);
     }
 
     [Server]
-    public void ChangeFishBucksAmount(int amount)
+    public static void ChangeFishBucksAmount(int amount, string uuid)
     {
         WWWForm adjustMoneyForm = new WWWForm();
         adjustMoneyForm.AddField("auth_token", DatabaseEndpoints.databaseAccessToken);
-        adjustMoneyForm.AddField("uuid", data.GetUuidAsString());
+        adjustMoneyForm.AddField("uuid", uuid);
         adjustMoneyForm.AddField("type", "buck");
         adjustMoneyForm.AddField("amount", amount);
         WebRequestHandler.SendWebRequest(DatabaseEndpoints.adjustMoneyEndpoint, adjustMoneyForm);
     }
 
     [Server]
-    public void AddXP(int amount) {
+    public static void AddXP(int amount, string uuid) {
         WWWForm addXPForm = new WWWForm();
         addXPForm.AddField("auth_token", DatabaseEndpoints.databaseAccessToken);
-        addXPForm.AddField("uuid", data.GetUuidAsString());
+        addXPForm.AddField("uuid", uuid);
         addXPForm.AddField("amount", amount);
         WebRequestHandler.SendWebRequest(DatabaseEndpoints.addXPEndpoint, addXPForm);
     }
 
     [Server]
-    public void SelectOtherItem(ItemObject item)
+    public static void AddPlaytime(int amount, string uuid)
+    {
+        WWWForm addPlatimeForm = new WWWForm();
+        addPlatimeForm.AddField("auth_token", DatabaseEndpoints.databaseAccessToken);
+        addPlatimeForm.AddField("uuid", uuid);
+        addPlatimeForm.AddField("time", amount);
+        WebRequestHandler.SendWebRequest(DatabaseEndpoints.addPlaytime, addPlatimeForm);
+    }
+
+    [Server]
+    public static void SelectOtherItem(ItemObject item, string uuid)
     {
         string type;
         int id;
@@ -161,14 +169,14 @@ public class DatabaseCommunications : NetworkBehaviour
         //Select a different item as using
         WWWForm otherItemSelectForm = new WWWForm();
         otherItemSelectForm.AddField("auth_token", DatabaseEndpoints.databaseAccessToken);
-        otherItemSelectForm.AddField("uuid", data.GetUuidAsString());
+        otherItemSelectForm.AddField("uuid", uuid);
         otherItemSelectForm.AddField("type", type);
         otherItemSelectForm.AddField("uid", id);
         WebRequestHandler.SendWebRequest(DatabaseEndpoints.selectOtherItemEndpoint, otherItemSelectForm);
     }
 
     [Server]
-    public void ReduceItem(ItemObject item, int amount)
+    public static void ReduceItem(ItemObject item, int amount, string uuid)
     {
         string type;
         int id = int.MinValue;
@@ -197,7 +205,7 @@ public class DatabaseCommunications : NetworkBehaviour
         //Add a item to the inventory
         WWWForm addItemInventory = new WWWForm();
         addItemInventory.AddField("auth_token", DatabaseEndpoints.databaseAccessToken);
-        addItemInventory.AddField("uuid", data.GetUuidAsString());
+        addItemInventory.AddField("uuid", uuid);
         addItemInventory.AddField("type", type);
         addItemInventory.AddField("uid", id);
         addItemInventory.AddField("amount", amount);
@@ -208,7 +216,7 @@ public class DatabaseCommunications : NetworkBehaviour
     }
 
     [Server]
-    public void DestroyItem(ItemObject item)
+    public static void DestroyItem(ItemObject item, string uuid)
     {
         string type;
         int id;
@@ -236,7 +244,7 @@ public class DatabaseCommunications : NetworkBehaviour
 
         WWWForm addItemInventory = new WWWForm();
         addItemInventory.AddField("auth_token", DatabaseEndpoints.databaseAccessToken);
-        addItemInventory.AddField("uuid", data.GetUuidAsString());
+        addItemInventory.AddField("uuid", uuid);
         addItemInventory.AddField("type", type);
         addItemInventory.AddField("u/id", id);
 
