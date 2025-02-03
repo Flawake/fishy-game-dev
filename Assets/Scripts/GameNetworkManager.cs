@@ -161,7 +161,7 @@ public class GameNetworkManager : NetworkManager
     {
         GameObject player = Instantiate(playerPrefab);
         //Hard coded value
-        player.transform.position = new Vector3(0, -10, 0);
+        player.transform.position = new Vector3(0, 0, 0);
         PlayerData dataPlayer = player.GetComponent<PlayerData>();
         if (!connNames.TryGetValue(conn, out string name) || dataPlayer == null)
         {

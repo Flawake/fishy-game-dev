@@ -7,7 +7,14 @@ using static UserData;
 public class FishInfoUIManager : MonoBehaviour
 {
     [SerializeField]
-    GameObject fishInfoObject;
+    GameObject caughtFishInfo;
+    [SerializeField]
+    GameObject uncaughtFishInfo;
+
+    [SerializeField]
+    CaughtFishInfo caughtFishInfoManager;
+    [SerializeField]
+    UncaughtFishInfo uncaughtFishInfoManager;
 
     [SerializeField]
     TMP_Text fishName;
@@ -26,7 +33,8 @@ public class FishInfoUIManager : MonoBehaviour
 
     public void CloseFishInfo()
     {
-        fishInfoObject.SetActive(false);
+        caughtFishInfo.SetActive(false);
+        uncaughtFishInfo.SetActive(false);
     }
 
     public void OpenFishInfo(int fishID)
@@ -40,23 +48,27 @@ public class FishInfoUIManager : MonoBehaviour
         StatFish statFish = NetworkClient.localPlayer.GetComponentInChildren<PlayerFishdexFishes>().GetStatFish(fishID);
         if (statFish == null)
         {
+            uncaughtFishInfo.SetActive(true);
+            uncaughtFishInfoManager.ShowFishInfo(fishID);
             fishimage.color = Color.black;
             amountCaught.text = "0";
         }
         else
         {
+            caughtFishInfo.SetActive(true);
+            caughtFishInfoManager.ShowFishInfo(fishID);
             fishimage.color = Color.white;
             maxCaughtLength.text = statFish.maxCaughtLength.ToString();
             amountCaught.text = statFish.amount.ToString();
         }
         fishName.text = curFish.name;
         fishimage.sprite = curFish.fishImage;
-        fishInfoObject.SetActive(true);
+        caughtFishInfo.SetActive(true);
     }
 
     public int CurrentFishinfoFishID()
     {
-        if (fishInfoObject.activeInHierarchy == false)
+        if (caughtFishInfo.activeInHierarchy == false)
         {
             return -1;
         }

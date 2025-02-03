@@ -1579,7 +1579,7 @@ MonoBehaviour:
   caughtData: {fileID: 0}
   playerDataManager: {fileID: 2600673011262952092}
   inventory: {fileID: 1831225255022429458}
-  playerData: {fileID: 0}
+  playerData: {fileID: 3625476836490181}
   rodAnimator: {fileID: 7029505193400487229}
   playerCamera: {fileID: 2598969918979025384}
   playerCollider: {fileID: 3951641916827187384}

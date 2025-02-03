@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "fishy-game.sln"
+    "dotnet.defaultSolution": "fishy-game-dev.sln"
 }

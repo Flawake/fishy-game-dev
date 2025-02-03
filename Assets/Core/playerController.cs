@@ -432,6 +432,7 @@ public class playerController : NetworkBehaviour
     bool CheckNewPosValid(Vector2 position, Vector2 prevPos, out Vector2 newValidPos) {
         //Check for unwalkable area's
         int areaIndex = NavMesh.GetAreaFromName(locatedScene.name);
+        Debug.Log($"Current scene: {locatedScene.name}");
 
         newValidPos = Vector2.zero;
 
