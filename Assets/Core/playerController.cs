@@ -21,7 +21,7 @@ public class playerController : NetworkBehaviour
     [SerializeField] ViewPlayerStats viewPlayerStats;
 
     //Speed in units per seconds
-    public float movementSpeed = 3.5f;
+    public float movementSpeed = 1.7f;
 
     PlayerControls playerControls;
     InputAction moveAction;
@@ -362,7 +362,7 @@ public class playerController : NetworkBehaviour
     [TargetRpc]
     void TargetSetPosition(Vector3 position)
     {
-        Debug.Log("Setting pos...");
+        Debug.Log("Teleporting player to a new position, possibly due to cheating or an error...");
         this.transform.position = position;
     }
 
