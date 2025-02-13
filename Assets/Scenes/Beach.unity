@@ -245,6 +245,12 @@ GameObject:
   m_Component:
   - component: {fileID: 56055219}
   - component: {fileID: 56055218}
+  - component: {fileID: 56055225}
+  - component: {fileID: 56055224}
+  - component: {fileID: 56055223}
+  - component: {fileID: 56055222}
+  - component: {fileID: 56055221}
+  - component: {fileID: 56055220}
   m_Layer: 0
   m_Name: Pier
   m_TagString: Untagged
@@ -317,8 +323,129 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 928281837}
+  m_Father: {fileID: 1209317381}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &56055220
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 56055217}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9809bf1345abc5648af68b3a82653f08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_OverrideArea: 1
+  m_Area: 3
+  m_IgnoreFromBuild: 0
+  m_AffectedAgents: ffffffff
+--- !u!65 &56055221
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 56055217}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 4.6332207, y: 0.017951965, z: 0.2}
+  m_Center: {x: 0.042253494, y: 1.6176615, z: 0}
+--- !u!65 &56055222
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 56055217}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.0024023, y: 0.12901592, z: 0.2}
+  m_Center: {x: 1.8752012, y: -2.264379, z: 0}
+--- !u!65 &56055223
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 56055217}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.021717072, y: 3.8714762, z: 0.2}
+  m_Center: {x: 2.3448453, y: -0.3395934, z: 0}
+--- !u!65 &56055224
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 56055217}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.028173447, y: 3.9189968, z: 0.2}
+  m_Center: {x: -2.2588787, y: -0.29935455, z: 0}
+--- !u!65 &56055225
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 56055217}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.95209885, y: 0.096505165, z: 0.2}
+  m_Center: {x: -1.7659826, y: -2.2385907, z: 0}
 --- !u!1 &59388103
 GameObject:
   m_ObjectHideFlags: 0
@@ -330,7 +457,7 @@ GameObject:
   - component: {fileID: 59388104}
   - component: {fileID: 59388106}
   - component: {fileID: 59388105}
-  m_Layer: 0
+  m_Layer: 4
   m_Name: SeaTile (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -560,7 +687,7 @@ GameObject:
   - component: {fileID: 264943122}
   - component: {fileID: 264943124}
   - component: {fileID: 264943123}
-  m_Layer: 0
+  m_Layer: 4
   m_Name: SeaTile (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -914,7 +1041,7 @@ GameObject:
   - component: {fileID: 597297124}
   - component: {fileID: 597297126}
   - component: {fileID: 597297125}
-  m_Layer: 0
+  m_Layer: 4
   m_Name: SeaTile (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1144,7 +1271,7 @@ GameObject:
   - component: {fileID: 803450447}
   - component: {fileID: 803450449}
   - component: {fileID: 803450448}
-  m_Layer: 0
+  m_Layer: 4
   m_Name: SeaTile (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1396,8 +1523,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1916942418}
-  - {fileID: 1018451443}
-  - {fileID: 56055219}
+  - {fileID: 1209317381}
   - {fileID: 1992911919}
   - {fileID: 1698881187}
   - {fileID: 156315928}
@@ -1416,8 +1542,12 @@ GameObject:
   m_Component:
   - component: {fileID: 1018451443}
   - component: {fileID: 1018451444}
+  - component: {fileID: 1018451445}
+  - component: {fileID: 1018451446}
+  - component: {fileID: 1018451448}
+  - component: {fileID: 1018451447}
   m_Layer: 0
-  m_Name: Pier
+  m_Name: Schans
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1436,7 +1566,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 928281837}
+  m_Father: {fileID: 1209317381}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &1018451444
 SpriteRenderer:
@@ -1490,6 +1620,95 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!65 &1018451445
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1018451442}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.3571205, y: 9.438594, z: 0.2}
+  m_Center: {x: -1.1891384, y: 0.06259775, z: 0}
+--- !u!65 &1018451446
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1018451442}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.38067818, y: 9.421845, z: 0.2}
+  m_Center: {x: 1.2075748, y: 0.06738806, z: 0}
+--- !u!114 &1018451447
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1018451442}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9809bf1345abc5648af68b3a82653f08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_OverrideArea: 1
+  m_Area: 3
+  m_IgnoreFromBuild: 0
+  m_AffectedAgents: ffffffff
+--- !u!114 &1018451448
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1018451442}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_AgentTypeID: 0
+  m_CollectObjects: 0
+  m_Size: {x: 10, y: 10, z: 10}
+  m_Center: {x: 0, y: 2, z: 0}
+  m_LayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_UseGeometry: 0
+  m_DefaultArea: 3
+  m_GenerateLinks: 0
+  m_IgnoreNavMeshAgent: 1
+  m_IgnoreNavMeshObstacle: 1
+  m_OverrideTileSize: 0
+  m_TileSize: 256
+  m_OverrideVoxelSize: 0
+  m_VoxelSize: 0.016666668
+  m_MinRegionArea: 2
+  m_NavMeshData: {fileID: 0}
+  m_BuildHeightMesh: 0
 --- !u!1001 &1133913831
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1567,7 +1786,7 @@ GameObject:
   - component: {fileID: 1191811555}
   - component: {fileID: 1191811556}
   - component: {fileID: 1191811557}
-  m_Layer: 0
+  m_Layer: 4
   m_Name: SeaTile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1662,6 +1881,39 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!1 &1209317380
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1209317381}
+  m_Layer: 0
+  m_Name: Pier
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1209317381
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1209317380}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 56055219}
+  - {fileID: 1018451443}
+  m_Father: {fileID: 928281837}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1212772284
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1797,7 +2049,7 @@ GameObject:
   - component: {fileID: 1323062068}
   - component: {fileID: 1323062070}
   - component: {fileID: 1323062069}
-  m_Layer: 0
+  m_Layer: 4
   m_Name: SeaTile (6)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1905,7 +2157,7 @@ GameObject:
   - component: {fileID: 1426061391}
   - component: {fileID: 1426061389}
   - component: {fileID: 1426061392}
-  m_Layer: 0
+  m_Layer: 4
   m_Name: Water
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2034,15 +2286,13 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: 10.393811, y: 9.722172}
-      - {x: -4.129674, y: 9.729668}
-      - {x: -4.0373397, y: -0.68809783}
-      - {x: 0.58778536, y: -0.80901694}
-      - {x: 34.909824, y: -0.7284994}
-      - {x: 34.925037, y: 9.751955}
-      - {x: 18.038326, y: 9.742692}
-      - {x: 18.088726, y: 1.9662151}
-      - {x: 10.409174, y: 1.9664316}
+    - - {x: -4.0563283, y: 9.735483}
+      - {x: -4.0542946, y: -0.6559162}
+      - {x: 12.836153, y: -0.64734936}
+      - {x: 12.843669, y: -0.65076065}
+      - {x: 12.833224, y: 1.4984827}
+      - {x: 10.167787, y: 1.496479}
+      - {x: 10.165001, y: 9.737846}
   m_UseDelaunayMesh: 0
 --- !u!1001 &1493568506
 PrefabInstance:
@@ -2324,7 +2574,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1712739910}
   - component: {fileID: 1712739909}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: WorldBounds
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2573,7 +2823,7 @@ GameObject:
   - component: {fileID: 1880219388}
   - component: {fileID: 1880219387}
   - component: {fileID: 1880219386}
-  m_Layer: 0
+  m_Layer: 4
   m_Name: PierCollider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2988,7 +3238,7 @@ PolygonCollider2D:
     m_Bits: 4294967295
   m_IsTrigger: 0
   m_UsedByEffector: 0
-  m_UsedByComposite: 0
+  m_UsedByComposite: 1
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
@@ -3508,7 +3758,7 @@ GameObject:
   - component: {fileID: 2124456932}
   - component: {fileID: 2124456934}
   - component: {fileID: 2124456933}
-  m_Layer: 0
+  m_Layer: 4
   m_Name: SeaTile (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3611,6 +3861,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 928281837}
     m_Modifications:
+    - target: {fileID: 462645288683762765, guid: 9e830f889ed017846b993222277188e3, type: 3}
+      propertyPath: m_UsedByComposite
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2399310025434012260, guid: 9e830f889ed017846b993222277188e3, type: 3}
       propertyPath: m_Name
       value: Parasol
