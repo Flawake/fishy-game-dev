@@ -145,7 +145,7 @@ public class PlayerInfoUIManager : MonoBehaviour
     public void OpenWorldMap()
     {
         HideCanvas();
-        FindObjectOfType<AudioListener>().enabled = false;
+        FindFirstObjectByType<AudioListener>().enabled = false;
 
         GameNetworkManager.SetEventSystemActive(SceneManager.GetActiveScene().name, false);
 

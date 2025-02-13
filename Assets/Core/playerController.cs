@@ -258,7 +258,7 @@ public class playerController : NetworkBehaviour
 
     void MovePlayer(Vector2 moveDir, float speed)
     {
-        playerRigidbody.velocity = moveDir.normalized * speed;
+        playerRigidbody.linearVelocity = moveDir.normalized * speed;
     }
 
     void ApplyAnimation()
@@ -432,7 +432,6 @@ public class playerController : NetworkBehaviour
     bool CheckNewPosValid(Vector2 position, Vector2 prevPos, out Vector2 newValidPos) {
         //Check for unwalkable area's
         int areaIndex = NavMesh.GetAreaFromName(locatedScene.name);
-        Debug.Log($"Current scene: {locatedScene.name}");
 
         newValidPos = Vector2.zero;
 
@@ -444,7 +443,6 @@ public class playerController : NetworkBehaviour
         }
 
         int areaMask = 1 << areaIndex;
-
         Vector3 checkPosition = position;
         checkPosition.y += playerCollider.offset.y;
         float maxDistance = 0.06f + (playerCollider.size.y / 2);
