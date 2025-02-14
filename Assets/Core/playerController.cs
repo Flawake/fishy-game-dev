@@ -205,9 +205,13 @@ public class playerController : NetworkBehaviour
         }
         
         Vector2 clickedPos = playerCamera.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-        //viewPlayerStats.ProcesPlayerCheck(clickedPos);
-        if (!viewPlayerStats.ProcesPlayerCheck(clickedPos)) ;
-        if (!fishingManager.ProcessFishing(clickedPos) || objectsPreventingFishing > 0) ;
+        //Check for mouse click starting at objects with most priority, return if the click has been handled.
+        if (viewPlayerStats.ProcesPlayerCheck(clickedPos)) {
+            return;
+        }
+        if (fishingManager.ProcessFishing(clickedPos) || objectsPreventingFishing > 0) {
+            return;
+        }
 
         //We should not return but look what else the click could have been for.
     }

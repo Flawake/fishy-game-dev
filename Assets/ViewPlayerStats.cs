@@ -9,7 +9,6 @@ public class ViewPlayerStats : MonoBehaviour
     
     public bool ProcesPlayerCheck(Vector2 clickedPos)
     {
-        //Debug.Log("Checking for other player");
         if (!IsOtherPlayer(clickedPos))
         {
             return false;
