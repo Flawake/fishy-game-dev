@@ -253,6 +253,16 @@ public class FishingManager : NetworkBehaviour
         caughtData.setData(currentFish);
     }
 
+    public rodObject GetSelectedRod()
+    {
+        return selectedRod;
+    }
+
+    public baitObject GetSelectedBait()
+    {
+        return selectedBait;
+    }
+
     /// <summary>
     /// All functions under here are being executed by the server.
     /// </summary>

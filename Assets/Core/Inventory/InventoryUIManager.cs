@@ -2,7 +2,9 @@ using Mirror;
 using System;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class InventoryUIManager : MonoBehaviour
 {
@@ -13,19 +15,31 @@ public class InventoryUIManager : MonoBehaviour
     [SerializeField]
     GameObject useItemButton;
     [SerializeField]
-    TMP_Text itemInfoText;
-    [SerializeField]
     TMP_Text itemNameText;
+    [SerializeField]
+    TMP_Text itemInfoText;
     [SerializeField]
     TMP_Text itemAmountText;
     [SerializeField]
-    TMP_Dropdown filterDropdown;
+    Image itemPreviewImage;
     [SerializeField]
     GameObject inventoryUI;
     [SerializeField]
     GameObject inventoryItemPrefab;
     [SerializeField]
     GameObject itemHolder;
+    [SerializeField]
+    GameObject itemPreviewSelectedItemMark;
+    [SerializeField]
+    GameObject tabSelectionUnder;
+    [SerializeField]
+    GameObject tabSelectionUpper;
+    [SerializeField]
+    GameObject[] selectMenuButtons;
+    [SerializeField]
+    Sprite selectedButtonSprite;
+    [SerializeField]
+    Sprite unselectedButtonSprite;
 
     [Serializable]
     private enum ItemFiler
@@ -46,7 +60,7 @@ public class InventoryUIManager : MonoBehaviour
     public void ClickSelectNewItem(int filter)
     {
         ToggleBackPack((ItemFiler)filter);
-        ChangeBackPackFilter(filter);
+        ChangeBackPackMenu(filter);
     }
 
     public void ToggleBackPack()
@@ -58,9 +72,8 @@ public class InventoryUIManager : MonoBehaviour
     {
         if (inventoryUI.activeInHierarchy == false)
         {
-            filterDropdown.value = (int)filter;
             //0 is show all
-            BuildBackPackItems(0);
+            ChangeBackPackMenu(0);
             inventoryUI.SetActive(true);
             EnsurePlayerController();
             controller.IncreaseObjectsPreventingMovement();
@@ -83,10 +96,19 @@ public class InventoryUIManager : MonoBehaviour
         inventoryUI.SetActive(false);
     }
 
-    //called from game
-    public void ChangeBackPackFilter(int filter)
+    public void ChangeBackPackMenu(int index)
     {
-        BuildBackPackItems((ItemFiler)filter);
+        for (int i = 0; i < selectMenuButtons.Length; i++)
+        {
+            selectMenuButtons[i].GetComponent<Image>().sprite = unselectedButtonSprite;
+            selectMenuButtons[i].transform.SetParent(tabSelectionUnder.transform);
+            if (index == i)
+            {
+                selectMenuButtons[i].GetComponent<Image>().sprite = selectedButtonSprite;
+                selectMenuButtons[i].transform.SetParent(tabSelectionUpper.transform);
+            }
+        }
+        BuildBackPackItems((ItemFiler)index + 1);
     }
 
     void BuildBackPackItems(ItemFiler filter)
@@ -123,6 +145,7 @@ public class InventoryUIManager : MonoBehaviour
         {
             //ItemType type = container[i].item.type;
             ItemObject itemObject = container[i].item;
+            bool itemSelected = false;
             if(itemObject == null)
             {
                 Debug.LogWarning("Item in a inventorycontainer is null");
@@ -144,9 +167,23 @@ public class InventoryUIManager : MonoBehaviour
                     continue;
                 }
             }
+
+            if (itemObject is rodObject rod) {
+                if (fishingManager.GetSelectedRod().uid == rod.uid) { 
+                    itemSelected = true;
+                }
+            }
+            if (itemObject is baitObject bait)
+            {
+                if (fishingManager.GetSelectedBait().id == bait.id)
+                {
+                    itemSelected = true;
+                }
+            }
+
             GameObject inventoryItem = Instantiate(inventoryItemPrefab, itemHolder.transform, false);
             InventoryItemData invItemData = inventoryItem.GetComponent<InventoryItemData>();
-            invItemData.SetInventoryItemData(container[i].item);
+            invItemData.SetInventoryItemData(container[i].item, itemSelected);
             //Show item info of first item in inventory, just to fill up empty space
             if (!firstItemSet)
             {
@@ -162,15 +199,25 @@ public class InventoryUIManager : MonoBehaviour
         item = _item;
         string name;
         int amount;
+        itemPreviewSelectedItemMark.SetActive(false);
         if (_item is rodObject rod)
         {
             name = rod.name;
             amount = rod.throwIns;
+
+            if (fishingManager.GetSelectedRod().uid == rod.uid)
+            {
+                itemPreviewSelectedItemMark.SetActive(true);
+            }
         }
         else if (_item is baitObject bait)
         {
             name = bait.name;
             amount = bait.throwIns;
+            if (fishingManager.GetSelectedBait().id == bait.id)
+            {
+                itemPreviewSelectedItemMark.SetActive(true);
+            }
         }
         else if (_item is FishObject fish)
         {
@@ -185,6 +232,7 @@ public class InventoryUIManager : MonoBehaviour
         itemInfoText.text = _item.description;
         itemNameText.text = name;
         itemAmountText.text = amount.ToString();
+        itemPreviewImage.sprite = _item.sprite;
 
         if (_item.type == ItemType.rod || _item.type == ItemType.bait)
         {

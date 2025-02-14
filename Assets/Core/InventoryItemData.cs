@@ -1,14 +1,15 @@
 using UnityEngine.UI;
 using UnityEngine;
 using TMPro;
+using System;
+using Unity.VisualScripting;
 
 public class InventoryItemData : MonoBehaviour
 {
     [SerializeField]
     Image spriteHolder;
-    
     [SerializeField]
-    TMP_Text itemAmountField;
+    GameObject itemSelectedMark;
 
     InventoryUIManager inventoryManager;
 
@@ -34,28 +35,10 @@ public class InventoryItemData : MonoBehaviour
         inventoryManager.ShowItemInfo(item);
     }
 
-    public void SetInventoryItemData(ItemObject _item)
+    public void SetInventoryItemData(ItemObject _item, bool itemSelected)
     {
         spriteHolder.sprite = _item.sprite;
         item = _item;
-
-        int amount;
-        if (item is rodObject rod)
-        {
-            amount = rod.throwIns;
-        }
-        else if (item is baitObject bait)
-        {
-            amount = bait.throwIns;
-        }
-        else if (item is FishObject fish)
-        {
-            amount = fish.amount;
-        }
-        else
-        {
-            return;
-        }
-        itemAmountField.text = amount.ToString();
+        itemSelectedMark.SetActive(itemSelected);
     }
 }

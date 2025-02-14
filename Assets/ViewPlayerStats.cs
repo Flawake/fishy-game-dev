@@ -25,7 +25,6 @@ public class ViewPlayerStats : MonoBehaviour
             if (hit.collider.name == "PreciseCollision" )
             {
                 PlayerStatMenu(hit.collider.gameObject);
-                Debug.Log("this is a player");
                 return true;
             }
         }
