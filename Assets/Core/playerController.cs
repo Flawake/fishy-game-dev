@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Mirror;
-using UnityEngine.AI;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 
@@ -40,7 +39,7 @@ public class playerController : NetworkBehaviour
 
     List<Collider2D> objectsCollidingPlayer = new List<Collider2D>();
 
-    //The scene that the player is in, used to get worldbound and the navmesh
+    //The scene that the player is in, used to get worldbound and the compositecollider
     Scene locatedScene;
 
     public void IncreaseObjectsPreventingMovement()
@@ -370,7 +369,7 @@ public class playerController : NetworkBehaviour
     void CmdSendMoveToServer(Vector3 position)
     {
 
-        //Get current scene to filter for the correct NavMeshArea and gameobjects in this scene.
+        //Get current scene to filter for the correct CompositeCollider2D and gameobjects in this scene.
         Scene activeScene = this.gameObject.scene;
         if (activeScene != locatedScene)
         {
@@ -430,33 +429,27 @@ public class playerController : NetworkBehaviour
     //Anti cheat function, should detect if a client tries to walk on something unwalkable
     [Server]
     bool CheckNewPosValid(Vector2 position, Vector2 prevPos, out Vector2 newValidPos) {
-        //Check for unwalkable area's
-        int areaIndex = NavMesh.GetAreaFromName(locatedScene.name);
+        CompositeCollider2D coll = SceneObjectCache.GetWorldCollider(locatedScene);
 
         newValidPos = Vector2.zero;
 
-        if (areaIndex == -1)
+        if (coll == null)
         {
-            Debug.LogWarning("No custom Area mask for the navmesh in this scene, can't check if player position is legal");
+            Debug.LogWarning("No compositeCollider on Root on this scene, can't check if player position is legal");
             transform.position = position;
             return true;
         }
 
-        int areaMask = 1 << areaIndex;
         Vector3 checkPosition = position;
         checkPosition.y += playerCollider.offset.y;
         float maxDistance = 0.06f + (playerCollider.size.y / 2);
 
-        if (!NavMesh.SamplePosition(checkPosition, out _, maxDistance, areaMask))
+        if (!coll.OverlapPoint(checkPosition))
         {
-            if (NavMesh.SamplePosition(checkPosition, out NavMeshHit hit, float.MaxValue, areaMask))
+            Vector2 closestPoint = coll.ClosestPoint(checkPosition);
+            if (Vector2.Distance(closestPoint, checkPosition) > maxDistance)
             {
-                newValidPos = new Vector2(hit.position.x, hit.position.y - playerCollider.offset.y);
-                return false;
-            }
-            else
-            {
-                newValidPos = prevPos;
+                newValidPos = closestPoint;
                 return false;
             }
         }
