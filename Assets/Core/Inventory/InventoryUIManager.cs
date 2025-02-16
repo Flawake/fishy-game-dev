@@ -35,11 +35,14 @@ public class InventoryUIManager : MonoBehaviour
     [SerializeField]
     GameObject tabSelectionUpper;
     [SerializeField]
-    GameObject[] selectMenuButtons;
+    MenuButtonStruct[] menuButtons;
     [SerializeField]
     Sprite selectedButtonSprite;
     [SerializeField]
     Sprite unselectedButtonSprite;
+
+    //We can't show dictionaries in the inspector, so we put in into an array in the inspector and put it into a dict in the awake()
+    readonly Dictionary<string, GameObject> selectMenuButtons = new();
 
     [Serializable]
     private enum ItemFiler
@@ -47,7 +50,29 @@ public class InventoryUIManager : MonoBehaviour
         all = 0,
         rods = 1,
         baits = 2,
-        Fishes = 3
+        fishes = 3
+    }
+
+    [Serializable]
+    public struct MenuButtonStruct
+    {
+        public string itemFilterName;
+        public GameObject button;
+    }
+
+    ItemFiler StringToFilter(string filter) {
+        if (Enum.TryParse<ItemFiler>(filter, true, out var result)) {
+            return result;
+        }
+        throw new ArgumentException($"Invalid filter value: {filter}", nameof(filter));
+    }
+
+    private void Awake()
+    {
+        foreach(MenuButtonStruct menuButton in menuButtons)
+        {
+            selectMenuButtons.Add(menuButton.itemFilterName, menuButton.button);
+        }
     }
 
     private void Start()
@@ -57,15 +82,15 @@ public class InventoryUIManager : MonoBehaviour
     }
 
     //called by a button in the game
-    public void ClickSelectNewItem(int filter)
+    public void ClickSelectNewItem(string filter)
     {
-        ToggleBackPack((ItemFiler)filter);
+        ToggleBackPack();
         ChangeBackPackMenu(filter);
     }
 
     public void ToggleBackPack()
     {
-        ToggleBackPack(ItemFiler.all);
+        ToggleBackPack(ItemFiler.rods);
     }
 
     void ToggleBackPack(ItemFiler filter)
@@ -73,7 +98,7 @@ public class InventoryUIManager : MonoBehaviour
         if (inventoryUI.activeInHierarchy == false)
         {
             //0 is show all
-            ChangeBackPackMenu(0);
+            ChangeBackPackMenu(filter);
             inventoryUI.SetActive(true);
             EnsurePlayerController();
             controller.IncreaseObjectsPreventingMovement();
@@ -96,19 +121,30 @@ public class InventoryUIManager : MonoBehaviour
         inventoryUI.SetActive(false);
     }
 
-    public void ChangeBackPackMenu(int index)
+    public void ChangeBackPackMenu(string menu)
     {
-        for (int i = 0; i < selectMenuButtons.Length; i++)
+        ChangeBackPackMenu(StringToFilter(menu));
+    }
+
+    void ChangeBackPackMenu(ItemFiler itemFilter)
+    {
+        foreach (ItemFiler filter in Enum.GetValues(typeof(ItemFiler)))
         {
-            selectMenuButtons[i].GetComponent<Image>().sprite = unselectedButtonSprite;
-            selectMenuButtons[i].transform.SetParent(tabSelectionUnder.transform);
-            if (index == i)
+            if (selectMenuButtons.TryGetValue(filter.ToString(), out GameObject obj))
             {
-                selectMenuButtons[i].GetComponent<Image>().sprite = selectedButtonSprite;
-                selectMenuButtons[i].transform.SetParent(tabSelectionUpper.transform);
+                if (itemFilter == filter)
+                {
+                    obj.GetComponent<Image>().sprite = selectedButtonSprite;
+                    obj.transform.SetParent(tabSelectionUpper.transform);
+                }
+                else
+                {
+                    obj.GetComponent<Image>().sprite = unselectedButtonSprite;
+                    obj.transform.SetParent(tabSelectionUnder.transform);
+                }
             }
         }
-        BuildBackPackItems((ItemFiler)index + 1);
+        BuildBackPackItems(itemFilter);
     }
 
     void BuildBackPackItems(ItemFiler filter)
@@ -133,7 +169,7 @@ public class InventoryUIManager : MonoBehaviour
         {
             firstItemSet = AddContainerToInventory(inventory.baitContainer, filter, firstItemSet);
         }
-        if (filter == ItemFiler.all || filter == ItemFiler.Fishes)
+        if (filter == ItemFiler.all || filter == ItemFiler.fishes)
         {
             firstItemSet = AddContainerToInventory(inventory.fishContainer, filter, firstItemSet);
         }
@@ -162,7 +198,7 @@ public class InventoryUIManager : MonoBehaviour
                 {
                     continue;
                 }
-                else if (type == ItemType.fish && filter != ItemFiler.Fishes)
+                else if (type == ItemType.fish && filter != ItemFiler.fishes)
                 {
                     continue;
                 }
