@@ -22,6 +22,7 @@ public class fishFight : MonoBehaviour
     [SerializeField] RectTransform fishFightArea;
     [SerializeField] Material fishFightMaterial;
     [SerializeField] FishingManager fishingManager;
+    [SerializeField] PlayerData playerData;
 
     CurrentFish currentFishOnHook = null;
     PlayerControls playerControls;
@@ -84,7 +85,7 @@ public class fishFight : MonoBehaviour
         //Add 50 as a offset, so that the fight power of the fish and rod do not become too small
         fishPower = currentFishOnHook.length * randomFishPowerMultiplier + 50;
         Debug.Log("FishLength: " + currentFishOnHook.length);
-        rodPower = 50 + fishingManager.selectedRod.strength;
+        rodPower = 50 + playerData.GetSelectedRod().strength;
 
         rarity = FishEnumConfig.RatityToInt(currentFishOnHook.rarity);
         redLeft.sizeDelta = new Vector2((1.0f / 8.0f * rarity + 1.0f / 8.0f) / 2.0f * fishFightArea.rect.width, 50);

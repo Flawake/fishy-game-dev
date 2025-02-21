@@ -11,17 +11,17 @@ public class PlayerInventory : NetworkBehaviour
     public readonly SyncList<InventoryItem> fishContainer = new();
 
     [SerializeField]
-    FishingManager fishingManager;
+    PlayerData playerData;
 
     [Server]
-    public void SaveInventory(UserData playerData)
+    public void SaveInventory(UserData userData)
     {
         miscContainer.Clear();
         rodContainer.Clear();
         baitContainer.Clear();
         fishContainer.Clear();
 
-        foreach (UserData.Rod item in playerData.inventory.rods ?? Enumerable.Empty<UserData.Rod>())
+        foreach (UserData.Rod item in userData.inventory.rods ?? Enumerable.Empty<UserData.Rod>())
         {
             rodObject inventoryRod = ItemObjectGenerator.RodObjectFromMinimal(item.uid, item.id, item.durability);
             if(inventoryRod == null)
@@ -32,12 +32,12 @@ public class PlayerInventory : NetworkBehaviour
             AddItem(inventoryRod);
 
             //TODO: find a better place for this.
-            if (inventoryRod.uid == playerData.selectedRodUid)
+            if (inventoryRod.uid == userData.selectedRodUid)
             {
-                fishingManager.SelectNewRod(inventoryRod, true);
+                playerData.SelectNewRod(inventoryRod, true);
             }
         }
-        foreach (UserData.Bait item in playerData.inventory.baits ?? Enumerable.Empty<UserData.Bait>())
+        foreach (UserData.Bait item in userData.inventory.baits ?? Enumerable.Empty<UserData.Bait>())
         {
             baitObject inventoryBait = ItemObjectGenerator.BaitObjectFromMinimal(item.uid, item.id, item.amount);
             if (inventoryBait == null)
@@ -47,12 +47,12 @@ public class PlayerInventory : NetworkBehaviour
             }
             AddItem(inventoryBait);
             //TODO: find a better place for this.
-            if (inventoryBait.id == playerData.selectedBaitId)
+            if (inventoryBait.id == userData.selectedBaitId)
             {
-                fishingManager.SelectNewBait(inventoryBait, true);
+                playerData.SelectNewBait(inventoryBait, true);
             }
         }
-        foreach (UserData.Fish item in playerData.inventory.fishes ?? Enumerable.Empty<UserData.Fish>())
+        foreach (UserData.Fish item in userData.inventory.fishes ?? Enumerable.Empty<UserData.Fish>())
         {
             FishObject inventoryFish = ItemObjectGenerator.FishObjectFromMinimal(item.id, item.amount);
             if (inventoryFish == null)
@@ -194,6 +194,16 @@ public class PlayerInventory : NetworkBehaviour
             }
         }
         return false;
+    }
+
+    public rodObject ReplaceRodByUID(int uid)
+    {
+        ItemObject item = GetItemByUID(uid, ItemType.rod);
+        if (item == null)
+        {
+            return null;
+        }
+        return item as rodObject;
     }
 
     public rodObject GetRodByID(int id)

@@ -1,20 +1,9 @@
 using System.Collections;
 using UnityEngine;
 using Mirror;
-using System;
 
 public class FishingManager : NetworkBehaviour
 {
-    //TODO: fishao used bezier curves for it's line, I might need to do the same.
-    //com.ax3.display.rod
-    //com.ax3.fishao.locations.entries.FieldChat
-    //rod radius: 200, 300, 500, small, normal, big
-    //Keep this order of syncvars, the dirty bits rely on it.
-    [SyncVar(hook = nameof(SelectedRodChanged))]
-    public rodObject selectedRod;                       //bit 1(1 << 0)
-    [SyncVar(hook = nameof(SelectedBaitChanged))]
-    public baitObject selectedBait;                     //bit2 (1 << 1)
-
     public struct syncedFishingPos
     {
         public Vector2 fishingPos;
@@ -61,9 +50,6 @@ public class FishingManager : NetworkBehaviour
 
     public bool nearWater = false;
 
-    public event Action selectedRodChanged;
-    public event Action selectedBaitChanged;
-
     public enum EndFishingReason
     {
         caughtFish,
@@ -93,34 +79,6 @@ public class FishingManager : NetworkBehaviour
         if (isServer) {
             ProgressFishing();
         }
-    }
-
-    void SelectedRodChanged(rodObject oldRod, rodObject newRod)
-    {
-        if (oldRod != null)
-        {
-            if (oldRod.uid == newRod.uid)
-            {
-                //return, this action is used to update the bait image. But this is not needed since the bait did not change
-                inventory.GetRodByUID(newRod.uid).throwIns = newRod.throwIns;
-                return;
-            }
-        }
-        selectedRodChanged?.Invoke();
-    }
-
-    void SelectedBaitChanged(baitObject oldBait, baitObject newBait)
-    {
-        if(oldBait != null)
-        {
-            if(oldBait.id == newBait.id)
-            {
-                //return, this action is used to update the bait image. But this is not needed since the bait did not change
-                inventory.GetBaitByID(newBait.id).throwIns = newBait.throwIns;
-                return;
-            }
-        }
-        selectedBaitChanged?.Invoke();
     }
 
     /// <summary>
@@ -253,108 +211,6 @@ public class FishingManager : NetworkBehaviour
         caughtData.setData(currentFish);
     }
 
-    public rodObject GetSelectedRod()
-    {
-        return selectedRod;
-    }
-
-    public baitObject GetSelectedBait()
-    {
-        return selectedBait;
-    }
-
-    /// <summary>
-    /// All functions under here are being executed by the server.
-    /// </summary>
-    /// 
-    [Server]
-    public void SelectNewRod(rodObject newRod, bool fromDatabase)
-    {
-        if (!fromDatabase)
-        {
-            DatabaseCommunications.SelectOtherItem(newRod, playerData.GetUuidAsString());
-        }
-        //TODO: ask the database what the new rod is to see if the write has succeed
-        selectedRod = newRod;
-    }
-
-    [Command]
-    public void CmdSelectNewRod(rodObject newRod, bool fromDatabase)
-    {
-        if(selectedRod != null)
-        {
-            if (selectedRod.uid == newRod.uid)
-            {
-                return;
-            }
-        }
-
-        //The newBait variable might be a newly crafted bait, so get it as a reference from the inventory, then the inventory get's updated when this specific item is updated
-        rodObject rodInventoryReference;
-        if (newRod.stackable)
-        {
-            rodInventoryReference = inventory.GetRodByUID(newRod.uid);
-        }
-        else
-        {
-            //Probably never needed, but catch it and warn just in case
-            Debug.LogWarning("Can't get bait that is not stackable, should be got with the uid");
-            return;
-        }
-
-        if (rodInventoryReference == null)
-        {
-            Debug.Log("baitInventoryReference is null");
-            return;
-        }
-
-        SelectNewRod(rodInventoryReference, fromDatabase);
-    }
-
-    [Server]
-    public void SelectNewBait(baitObject newBait, bool fromDatabase)
-    {
-        if (!fromDatabase)
-        {
-            DatabaseCommunications.SelectOtherItem(newBait, playerData.GetUuidAsString());
-        }
-        //TODO: ask the database what the new rod is to see if the write has gone correctly
-        selectedBait = newBait;
-    }
-
-    [Command]
-    public void CmdSelectNewBait(baitObject newBait, bool fromDatabase)
-    {
-        if(selectedBait != null)
-        {
-            if (selectedBait.id == newBait.id)
-            {
-                return;
-            }
-        }
-
-        //The newBait variable might be a newly crafted bait, so get it as a reference from the inventory, then the inventory get's updated when this specific item is updated
-        baitObject baitInventoryReference;
-        if(newBait.stackable)
-        {
-            baitInventoryReference = inventory.GetBaitByID(newBait.id);
-        }
-        else
-        {
-            //Probably never needed, but catch it and warn just in case
-            Debug.LogWarning("Can't get bait that is not stackable, should be got with the uid");
-            return;
-        }
-        
-        if (baitInventoryReference == null)
-        {
-            Debug.Log("baitInventoryReference is null");
-            return;
-        }
-
-        SelectNewBait(baitInventoryReference, fromDatabase);
-    }
-
     [Command]
     void CmdRegisterCaughtFish() {
         if (startedFishFightTime.ElapsedMilliseconds < minFishingTimeMs)
@@ -381,8 +237,8 @@ public class FishingManager : NetworkBehaviour
             return;
         }
 
-        ReduceSelectedRodQuality(selectedRod);
-        ReduceSelectedBaitQuality(selectedBait);
+        playerData.ChangeRodQuality(playerData.GetSelectedRod(), -1);
+        playerData.ChangeBaitQuality(playerData.GetSelectedBait(), -1);
 
         syncedFishingPos pos;
         pos.stardedFishing = true;
@@ -395,7 +251,7 @@ public class FishingManager : NetworkBehaviour
         {
             spawnableFishes spawnable = water.collider.gameObject.GetComponent<spawnableFishes>();
 
-            (currentFish, fishGenerated) = spawnable.GenerateFish(selectedBait.baitType);
+            (currentFish, fishGenerated) = spawnable.GenerateFish(playerData.GetSelectedBait().baitType);
 
             timeTillResultsSeconds = UnityEngine.Random.Range(5, 11);
 
@@ -478,73 +334,5 @@ public class FishingManager : NetworkBehaviour
         pos.stardedFishing = false;
         pos.fishingPos = Vector2.zero;
         syncedPlaceToThrow = pos;
-    }
-
-    [Server]
-    private void ReduceSelectedRodQuality(rodObject rod)
-    {
-        if(rod.durabilityIsInfinite || rod.uid < 0)
-        {
-            return;
-        }
-        if(rod.throwIns == 1)
-        {
-            //Remove item from database and select new one
-            //Item with id -1, this should be the standard beginners rod
-            ItemObject rodItem = inventory.GetRodByID(-1);
-            rodObject newRod = null;
-            if(rodItem != null)
-            {
-                newRod = rodItem as rodObject;
-            }
-            if(newRod == null)
-            {
-                Debug.LogWarning("newRod returned was null");
-                return;
-            }
-            //TODO: only change to the new rod when the rod goes out of the water.
-            SelectNewRod(newRod, false);
-            playerDataManager.DestroyItem(rod);
-        }
-        else
-        {
-            selectedRod.throwIns -= 1;
-            SetSyncVarDirtyBit(1 << 0); //selected rod is only updated not changed, so we need to force a update manually
-            DatabaseCommunications.ReduceItem(rod, 1, playerData.GetUuidAsString());
-        }
-    }
-
-    [Server]
-    private void ReduceSelectedBaitQuality(baitObject bait)
-    {
-        if (bait.durabilityIsInfinite || bait.id < 0)
-        {
-            return;
-        }
-        if (bait.throwIns == 1)
-        {
-            //Remove item from database and select new one
-            //Item with id -1, this should be the standard beginners rod
-            ItemObject baitItem = inventory.GetBaitByID(-1);
-            baitObject newBait = null;
-            if (baitItem != null)
-            {
-                newBait = baitItem as baitObject;
-            }
-            if (newBait == null)
-            {
-                Debug.LogWarning("newRod returned was null");
-                return;
-            }
-            //TODO: only change to the new bait when the rod goes out of the water.
-            SelectNewBait(newBait, false);
-            playerDataManager.DestroyItem(bait);
-        }
-        else
-        {
-            selectedBait.throwIns -= 1;
-            SetSyncVarDirtyBit(1 << 1); //selected bait is only updated not changed, so we need to force a update manually
-            DatabaseCommunications.ReduceItem(bait, 1, playerData.GetUuidAsString());
-        }
     }
 }

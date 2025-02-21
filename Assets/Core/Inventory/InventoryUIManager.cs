@@ -8,9 +8,9 @@ using UnityEngine.UI;
 
 public class InventoryUIManager : MonoBehaviour
 {
-    FishingManager fishingManager;
     playerController controller;
     ItemObject item;
+    PlayerData playerData;
 
     [SerializeField]
     GameObject useItemButton;
@@ -77,7 +77,7 @@ public class InventoryUIManager : MonoBehaviour
 
     private void Start()
     {
-        fishingManager = GetComponentInParent<FishingManager>();
+        playerData = GetComponentInParent<PlayerData>();
         controller = GetComponentInParent<playerController>();
     }
 
@@ -205,13 +205,13 @@ public class InventoryUIManager : MonoBehaviour
             }
 
             if (itemObject is rodObject rod) {
-                if (fishingManager.GetSelectedRod().uid == rod.uid) { 
+                if (playerData.GetSelectedRod() != null && playerData.GetSelectedRod().uid == rod.uid) { 
                     itemSelected = true;
                 }
             }
             if (itemObject is baitObject bait)
             {
-                if (fishingManager.GetSelectedBait().id == bait.id)
+                if (playerData.GetSelectedBait() != null && playerData.GetSelectedBait().id == bait.id)
                 {
                     itemSelected = true;
                 }
@@ -241,7 +241,7 @@ public class InventoryUIManager : MonoBehaviour
             name = rod.name;
             amount = rod.throwIns;
 
-            if (fishingManager.GetSelectedRod().uid == rod.uid)
+            if (playerData.GetSelectedRod() != null && playerData.GetSelectedRod().uid == rod.uid)
             {
                 itemPreviewSelectedItemMark.SetActive(true);
             }
@@ -250,7 +250,7 @@ public class InventoryUIManager : MonoBehaviour
         {
             name = bait.name;
             amount = bait.throwIns;
-            if (fishingManager.GetSelectedBait().id == bait.id)
+            if (playerData.GetSelectedBait() != null &&  playerData.GetSelectedBait().id == bait.id)
             {
                 itemPreviewSelectedItemMark.SetActive(true);
             }
@@ -289,21 +289,21 @@ public class InventoryUIManager : MonoBehaviour
     //Called from game (inventory's use button)
     public void UseSelectedItem()
     {
-        if (fishingManager == null)
+        if (playerData == null)
         {
-            fishingManager = GetComponentInParent<FishingManager>();
-            if (fishingManager == null)
+            playerData = GetComponentInParent<PlayerData>();
+            if (playerData == null)
             {
                 return;
             }
         }
         if (item is rodObject rod)
         {
-            fishingManager.CmdSelectNewRod(rod, false);
+            playerData.CmdSelectNewRod(rod);
         }
         else if (item is baitObject bait)
         {
-            fishingManager.CmdSelectNewBait(bait, false);
+            playerData.CmdSelectNewBait(bait);
         }
         CloseBackPack();
     }

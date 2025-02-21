@@ -6,7 +6,6 @@ using Mirror;
 
 public class PlayerInfoUIManager : MonoBehaviour
 {
-    FishingManager fishingManager;
     PlayerData playerData;
 
     [SerializeField]
@@ -46,16 +45,13 @@ public class PlayerInfoUIManager : MonoBehaviour
         {
             return;
         }
-        fishingManager = GetComponentInParent<FishingManager>();
-        fishingManager.selectedRodChanged += UpdateSelectedRodImage;
-        fishingManager.selectedBaitChanged += UpdateSelectedBaitImage;
         playerData = GetComponentInParent<PlayerData>();
+        playerData.selectedRodChanged += UpdateSelectedRodImage;
+        playerData.selectedBaitChanged += UpdateSelectedBaitImage;
         playerData.CoinsAmountChanged += FishCoinsChanged;
         playerData.BucksAmountChanged += FishBucksChanged;
         playerData.XPAmountChanged += XpAmountChanged;
         XpAmountChanged();
-        UpdateSelectedRodImage();
-        UpdateSelectedBaitImage();
         HideCanvas();
     }
 
@@ -118,28 +114,28 @@ public class PlayerInfoUIManager : MonoBehaviour
 
     public void UpdateSelectedRodImage()
     {
-        if (fishingManager == null)
+        if (playerData == null)
         {
-            fishingManager = GetComponentInParent<FishingManager>();
-            if (fishingManager == null)
+            playerData = GetComponentInParent<PlayerData>();
+            if (playerData == null)
             {
                 return;
             }
         }
-        itemHolderRodSprite.sprite = fishingManager.selectedRod.sprite;
+        itemHolderRodSprite.sprite = playerData.GetSelectedRod().sprite;
     }
 
     public void UpdateSelectedBaitImage()
     {
-        if (fishingManager == null)
+        if (playerData == null)
         {
-            fishingManager = GetComponentInParent<FishingManager>();
-            if (fishingManager == null)
+            playerData = GetComponentInParent<PlayerData>();
+            if (playerData == null)
             {
                 return;
             }
         }
-        itemHolderBaitSprite.sprite = fishingManager.selectedBait.sprite;
+        itemHolderBaitSprite.sprite = playerData.GetSelectedBait().sprite;
     }
 
     public void OpenWorldMap()
