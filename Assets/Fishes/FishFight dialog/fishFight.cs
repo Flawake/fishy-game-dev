@@ -21,8 +21,9 @@ public class fishFight : MonoBehaviour
     [SerializeField] RectTransform redLeft;
     [SerializeField] RectTransform fishFightArea;
     [SerializeField] Material fishFightMaterial;
-    [SerializeField] FishingManager fishingManager;
-    [SerializeField] PlayerData playerData;
+
+    FishingManager fishingManager;
+    PlayerData playerData;
 
     CurrentFish currentFishOnHook = null;
     PlayerControls playerControls;
@@ -41,12 +42,12 @@ public class fishFight : MonoBehaviour
     float sensitivity = 0.5f;
     public bool initialized = false;
 
-    float minFishingTime;
+    int minFishingTimeSeconds;
 
     void RandomGameSize(int minFishingTime)
     {
         int random = Random.Range(100, 200);
-        gameSize = (random * minFishingTime);
+        gameSize = random * minFishingTime;
     }
 
     void FightDone(FishingManager.EndFishingReason reason)
@@ -64,10 +65,7 @@ public class fishFight : MonoBehaviour
 
     public void StartFight(CurrentFish currentFish, int minFishingTime)
     {
-        if(fishingManager == null)
-        {
-            fishingManager = this.GetComponentInParent<FishingManager>();
-        }
+        playerData = GetComponentInParent<PlayerData>();
 
         RandomGameSize(minFishingTime);
 
@@ -83,8 +81,7 @@ public class fishFight : MonoBehaviour
         //Returns number between 0.97 and 1.06
         float randomFishPowerMultiplier = (11f + Random.Range(0f, 1f) - 0.33f) / 11f;
         //Add 50 as a offset, so that the fight power of the fish and rod do not become too small
-        fishPower = currentFishOnHook.length * randomFishPowerMultiplier + 50;
-        Debug.Log("FishLength: " + currentFishOnHook.length);
+        fishPower = 50 + (currentFishOnHook.length * randomFishPowerMultiplier);
         rodPower = 50 + playerData.GetSelectedRod().strength;
 
         rarity = FishEnumConfig.RatityToInt(currentFishOnHook.rarity);
@@ -92,7 +89,7 @@ public class fishFight : MonoBehaviour
         redRight.sizeDelta = new Vector2((1.0f / 8.0f * rarity + 1.0f / 8.0f) / 2.0f * fishFightArea.rect.width, 50);
         fishFightMaterial.SetFloat("_Rarity", rarity);
         progressBar.value = progressBar.minValue;
-        this.minFishingTime = (float)minFishingTime;
+        minFishingTimeSeconds = minFishingTime;
         
         initialized = true;
     }
@@ -145,16 +142,16 @@ public class fishFight : MonoBehaviour
         if (fightSlider.transform.localPosition.x < redLeft.rect.width + redLeft.transform.localPosition.x || fightSlider.transform.localPosition.x > redRight.transform.localPosition.x - redRight.rect.width)
         {
             //Progress bar should sink 3 times as fast in the red as it grows in the green.
-            progress -= (progressBar.maxValue * Time.deltaTime / minFishingTime) * 100 * 3;
+            progress -= (progressBar.maxValue * Time.deltaTime / minFishingTimeSeconds) * 100 * 3;
         }
         else
         {
-            progress += (progressBar.maxValue * Time.deltaTime / minFishingTime) * 100;
+            progress += (progressBar.maxValue * Time.deltaTime / minFishingTimeSeconds) * 100;
         }
 
         progressBar.value = progress / 100;
 
-        if (progressBar.value == progressBar.maxValue)
+        if (progress / 100 > progressBar.maxValue)
         {
             FightDone(FishingManager.EndFishingReason.caughtFish);
         }
@@ -254,6 +251,12 @@ public class fishFight : MonoBehaviour
             }
         }
         relativePos += sail;
+    }
+
+    private void Start()
+    {
+        fishingManager = GetComponentInParent<FishingManager>();
+        playerData = GetComponentInParent<PlayerData>();
     }
 
     private void FixedUpdate()

@@ -37,16 +37,16 @@ public class FishingManager : NetworkBehaviour
 
     [SyncVar]
     CurrentFish currentFish;
-    [SyncVar]
-    System.Diagnostics.Stopwatch startedFishFightTime = new System.Diagnostics.Stopwatch();
 
-    System.Diagnostics.Stopwatch startedFishingTime = new System.Diagnostics.Stopwatch();
+    [SyncVar]
+    float elapsedFishingTime = 0;
+    float elapsedFishFightTime = 0;
 
     //count in ms, since this is more precise
-    int minFishingTimeMs;
+    int minFishingTimeSeconds;
 
     //Time till the fishing result can be send to the player
-    int timeTillResultsSeconds = int.MaxValue;
+    float timeTillResultsSeconds = float.MaxValue;
 
     public bool nearWater = false;
 
@@ -181,15 +181,15 @@ public class FishingManager : NetworkBehaviour
     }
 
     [ClientRpc]
-    void StartFight(CurrentFish currentFish, int _minFishingTimeMs)
+    void RpcStartFight(CurrentFish currentFish, int minFishingTime)
     {
-        minFishingTimeMs = _minFishingTimeMs;
+        minFishingTimeSeconds = minFishingTime;
         if (!isLocalPlayer)
         {
             return;
         }
         fishFightDialog.SetActive(true);
-        fishFight.StartFight(currentFish, _minFishingTimeMs / 1000);
+        fishFight.StartFight(currentFish, minFishingTime);
     }
 
     [Client]
@@ -213,9 +213,9 @@ public class FishingManager : NetworkBehaviour
 
     [Command]
     void CmdRegisterCaughtFish() {
-        if (startedFishFightTime.ElapsedMilliseconds < minFishingTimeMs)
+        if (elapsedFishFightTime < minFishingTimeSeconds)
         {
-            Debug.LogWarning("The fishing period was too short. Should be " + minFishingTimeMs + " ms, but was " + startedFishFightTime.ElapsedMilliseconds);
+            Debug.LogWarning("The fishing period was too short. Should be " + minFishingTimeSeconds + " s, but was " + elapsedFishFightTime);
             return;
         }
         else
@@ -253,10 +253,9 @@ public class FishingManager : NetworkBehaviour
 
             (currentFish, fishGenerated) = spawnable.GenerateFish(playerData.GetSelectedBait().baitType);
 
-            timeTillResultsSeconds = UnityEngine.Random.Range(5, 11);
+            timeTillResultsSeconds = Random.Range(5, 11);
 
-            startedFishingTime.Reset();
-            startedFishingTime.Start();
+            elapsedFishingTime = 0;
         }
         else
         {
@@ -288,15 +287,23 @@ public class FishingManager : NetworkBehaviour
     }
 
     //Don't do a Enumerator with yield return new waitforseconds(), we can't handle the player stopping the fishing progress that way.
-    void ProgressFishing() 
+    void ProgressFishing()
     {
-        //Only run the function when the player is fishing AND the fight is has already started
-        if (!isFishing || fightStarted) {
+        //Only run the function when the player is fishing.
+        if (!isFishing) {
             return;
         }
 
+        if(fightStarted)
+        {
+            elapsedFishFightTime += Time.deltaTime;
+            return;
+        }
+
+        elapsedFishingTime += Time.deltaTime;
+
         //Check if the rod is in the water for long enough
-        if(startedFishingTime.ElapsedMilliseconds < timeTillResultsSeconds * 1000)
+        if(elapsedFishingTime < timeTillResultsSeconds)
         {
             return;
         }
@@ -310,10 +317,9 @@ public class FishingManager : NetworkBehaviour
             return;
         }
 
-        minFishingTimeMs = UnityEngine.Random.Range(6, 11) * 1000;
-        startedFishFightTime.Reset();
-        startedFishFightTime.Start();
-        StartFight(currentFish, minFishingTimeMs);
+        minFishingTimeSeconds = Random.Range(6, 11);
+        elapsedFishFightTime = 0;
+        RpcStartFight(currentFish, minFishingTimeSeconds);
         fightStarted = true;
     }
 
