@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class PlayerStatsUIManager : MonoBehaviour
 {
-    playerController controller;
+    PlayerController controller;
     
     [SerializeField]
     GameObject infoUI;
     
     private void Start()
     {
-        controller = GetComponentInParent<playerController>();
+        controller = GetComponentInParent<PlayerController>();
     }
 
     public void ToggleStore()
@@ -44,7 +44,7 @@ public class PlayerStatsUIManager : MonoBehaviour
     {
         if (controller == null)
         {
-            controller = GetComponentInParent<playerController>();
+            controller = GetComponentInParent<PlayerController>();
         }
     }
 

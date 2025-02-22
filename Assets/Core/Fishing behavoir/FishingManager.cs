@@ -4,17 +4,17 @@ using Mirror;
 
 public class FishingManager : NetworkBehaviour
 {
-    public struct syncedFishingPos
+    public struct SyncedFishingPos
     {
         public Vector2 fishingPos;
         public bool stardedFishing;
     }
 
     //script classes
-    [SerializeField] playerController player;
+    [SerializeField] PlayerController player;
     [SerializeField] FishingLine fishingLine;
-    [SerializeField] fishFight fishFight;                   //change
-    [SerializeField] caughtDialogData caughtData;           //change
+    [SerializeField] FishFight fishFight;                   //change
+    [SerializeField] CaughtDialogData caughtData;           //change
     [SerializeField] PlayerDataSyncManager playerDataManager;
     [SerializeField] PlayerInventory inventory;
     [SerializeField] PlayerData playerData;
@@ -33,7 +33,7 @@ public class FishingManager : NetworkBehaviour
     bool fishGenerated = false;
 
     [SyncVar(hook = nameof(SyncvarThrowRod))]
-    syncedFishingPos syncedPlaceToThrow;
+    SyncedFishingPos syncedPlaceToThrow;
 
     [SyncVar]
     CurrentFish currentFish;
@@ -66,8 +66,8 @@ public class FishingManager : NetworkBehaviour
         //TODO: don't make this code dependent on string paths
         fishFightDialog = GameObject.Find("Player(Clone)/Canvas(Clone)/Fish fight dialog");
         caughtDialog = GameObject.Find("Player(Clone)/Canvas(Clone)/Fish caught dialog");
-        fishFight = fishFightDialog.GetComponent<fishFight>();
-        caughtData = caughtDialog.GetComponent<caughtDialogData>();
+        fishFight = fishFightDialog.GetComponent<FishFight>();
+        caughtData = caughtDialog.GetComponent<CaughtDialogData>();
         if( fishFightDialog == null || caughtDialog == null)
         {
             Debug.LogError("Could not find a canvas dialog");
@@ -130,7 +130,7 @@ public class FishingManager : NetworkBehaviour
             return false;
         }
 
-        if (!hit.collider.gameObject.GetComponent<playersNearWater>().playersCloseToWater.Contains(this.GetComponent<NetworkIdentity>().netId))
+        if (!hit.collider.gameObject.GetComponent<PlayersNearWater>().playersCloseToWater.Contains(this.GetComponent<NetworkIdentity>().netId))
         {
             return false;
         }
@@ -208,7 +208,7 @@ public class FishingManager : NetworkBehaviour
     void TargetShowCaughtDialog()
     {
         caughtDialog.SetActive(true);
-        caughtData.setData(currentFish);
+        caughtData.SetData(currentFish);
     }
 
     [Command]
@@ -240,7 +240,7 @@ public class FishingManager : NetworkBehaviour
         playerData.ChangeRodQuality(playerData.GetSelectedRod(), -1);
         playerData.ChangeBaitQuality(playerData.GetSelectedBait(), -1);
 
-        syncedFishingPos pos;
+        SyncedFishingPos pos;
         pos.stardedFishing = true;
         pos.fishingPos = placeToThrow;
         syncedPlaceToThrow = pos;
@@ -249,7 +249,7 @@ public class FishingManager : NetworkBehaviour
 
         if (water)
         {
-            spawnableFishes spawnable = water.collider.gameObject.GetComponent<spawnableFishes>();
+            SpawnableFishes spawnable = water.collider.gameObject.GetComponent<SpawnableFishes>();
 
             (currentFish, fishGenerated) = spawnable.GenerateFish(playerData.GetSelectedBait().baitType);
 
@@ -262,7 +262,7 @@ public class FishingManager : NetworkBehaviour
             Debug.LogError("Water should never be able to be null, it happened now tough");
         }
     }
-    void SyncvarThrowRod(syncedFishingPos _, syncedFishingPos newVal) {
+    void SyncvarThrowRod(SyncedFishingPos _, SyncedFishingPos newVal) {
         if (isLocalPlayer) {
             return;
         }
@@ -336,7 +336,7 @@ public class FishingManager : NetworkBehaviour
         fightStarted = false;
         fishingLine.RpcEndedFishing();
 
-        syncedFishingPos pos;
+        SyncedFishingPos pos;
         pos.stardedFishing = false;
         pos.fishingPos = Vector2.zero;
         syncedPlaceToThrow = pos;

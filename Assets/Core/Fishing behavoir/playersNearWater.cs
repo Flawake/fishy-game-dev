@@ -1,9 +1,8 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
-public class playersNearWater : NetworkBehaviour
+public class PlayersNearWater : NetworkBehaviour
 {
     //Holds a list of all players that are close to the water to know if they can throw in.
     [SerializeField] public List<uint> playersCloseToWater = new List<uint>();

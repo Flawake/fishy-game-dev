@@ -6,7 +6,7 @@ using UnityEngine;
 public class PlayerNetworkTransform : NetworkTransformBase
 {
     [SerializeField] 
-    playerController playerController;
+    PlayerController playerController;
 
     uint sendIntervalCounter = 0;
     double lastSendIntervalTime = double.MinValue;

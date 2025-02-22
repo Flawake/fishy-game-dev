@@ -4,7 +4,7 @@ using Mirror;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 
-public class playerController : NetworkBehaviour
+public class PlayerController : NetworkBehaviour
 {
     float lastVerifiedtime = float.MinValue;
     Vector3? lastVerifiedPosition = null;

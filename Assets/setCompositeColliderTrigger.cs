@@ -1,7 +1,7 @@
 using Mirror;
 using UnityEngine;
 
-public class setCompositeColliderTrigger : MonoBehaviour
+public class SetCompositeColliderTrigger : MonoBehaviour
 {
     [SerializeField]
     CompositeCollider2D coll;

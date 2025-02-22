@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
-public class fishFight : MonoBehaviour
+public class FishFight : MonoBehaviour
 {
     private enum FishReelDifficulty
     {

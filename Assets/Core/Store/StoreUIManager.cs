@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class StoreUIManager : MonoBehaviour
 {
-    playerController controller;
+    PlayerController controller;
 
     [SerializeField]
     GameObject storeUI;
@@ -15,7 +15,7 @@ public class StoreUIManager : MonoBehaviour
 
     private void Start()
     {
-        controller = GetComponentInParent<playerController>();
+        controller = GetComponentInParent<PlayerController>();
     }
 
     public void ToggleStore()
@@ -88,7 +88,7 @@ public class StoreUIManager : MonoBehaviour
     {
         if (controller == null)
         {
-            controller = GetComponentInParent<playerController>();
+            controller = GetComponentInParent<PlayerController>();
         }
     }
 }

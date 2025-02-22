@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 public class InventoryUIManager : MonoBehaviour
 {
-    playerController controller;
+    PlayerController controller;
     ItemObject item;
     PlayerData playerData;
 
@@ -78,7 +78,7 @@ public class InventoryUIManager : MonoBehaviour
     private void Start()
     {
         playerData = GetComponentInParent<PlayerData>();
-        controller = GetComponentInParent<playerController>();
+        controller = GetComponentInParent<PlayerController>();
     }
 
     //called by a button in the game
@@ -312,7 +312,7 @@ public class InventoryUIManager : MonoBehaviour
     {
         if (controller == null)
         {
-            controller = GetComponentInParent<playerController>();
+            controller = GetComponentInParent<PlayerController>();
         }
     }
 }

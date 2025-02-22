@@ -2,7 +2,6 @@ using Mirror;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using static UserData;
 
 public class FishInfoUIManager : MonoBehaviour
 {

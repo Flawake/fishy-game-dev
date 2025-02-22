@@ -1,11 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System;
 
-public class caughtDialogData : MonoBehaviour
+public class CaughtDialogData : MonoBehaviour
 {
     [SerializeField]
     Image fishSprite;
@@ -21,7 +19,7 @@ public class caughtDialogData : MonoBehaviour
     [SerializeField]
     TMP_Text xpField;
 
-    public void setData(CurrentFish fishdata)
+    public void SetData(CurrentFish fishdata)
     {
         InGameItems itemsInGame = GameObject.Find("NetworkManager").GetComponent<InGameItems>();
 

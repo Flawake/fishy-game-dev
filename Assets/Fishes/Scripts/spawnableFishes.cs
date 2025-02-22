@@ -3,7 +3,7 @@ using UnityEngine;
 using Mirror;
 using System;
 
-public class spawnableFishes : NetworkBehaviour
+public class SpawnableFishes : NetworkBehaviour
 {
     public List<FishConfiguration> fishes = new List<FishConfiguration>();
 

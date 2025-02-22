@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 [AddComponentMenu("")]
 public class GameNetworkManager : NetworkManager
 {
-    internal struct playerConnectionInfo
+    internal struct PlayerConnectionInfo
     {
         public string uuid;
         public double playerConnectionTime;
@@ -17,7 +17,7 @@ public class GameNetworkManager : NetworkManager
     internal static readonly HashSet<string> playerNames = new HashSet<string>();
 
     //netID and start time (time.time);
-    internal static readonly Dictionary<int, playerConnectionInfo> connectedPlayersInfo = new Dictionary<int, playerConnectionInfo>();
+    internal static readonly Dictionary<int, PlayerConnectionInfo> connectedPlayersInfo = new Dictionary<int, PlayerConnectionInfo>();
 
     [Scene]
     [Tooltip("Add all sub-scenes to this list")]
@@ -70,7 +70,7 @@ public class GameNetworkManager : NetworkManager
     [Server]
     void AddPlaytimeToDatabase(NetworkConnectionToClient conn)
     {
-        if (connectedPlayersInfo.TryGetValue(conn.connectionId, out playerConnectionInfo playerInfo))
+        if (connectedPlayersInfo.TryGetValue(conn.connectionId, out PlayerConnectionInfo playerInfo))
         {
             DatabaseCommunications.AddPlaytime((int)(NetworkTime.time - playerInfo.playerConnectionTime), playerInfo.uuid);
         }
@@ -199,7 +199,7 @@ public class GameNetworkManager : NetworkManager
         PlayerData dataPlayer = data.Objects[0].GetComponent<PlayerData>();
         if (dataPlayer.ParsePlayerData(data.ResponseData)) {
             NetworkServer.AddPlayerForConnection(data.Connection, data.Objects[0]);
-            playerConnectionInfo playerConnection = new playerConnectionInfo
+            PlayerConnectionInfo playerConnection = new PlayerConnectionInfo
             {
                 uuid = dataPlayer.GetUuidAsString(),
                 playerConnectionTime = NetworkTime.time,

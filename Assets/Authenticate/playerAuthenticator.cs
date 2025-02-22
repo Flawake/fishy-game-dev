@@ -10,7 +10,7 @@ using UnityEngine;
     API Reference: https://mirror-networking.com/docs/api/Mirror.NetworkAuthenticator.html
 */
 
-public class playerAuthenticator : NetworkAuthenticator
+public class PlayerAuthenticator : NetworkAuthenticator
 {
     #region Messages
 
