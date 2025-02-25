@@ -57,7 +57,7 @@ public class ViewPlayerStats : MonoBehaviour
         _playerStatsUIManager = _player.transform.Find("Canvas(Clone)").Find("PlayerStats").gameObject.GetComponent<PlayerStatsUIManager>();
         if (_playerData != null && _playerStatsUIManager != null)
         {
-            _playerStatsUIManager.ToggleStore();
+            _playerStatsUIManager.ToggleStore(_playerData);
         }
         else
         {

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,6 +6,7 @@ using UnityEngine;
 public class PlayerStatsUIManager : MonoBehaviour
 {
     PlayerController controller;
+    private PlayerData _playerData;
     
     [SerializeField]
     GameObject infoUI;
@@ -14,38 +16,41 @@ public class PlayerStatsUIManager : MonoBehaviour
         controller = GetComponentInParent<PlayerController>();
     }
 
-    public void ToggleStore()
+    public void ToggleStore(PlayerData playerData)
     {
-        if(infoUI.activeInHierarchy == false)
+        if (EnsurePlayer(playerData))
         {
-            infoUI.SetActive(true);
-            EnsurePlayerController();
-            controller.IncreaseObjectsPreventingMovement();
-            controller.IncreaseObjectsPreventingFishing();
+            Debug.Log("User name:" + _playerData.GetUsername());
+            if(infoUI.activeInHierarchy == false) OpenStore();
+            else CloseStore();
         }
-        else
-        {
-            infoUI.SetActive(false);
-            controller.DecreaseObjectsPreventingMovement();
-            controller.IncreaseObjectsPreventingFishing();
-        }
+
+    
+        
     }
 
+    private void OpenStore()
+    {
+        infoUI.SetActive(true);
+        controller.IncreaseObjectsPreventingMovement();
+        controller.IncreaseObjectsPreventingFishing();
+    }
+    
     //Called from button in game
     public void CloseStore()
     {
-        EnsurePlayerController();
         controller.DecreaseObjectsPreventingMovement();
         controller.DecreaseObjectsPreventingFishing();
         infoUI.SetActive(false);
     }
     
-    void EnsurePlayerController()
+    bool EnsurePlayer(PlayerData playerData)
     {
-        if (controller == null)
-        {
-            controller = GetComponentInParent<PlayerController>();
-        }
+        _playerData = playerData;
+        controller = GetComponentInParent<PlayerController>();
+        if (_playerData != null && controller != null) return true;
+        Console.WriteLine("Player data and or Controller not found");
+        return false;
     }
 
     public void TestFunction()
