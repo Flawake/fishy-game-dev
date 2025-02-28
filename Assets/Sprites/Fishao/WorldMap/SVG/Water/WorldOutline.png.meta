@@ -1,0 +1,6721 @@
+fileFormatVersion: 2
+guid: 06a401b5caea58d42a3784e7c3b9aac0
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -8075219508322595253
+    second: WorldOutline_0
+  - first:
+      213: -6404334689884330879
+    second: WorldOutline_1
+  - first:
+      213: 5169676362733852371
+    second: WorldOutline_2
+  - first:
+      213: -211650588961032815
+    second: WorldOutline_3
+  - first:
+      213: 2217823967089195380
+    second: WorldOutline_4
+  - first:
+      213: 2731601792446946215
+    second: WorldOutline_5
+  - first:
+      213: -1228775670933174153
+    second: WorldOutline_6
+  - first:
+      213: -1754698247658945083
+    second: WorldOutline_7
+  - first:
+      213: 1747152949428735757
+    second: WorldOutline_8
+  - first:
+      213: -394323702924535621
+    second: WorldOutline_9
+  - first:
+      213: -4772906303530202137
+    second: WorldOutline_10
+  - first:
+      213: 1581566894920770016
+    second: WorldOutline_11
+  - first:
+      213: -4754688057926653928
+    second: WorldOutline_12
+  - first:
+      213: 3415588695113243048
+    second: WorldOutline_13
+  - first:
+      213: 8286118574929712730
+    second: WorldOutline_14
+  - first:
+      213: -7205377563870126484
+    second: WorldOutline_15
+  - first:
+      213: 384159932138988448
+    second: WorldOutline_16
+  - first:
+      213: 888107320088328022
+    second: WorldOutline_17
+  - first:
+      213: 2878281690890107251
+    second: WorldOutline_18
+  - first:
+      213: 1278765846265180200
+    second: WorldOutline_19
+  - first:
+      213: -6418208521000041889
+    second: WorldOutline_20
+  - first:
+      213: -2018243267419211310
+    second: WorldOutline_21
+  - first:
+      213: -8991854134407276099
+    second: WorldOutline_22
+  - first:
+      213: -5297000608719705521
+    second: WorldOutline_23
+  - first:
+      213: -6533738293460604500
+    second: WorldOutline_24
+  - first:
+      213: 4447644518720220797
+    second: WorldOutline_25
+  - first:
+      213: -7743341124976079520
+    second: WorldOutline_26
+  - first:
+      213: -1238087394907478787
+    second: WorldOutline_27
+  - first:
+      213: 8880404542893823390
+    second: WorldOutline_28
+  - first:
+      213: 8112583112984607505
+    second: WorldOutline_29
+  - first:
+      213: -3377939904472018968
+    second: WorldOutline_30
+  - first:
+      213: -8055678807385599260
+    second: WorldOutline_31
+  - first:
+      213: -3054010046403901920
+    second: WorldOutline_32
+  - first:
+      213: -1883173147596903629
+    second: WorldOutline_33
+  - first:
+      213: 5261772365332665497
+    second: WorldOutline_34
+  - first:
+      213: -7923958387323263007
+    second: WorldOutline_35
+  - first:
+      213: 511807125996677292
+    second: WorldOutline_36
+  - first:
+      213: -5600038614618438508
+    second: WorldOutline_37
+  - first:
+      213: -2247087948701663324
+    second: WorldOutline_38
+  - first:
+      213: 8775990455960033498
+    second: WorldOutline_39
+  - first:
+      213: -6691072447067381812
+    second: WorldOutline_40
+  - first:
+      213: 2593180647998572845
+    second: WorldOutline_41
+  - first:
+      213: 504357509977074685
+    second: WorldOutline_42
+  - first:
+      213: -6300351443590557826
+    second: WorldOutline_43
+  - first:
+      213: -8922475254668642397
+    second: WorldOutline_44
+  - first:
+      213: -4430133474845953819
+    second: WorldOutline_45
+  - first:
+      213: 1189725467857715950
+    second: WorldOutline_46
+  - first:
+      213: -7191478334446061627
+    second: WorldOutline_47
+  - first:
+      213: 398909761086886878
+    second: WorldOutline_48
+  - first:
+      213: -3541245815355937606
+    second: WorldOutline_49
+  - first:
+      213: 3900997821717358009
+    second: WorldOutline_50
+  - first:
+      213: -1807417224480304648
+    second: WorldOutline_51
+  - first:
+      213: -4311100526057897332
+    second: WorldOutline_52
+  - first:
+      213: 6277438909139335697
+    second: WorldOutline_53
+  - first:
+      213: 8874538319333620400
+    second: WorldOutline_54
+  - first:
+      213: 1579940914811620513
+    second: WorldOutline_55
+  - first:
+      213: 2375587557374548750
+    second: WorldOutline_56
+  - first:
+      213: 2373583893583019418
+    second: WorldOutline_57
+  - first:
+      213: 4444590564722186767
+    second: WorldOutline_58
+  - first:
+      213: -6433044521744333782
+    second: WorldOutline_59
+  - first:
+      213: -2971500277781618218
+    second: WorldOutline_60
+  - first:
+      213: -8398277646501833155
+    second: WorldOutline_61
+  - first:
+      213: 6759298397282886761
+    second: WorldOutline_62
+  - first:
+      213: 245210014573238006
+    second: WorldOutline_63
+  - first:
+      213: 4769553833690101468
+    second: WorldOutline_64
+  - first:
+      213: -4650392724039594171
+    second: WorldOutline_65
+  - first:
+      213: -7055580753905694527
+    second: WorldOutline_66
+  - first:
+      213: -2093865180767783604
+    second: WorldOutline_67
+  - first:
+      213: -8419691397398273207
+    second: WorldOutline_68
+  - first:
+      213: -6440620101654939587
+    second: WorldOutline_69
+  - first:
+      213: -2031436227709295659
+    second: WorldOutline_70
+  - first:
+      213: -3350601506358058467
+    second: WorldOutline_71
+  - first:
+      213: -4031483715272699668
+    second: WorldOutline_72
+  - first:
+      213: -6854862524043914144
+    second: WorldOutline_73
+  - first:
+      213: -8241180264133031026
+    second: WorldOutline_74
+  - first:
+      213: -8913955227465092382
+    second: WorldOutline_75
+  - first:
+      213: 4705548389060058134
+    second: WorldOutline_76
+  - first:
+      213: 6383683348611295363
+    second: WorldOutline_77
+  - first:
+      213: 8781605073291029325
+    second: WorldOutline_78
+  - first:
+      213: -839842727771485081
+    second: WorldOutline_79
+  - first:
+      213: 8911452447165314002
+    second: WorldOutline_80
+  - first:
+      213: -5866211521742892255
+    second: WorldOutline_81
+  - first:
+      213: -7833646683719088008
+    second: WorldOutline_82
+  - first:
+      213: 2695689860266758367
+    second: WorldOutline_83
+  - first:
+      213: 6946058461620211225
+    second: WorldOutline_84
+  - first:
+      213: -934734355035892950
+    second: WorldOutline_85
+  - first:
+      213: -1292610601881136013
+    second: WorldOutline_86
+  - first:
+      213: -5863233184232549036
+    second: WorldOutline_87
+  - first:
+      213: 1346908215807801583
+    second: WorldOutline_88
+  - first:
+      213: 3003320896783770249
+    second: WorldOutline_89
+  - first:
+      213: -8521101741234412887
+    second: WorldOutline_90
+  - first:
+      213: -433994873080797980
+    second: WorldOutline_91
+  - first:
+      213: -5507467272758719588
+    second: WorldOutline_92
+  - first:
+      213: 1046214322893765980
+    second: WorldOutline_93
+  - first:
+      213: 8613351283084702279
+    second: WorldOutline_94
+  - first:
+      213: -402461631081137179
+    second: WorldOutline_95
+  - first:
+      213: -1930340949853757787
+    second: WorldOutline_96
+  - first:
+      213: 3309584638854578934
+    second: WorldOutline_97
+  - first:
+      213: -8955527085719668853
+    second: WorldOutline_98
+  - first:
+      213: 7561390296878694675
+    second: WorldOutline_99
+  - first:
+      213: 5903832282720076113
+    second: WorldOutline_100
+  - first:
+      213: 3220946418255445106
+    second: WorldOutline_101
+  - first:
+      213: 60960737330926171
+    second: WorldOutline_102
+  - first:
+      213: 1446451198891425664
+    second: WorldOutline_103
+  - first:
+      213: -9066038849090368039
+    second: WorldOutline_104
+  - first:
+      213: 3298460055896821447
+    second: WorldOutline_105
+  - first:
+      213: 972577751026187464
+    second: WorldOutline_106
+  - first:
+      213: -1275964562355825934
+    second: WorldOutline_107
+  - first:
+      213: -1891907776697220531
+    second: WorldOutline_108
+  - first:
+      213: -4170124241109244513
+    second: WorldOutline_109
+  - first:
+      213: 6938521952921848268
+    second: WorldOutline_110
+  - first:
+      213: 7222321345178457425
+    second: WorldOutline_111
+  - first:
+      213: -6101966105672170942
+    second: WorldOutline_112
+  - first:
+      213: 2159288302329219405
+    second: WorldOutline_113
+  - first:
+      213: 1962239660099490808
+    second: WorldOutline_114
+  - first:
+      213: -5819326881542215538
+    second: WorldOutline_115
+  - first:
+      213: 1515069594070264637
+    second: WorldOutline_116
+  - first:
+      213: 8338558944227517391
+    second: WorldOutline_117
+  - first:
+      213: 4831703872021046991
+    second: WorldOutline_118
+  - first:
+      213: 3319453218380904138
+    second: WorldOutline_119
+  - first:
+      213: -3636550558403302478
+    second: WorldOutline_120
+  - first:
+      213: 5291509554643954107
+    second: WorldOutline_121
+  - first:
+      213: 5109041598048998978
+    second: WorldOutline_122
+  - first:
+      213: 7723185234636422996
+    second: WorldOutline_123
+  - first:
+      213: -6771716688393713292
+    second: WorldOutline_124
+  - first:
+      213: -8085857609215044053
+    second: WorldOutline_125
+  - first:
+      213: 4819438926994978537
+    second: WorldOutline_126
+  - first:
+      213: -3573274495795470245
+    second: WorldOutline_127
+  - first:
+      213: -586620725148898245
+    second: WorldOutline_128
+  - first:
+      213: -2264494637340046718
+    second: WorldOutline_129
+  - first:
+      213: -8281222075511133678
+    second: WorldOutline_130
+  - first:
+      213: 8259789687485400237
+    second: WorldOutline_131
+  - first:
+      213: 8908900696062574668
+    second: WorldOutline_132
+  - first:
+      213: -9220924664678385091
+    second: WorldOutline_133
+  - first:
+      213: -4828142962028074164
+    second: WorldOutline_134
+  - first:
+      213: 5419542593247146375
+    second: WorldOutline_135
+  - first:
+      213: 6815901169926302992
+    second: WorldOutline_136
+  - first:
+      213: 4865263899724635831
+    second: WorldOutline_137
+  - first:
+      213: -7504469576478835791
+    second: WorldOutline_138
+  - first:
+      213: 1274657322007360293
+    second: WorldOutline_139
+  - first:
+      213: 5499993414544175116
+    second: WorldOutline_140
+  - first:
+      213: -8885432284310560005
+    second: WorldOutline_141
+  - first:
+      213: -8317539356434766008
+    second: WorldOutline_142
+  - first:
+      213: 7032218359759329963
+    second: WorldOutline_143
+  - first:
+      213: 3217388108951566238
+    second: WorldOutline_144
+  - first:
+      213: 2957589353870451800
+    second: WorldOutline_145
+  - first:
+      213: 2893875716726533
+    second: WorldOutline_146
+  - first:
+      213: -105270053616651323
+    second: WorldOutline_147
+  - first:
+      213: -6426136299432367283
+    second: WorldOutline_148
+  - first:
+      213: -1911714380968134817
+    second: WorldOutline_149
+  - first:
+      213: -3254205303254240027
+    second: WorldOutline_150
+  - first:
+      213: 4644208532387810930
+    second: WorldOutline_151
+  - first:
+      213: -548607075379201094
+    second: WorldOutline_152
+  - first:
+      213: -5230898033366645763
+    second: WorldOutline_153
+  - first:
+      213: 2183318396797709616
+    second: WorldOutline_154
+  - first:
+      213: -631095994659269293
+    second: WorldOutline_155
+  - first:
+      213: -6093937476125678312
+    second: WorldOutline_156
+  - first:
+      213: 8276793377342896660
+    second: WorldOutline_157
+  - first:
+      213: -2541015788709435537
+    second: WorldOutline_158
+  - first:
+      213: -9082025989134886838
+    second: WorldOutline_159
+  - first:
+      213: 3948706222501822882
+    second: WorldOutline_160
+  - first:
+      213: -4182889318218850871
+    second: WorldOutline_161
+  - first:
+      213: 980114183040597955
+    second: WorldOutline_162
+  - first:
+      213: -8766884578659396525
+    second: WorldOutline_163
+  - first:
+      213: -1782462949036025049
+    second: WorldOutline_164
+  - first:
+      213: 4601591461190974987
+    second: WorldOutline_165
+  - first:
+      213: 3930565385167614007
+    second: WorldOutline_166
+  - first:
+      213: -3322123321669777694
+    second: WorldOutline_167
+  - first:
+      213: 2232907176791149151
+    second: WorldOutline_168
+  - first:
+      213: 5069275594534627330
+    second: WorldOutline_169
+  - first:
+      213: -2080757685607370142
+    second: WorldOutline_170
+  - first:
+      213: -7064754030872110752
+    second: WorldOutline_171
+  - first:
+      213: -2137424940517839406
+    second: WorldOutline_172
+  - first:
+      213: -1938479320585281908
+    second: WorldOutline_173
+  - first:
+      213: 946820235198875476
+    second: WorldOutline_174
+  - first:
+      213: -552914891504478316
+    second: WorldOutline_175
+  - first:
+      213: 5454457528934305503
+    second: WorldOutline_176
+  - first:
+      213: 3521361025985447733
+    second: WorldOutline_177
+  - first:
+      213: 6611949284027578544
+    second: WorldOutline_178
+  - first:
+      213: 6239435280194042
+    second: WorldOutline_179
+  - first:
+      213: -4292207343365606937
+    second: WorldOutline_180
+  - first:
+      213: 5466787085974592721
+    second: WorldOutline_181
+  - first:
+      213: -271360388824282087
+    second: WorldOutline_182
+  - first:
+      213: 7366041882682466140
+    second: WorldOutline_183
+  - first:
+      213: 3953758538532439112
+    second: WorldOutline_184
+  - first:
+      213: -3110427153822498275
+    second: WorldOutline_185
+  - first:
+      213: -4945646407098254967
+    second: WorldOutline_186
+  - first:
+      213: -74924749920676307
+    second: WorldOutline_187
+  - first:
+      213: -2173083644974520760
+    second: WorldOutline_188
+  - first:
+      213: -1318417984477826528
+    second: WorldOutline_189
+  - first:
+      213: 1378295613957467920
+    second: WorldOutline_190
+  - first:
+      213: -4068320303704281133
+    second: WorldOutline_191
+  - first:
+      213: -4361274764550095252
+    second: WorldOutline_192
+  - first:
+      213: -2065420409839884461
+    second: WorldOutline_193
+  - first:
+      213: -2132651534114202730
+    second: WorldOutline_194
+  - first:
+      213: -4680542775632940341
+    second: WorldOutline_195
+  - first:
+      213: -3883655706838790263
+    second: WorldOutline_196
+  - first:
+      213: -5855902081634917740
+    second: WorldOutline_197
+  - first:
+      213: -2762276093067899265
+    second: WorldOutline_198
+  - first:
+      213: 2783280714427641785
+    second: WorldOutline_199
+  - first:
+      213: -4622581713588057990
+    second: WorldOutline_200
+  - first:
+      213: 3631887407286787943
+    second: WorldOutline_201
+  - first:
+      213: 7885812664224096934
+    second: WorldOutline_202
+  - first:
+      213: -3796946017940577224
+    second: WorldOutline_203
+  - first:
+      213: 7804122370741574483
+    second: WorldOutline_204
+  - first:
+      213: -1803045545070555740
+    second: WorldOutline_205
+  - first:
+      213: -4927962692360346699
+    second: WorldOutline_206
+  - first:
+      213: 729090392711653076
+    second: WorldOutline_207
+  - first:
+      213: -7615423640607984972
+    second: WorldOutline_208
+  - first:
+      213: 5789871842480498493
+    second: WorldOutline_209
+  - first:
+      213: 2249899477399835431
+    second: WorldOutline_210
+  - first:
+      213: 1204577905573687034
+    second: WorldOutline_211
+  - first:
+      213: 47159242361834290
+    second: WorldOutline_212
+  - first:
+      213: -5650597630536042371
+    second: WorldOutline_213
+  - first:
+      213: -6992940492901739766
+    second: WorldOutline_214
+  - first:
+      213: -1533519540164776873
+    second: WorldOutline_215
+  - first:
+      213: 1054702442643197533
+    second: WorldOutline_216
+  - first:
+      213: 5957000257748130300
+    second: WorldOutline_217
+  - first:
+      213: 1142709738078991760
+    second: WorldOutline_218
+  - first:
+      213: 6051969524325032689
+    second: WorldOutline_219
+  - first:
+      213: 2167995309145878021
+    second: WorldOutline_220
+  - first:
+      213: -2736621487647905361
+    second: WorldOutline_221
+  - first:
+      213: 8212077458032372758
+    second: WorldOutline_222
+  - first:
+      213: -1744461425721897377
+    second: WorldOutline_223
+  - first:
+      213: -8207601335620878261
+    second: WorldOutline_224
+  - first:
+      213: 2408914258144129083
+    second: WorldOutline_225
+  - first:
+      213: -8470136634314602099
+    second: WorldOutline_226
+  - first:
+      213: -8827463459887711303
+    second: WorldOutline_227
+  - first:
+      213: -9078314096901551055
+    second: WorldOutline_228
+  - first:
+      213: -9002307553874233114
+    second: WorldOutline_229
+  - first:
+      213: -6016014791577724148
+    second: WorldOutline_230
+  - first:
+      213: -470182120070779103
+    second: WorldOutline_231
+  - first:
+      213: -2975779126334541213
+    second: WorldOutline_232
+  - first:
+      213: -8641832954506839193
+    second: WorldOutline_233
+  - first:
+      213: 9031837245045560771
+    second: WorldOutline_234
+  - first:
+      213: -8394903013177371733
+    second: WorldOutline_235
+  - first:
+      213: -3069378819438942993
+    second: WorldOutline_236
+  - first:
+      213: -6116868194997704448
+    second: WorldOutline_237
+  - first:
+      213: 4117536459659568584
+    second: WorldOutline_238
+  - first:
+      213: 8004036448981207062
+    second: WorldOutline_239
+  - first:
+      213: -4489551454694753641
+    second: WorldOutline_240
+  - first:
+      213: 6294447503640176444
+    second: WorldOutline_241
+  - first:
+      213: 5525436748944058241
+    second: WorldOutline_242
+  - first:
+      213: 115780165836797130
+    second: WorldOutline_243
+  - first:
+      213: -9065172853414580568
+    second: WorldOutline_244
+  - first:
+      213: 5753519627571845112
+    second: WorldOutline_245
+  - first:
+      213: -1328617688062349444
+    second: WorldOutline_246
+  - first:
+      213: 5030674025660355696
+    second: WorldOutline_247
+  - first:
+      213: 201237755386814183
+    second: WorldOutline_248
+  - first:
+      213: 9003294832915882762
+    second: WorldOutline_249
+  - first:
+      213: -6716324779251281736
+    second: WorldOutline_250
+  - first:
+      213: 3304104368921354033
+    second: WorldOutline_251
+  - first:
+      213: -1523512885378984980
+    second: WorldOutline_252
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: WorldOutline_0
+      rect:
+        serializedVersion: 2
+        x: 621
+        y: 2421
+        width: 157
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b4e802b34ae0fef80800000000000000
+      internalID: -8075219508322595253
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_1
+      rect:
+        serializedVersion: 2
+        x: 787
+        y: 2452
+        width: 139
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 184abbaf78b3f17a0800000000000000
+      internalID: -6404334689884330879
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_2
+      rect:
+        serializedVersion: 2
+        x: 582
+        y: 2424
+        width: 47
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3d61c7403416eb740800000000000000
+      internalID: 5169676362733852371
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_3
+      rect:
+        serializedVersion: 2
+        x: 957
+        y: 2408
+        width: 82
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 195b97429e0101df0800000000000000
+      internalID: -211650588961032815
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_4
+      rect:
+        serializedVersion: 2
+        x: 481
+        y: 2365
+        width: 127
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 479f2b4c52b47ce10800000000000000
+      internalID: 2217823967089195380
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_5
+      rect:
+        serializedVersion: 2
+        x: 1055
+        y: 2348
+        width: 93
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7abde9a8b5998e520800000000000000
+      internalID: 2731601792446946215
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_6
+      rect:
+        serializedVersion: 2
+        x: 2923
+        y: 2372
+        width: 43
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 778c261a90382fee0800000000000000
+      internalID: -1228775670933174153
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_7
+      rect:
+        serializedVersion: 2
+        x: 364
+        y: 2314
+        width: 82
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5c5c9449d3f06a7e0800000000000000
+      internalID: -1754698247658945083
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_8
+      rect:
+        serializedVersion: 2
+        x: 2769
+        y: 2302
+        width: 120
+        height: 54
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d0fc9f6c9522f3810800000000000000
+      internalID: 1747152949428735757
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_9
+      rect:
+        serializedVersion: 2
+        x: 2901
+        y: 2317
+        width: 61
+        height: 51
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bb89aa07ea4178af0800000000000000
+      internalID: -394323702924535621
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_10
+      rect:
+        serializedVersion: 2
+        x: 2956
+        y: 2330
+        width: 30
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7eb0cdf310b33cdb0800000000000000
+      internalID: -4772906303530202137
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_11
+      rect:
+        serializedVersion: 2
+        x: 3000
+        y: 2336
+        width: 33
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0e1254026bad2f510800000000000000
+      internalID: 1581566894920770016
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_12
+      rect:
+        serializedVersion: 2
+        x: 291
+        y: 2250
+        width: 135
+        height: 55
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8186d791764f30eb0800000000000000
+      internalID: -4754688057926653928
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_13
+      rect:
+        serializedVersion: 2
+        x: 1188
+        y: 2295
+        width: 65
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8a9901752db966f20800000000000000
+      internalID: 3415588695113243048
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_14
+      rect:
+        serializedVersion: 2
+        x: 1252
+        y: 2293
+        width: 28
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a56937131f43ef270800000000000000
+      internalID: 8286118574929712730
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_15
+      rect:
+        serializedVersion: 2
+        x: 2864
+        y: 2294
+        width: 59
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c6e93f8084b510c90800000000000000
+      internalID: -7205377563870126484
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_16
+      rect:
+        serializedVersion: 2
+        x: 255
+        y: 2203
+        width: 61
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0a325144c6fc45500800000000000000
+      internalID: 384159932138988448
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_17
+      rect:
+        serializedVersion: 2
+        x: 1273
+        y: 2246
+        width: 53
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 657f948f6e0335c00800000000000000
+      internalID: 888107320088328022
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_18
+      rect:
+        serializedVersion: 2
+        x: 2644
+        y: 2205
+        width: 68
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 379f305b2f5b1f720800000000000000
+      internalID: 2878281690890107251
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_19
+      rect:
+        serializedVersion: 2
+        x: 2713
+        y: 2194
+        width: 104
+        height: 68
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 820b98113c61fb110800000000000000
+      internalID: 1278765846265180200
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_20
+      rect:
+        serializedVersion: 2
+        x: 3891
+        y: 2217
+        width: 58
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f524863fa51fde6a0800000000000000
+      internalID: -6418208521000041889
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_21
+      rect:
+        serializedVersion: 2
+        x: 1120
+        y: 2170
+        width: 99
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2d9772ff072cdf3e0800000000000000
+      internalID: -2018243267419211310
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_22
+      rect:
+        serializedVersion: 2
+        x: 1208
+        y: 2205
+        width: 87
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: db9d68e3e44863380800000000000000
+      internalID: -8991854134407276099
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_23
+      rect:
+        serializedVersion: 2
+        x: 3908
+        y: 2134
+        width: 48
+        height: 72
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f4aeb36d2064d76b0800000000000000
+      internalID: -5297000608719705521
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_24
+      rect:
+        serializedVersion: 2
+        x: 257
+        y: 2185
+        width: 92
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ca9e9eaa3af7355a0800000000000000
+      internalID: -6533738293460604500
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_25
+      rect:
+        serializedVersion: 2
+        x: 2669
+        y: 2182
+        width: 54
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d7e2889002539bd30800000000000000
+      internalID: 4447644518720220797
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_26
+      rect:
+        serializedVersion: 2
+        x: 197
+        y: 2086
+        width: 108
+        height: 68
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 06d8027d5402a8490800000000000000
+      internalID: -7743341124976079520
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_27
+      rect:
+        serializedVersion: 2
+        x: 313
+        y: 2137
+        width: 55
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: df4a6a1f21e61dee0800000000000000
+      internalID: -1238087394907478787
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_28
+      rect:
+        serializedVersion: 2
+        x: 1174
+        y: 2132
+        width: 75
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e9593f0a1e88d3b70800000000000000
+      internalID: 8880404542893823390
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_29
+      rect:
+        serializedVersion: 2
+        x: 105
+        y: 2074
+        width: 61
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 11bb744eb5fa59070800000000000000
+      internalID: 8112583112984607505
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_30
+      rect:
+        serializedVersion: 2
+        x: 1192
+        y: 2059
+        width: 67
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8ef0451dd852f11d0800000000000000
+      internalID: -3377939904472018968
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_31
+      rect:
+        serializedVersion: 2
+        x: 2747
+        y: 2075
+        width: 31
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4e293253eca743090800000000000000
+      internalID: -8055678807385599260
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_32
+      rect:
+        serializedVersion: 2
+        x: 2762
+        y: 2007
+        width: 52
+        height: 69
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0260f9b2b0afd95d0800000000000000
+      internalID: -3054010046403901920
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_33
+      rect:
+        serializedVersion: 2
+        x: 3846
+        y: 2012
+        width: 98
+        height: 111
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 33baeeeefff9dd5e0800000000000000
+      internalID: -1883173147596903629
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_34
+      rect:
+        serializedVersion: 2
+        x: 23
+        y: 2024
+        width: 114
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 994de949612950940800000000000000
+      internalID: 5261772365332665497
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_35
+      rect:
+        serializedVersion: 2
+        x: 939
+        y: 2010
+        width: 126
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1e7ae9464d1780290800000000000000
+      internalID: -7923958387323263007
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_36
+      rect:
+        serializedVersion: 2
+        x: 1068
+        y: 2022
+        width: 114
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ca8ab829edd4a1700800000000000000
+      internalID: 511807125996677292
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_37
+      rect:
+        serializedVersion: 2
+        x: 2684
+        y: 2012
+        width: 59
+        height: 60
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 494823fdc8aa842b0800000000000000
+      internalID: -5600038614618438508
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_38
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1947
+        width: 81
+        height: 59
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4af739e8a6db0d0e0800000000000000
+      internalID: -2247087948701663324
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_39
+      rect:
+        serializedVersion: 2
+        x: 861
+        y: 1959
+        width: 64
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ad857bf82d49ac970800000000000000
+      internalID: 8775990455960033498
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_40
+      rect:
+        serializedVersion: 2
+        x: 974
+        y: 1998
+        width: 52
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ccf152a6f098423a0800000000000000
+      internalID: -6691072447067381812
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_41
+      rect:
+        serializedVersion: 2
+        x: 2700
+        y: 1938
+        width: 60
+        height: 75
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d294f526f04dcf320800000000000000
+      internalID: 2593180647998572845
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_42
+      rect:
+        serializedVersion: 2
+        x: 2824
+        y: 1956
+        width: 88
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dfbebfdab76dff600800000000000000
+      internalID: 504357509977074685
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_43
+      rect:
+        serializedVersion: 2
+        x: 3764
+        y: 1957
+        width: 78
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e7f4aa42eb7a098a0800000000000000
+      internalID: -6300351443590557826
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_44
+      rect:
+        serializedVersion: 2
+        x: 3844
+        y: 1964
+        width: 43
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3a7334877000d2480800000000000000
+      internalID: -8922475254668642397
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_45
+      rect:
+        serializedVersion: 2
+        x: 55
+        y: 1924
+        width: 69
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5e07d3493110582c0800000000000000
+      internalID: -4430133474845953819
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_46
+      rect:
+        serializedVersion: 2
+        x: 117
+        y: 1902
+        width: 140
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ee205e37201c28010800000000000000
+      internalID: 1189725467857715950
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_47
+      rect:
+        serializedVersion: 2
+        x: 801
+        y: 1869
+        width: 158
+        height: 67
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5c7bc619e8cb23c90800000000000000
+      internalID: -7191478334446061627
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_48
+      rect:
+        serializedVersion: 2
+        x: 915
+        y: 1928
+        width: 57
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ed3150f6056398500800000000000000
+      internalID: 398909761086886878
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_49
+      rect:
+        serializedVersion: 2
+        x: 2710
+        y: 1895
+        width: 66
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: abcee5971b7fadec0800000000000000
+      internalID: -3541245815355937606
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_50
+      rect:
+        serializedVersion: 2
+        x: 2748
+        y: 1932
+        width: 46
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9b52909b9d0232630800000000000000
+      internalID: 3900997821717358009
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_51
+      rect:
+        serializedVersion: 2
+        x: 2781
+        y: 1921
+        width: 52
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8f1dde54c93cae6e0800000000000000
+      internalID: -1807417224480304648
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_52
+      rect:
+        serializedVersion: 2
+        x: 2803
+        y: 1936
+        width: 36
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c82c159a9e4eb24c0800000000000000
+      internalID: -4311100526057897332
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_53
+      rect:
+        serializedVersion: 2
+        x: 2923
+        y: 1914
+        width: 140
+        height: 54
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 11a3776bd61fd1750800000000000000
+      internalID: 6277438909139335697
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_54
+      rect:
+        serializedVersion: 2
+        x: 3562
+        y: 1851
+        width: 165
+        height: 99
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0baf8750591b82b70800000000000000
+      internalID: 8874538319333620400
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_55
+      rect:
+        serializedVersion: 2
+        x: 139
+        y: 1876
+        width: 89
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1acc37124e31de510800000000000000
+      internalID: 1579940914811620513
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_56
+      rect:
+        serializedVersion: 2
+        x: 955
+        y: 1835
+        width: 65
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e0bd52a0c48c7f020800000000000000
+      internalID: 2375587557374548750
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_57
+      rect:
+        serializedVersion: 2
+        x: 2916
+        y: 1859
+        width: 94
+        height: 55
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a9dba95b9f9a0f020800000000000000
+      internalID: 2373583893583019418
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_58
+      rect:
+        serializedVersion: 2
+        x: 3015
+        y: 1868
+        width: 44
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f0a9156f19b5ead30800000000000000
+      internalID: 4444590564722186767
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_59
+      rect:
+        serializedVersion: 2
+        x: 3068
+        y: 1833
+        width: 136
+        height: 85
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a240829571c39b6a0800000000000000
+      internalID: -6433044521744333782
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_60
+      rect:
+        serializedVersion: 2
+        x: 3912
+        y: 1831
+        width: 32
+        height: 51
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6d12ad4bd3c13c6d0800000000000000
+      internalID: -2971500277781618218
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_61
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 1785
+        width: 118
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d36972bf9f2537b80800000000000000
+      internalID: -8398277646501833155
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_62
+      rect:
+        serializedVersion: 2
+        x: 513
+        y: 1844
+        width: 168
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 964e9ec741addcd50800000000000000
+      internalID: 6759298397282886761
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_63
+      rect:
+        serializedVersion: 2
+        x: 660
+        y: 1835
+        width: 161
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6f691068539276300800000000000000
+      internalID: 245210014573238006
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_64
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 1841
+        width: 95
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cd6733a01fbd03240800000000000000
+      internalID: 4769553833690101468
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_65
+      rect:
+        serializedVersion: 2
+        x: 2986
+        y: 1844
+        width: 58
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 54f0f81d47c767fb0800000000000000
+      internalID: -4650392724039594171
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_66
+      rect:
+        serializedVersion: 2
+        x: 3050
+        y: 1830
+        width: 47
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1c84e57bfaa851e90800000000000000
+      internalID: -7055580753905694527
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_67
+      rect:
+        serializedVersion: 2
+        x: 3233
+        y: 1800
+        width: 119
+        height: 57
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c45f6cc36b811f2e0800000000000000
+      internalID: -2093865180767783604
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_68
+      rect:
+        serializedVersion: 2
+        x: 3550
+        y: 1819
+        width: 57
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 943e9a3984f372b80800000000000000
+      internalID: -8419691397398273207
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_69
+      rect:
+        serializedVersion: 2
+        x: 540
+        y: 1775
+        width: 31
+        height: 55
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d38fd9334225e96a0800000000000000
+      internalID: -6440620101654939587
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_70
+      rect:
+        serializedVersion: 2
+        x: 573
+        y: 1814
+        width: 42
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5d3278f8383eec3e0800000000000000
+      internalID: -2031436227709295659
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_71
+      rect:
+        serializedVersion: 2
+        x: 810
+        y: 1761
+        width: 99
+        height: 53
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d12a3a5aea54081d0800000000000000
+      internalID: -3350601506358058467
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_72
+      rect:
+        serializedVersion: 2
+        x: 863
+        y: 1806
+        width: 46
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ce01661bbea4d08c0800000000000000
+      internalID: -4031483715272699668
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_73
+      rect:
+        serializedVersion: 2
+        x: 3373
+        y: 1796
+        width: 175
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 064993e5ad2aed0a0800000000000000
+      internalID: -6854862524043914144
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_74
+      rect:
+        serializedVersion: 2
+        x: 3625
+        y: 1742
+        width: 152
+        height: 94
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e8b0462a63271ad80800000000000000
+      internalID: -8241180264133031026
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_75
+      rect:
+        serializedVersion: 2
+        x: 3796
+        y: 1751
+        width: 159
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2e2f433e2f44b4480800000000000000
+      internalID: -8913955227465092382
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_76
+      rect:
+        serializedVersion: 2
+        x: 178
+        y: 1741
+        width: 204
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 61c165b24577d4140800000000000000
+      internalID: 4705548389060058134
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_77
+      rect:
+        serializedVersion: 2
+        x: 404
+        y: 1750
+        width: 143
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3886d80fe26679850800000000000000
+      internalID: 6383683348611295363
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_78
+      rect:
+        serializedVersion: 2
+        x: 682
+        y: 1698
+        width: 91
+        height: 59
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d4ba74789478ed970800000000000000
+      internalID: 8781605073291029325
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_79
+      rect:
+        serializedVersion: 2
+        x: 3764
+        y: 1725
+        width: 95
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 76c4cff1d774854f0800000000000000
+      internalID: -839842727771485081
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_80
+      rect:
+        serializedVersion: 2
+        x: 3273
+        y: 1651
+        width: 115
+        height: 75
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2d3f21a29c6dbab70800000000000000
+      internalID: 8911452447165314002
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_81
+      rect:
+        serializedVersion: 2
+        x: 3486
+        y: 1652
+        width: 63
+        height: 75
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 123163593b7079ea0800000000000000
+      internalID: -5866211521742892255
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_82
+      rect:
+        serializedVersion: 2
+        x: 3557
+        y: 1695
+        width: 72
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 878c10978db494390800000000000000
+      internalID: -7833646683719088008
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_83
+      rect:
+        serializedVersion: 2
+        x: 3627
+        y: 1702
+        width: 55
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fd092d145a3096520800000000000000
+      internalID: 2695689860266758367
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_84
+      rect:
+        serializedVersion: 2
+        x: 650
+        y: 1653
+        width: 71
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 91e08f97e5b556060800000000000000
+      internalID: 6946058461620211225
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_85
+      rect:
+        serializedVersion: 2
+        x: 669
+        y: 1622
+        width: 98
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a235bb87e082703f0800000000000000
+      internalID: -934734355035892950
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_86
+      rect:
+        serializedVersion: 2
+        x: 3364
+        y: 1654
+        width: 143
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 37498f19189bf0ee0800000000000000
+      internalID: -1292610601881136013
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_87
+      rect:
+        serializedVersion: 2
+        x: 3341
+        y: 1628
+        width: 118
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4555982db7c91aea0800000000000000
+      internalID: -5863233184232549036
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_88
+      rect:
+        serializedVersion: 2
+        x: 507
+        y: 1553
+        width: 98
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fe87744d2ed21b210800000000000000
+      internalID: 1346908215807801583
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_89
+      rect:
+        serializedVersion: 2
+        x: 824
+        y: 1568
+        width: 188
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 982ed4f7170fda920800000000000000
+      internalID: 3003320896783770249
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_90
+      rect:
+        serializedVersion: 2
+        x: 1041
+        y: 1543
+        width: 211
+        height: 59
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9a2a2c2fc17feb980800000000000000
+      internalID: -8521101741234412887
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_91
+      rect:
+        serializedVersion: 2
+        x: 1222
+        y: 1491
+        width: 66
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4e4adab56f32af9f0800000000000000
+      internalID: -433994873080797980
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_92
+      rect:
+        serializedVersion: 2
+        x: 1249
+        y: 1319
+        width: 76
+        height: 199
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c9b802bf1bb8193b0800000000000000
+      internalID: -5507467272758719588
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_93
+      rect:
+        serializedVersion: 2
+        x: 394
+        y: 1384
+        width: 88
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c5d32033266e48e00800000000000000
+      internalID: 1046214322893765980
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_94
+      rect:
+        serializedVersion: 2
+        x: 956
+        y: 1336
+        width: 47
+        height: 120
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7423be14b55c88770800000000000000
+      internalID: 8613351283084702279
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_95
+      rect:
+        serializedVersion: 2
+        x: 3256
+        y: 1372
+        width: 69
+        height: 62
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5eb3fa3674b2a6af0800000000000000
+      internalID: -402461631081137179
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_96
+      rect:
+        serializedVersion: 2
+        x: 3314
+        y: 1424
+        width: 20
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5ae939c222d0635e0800000000000000
+      internalID: -1930340949853757787
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_97
+      rect:
+        serializedVersion: 2
+        x: 124
+        y: 1381
+        width: 47
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6f24401b1b10eed20800000000000000
+      internalID: 3309584638854578934
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_98
+      rect:
+        serializedVersion: 2
+        x: 260
+        y: 1317
+        width: 94
+        height: 100
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b873a4f509397b380800000000000000
+      internalID: -8955527085719668853
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_99
+      rect:
+        serializedVersion: 2
+        x: 324
+        y: 1330
+        width: 120
+        height: 57
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3114a8db9647fe860800000000000000
+      internalID: 7561390296878694675
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_100
+      rect:
+        serializedVersion: 2
+        x: 101
+        y: 1308
+        width: 138
+        height: 63
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 15183096e20aee150800000000000000
+      internalID: 5903832282720076113
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_101
+      rect:
+        serializedVersion: 2
+        x: 2145
+        y: 1347
+        width: 46
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 27cbeacb3b913bc20800000000000000
+      internalID: 3220946418255445106
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_102
+      rect:
+        serializedVersion: 2
+        x: 3165
+        y: 1278
+        width: 87
+        height: 91
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b521bd5b77398d000800000000000000
+      internalID: 60960737330926171
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_103
+      rect:
+        serializedVersion: 2
+        x: 3346
+        y: 1365
+        width: 71
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 08f7cd6a3b3d21410800000000000000
+      internalID: 1446451198891425664
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_104
+      rect:
+        serializedVersion: 2
+        x: 2219
+        y: 1203
+        width: 152
+        height: 135
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9ddc31063b5fe2280800000000000000
+      internalID: -9066038849090368039
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_105
+      rect:
+        serializedVersion: 2
+        x: 3297
+        y: 1327
+        width: 47
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7ce8b81e1fb76cd20800000000000000
+      internalID: 3298460055896821447
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_106
+      rect:
+        serializedVersion: 2
+        x: 3425
+        y: 1306
+        width: 74
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8cc3d56cf4a4f7d00800000000000000
+      internalID: 972577751026187464
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_107
+      rect:
+        serializedVersion: 2
+        x: 169
+        y: 1283
+        width: 101
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2f25bcaadfcda4ee0800000000000000
+      internalID: -1275964562355825934
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_108
+      rect:
+        serializedVersion: 2
+        x: 253
+        y: 1255
+        width: 47
+        height: 51
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d42c92e96e79eb5e0800000000000000
+      internalID: -1891907776697220531
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_109
+      rect:
+        serializedVersion: 2
+        x: 1032
+        y: 1277
+        width: 211
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f952073d81eb026c0800000000000000
+      internalID: -4170124241109244513
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_110
+      rect:
+        serializedVersion: 2
+        x: 3295
+        y: 1213
+        width: 62
+        height: 106
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cc9082e44f49a4060800000000000000
+      internalID: 6938521952921848268
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_111
+      rect:
+        serializedVersion: 2
+        x: 3500
+        y: 1291
+        width: 47
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 15555197ff6da3460800000000000000
+      internalID: 7222321345178457425
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_112
+      rect:
+        serializedVersion: 2
+        x: 261
+        y: 1111
+        width: 66
+        height: 121
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 242cfef0826715ba0800000000000000
+      internalID: -6101966105672170942
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_113
+      rect:
+        serializedVersion: 2
+        x: 3165
+        y: 1177
+        width: 123
+        height: 78
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d494df3454557fd10800000000000000
+      internalID: 2159288302329219405
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_114
+      rect:
+        serializedVersion: 2
+        x: 3538
+        y: 1192
+        width: 106
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8f3d96013964b3b10800000000000000
+      internalID: 1962239660099490808
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_115
+      rect:
+        serializedVersion: 2
+        x: 2392
+        y: 1095
+        width: 71
+        height: 88
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e886bc988099d3fa0800000000000000
+      internalID: -5819326881542215538
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_116
+      rect:
+        serializedVersion: 2
+        x: 2409
+        y: 1084
+        width: 47
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d3bad84c4cb960510800000000000000
+      internalID: 1515069594070264637
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_117
+      rect:
+        serializedVersion: 2
+        x: 3572
+        y: 1090
+        width: 104
+        height: 92
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fc366512e2388b370800000000000000
+      internalID: 8338558944227517391
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_118
+      rect:
+        serializedVersion: 2
+        x: 2739
+        y: 1005
+        width: 127
+        height: 51
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fc6a1b77219ad0340800000000000000
+      internalID: 4831703872021046991
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_119
+      rect:
+        serializedVersion: 2
+        x: 3400
+        y: 1012
+        width: 138
+        height: 69
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ac6fe1a6d11111e20800000000000000
+      internalID: 3319453218380904138
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_120
+      rect:
+        serializedVersion: 2
+        x: 3519
+        y: 1055
+        width: 81
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2bb6f9ec880688dc0800000000000000
+      internalID: -3636550558403302478
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_121
+      rect:
+        serializedVersion: 2
+        x: 17
+        y: 976
+        width: 11
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bb9632287e73f6940800000000000000
+      internalID: 5291509554643954107
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_122
+      rect:
+        serializedVersion: 2
+        x: 1905
+        y: 963
+        width: 17
+        height: 59
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 246976ab346f6e640800000000000000
+      internalID: 5109041598048998978
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_123
+      rect:
+        serializedVersion: 2
+        x: 2663
+        y: 990
+        width: 60
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 45fbb0d3d044e2b60800000000000000
+      internalID: 7723185234636422996
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_124
+      rect:
+        serializedVersion: 2
+        x: 3094
+        y: 1007
+        width: 146
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 47945bccc870602a0800000000000000
+      internalID: -6771716688393713292
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_125
+      rect:
+        serializedVersion: 2
+        x: 3271
+        y: 988
+        width: 138
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b26195a585349cf80800000000000000
+      internalID: -8085857609215044053
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_126
+      rect:
+        serializedVersion: 2
+        x: 11
+        y: 899
+        width: 93
+        height: 60
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9e6b93c6b2612e240800000000000000
+      internalID: 4819438926994978537
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_127
+      rect:
+        serializedVersion: 2
+        x: 262
+        y: 932
+        width: 50
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b50e52137cd296ec0800000000000000
+      internalID: -3573274495795470245
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_128
+      rect:
+        serializedVersion: 2
+        x: 279
+        y: 864
+        width: 65
+        height: 102
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b3c2e9bfe87ebd7f0800000000000000
+      internalID: -586620725148898245
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_129
+      rect:
+        serializedVersion: 2
+        x: 1812
+        y: 950
+        width: 17
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 28ac1990026e290e0800000000000000
+      internalID: -2264494637340046718
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_130
+      rect:
+        serializedVersion: 2
+        x: 150
+        y: 902
+        width: 105
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 21a290be560331d80800000000000000
+      internalID: -8281222075511133678
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_131
+      rect:
+        serializedVersion: 2
+        x: 3254
+        y: 907
+        width: 72
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: da4800265faa0a270800000000000000
+      internalID: 8259789687485400237
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_132
+      rect:
+        serializedVersion: 2
+        x: 86
+        y: 885
+        width: 99
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c404a005bf5c2ab70800000000000000
+      internalID: 8908900696062574668
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_133
+      rect:
+        serializedVersion: 2
+        x: 3305
+        y: 775
+        width: 56
+        height: 124
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d3af43d3fd1b80080800000000000000
+      internalID: -9220924664678385091
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_134
+      rect:
+        serializedVersion: 2
+        x: 219
+        y: 708
+        width: 44
+        height: 127
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c4ba38f7e8dfefcb0800000000000000
+      internalID: -4828142962028074164
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_135
+      rect:
+        serializedVersion: 2
+        x: 967
+        y: 766
+        width: 94
+        height: 86
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 781789b4645163b40800000000000000
+      internalID: 5419542593247146375
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_136
+      rect:
+        serializedVersion: 2
+        x: 1758
+        y: 773
+        width: 47
+        height: 60
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 01d60a97002f69e50800000000000000
+      internalID: 6815901169926302992
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_137
+      rect:
+        serializedVersion: 2
+        x: 3334
+        y: 809
+        width: 52
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7be5e915db3e48340800000000000000
+      internalID: 4865263899724635831
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_138
+      rect:
+        serializedVersion: 2
+        x: 188
+        y: 662
+        width: 41
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1bbb04a3ea4cad790800000000000000
+      internalID: -7504469576478835791
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_139
+      rect:
+        serializedVersion: 2
+        x: 3329
+        y: 767
+        width: 13
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5237998b41e70b110800000000000000
+      internalID: 1274657322007360293
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_140
+      rect:
+        serializedVersion: 2
+        x: 241
+        y: 611
+        width: 61
+        height: 71
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c00b4ecced6e35c40800000000000000
+      internalID: 5499993414544175116
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_141
+      rect:
+        serializedVersion: 2
+        x: 952
+        y: 673
+        width: 22
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bf2a1e91a6a90b480800000000000000
+      internalID: -8885432284310560005
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_142
+      rect:
+        serializedVersion: 2
+        x: 975
+        y: 656
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 847ef56060a229c80800000000000000
+      internalID: -8317539356434766008
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_143
+      rect:
+        serializedVersion: 2
+        x: 1095
+        y: 644
+        width: 48
+        height: 98
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: baa5f640755779160800000000000000
+      internalID: 7032218359759329963
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_144
+      rect:
+        serializedVersion: 2
+        x: 1353
+        y: 583
+        width: 45
+        height: 93
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e97bf9a407576ac20800000000000000
+      internalID: 3217388108951566238
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_145
+      rect:
+        serializedVersion: 2
+        x: 1685
+        y: 647
+        width: 57
+        height: 110
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 854ecece8d77b0920800000000000000
+      internalID: 2957589353870451800
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_146
+      rect:
+        serializedVersion: 2
+        x: 1825
+        y: 658
+        width: 16
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 50f9e12f6f74a0000800000000000000
+      internalID: 2893875716726533
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_147
+      rect:
+        serializedVersion: 2
+        x: 3348
+        y: 654
+        width: 48
+        height: 101
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5c371b8a1710a8ef0800000000000000
+      internalID: -105270053616651323
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_148
+      rect:
+        serializedVersion: 2
+        x: 277
+        y: 554
+        width: 70
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d4b27123517c1d6a0800000000000000
+      internalID: -6426136299432367283
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_149
+      rect:
+        serializedVersion: 2
+        x: 335
+        y: 519
+        width: 178
+        height: 70
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f57736236e93875e0800000000000000
+      internalID: -1911714380968134817
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_150
+      rect:
+        serializedVersion: 2
+        x: 990
+        y: 563
+        width: 35
+        height: 91
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5e4b659a48db6d2d0800000000000000
+      internalID: -3254205303254240027
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_151
+      rect:
+        serializedVersion: 2
+        x: 1155
+        y: 586
+        width: 43
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 27e40dbdd0b837040800000000000000
+      internalID: 4644208532387810930
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_152
+      rect:
+        serializedVersion: 2
+        x: 1312
+        y: 558
+        width: 26
+        height: 99
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: abbb1c685c4f268f0800000000000000
+      internalID: -548607075379201094
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_153
+      rect:
+        serializedVersion: 2
+        x: 1661
+        y: 535
+        width: 39
+        height: 89
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: df344e004fd1867b0800000000000000
+      internalID: -5230898033366645763
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_154
+      rect:
+        serializedVersion: 2
+        x: 1824
+        y: 512
+        width: 27
+        height: 91
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 03de3b0a384bc4e10800000000000000
+      internalID: 2183318396797709616
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_155
+      rect:
+        serializedVersion: 2
+        x: 3438
+        y: 555
+        width: 44
+        height: 56
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 355992b5985ed37f0800000000000000
+      internalID: -631095994659269293
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_156
+      rect:
+        serializedVersion: 2
+        x: 1214
+        y: 514
+        width: 91
+        height: 66
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 815a61c072cfd6ba0800000000000000
+      internalID: -6093937476125678312
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_157
+      rect:
+        serializedVersion: 2
+        x: 1406
+        y: 467
+        width: 66
+        height: 84
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 41a34df69b31dd270800000000000000
+      internalID: 8276793377342896660
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_158
+      rect:
+        serializedVersion: 2
+        x: 3138
+        y: 507
+        width: 55
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f67a0516a9f7cbcd0800000000000000
+      internalID: -2541015788709435537
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_159
+      rect:
+        serializedVersion: 2
+        x: 3201
+        y: 535
+        width: 88
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a48dfb44b7926f180800000000000000
+      internalID: -9082025989134886838
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_160
+      rect:
+        serializedVersion: 2
+        x: 222
+        y: 402
+        width: 46
+        height: 101
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2a18892636f9cc630800000000000000
+      internalID: 3948706222501822882
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_161
+      rect:
+        serializedVersion: 2
+        x: 480
+        y: 494
+        width: 47
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9cd1ac4b35463f5c0800000000000000
+      internalID: -4182889318218850871
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_162
+      rect:
+        serializedVersion: 2
+        x: 1043
+        y: 428
+        width: 33
+        height: 66
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3cff47718a01a9d00800000000000000
+      internalID: 980114183040597955
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_163
+      rect:
+        serializedVersion: 2
+        x: 1697
+        y: 464
+        width: 26
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3541826bce4c55680800000000000000
+      internalID: -8766884578659396525
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_164
+      rect:
+        serializedVersion: 2
+        x: 1846
+        y: 419
+        width: 84
+        height: 78
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 72b9969446b6347e0800000000000000
+      internalID: -1782462949036025049
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_165
+      rect:
+        serializedVersion: 2
+        x: 2057
+        y: 487
+        width: 41
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b0e32cdbd032cdf30800000000000000
+      internalID: 4601591461190974987
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_166
+      rect:
+        serializedVersion: 2
+        x: 3081
+        y: 484
+        width: 50
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 730bc5d846c2c8630800000000000000
+      internalID: 3930565385167614007
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_167
+      rect:
+        serializedVersion: 2
+        x: 3280
+        y: 484
+        width: 42
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2e605d7b07275e1d0800000000000000
+      internalID: -3322123321669777694
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_168
+      rect:
+        serializedVersion: 2
+        x: 3404
+        y: 466
+        width: 85
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f5a8e013f31ecfe10800000000000000
+      internalID: 2232907176791149151
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_169
+      rect:
+        serializedVersion: 2
+        x: 3491
+        y: 481
+        width: 26
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2082bc88b4fa95640800000000000000
+      internalID: 5069275594534627330
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_170
+      rect:
+        serializedVersion: 2
+        x: 1254
+        y: 436
+        width: 34
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 26275b5c8e9af13e0800000000000000
+      internalID: -2080757685607370142
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_171
+      rect:
+        serializedVersion: 2
+        x: 1951
+        y: 435
+        width: 89
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 069db5cb3a3f4fd90800000000000000
+      internalID: -7064754030872110752
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_172
+      rect:
+        serializedVersion: 2
+        x: 2030
+        y: 427
+        width: 66
+        height: 62
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2ddaf5657575652e0800000000000000
+      internalID: -2137424940517839406
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_173
+      rect:
+        serializedVersion: 2
+        x: 2343
+        y: 466
+        width: 46
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c8ed21414532915e0800000000000000
+      internalID: -1938479320585281908
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_174
+      rect:
+        serializedVersion: 2
+        x: 3268
+        y: 408
+        width: 57
+        height: 77
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4574e29ccf7c32d00800000000000000
+      internalID: 946820235198875476
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_175
+      rect:
+        serializedVersion: 2
+        x: 3330
+        y: 420
+        width: 67
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4971adce5d6a358f0800000000000000
+      internalID: -552914891504478316
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_176
+      rect:
+        serializedVersion: 2
+        x: 3494
+        y: 430
+        width: 23
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fde859e393022bb40800000000000000
+      internalID: 5454457528934305503
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_177
+      rect:
+        serializedVersion: 2
+        x: 514
+        y: 408
+        width: 78
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 53784c732336ed030800000000000000
+      internalID: 3521361025985447733
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_178
+      rect:
+        serializedVersion: 2
+        x: 1501
+        y: 411
+        width: 107
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0b8bc5b97dc52cb50800000000000000
+      internalID: 6611949284027578544
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_179
+      rect:
+        serializedVersion: 2
+        x: 1623
+        y: 414
+        width: 73
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: af9997bbbba261000800000000000000
+      internalID: 6239435280194042
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_180
+      rect:
+        serializedVersion: 2
+        x: 2074
+        y: 335
+        width: 26
+        height: 110
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7e1be5c89240f64c0800000000000000
+      internalID: -4292207343365606937
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_181
+      rect:
+        serializedVersion: 2
+        x: 2295
+        y: 386
+        width: 53
+        height: 71
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1dc5532f3ededdb40800000000000000
+      internalID: 5466787085974592721
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_182
+      rect:
+        serializedVersion: 2
+        x: 2380
+        y: 415
+        width: 95
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 91c44020a2feb3cf0800000000000000
+      internalID: -271360388824282087
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_183
+      rect:
+        serializedVersion: 2
+        x: 2496
+        y: 365
+        width: 53
+        height: 86
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c5f10f9b010793660800000000000000
+      internalID: 7366041882682466140
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_184
+      rect:
+        serializedVersion: 2
+        x: 2700
+        y: 419
+        width: 74
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 844c4e061729ed630800000000000000
+      internalID: 3953758538532439112
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_185
+      rect:
+        serializedVersion: 2
+        x: 2775
+        y: 426
+        width: 55
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d124eacbbfa85d4d0800000000000000
+      internalID: -3110427153822498275
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_186
+      rect:
+        serializedVersion: 2
+        x: 2839
+        y: 438
+        width: 85
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 989b830cbc88d5bb0800000000000000
+      internalID: -4945646407098254967
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_187
+      rect:
+        serializedVersion: 2
+        x: 3381
+        y: 421
+        width: 35
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d26d7104650d5fef0800000000000000
+      internalID: -74924749920676307
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_188
+      rect:
+        serializedVersion: 2
+        x: 406
+        y: 366
+        width: 111
+        height: 67
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 846251a30f7a7d1e0800000000000000
+      internalID: -2173083644974520760
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_189
+      rect:
+        serializedVersion: 2
+        x: 508
+        y: 362
+        width: 120
+        height: 55
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 02276b114d904bde0800000000000000
+      internalID: -1318417984477826528
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_190
+      rect:
+        serializedVersion: 2
+        x: 959
+        y: 369
+        width: 42
+        height: 68
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 01fe961fe80b02310800000000000000
+      internalID: 1378295613957467920
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_191
+      rect:
+        serializedVersion: 2
+        x: 1030
+        y: 358
+        width: 43
+        height: 54
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3df62391d3c6a87c0800000000000000
+      internalID: -4068320303704281133
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_192
+      rect:
+        serializedVersion: 2
+        x: 1333
+        y: 342
+        width: 69
+        height: 82
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c6ebd1b65b3a973c0800000000000000
+      internalID: -4361274764550095252
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_193
+      rect:
+        serializedVersion: 2
+        x: 2723
+        y: 410
+        width: 40
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 357e6af84172653e0800000000000000
+      internalID: -2065420409839884461
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_194
+      rect:
+        serializedVersion: 2
+        x: 2923
+        y: 355
+        width: 29
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 69b5e6f9abc4762e0800000000000000
+      internalID: -2132651534114202730
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_195
+      rect:
+        serializedVersion: 2
+        x: 3131
+        y: 328
+        width: 61
+        height: 101
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bc2b066e42f5b0fb0800000000000000
+      internalID: -4680542775632940341
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_196
+      rect:
+        serializedVersion: 2
+        x: 3422
+        y: 377
+        width: 90
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 98f84fb06bb7a1ac0800000000000000
+      internalID: -3883655706838790263
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_197
+      rect:
+        serializedVersion: 2
+        x: 240
+        y: 349
+        width: 197
+        height: 53
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4922ea82518abbea0800000000000000
+      internalID: -5855902081634917740
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_198
+      rect:
+        serializedVersion: 2
+        x: 1511
+        y: 337
+        width: 61
+        height: 72
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f7e422d478c6aa9d0800000000000000
+      internalID: -2762276093067899265
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_199
+      rect:
+        serializedVersion: 2
+        x: 1590
+        y: 391
+        width: 62
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9bfa7a5301330a620800000000000000
+      internalID: 2783280714427641785
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_200
+      rect:
+        serializedVersion: 2
+        x: 2314
+        y: 319
+        width: 15
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a780e584c6a49dfb0800000000000000
+      internalID: -4622581713588057990
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_201
+      rect:
+        serializedVersion: 2
+        x: 2698
+        y: 313
+        width: 15
+        height: 87
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 76f1b87ba5e076230800000000000000
+      internalID: 3631887407286787943
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_202
+      rect:
+        serializedVersion: 2
+        x: 2753
+        y: 345
+        width: 23
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6a2aa5856d8007d60800000000000000
+      internalID: 7885812664224096934
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_203
+      rect:
+        serializedVersion: 2
+        x: 647
+        y: 317
+        width: 109
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8346159b6b98e4bc0800000000000000
+      internalID: -3796946017940577224
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_204
+      rect:
+        serializedVersion: 2
+        x: 2298
+        y: 244
+        width: 17
+        height: 124
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 35b1bbbb2ffcd4c60800000000000000
+      internalID: 7804122370741574483
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_205
+      rect:
+        serializedVersion: 2
+        x: 2902
+        y: 305
+        width: 21
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4ad083431ab4af6e0800000000000000
+      internalID: -1803045545070555740
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_206
+      rect:
+        serializedVersion: 2
+        x: 3306
+        y: 337
+        width: 45
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5b3eb7f6a0c5c9bb0800000000000000
+      internalID: -4927962692360346699
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_207
+      rect:
+        serializedVersion: 2
+        x: 3448
+        y: 362
+        width: 37
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4d66aba69df3e1a00800000000000000
+      internalID: 729090392711653076
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_208
+      rect:
+        serializedVersion: 2
+        x: 599
+        y: 323
+        width: 76
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4b2f27f0c84905690800000000000000
+      internalID: -7615423640607984972
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_209
+      rect:
+        serializedVersion: 2
+        x: 726
+        y: 222
+        width: 112
+        height: 105
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d372612c3c1c95050800000000000000
+      internalID: 5789871842480498493
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_210
+      rect:
+        serializedVersion: 2
+        x: 1410
+        y: 314
+        width: 86
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 72311ca77af393f10800000000000000
+      internalID: 2249899477399835431
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_211
+      rect:
+        serializedVersion: 2
+        x: 1479
+        y: 315
+        width: 51
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: afee006193587b010800000000000000
+      internalID: 1204577905573687034
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_212
+      rect:
+        serializedVersion: 2
+        x: 2333
+        y: 286
+        width: 27
+        height: 72
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 23b8ad0c41b87a000800000000000000
+      internalID: 47159242361834290
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_213
+      rect:
+        serializedVersion: 2
+        x: 2536
+        y: 245
+        width: 15
+        height: 101
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d783c37a46b0591b0800000000000000
+      internalID: -5650597630536042371
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_214
+      rect:
+        serializedVersion: 2
+        x: 2957
+        y: 258
+        width: 70
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a0395210ca514fe90800000000000000
+      internalID: -6992940492901739766
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_215
+      rect:
+        serializedVersion: 2
+        x: 3105
+        y: 284
+        width: 30
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 75cab586a18d7bae0800000000000000
+      internalID: -1533519540164776873
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_216
+      rect:
+        serializedVersion: 2
+        x: 3157
+        y: 310
+        width: 38
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d5e0c75984e03ae00800000000000000
+      internalID: 1054702442643197533
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_217
+      rect:
+        serializedVersion: 2
+        x: 3276
+        y: 309
+        width: 34
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cf9dcf14c248ba250800000000000000
+      internalID: 5957000257748130300
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_218
+      rect:
+        serializedVersion: 2
+        x: 1335
+        y: 259
+        width: 87
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 095f393d378bbdf00800000000000000
+      internalID: 1142709738078991760
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_219
+      rect:
+        serializedVersion: 2
+        x: 2072
+        y: 270
+        width: 11
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1f222e8b73aecf350800000000000000
+      internalID: 6051969524325032689
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_220
+      rect:
+        serializedVersion: 2
+        x: 2075
+        y: 196
+        width: 24
+        height: 118
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 50e6a544f34461e10800000000000000
+      internalID: 2167995309145878021
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_221
+      rect:
+        serializedVersion: 2
+        x: 2500
+        y: 217
+        width: 16
+        height: 93
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fa9ab089141950ad0800000000000000
+      internalID: -2736621487647905361
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_222
+      rect:
+        serializedVersion: 2
+        x: 2713
+        y: 246
+        width: 12
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 61c230a40f827f170800000000000000
+      internalID: 8212077458032372758
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_223
+      rect:
+        serializedVersion: 2
+        x: 3028
+        y: 282
+        width: 91
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f5e897b639d6ac7e0800000000000000
+      internalID: -1744461425721897377
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_224
+      rect:
+        serializedVersion: 2
+        x: 3199
+        y: 292
+        width: 67
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b40cb4c221eb81e80800000000000000
+      internalID: -8207601335620878261
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_225
+      rect:
+        serializedVersion: 2
+        x: 1418
+        y: 257
+        width: 49
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b30fd0b31ce2e6120800000000000000
+      internalID: 2408914258144129083
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_226
+      rect:
+        serializedVersion: 2
+        x: 2551
+        y: 219
+        width: 63
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d89c7a89b97047a80800000000000000
+      internalID: -8470136634314602099
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_227
+      rect:
+        serializedVersion: 2
+        x: 2755
+        y: 197
+        width: 65
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9bbf6adc0cc8e7580800000000000000
+      internalID: -8827463459887711303
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_228
+      rect:
+        serializedVersion: 2
+        x: 2836
+        y: 194
+        width: 87
+        height: 82
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 13c03c68d69530280800000000000000
+      internalID: -9078314096901551055
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_229
+      rect:
+        serializedVersion: 2
+        x: 3111
+        y: 196
+        width: 33
+        height: 66
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6e8b28cd9f0611380800000000000000
+      internalID: -9002307553874233114
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_230
+      rect:
+        serializedVersion: 2
+        x: 3124
+        y: 238
+        width: 25
+        height: 36
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c0b9388db62d28ca0800000000000000
+      internalID: -6016014791577724148
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_231
+      rect:
+        serializedVersion: 2
+        x: 805
+        y: 158
+        width: 36
+        height: 67
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 12fe0795ad39979f0800000000000000
+      internalID: -470182120070779103
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_232
+      rect:
+        serializedVersion: 2
+        x: 1430
+        y: 166
+        width: 113
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 362bec4a6a8e3b6d0800000000000000
+      internalID: -2975779126334541213
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_233
+      rect:
+        serializedVersion: 2
+        x: 2334
+        y: 183
+        width: 67
+        height: 70
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 76bfa5ad6ba021880800000000000000
+      internalID: -8641832954506839193
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_234
+      rect:
+        serializedVersion: 2
+        x: 2403
+        y: 169
+        width: 97
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3c555142f18875d70800000000000000
+      internalID: 9031837245045560771
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_235
+      rect:
+        serializedVersion: 2
+        x: 2637
+        y: 221
+        width: 79
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ba3d4b700305f7b80800000000000000
+      internalID: -8394903013177371733
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_236
+      rect:
+        serializedVersion: 2
+        x: 3027
+        y: 189
+        width: 63
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fe4eb3ad9306765d0800000000000000
+      internalID: -3069378819438942993
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_237
+      rect:
+        serializedVersion: 2
+        x: 841
+        y: 83
+        width: 125
+        height: 107
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 009e64309c48c1ba0800000000000000
+      internalID: -6116868194997704448
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_238
+      rect:
+        serializedVersion: 2
+        x: 1409
+        y: 109
+        width: 121
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8c56abb289d642930800000000000000
+      internalID: 4117536459659568584
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_239
+      rect:
+        serializedVersion: 2
+        x: 2072
+        y: 69
+        width: 15
+        height: 109
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 618cdce3ebc041f60800000000000000
+      internalID: 8004036448981207062
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_240
+      rect:
+        serializedVersion: 2
+        x: 2306
+        y: 101
+        width: 20
+        height: 103
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 79ab4161db8e1b1c0800000000000000
+      internalID: -4489551454694753641
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_241
+      rect:
+        serializedVersion: 2
+        x: 2567
+        y: 131
+        width: 80
+        height: 66
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c3721d7b7ae5a5750800000000000000
+      internalID: 6294447503640176444
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_242
+      rect:
+        serializedVersion: 2
+        x: 2661
+        y: 143
+        width: 28
+        height: 53
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 18723b9b27b4eac40800000000000000
+      internalID: 5525436748944058241
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_243
+      rect:
+        serializedVersion: 2
+        x: 1179
+        y: 51
+        width: 186
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ac4fcb882755b9100800000000000000
+      internalID: 115780165836797130
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_244
+      rect:
+        serializedVersion: 2
+        x: 1370
+        y: 80
+        width: 97
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8aea5b4b159023280800000000000000
+      internalID: -9065172853414580568
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_245
+      rect:
+        serializedVersion: 2
+        x: 2323
+        y: 71
+        width: 20
+        height: 71
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8f758a92e9b98df40800000000000000
+      internalID: 5753519627571845112
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_246
+      rect:
+        serializedVersion: 2
+        x: 900
+        y: 60
+        width: 65
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c7f2eb4804dcf8de0800000000000000
+      internalID: -1328617688062349444
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_247
+      rect:
+        serializedVersion: 2
+        x: 976
+        y: 30
+        width: 170
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 07415486f5b80d540800000000000000
+      internalID: 5030674025660355696
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_248
+      rect:
+        serializedVersion: 2
+        x: 2144
+        y: 23
+        width: 72
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7ee5a3d1ca0fac200800000000000000
+      internalID: 201237755386814183
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_249
+      rect:
+        serializedVersion: 2
+        x: 2305
+        y: 17
+        width: 30
+        height: 60
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a03af04f2f022fc70800000000000000
+      internalID: 9003294832915882762
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_250
+      rect:
+        serializedVersion: 2
+        x: 2073
+        y: 0
+        width: 63
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8b0d298a232dac2a0800000000000000
+      internalID: -6716324779251281736
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_251
+      rect:
+        serializedVersion: 2
+        x: 2225
+        y: 15
+        width: 73
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 13f9f5aea698add20800000000000000
+      internalID: 3304104368921354033
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WorldOutline_252
+      rect:
+        serializedVersion: 2
+        x: 2264
+        y: 0
+        width: 54
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ce351484a156bdae0800000000000000
+      internalID: -1523512885378984980
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      WorldOutline_0: -8075219508322595253
+      WorldOutline_1: -6404334689884330879
+      WorldOutline_10: -4772906303530202137
+      WorldOutline_100: 5903832282720076113
+      WorldOutline_101: 3220946418255445106
+      WorldOutline_102: 60960737330926171
+      WorldOutline_103: 1446451198891425664
+      WorldOutline_104: -9066038849090368039
+      WorldOutline_105: 3298460055896821447
+      WorldOutline_106: 972577751026187464
+      WorldOutline_107: -1275964562355825934
+      WorldOutline_108: -1891907776697220531
+      WorldOutline_109: -4170124241109244513
+      WorldOutline_11: 1581566894920770016
+      WorldOutline_110: 6938521952921848268
+      WorldOutline_111: 7222321345178457425
+      WorldOutline_112: -6101966105672170942
+      WorldOutline_113: 2159288302329219405
+      WorldOutline_114: 1962239660099490808
+      WorldOutline_115: -5819326881542215538
+      WorldOutline_116: 1515069594070264637
+      WorldOutline_117: 8338558944227517391
+      WorldOutline_118: 4831703872021046991
+      WorldOutline_119: 3319453218380904138
+      WorldOutline_12: -4754688057926653928
+      WorldOutline_120: -3636550558403302478
+      WorldOutline_121: 5291509554643954107
+      WorldOutline_122: 5109041598048998978
+      WorldOutline_123: 7723185234636422996
+      WorldOutline_124: -6771716688393713292
+      WorldOutline_125: -8085857609215044053
+      WorldOutline_126: 4819438926994978537
+      WorldOutline_127: -3573274495795470245
+      WorldOutline_128: -586620725148898245
+      WorldOutline_129: -2264494637340046718
+      WorldOutline_13: 3415588695113243048
+      WorldOutline_130: -8281222075511133678
+      WorldOutline_131: 8259789687485400237
+      WorldOutline_132: 8908900696062574668
+      WorldOutline_133: -9220924664678385091
+      WorldOutline_134: -4828142962028074164
+      WorldOutline_135: 5419542593247146375
+      WorldOutline_136: 6815901169926302992
+      WorldOutline_137: 4865263899724635831
+      WorldOutline_138: -7504469576478835791
+      WorldOutline_139: 1274657322007360293
+      WorldOutline_14: 8286118574929712730
+      WorldOutline_140: 5499993414544175116
+      WorldOutline_141: -8885432284310560005
+      WorldOutline_142: -8317539356434766008
+      WorldOutline_143: 7032218359759329963
+      WorldOutline_144: 3217388108951566238
+      WorldOutline_145: 2957589353870451800
+      WorldOutline_146: 2893875716726533
+      WorldOutline_147: -105270053616651323
+      WorldOutline_148: -6426136299432367283
+      WorldOutline_149: -1911714380968134817
+      WorldOutline_15: -7205377563870126484
+      WorldOutline_150: -3254205303254240027
+      WorldOutline_151: 4644208532387810930
+      WorldOutline_152: -548607075379201094
+      WorldOutline_153: -5230898033366645763
+      WorldOutline_154: 2183318396797709616
+      WorldOutline_155: -631095994659269293
+      WorldOutline_156: -6093937476125678312
+      WorldOutline_157: 8276793377342896660
+      WorldOutline_158: -2541015788709435537
+      WorldOutline_159: -9082025989134886838
+      WorldOutline_16: 384159932138988448
+      WorldOutline_160: 3948706222501822882
+      WorldOutline_161: -4182889318218850871
+      WorldOutline_162: 980114183040597955
+      WorldOutline_163: -8766884578659396525
+      WorldOutline_164: -1782462949036025049
+      WorldOutline_165: 4601591461190974987
+      WorldOutline_166: 3930565385167614007
+      WorldOutline_167: -3322123321669777694
+      WorldOutline_168: 2232907176791149151
+      WorldOutline_169: 5069275594534627330
+      WorldOutline_17: 888107320088328022
+      WorldOutline_170: -2080757685607370142
+      WorldOutline_171: -7064754030872110752
+      WorldOutline_172: -2137424940517839406
+      WorldOutline_173: -1938479320585281908
+      WorldOutline_174: 946820235198875476
+      WorldOutline_175: -552914891504478316
+      WorldOutline_176: 5454457528934305503
+      WorldOutline_177: 3521361025985447733
+      WorldOutline_178: 6611949284027578544
+      WorldOutline_179: 6239435280194042
+      WorldOutline_18: 2878281690890107251
+      WorldOutline_180: -4292207343365606937
+      WorldOutline_181: 5466787085974592721
+      WorldOutline_182: -271360388824282087
+      WorldOutline_183: 7366041882682466140
+      WorldOutline_184: 3953758538532439112
+      WorldOutline_185: -3110427153822498275
+      WorldOutline_186: -4945646407098254967
+      WorldOutline_187: -74924749920676307
+      WorldOutline_188: -2173083644974520760
+      WorldOutline_189: -1318417984477826528
+      WorldOutline_19: 1278765846265180200
+      WorldOutline_190: 1378295613957467920
+      WorldOutline_191: -4068320303704281133
+      WorldOutline_192: -4361274764550095252
+      WorldOutline_193: -2065420409839884461
+      WorldOutline_194: -2132651534114202730
+      WorldOutline_195: -4680542775632940341
+      WorldOutline_196: -3883655706838790263
+      WorldOutline_197: -5855902081634917740
+      WorldOutline_198: -2762276093067899265
+      WorldOutline_199: 2783280714427641785
+      WorldOutline_2: 5169676362733852371
+      WorldOutline_20: -6418208521000041889
+      WorldOutline_200: -4622581713588057990
+      WorldOutline_201: 3631887407286787943
+      WorldOutline_202: 7885812664224096934
+      WorldOutline_203: -3796946017940577224
+      WorldOutline_204: 7804122370741574483
+      WorldOutline_205: -1803045545070555740
+      WorldOutline_206: -4927962692360346699
+      WorldOutline_207: 729090392711653076
+      WorldOutline_208: -7615423640607984972
+      WorldOutline_209: 5789871842480498493
+      WorldOutline_21: -2018243267419211310
+      WorldOutline_210: 2249899477399835431
+      WorldOutline_211: 1204577905573687034
+      WorldOutline_212: 47159242361834290
+      WorldOutline_213: -5650597630536042371
+      WorldOutline_214: -6992940492901739766
+      WorldOutline_215: -1533519540164776873
+      WorldOutline_216: 1054702442643197533
+      WorldOutline_217: 5957000257748130300
+      WorldOutline_218: 1142709738078991760
+      WorldOutline_219: 6051969524325032689
+      WorldOutline_22: -8991854134407276099
+      WorldOutline_220: 2167995309145878021
+      WorldOutline_221: -2736621487647905361
+      WorldOutline_222: 8212077458032372758
+      WorldOutline_223: -1744461425721897377
+      WorldOutline_224: -8207601335620878261
+      WorldOutline_225: 2408914258144129083
+      WorldOutline_226: -8470136634314602099
+      WorldOutline_227: -8827463459887711303
+      WorldOutline_228: -9078314096901551055
+      WorldOutline_229: -9002307553874233114
+      WorldOutline_23: -5297000608719705521
+      WorldOutline_230: -6016014791577724148
+      WorldOutline_231: -470182120070779103
+      WorldOutline_232: -2975779126334541213
+      WorldOutline_233: -8641832954506839193
+      WorldOutline_234: 9031837245045560771
+      WorldOutline_235: -8394903013177371733
+      WorldOutline_236: -3069378819438942993
+      WorldOutline_237: -6116868194997704448
+      WorldOutline_238: 4117536459659568584
+      WorldOutline_239: 8004036448981207062
+      WorldOutline_24: -6533738293460604500
+      WorldOutline_240: -4489551454694753641
+      WorldOutline_241: 6294447503640176444
+      WorldOutline_242: 5525436748944058241
+      WorldOutline_243: 115780165836797130
+      WorldOutline_244: -9065172853414580568
+      WorldOutline_245: 5753519627571845112
+      WorldOutline_246: -1328617688062349444
+      WorldOutline_247: 5030674025660355696
+      WorldOutline_248: 201237755386814183
+      WorldOutline_249: 9003294832915882762
+      WorldOutline_25: 4447644518720220797
+      WorldOutline_250: -6716324779251281736
+      WorldOutline_251: 3304104368921354033
+      WorldOutline_252: -1523512885378984980
+      WorldOutline_26: -7743341124976079520
+      WorldOutline_27: -1238087394907478787
+      WorldOutline_28: 8880404542893823390
+      WorldOutline_29: 8112583112984607505
+      WorldOutline_3: -211650588961032815
+      WorldOutline_30: -3377939904472018968
+      WorldOutline_31: -8055678807385599260
+      WorldOutline_32: -3054010046403901920
+      WorldOutline_33: -1883173147596903629
+      WorldOutline_34: 5261772365332665497
+      WorldOutline_35: -7923958387323263007
+      WorldOutline_36: 511807125996677292
+      WorldOutline_37: -5600038614618438508
+      WorldOutline_38: -2247087948701663324
+      WorldOutline_39: 8775990455960033498
+      WorldOutline_4: 2217823967089195380
+      WorldOutline_40: -6691072447067381812
+      WorldOutline_41: 2593180647998572845
+      WorldOutline_42: 504357509977074685
+      WorldOutline_43: -6300351443590557826
+      WorldOutline_44: -8922475254668642397
+      WorldOutline_45: -4430133474845953819
+      WorldOutline_46: 1189725467857715950
+      WorldOutline_47: -7191478334446061627
+      WorldOutline_48: 398909761086886878
+      WorldOutline_49: -3541245815355937606
+      WorldOutline_5: 2731601792446946215
+      WorldOutline_50: 3900997821717358009
+      WorldOutline_51: -1807417224480304648
+      WorldOutline_52: -4311100526057897332
+      WorldOutline_53: 6277438909139335697
+      WorldOutline_54: 8874538319333620400
+      WorldOutline_55: 1579940914811620513
+      WorldOutline_56: 2375587557374548750
+      WorldOutline_57: 2373583893583019418
+      WorldOutline_58: 4444590564722186767
+      WorldOutline_59: -6433044521744333782
+      WorldOutline_6: -1228775670933174153
+      WorldOutline_60: -2971500277781618218
+      WorldOutline_61: -8398277646501833155
+      WorldOutline_62: 6759298397282886761
+      WorldOutline_63: 245210014573238006
+      WorldOutline_64: 4769553833690101468
+      WorldOutline_65: -4650392724039594171
+      WorldOutline_66: -7055580753905694527
+      WorldOutline_67: -2093865180767783604
+      WorldOutline_68: -8419691397398273207
+      WorldOutline_69: -6440620101654939587
+      WorldOutline_7: -1754698247658945083
+      WorldOutline_70: -2031436227709295659
+      WorldOutline_71: -3350601506358058467
+      WorldOutline_72: -4031483715272699668
+      WorldOutline_73: -6854862524043914144
+      WorldOutline_74: -8241180264133031026
+      WorldOutline_75: -8913955227465092382
+      WorldOutline_76: 4705548389060058134
+      WorldOutline_77: 6383683348611295363
+      WorldOutline_78: 8781605073291029325
+      WorldOutline_79: -839842727771485081
+      WorldOutline_8: 1747152949428735757
+      WorldOutline_80: 8911452447165314002
+      WorldOutline_81: -5866211521742892255
+      WorldOutline_82: -7833646683719088008
+      WorldOutline_83: 2695689860266758367
+      WorldOutline_84: 6946058461620211225
+      WorldOutline_85: -934734355035892950
+      WorldOutline_86: -1292610601881136013
+      WorldOutline_87: -5863233184232549036
+      WorldOutline_88: 1346908215807801583
+      WorldOutline_89: 3003320896783770249
+      WorldOutline_9: -394323702924535621
+      WorldOutline_90: -8521101741234412887
+      WorldOutline_91: -433994873080797980
+      WorldOutline_92: -5507467272758719588
+      WorldOutline_93: 1046214322893765980
+      WorldOutline_94: 8613351283084702279
+      WorldOutline_95: -402461631081137179
+      WorldOutline_96: -1930340949853757787
+      WorldOutline_97: 3309584638854578934
+      WorldOutline_98: -8955527085719668853
+      WorldOutline_99: 7561390296878694675
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
