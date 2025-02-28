@@ -13,18 +13,18 @@ public class FishingManager : NetworkBehaviour
     //script classes
     [SerializeField] PlayerController player;
     [SerializeField] FishingLine fishingLine;
-    [SerializeField] FishFight fishFight;                   //change
-    [SerializeField] CaughtDialogData caughtData;           //change
     [SerializeField] PlayerDataSyncManager playerDataManager;
     [SerializeField] PlayerInventory inventory;
     [SerializeField] PlayerData playerData;
     [SerializeField] RodAnimator rodAnimator;
+    FishFight fishFight;
+    CaughtDialogData caughtData;
 
     //gameObjects
     [SerializeField] Camera playerCamera;
     [SerializeField] Collider2D playerCollider;
-    [SerializeField] GameObject fishFightDialog;            //change
-    [SerializeField] GameObject caughtDialog;               //change
+    GameObject fishFightDialog;
+    GameObject caughtDialog;
 
     //Variables
     public bool isFishing = false;
@@ -47,8 +47,6 @@ public class FishingManager : NetworkBehaviour
 
     //Time till the fishing result can be send to the player
     float timeTillResultsSeconds = float.MaxValue;
-
-    public bool nearWater = false;
 
     public enum EndFishingReason
     {
