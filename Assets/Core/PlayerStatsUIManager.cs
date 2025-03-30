@@ -24,9 +24,6 @@ public class PlayerStatsUIManager : MonoBehaviour
             if(infoUI.activeInHierarchy == false) OpenStore();
             else CloseStore();
         }
-
-    
-        
     }
 
     private void OpenStore()

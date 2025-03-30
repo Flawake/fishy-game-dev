@@ -1,4 +1,5 @@
 using Mirror;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,6 +15,7 @@ public class GameNetworkManager : NetworkManager
     }
     // Server-only cross-reference of connections to player names
     internal static readonly Dictionary<NetworkConnectionToClient, string> connNames = new Dictionary<NetworkConnectionToClient, string>();
+    internal static readonly DualDict<NetworkConnectionToClient, Guid> connUUID = new DualDict<NetworkConnectionToClient, Guid>();
     internal static readonly HashSet<string> playerNames = new HashSet<string>();
 
     //netID and start time (time.time);
@@ -60,6 +62,7 @@ public class GameNetworkManager : NetworkManager
 
         // remove connection from Dictionary of conn > names
         connNames.Remove(conn);
+        connUUID.Remove(conn);
         connectedPlayersInfo.Remove(conn.connectionId);
 
         conn.identity.GetComponent<PlayerData>();
