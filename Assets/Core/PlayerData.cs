@@ -1,6 +1,8 @@
 using Mirror;
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class PlayerData : NetworkBehaviour
@@ -19,6 +21,8 @@ public class PlayerData : NetworkBehaviour
     int availableFishCoins;
     [SerializeField]
     int availableFishBucks;
+    [SerializeField]
+    List<Mail> playerMails = new List<Mail>();
 
     //Variables that are synced between ALL players
     [SyncVar, SerializeField]
@@ -60,7 +64,7 @@ public class PlayerData : NetworkBehaviour
     public event Action selectedBaitChanged;
 
 
-    [SerializeField]
+    [SerializeField, SyncVar]
     Guid uuid;
     bool uuidSet = false;
 
@@ -366,6 +370,13 @@ public class PlayerData : NetworkBehaviour
         return lastItemUID;
     }
 
+    public int GetAndIncreaeLastItemUID()
+    {
+        int id = GetLastitemUID();
+        IncreaseLastitemUID(1);
+        return id;
+    }
+
     [Server]
     public bool ParsePlayerData(string jsonPlayerData)
     {
@@ -473,6 +484,18 @@ public class PlayerData : NetworkBehaviour
     public void AddXp(int xp)
     {
         SetXp(GetXp() + xp);
+    }
+
+    [Server]
+    public void ServerAddMail(Mail mail)
+    {
+        playerMails.Add(mail);
+    }
+
+    [Client]
+    public void ClientAddMail(Mail mail)
+    {
+        playerMails.Add(mail);
     }
 
     public int GetXp()

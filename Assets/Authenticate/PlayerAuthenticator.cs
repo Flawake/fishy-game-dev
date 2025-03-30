@@ -165,6 +165,8 @@ public class PlayerAuthenticator : NetworkAuthenticator
                 Debug.Log($"loginResponse code = {loginResponse.code}");
                 if (loginResponse.code == 0)
                 {
+                    Guid playerUuid = Guid.Parse(loginResponse.uuid);
+                    GameNetworkManager.connUUID.Add(conn, playerUuid);
                     SendResponse(0, isLogin, conn);
 
 

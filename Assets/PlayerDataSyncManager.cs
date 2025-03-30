@@ -45,4 +45,9 @@ public class PlayerDataSyncManager : MonoBehaviour
         inventory.RemoveItem(item);
         DatabaseCommunications.DestroyItem(item, playerData.GetUuidAsString());
     }
+
+    public void SendMail(Mail mail)
+    {
+        playerData.ServerAddMail(mail);
+    }
 }

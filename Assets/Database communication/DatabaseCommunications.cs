@@ -1,5 +1,6 @@
 using UnityEngine;
 using Mirror;
+using System;
 
 //TODO: can this class be static and should we make it static?
 public static class DatabaseCommunications
@@ -251,5 +252,17 @@ public static class DatabaseCommunications
         string endpoint = DatabaseEndpoints.removeItemEndpoint;
 
         WebRequestHandler.SendWebRequest(endpoint, addItemInventory);
+    }
+
+    [Server]
+    public static void AddMail(Mail mail)
+    {
+        Debug.LogWarning("Saving a mail to the db has not yet been implemented");
+    }
+
+    [Server]
+    public static void ReadMail(int mailUID, bool read)
+    {
+        Debug.LogWarning("Saving the read status of a mail to the db has not yet been implemented");
     }
 }
