@@ -50,8 +50,6 @@ public class MailSystem : NetworkBehaviour
         DatabaseCommunications.AddMail(mailToSend);
         if(GameNetworkManager.connUUID.TryGetValue(mailToSend.receiverUuid, out NetworkConnectionToClient conn))
         {
-            Debug.Log("Sending mail to target...");
-            Debug.Log("Uuid: " + mailToSend.receiverUuid);
             TargetReceiveMail(conn, mailToSend);
         }
         else

@@ -5,7 +5,6 @@ using System;
 public struct UserData
 {
     public byte[] uuid;
-    public string user;
     public PlayerInventory inventory;
     public PlayerStats stats;
     public bool showInv;
