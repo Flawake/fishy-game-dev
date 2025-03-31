@@ -172,13 +172,19 @@ public class GameNetworkManager : NetworkManager
             conn.Disconnect();
             return;
         }
+        if (!connUUID.TryGetValue(conn, out Guid uuid) || dataPlayer == null)
+        {
+            //TODO: Is this the right way to disconnect?
+            conn.Disconnect();
+            return;
+        }
 
         dataPlayer.SetUsername(name);
         dataPlayer.SetRandomColor();
 
         WWWForm getInventoryForm = new WWWForm();
         getInventoryForm.AddField("auth_token", DatabaseEndpoints.databaseAccessToken);
-        getInventoryForm.AddField("user", name);
+        getInventoryForm.AddField("uuid", uuid.ToString());
 
         GameObject[] objectsArray = { player };
 
