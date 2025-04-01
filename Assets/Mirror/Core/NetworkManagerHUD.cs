@@ -17,6 +17,7 @@ namespace Mirror
         void Awake()
         {
             manager = GetComponent<NetworkManager>();
+            //manager.StartServer();
         }
 
         void OnGUI()
@@ -55,7 +56,7 @@ namespace Mirror
                 // cant be a server in webgl build
                 if (GUILayout.Button("Single Player"))
                 {
-                    NetworkServer.dontListen = true;
+                    NetworkServer.listen = false;
                     manager.StartHost();
                 }
 #else
