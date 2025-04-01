@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: c6b1f72568a9340178b4c34608fbdbc3
-TextScriptImporter:
+guid: 3c7a97355c25a2b4da731b53876f8a8b
+PrefabImporter:
   externalObjects: {}
   userData: 
   assetBundleName: 
@@ -9,6 +9,6 @@ AssetOrigin:
   serializedVersion: 1
   productId: 129321
   packageName: Mirror
-  packageVersion: 93.0.1
-  assetPath: Assets/Mirror/Version.txt
-  uploadId: 698109
+  packageVersion: 96.0.1
+  assetPath: Assets/Mirror/Components/Profiling/Prefabs/BandwidthGraph.prefab
+  uploadId: 736421

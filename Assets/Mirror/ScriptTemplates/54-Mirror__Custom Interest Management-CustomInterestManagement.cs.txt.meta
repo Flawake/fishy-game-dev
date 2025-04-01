@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 090f32437c1e9737a91b430d5c4ca73a
+TextScriptImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 129321
+  packageName: Mirror
+  packageVersion: 96.0.1
+  assetPath: Assets/Mirror/ScriptTemplates/54-Mirror__Custom Interest Management-CustomInterestManagement.cs.txt
+  uploadId: 736421
