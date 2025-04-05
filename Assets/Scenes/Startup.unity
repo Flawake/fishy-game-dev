@@ -1479,7 +1479,7 @@ MonoBehaviour:
   clientUseWss: 0
   clientWebsocketSettings:
     ClientPortOption: 0
-    CustomClientPort: 0
+    CustomClientPort: 24469
   minimumLogLevel: 3
 --- !u!4 &302649093
 Transform:
@@ -1541,7 +1541,7 @@ MonoBehaviour:
   onlineScene: Assets/Scenes/WorldMap.unity
   offlineSceneLoadDelay: 0
   transport: {fileID: 302649091}
-  networkAddress: localhost
+  networkAddress: heckvision.com
   maxConnections: 100
   disconnectInactiveConnections: 0
   disconnectInactiveTimeout: 60

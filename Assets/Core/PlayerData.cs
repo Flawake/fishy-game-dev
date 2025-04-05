@@ -1,7 +1,6 @@
 using Mirror;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerData : NetworkBehaviour
@@ -20,8 +19,6 @@ public class PlayerData : NetworkBehaviour
     int availableFishCoins;
     [SerializeField]
     int availableFishBucks;
-    [SerializeField]
-    List<Mail> playerMails = new List<Mail>();
 
     //Variables that are synced between ALL players
     [SyncVar, SerializeField]
@@ -483,18 +480,6 @@ public class PlayerData : NetworkBehaviour
     public void AddXp(int xp)
     {
         SetXp(GetXp() + xp);
-    }
-
-    [Server]
-    public void ServerAddMail(Mail mail)
-    {
-        playerMails.Add(mail);
-    }
-
-    [Client]
-    public void ClientAddMail(Mail mail)
-    {
-        playerMails.Add(mail);
     }
 
     public int GetXp()

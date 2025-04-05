@@ -22,6 +22,10 @@ public class DualDict<T1, T2> : IEnumerable<KeyValuePair<T1, T2>>
         _reverse.Add(t2, t1);
     }
 
+    public Dictionary<T1, T2> AsDict() {
+        return _forward;
+    }
+
     public void Remove(T1 t1)
     {
         T2 revKey = Forward[t1];

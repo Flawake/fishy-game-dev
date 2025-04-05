@@ -17,6 +17,10 @@ namespace Mirror
         void Awake()
         {
             manager = GetComponent<NetworkManager>();
+        }
+
+        void Start()
+        {
             //manager.StartServer();
         }
 

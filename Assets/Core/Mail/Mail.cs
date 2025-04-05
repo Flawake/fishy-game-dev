@@ -31,4 +31,8 @@ public struct Mail
         message = _message;
         read = false;
     }
+
+    public static Mail Empty() {
+        return new Mail(Guid.Empty, Guid.Empty, 0, DateTime.MinValue, "", "");
+    }
 }
