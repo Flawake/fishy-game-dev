@@ -104,7 +104,6 @@ public class FishingManager : NetworkBehaviour
 
     //This function checks if the position clicked is a fishing spot and if that fishing spot is valid.
     //This is first being done on the client and later on the server.
-    //This is to offload the server for clicks that were not meant to be for fishing.
 
     bool IsFishingSpot(Vector2 clickedPos, out RaycastHit2D water)
     {
@@ -127,8 +126,22 @@ public class FishingManager : NetworkBehaviour
         {
             return false;
         }
+        //We are sure that the click was inside a water collider, but the click can still be on an object that is inside the water. We also need to check for that.
 
-        if (!hit.collider.gameObject.GetComponent<PlayersNearWater>().playersCloseToWater.Contains(this.GetComponent<NetworkIdentity>().netId))
+        CompositeCollider2D walkable = SceneObjectCache.GetWorldCollider(this.gameObject.scene);
+        //Is there a better way then to cycle the GeometryType???
+        if(isClient) {
+            walkable.geometryType = CompositeCollider2D.GeometryType.Polygons;
+        }
+        bool doesOverlap = walkable.OverlapPoint(clickedPos);
+        if(isClient) {
+            walkable.geometryType = CompositeCollider2D.GeometryType.Outlines;
+        }
+        if(doesOverlap) {
+            return false;
+        }
+
+        if (!hit.collider.gameObject.GetComponent<PlayersNearWater>().GetPlayersNearPuddle().Contains(this.GetComponent<NetworkIdentity>().netId))
         {
             return false;
         }
@@ -137,6 +150,7 @@ public class FishingManager : NetworkBehaviour
         return true;
     }
 
+    [Client]
     bool IsFishingSpot(Vector2 clickedPos)
     {
         return IsFishingSpot(clickedPos, out _);

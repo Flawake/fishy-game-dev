@@ -3512,7 +3512,9 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  playersCloseToWater: 
+  playersNearThisWater: 
+  connectedWaters:
+  - {fileID: 1880219387}
 --- !u!60 &1426061392
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -3559,13 +3561,19 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: -4.0563283, y: 9.735483}
+    - - {x: -4.0563283, y: 9.75}
       - {x: -4.0542946, y: -0.6559162}
       - {x: 12.836153, y: -0.64734936}
       - {x: 12.843669, y: -0.65076065}
-      - {x: 12.833224, y: 1.4984827}
-      - {x: 10.167787, y: 1.496479}
-      - {x: 10.165001, y: 9.737846}
+      - {x: 12.840968, y: 1.49722}
+      - {x: 9.24, y: 1.49722}
+      - {x: 9.24, y: 9.75}
+    - - {x: 34.95074, y: 9.75}
+      - {x: 34.950745, y: -0.6505042}
+      - {x: 15.625204, y: -0.65328795}
+      - {x: 15.619579, y: 1.5}
+      - {x: 19.06, y: 1.5}
+      - {x: 19.06, y: 9.75}
   m_UseDelaunayMesh: 0
 --- !u!114 &1426061393
 MonoBehaviour:
@@ -4109,7 +4117,9 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  playersCloseToWater: 
+  playersNearThisWater: 
+  connectedWaters:
+  - {fileID: 1426061391}
 --- !u!61 &1880219388
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -4144,7 +4154,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 14.148255, y: 5.7970543}
+  m_Offset: {x: 14.148255, y: 5.619601}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -4154,7 +4164,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 8.153284, y: 7.8875904}
+  m_Size: {x: 10, y: 8.242497}
   m_EdgeRadius: 0
 --- !u!1 &1903435436
 GameObject:
