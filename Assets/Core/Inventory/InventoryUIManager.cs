@@ -101,23 +101,17 @@ public class InventoryUIManager : MonoBehaviour
             ChangeBackPackMenu(filter);
             inventoryUI.SetActive(true);
             EnsurePlayerController();
-            controller.IncreaseObjectsPreventingMovement();
-            controller.IncreaseObjectsPreventingFishing();
         }
         else
         {
             inventoryUI.SetActive(false);
             EnsurePlayerController();
-            controller.DecreaseObjectsPreventingMovement();
-            controller.DecreaseObjectsPreventingFishing();
         }
     }
 
     public void CloseBackPack()
     {
         EnsurePlayerController();
-        controller.DecreaseObjectsPreventingMovement();
-        controller.DecreaseObjectsPreventingFishing();
         inventoryUI.SetActive(false);
     }
 

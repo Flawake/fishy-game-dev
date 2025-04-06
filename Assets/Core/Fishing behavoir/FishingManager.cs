@@ -89,7 +89,13 @@ public class FishingManager : NetworkBehaviour
         if (!IsFishingSpot(clickedPos))
             return false;
 
-        if (!isFishing && player.GetObjectsPreventingFishing() == 0)
+        // Player clicked on a fishing spot, but is currently not allowed to fish because of an active object preventing it.
+        if(player.GetObjectsPreventingFishing() != 0)
+        {
+            return true;
+        }
+
+        if (!isFishing)
         {
             StartFishing(clickedPos);
             isFishing = true;
