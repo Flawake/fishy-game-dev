@@ -230,7 +230,7 @@ public class FishingLine : NetworkBehaviour
                 return;
             }
             linePositions[i] = lineSegments[i].currentPos;
-            linePositions[i].z = -5;
+            linePositions[i].z = 0;
         }
 
         lineRenderer.startWidth = lineWidth;
