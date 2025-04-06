@@ -29,15 +29,11 @@ public class PlayerStatsUIManager : MonoBehaviour
     private void OpenStore()
     {
         infoUI.SetActive(true);
-        controller.IncreaseObjectsPreventingMovement();
-        controller.IncreaseObjectsPreventingFishing();
     }
     
     //Called from button in game
     public void CloseStore()
     {
-        controller.DecreaseObjectsPreventingMovement();
-        controller.DecreaseObjectsPreventingFishing();
         infoUI.SetActive(false);
     }
     

@@ -3,6 +3,8 @@ using UnityEngine.InputSystem;
 using Mirror;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class PlayerController : NetworkBehaviour
 {
@@ -197,14 +199,43 @@ public class PlayerController : NetworkBehaviour
         playerCollider.enabled = true;
     }
 
+    public bool IsPointerOverUI(Vector2 mousePos)
+    {
+        PointerEventData pointerData = new PointerEventData(EventSystem.current);
+        pointerData.position = mousePos;
+
+        List<RaycastResult> results = new List<RaycastResult>();
+
+        // Find all active GraphicRaycasters in the scene
+        GraphicRaycaster[] raycasters = FindObjectsByType<GraphicRaycaster>(FindObjectsSortMode.None);
+        foreach (GraphicRaycaster raycaster in raycasters)
+        {
+            if (!raycaster.gameObject.activeInHierarchy)
+                continue;
+
+            raycaster.Raycast(pointerData, results);
+            if (results.Count > 0)
+                return true;
+        }
+
+        return false;
+    }
+
     //This function is being called from the PlayerController input system. It triggers when the left mouse button in clicked.
     public void ProcessMouseClick(InputAction.CallbackContext context)
     {
         if (!isLocalPlayer || !gameOnForeground || !context.performed) {
             return; 
         }
+
+        Vector2 mousePos = Mouse.current.position.ReadValue();
+
+        // This helps, but we still need to check for objectsPreventingFishing since this does not account for clicks outside a canvas.
+        if (IsPointerOverUI(mousePos)) {
+            return; // UI already handled this
+        }
         
-        Vector2 clickedPos = playerCamera.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+        Vector2 clickedPos = playerCamera.ScreenToWorldPoint(mousePos);
         //Check for mouse click starting at objects with most priority, return if the click has been handled.
         if (viewPlayerStats.ProcesPlayerCheck(clickedPos)) {
             return;

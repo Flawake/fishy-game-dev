@@ -25,14 +25,10 @@ public class StoreUIManager : MonoBehaviour
             storeUI.SetActive(true);
             ShowRodsPage();
             EnsurePlayerController();
-            controller.IncreaseObjectsPreventingMovement();
-            controller.IncreaseObjectsPreventingFishing();
         }
         else
         {
             storeUI.SetActive(false);
-            controller.DecreaseObjectsPreventingMovement();
-            controller.IncreaseObjectsPreventingFishing();
         }
     }
 
@@ -40,8 +36,6 @@ public class StoreUIManager : MonoBehaviour
     public void CloseStore()
     {
         EnsurePlayerController();
-        controller.DecreaseObjectsPreventingMovement();
-        controller.DecreaseObjectsPreventingFishing();
         storeUI.SetActive(false);
     }
 
