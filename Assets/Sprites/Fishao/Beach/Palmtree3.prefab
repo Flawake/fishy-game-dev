@@ -109,7 +109,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 50
   m_Sprite: {fileID: 21300000, guid: 6610a71efa492f04894baf6c2eb8c575, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -120,7 +120,7 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
-  m_SpriteSortPoint: 0
+  m_SpriteSortPoint: 1
 --- !u!60 &710245120145636605
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -158,7 +158,7 @@ PolygonCollider2D:
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.44031194, y: 0.17743064}
+    pivot: {x: 0.44031194, y: 0.28}
     oldSize: {x: 2.22, y: 2.41}
     newSize: {x: 2.22, y: 2.41}
     adaptiveTilingThreshold: 0.5
@@ -167,12 +167,13 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: -0.33302498, y: 0.28037357}
-      - {x: -0.385499, y: 0.13451533}
-      - {x: -0.11701235, y: 0.011202961}
-      - {x: 0.21448433, y: 0.014259845}
-      - {x: 0.38536644, y: 0.15876669}
-      - {x: 0.37441295, y: 0.2841068}
+    - - {x: -0.33302498, y: 0.0203736}
+      - {x: -0.4022317, y: -0.106362104}
+      - {x: -0.1600388, y: -0.24401627}
+      - {x: 0.21448433, y: -0.24574015}
+      - {x: 0.38536644, y: -0.1012333}
+      - {x: 0.44286728, y: -0.042251587}
+      - {x: 0.37441295, y: 0.026497185}
   m_UseDelaunayMesh: 0
 --- !u!1 &8317986424671418396
 GameObject:
@@ -200,7 +201,7 @@ Transform:
   m_GameObject: {fileID: 8317986424671418396}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.0248, y: -0.2462, z: 3.6366572}
+  m_LocalPosition: {x: 0.026, y: -0.489, z: 3.6366572}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -249,7 +250,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 51
   m_Sprite: {fileID: 21300000, guid: a75ea21e5cccd73489a4d47ad3f6429f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -260,4 +261,4 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
-  m_SpriteSortPoint: 0
+  m_SpriteSortPoint: 1
