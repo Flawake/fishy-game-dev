@@ -19,6 +19,7 @@ public class StoreManager : NetworkBehaviour
     }
 
 
+    [Client]
     public void BuyItem(StoreItemObject item, CurrencyType currencyType)
     {
         CmdBuyItem(item.itemObject.type, item.itemObject.id, currencyType);
