@@ -110,7 +110,6 @@ public class FishingManager : NetworkBehaviour
 
     //This function checks if the position clicked is a fishing spot and if that fishing spot is valid.
     //This is first being done on the client and later on the server.
-
     bool IsFishingSpot(Vector2 clickedPos, out RaycastHit2D water)
     {
         water = new RaycastHit2D();
@@ -132,10 +131,20 @@ public class FishingManager : NetworkBehaviour
         {
             return false;
         }
-        //We are sure that the click was inside a water collider, but the click can still be on an object that is inside the water. We also need to check for that.
 
+        // also make sure there are no objects between the player and the water.
+        int obstacleLayer = ~LayerMask.GetMask("Water", "Player");
+        // add one to make sure there are no float errors, don't know if it is neccessary tough
+        RaycastHit2D[] hits = Physics2D.RaycastAll(clickedPos, new Vector2(transform.position.x - clickedPos.x, transform.position.y - clickedPos.y), rodThrowDistance + 1, obstacleLayer);
+        foreach(RaycastHit2D obstacle in hits) {
+            if(Vector2.Distance(obstacle.point, transform.position) > 0.2f) {
+                return false;
+            }
+        }
+
+        // We are sure that the click was inside a water collider, but the click can still be on an object that is inside the water. We also need to check for that.
         CompositeCollider2D walkable = SceneObjectCache.GetWorldCollider(this.gameObject.scene);
-        //Is there a better way then to cycle the GeometryType???
+        // is there a better way then to cycle the GeometryType???
         if(isClient) {
             walkable.geometryType = CompositeCollider2D.GeometryType.Polygons;
         }
