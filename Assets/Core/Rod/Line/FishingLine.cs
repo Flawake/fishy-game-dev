@@ -8,6 +8,7 @@ public class FishingLine : NetworkBehaviour
     [SerializeField] LineRenderer lineRenderer;
     [SerializeField] GameObject linePoint;
     [SerializeField] RodAnimator rodAnimator;
+    [SerializeField] int z;
 
     enum LineState
     {
@@ -230,7 +231,7 @@ public class FishingLine : NetworkBehaviour
                 return;
             }
             linePositions[i] = lineSegments[i].currentPos;
-            linePositions[i].z = 0;
+            linePositions[i].z = z;
         }
 
         lineRenderer.startWidth = lineWidth;
@@ -247,5 +248,9 @@ public class FishingLine : NetworkBehaviour
             currentPos = pos;
             previuosPos = pos;
         }
+    }
+
+    public void SetFishingLineOrderInLayer(int order) {
+        lineRenderer.sortingOrder = order;
     }
 }

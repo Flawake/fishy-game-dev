@@ -9,7 +9,7 @@ using UnityEngine.UI;
 public class PlayerController : NetworkBehaviour
 {
     float lastVerifiedtime = float.MinValue;
-    Vector3? lastVerifiedPosition = null;
+    Vector2? lastVerifiedPosition = null;
 
     public Rigidbody2D playerRigidbody;
 
@@ -371,7 +371,7 @@ public class PlayerController : NetworkBehaviour
         hasVelocity = dir != Vector2.zero;
         ApplyAnimation(dir);
         dir = ClampPlayerMovement(dir);
-        Vector3 newPos = (movementSpeed * Time.deltaTime * dir) + (Vector2)playerRigidbody.position;
+        Vector2 newPos = (movementSpeed * Time.deltaTime * dir) + (Vector2)playerRigidbody.position;
         //Clamp the position to the target position if the movement goes beyond the targetposition in this frame.
         if(transform.position.x < targetPos.x && newPos.x > targetPos.x)
         {
@@ -394,18 +394,18 @@ public class PlayerController : NetworkBehaviour
     }
 
     [TargetRpc]
-    void TargetSetPosition(Vector3 position)
+    void TargetSetPosition(Vector2 position)
     {
-        Debug.Log("Teleporting player to a new position, possibly due to cheating or an error...");
-        this.transform.position = position;
+        Debug.Log("Teleporting player to a new position, probably due to cheating or an error...");
+        transform.position = new Vector3(position.x, position.y, transform.position.z);
     }
 
     [Command]
-    void CmdSendMoveToServer(Vector3 position)
+    void CmdSendMoveToServer(Vector2 position)
     {
 
         //Get current scene to filter for the correct CompositeCollider2D and gameobjects in this scene.
-        Scene activeScene = this.gameObject.scene;
+        Scene activeScene = gameObject.scene;
         if (activeScene != locatedScene)
         {
             locatedScene = activeScene;
@@ -413,17 +413,18 @@ public class PlayerController : NetworkBehaviour
 
         if (lastVerifiedPosition == null)
         {
-            transform.position = position;
+            //preserve the z position
+            transform.position = new Vector3(position.x, position.y, transform.position.z);
             lastVerifiedPosition = transform.position;
             lastVerifiedtime = Time.time;
             return;
         }
 
-        Vector3 prevPos = (Vector3)lastVerifiedPosition;
+        Vector2 prevPos = (Vector2)lastVerifiedPosition;
 
         if (!CheckSpeedValid(position, prevPos))
         {
-            transform.position = prevPos;
+            transform.position = new Vector3(prevPos.x, prevPos.y, transform.position.z);;
             lastVerifiedPosition = transform.position;
             TargetSetPosition(transform.position);
             return;
@@ -431,13 +432,13 @@ public class PlayerController : NetworkBehaviour
 
         Vector2 newValidPos;
         if (!CheckNewPosValid(position, prevPos, out newValidPos)) {
-            transform.position = newValidPos;
+            transform.position = new Vector3(newValidPos.x, newValidPos.y, transform.position.z);
             lastVerifiedPosition = transform.position;
             TargetSetPosition(transform.position);
             return;
         }
 
-        transform.position = position;
+        transform.position = new Vector3(position.x, position.y, transform.position.z);
     }
 
     //Anti cheat function, should detect a client doing speed hacking

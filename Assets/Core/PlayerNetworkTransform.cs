@@ -1,5 +1,4 @@
 using Mirror;
-using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 
@@ -22,7 +21,7 @@ public class PlayerNetworkTransform : NetworkTransformBase
     protected Vector3Long lastSerializedPosition = Vector3Long.zero;
     protected Vector3Long lastDeserializedPosition = Vector3Long.zero;
 
-    protected Vector3 targetPosition = Vector3.zero;
+    protected Vector2 targetPosition = Vector2.zero;
 
     // Used to store last sent snapshots
     protected TransformSnapshot last;
@@ -72,10 +71,9 @@ public class PlayerNetworkTransform : NetworkTransformBase
         }
 
         //target.position is the current position of the transform
-        Vector3 dir = new Vector3(
+        Vector2 dir = new Vector2(
             Mathf.Abs(targetPosition.x - target.position.x) > positionPrecision ? targetPosition.x - target.position.x : 0,
-            Mathf.Abs(targetPosition.x - target.position.y) > positionPrecision ? targetPosition.y - target.position.y : 0,
-            0
+            Mathf.Abs(targetPosition.x - target.position.y) > positionPrecision ? targetPosition.y - target.position.y : 0
         ).normalized;
 
         playerController.MoveOtherPlayerLocally(dir, targetPosition);
@@ -158,6 +156,7 @@ public class PlayerNetworkTransform : NetworkTransformBase
         last = snapshot;
     }
 
+    //We're serializing and deserializing vector3's this is unneccessary since the z coordinate doesn't change and only costs extra bandwith
     public override void OnDeserialize(NetworkReader reader, bool initialState)
     {
         Vector3? position = null;
@@ -188,75 +187,7 @@ public class PlayerNetworkTransform : NetworkTransformBase
     {
         // don't apply for local player with authority
         if (IsClientWithAuthority) return;
-        /*
-        // 'only sync on change' needs a correction on every new move sequence.
-        if (onlySyncOnChange &&
-            NeedsCorrection(clientSnapshots, NetworkClient.connection.remoteTimeStamp, NetworkClient.sendInterval * sendIntervalMultiplier, onlySyncOnChangeCorrectionMultiplier))
-        {
-            RewriteHistory(
-                clientSnapshots,
-                NetworkClient.connection.remoteTimeStamp,               // arrival remote timestamp. NOT remote timeline.
-                NetworkTime.localTime,                                  // Unity 2019 doesn't have timeAsDouble yet
-                NetworkClient.sendInterval * sendIntervalMultiplier,
-                GetPosition(),
-                GetRotation(),
-                GetScale());
-        }
-
-        // add a small timeline offset to account for decoupled arrival of
-        // NetworkTime and NetworkTransform snapshots.
-        // needs to be sendInterval. half sendInterval doesn't solve it.
-        // https://github.com/MirrorNetworking/Mirror/issues/3427
-        // remove this after LocalWorldState.
-        AddSnapshot(clientSnapshots, NetworkClient.connection.remoteTimeStamp + timeStampAdjustment + offset, position, null, null);
-        */
-        targetPosition = (Vector3)position;
-    }
-
-    // only sync on change /////////////////////////////////////////////////
-    // snap interp. needs a continous flow of packets.
-    // 'only sync on change' interrupts it while not changed.
-    // once it restarts, snap interp. will interp from the last old position.
-    // this will cause very noticeable stutter for the first move each time.
-    // the fix is quite simple.
-
-    // 1. detect if the remaining snapshot is too old from a past move.
-    static bool NeedsCorrection(
-        SortedList<double, TransformSnapshot> snapshots,
-        double remoteTimestamp,
-        double bufferTime,
-        double toleranceMultiplier) =>
-            snapshots.Count == 1 &&
-            remoteTimestamp - snapshots.Keys[0] >= bufferTime * toleranceMultiplier;
-
-    // 2. insert a fake snapshot at current position,
-    //    exactly one 'sendInterval' behind the newly received one.
-    static void RewriteHistory(
-        SortedList<double, TransformSnapshot> snapshots,
-        // timestamp of packet arrival, not interpolated remote time!
-        double remoteTimeStamp,
-        double localTime,
-        double sendInterval,
-        Vector3 position,
-        Quaternion rotation,
-        Vector3 scale)
-    {
-        // clear the previous snapshot
-        snapshots.Clear();
-
-        // insert a fake one at where we used to be,
-        // 'sendInterval' behind the new one.
-        SnapshotInterpolation.InsertIfNotExists(
-            snapshots,
-            NetworkClient.snapshotSettings.bufferLimit,
-            new TransformSnapshot(
-                remoteTimeStamp - sendInterval, // arrival remote timestamp. NOT remote time.
-                localTime - sendInterval,       // Unity 2019 doesn't have timeAsDouble yet
-                position,
-                rotation,
-                scale
-            )
-        );
+        targetPosition = (Vector2)position;
     }
 
     // reset state for next session.
