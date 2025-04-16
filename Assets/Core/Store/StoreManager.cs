@@ -1,6 +1,4 @@
 using Mirror;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class StoreManager : NetworkBehaviour
@@ -48,7 +46,7 @@ public class StoreManager : NetworkBehaviour
         foreach (StoreItemObject item in itemsToSearch)
         {
             if(item.itemObject.id == itemID) { 
-                itemToBuy = item;
+                itemToBuy = item.Clone();
                 break;
             }
         }
