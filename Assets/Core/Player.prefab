@@ -1149,7 +1149,7 @@ BoxCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4849207662072823242}
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
   m_Material: {fileID: 0}
@@ -1730,6 +1730,7 @@ GameObject:
   - component: {fileID: 2600673011262952092}
   - component: {fileID: 1917053837910666563}
   - component: {fileID: 871487665807593460}
+  - component: {fileID: 3633833880793104609}
   m_Layer: 3
   m_Name: Player
   m_TagString: Untagged
@@ -1879,8 +1880,8 @@ MonoBehaviour:
   inventory: {fileID: 1831225255022429458}
   playerData: {fileID: 3625476836490181}
   rodAnimator: {fileID: 7029505193400487229}
+  fishCollider: {fileID: 642131257449331877}
   playerCamera: {fileID: 2598969918979025384}
-  playerCollider: {fileID: 3951641916827187384}
   isFishing: 0
   fightStarted: 0
 --- !u!58 &642131257449331877
@@ -1917,8 +1918,8 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0.37}
-  m_Radius: 0.4805373
+  m_Offset: {x: 0, y: 0.06}
+  m_Radius: 0.37
 --- !u!114 &3625476836490181
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2027,6 +2028,18 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+--- !u!210 &3633833880793104609
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7976679866149745988}
+  m_Enabled: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 50
+  m_SortAtRoot: 0
 --- !u!1 &8214720745036281464
 GameObject:
   m_ObjectHideFlags: 0
