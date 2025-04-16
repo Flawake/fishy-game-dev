@@ -9,10 +9,17 @@ public class PlayersNearWater : NetworkBehaviour
     [SerializeField] List<uint> playersNearThisWater = new List<uint>();
     [SerializeField] List<PlayersNearWater> connectedWaters = new List<PlayersNearWater>();
 
+    LayerMask playerLayer;
+
+    void Awake()
+    {
+        playerLayer = LayerMask.NameToLayer("Player");
+    }
+
     //Add a player to the list when it comes close
     void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Player"))
+        if (collision.gameObject.layer == playerLayer)
         {
             NetworkIdentity id = collision.gameObject.GetComponent<NetworkIdentity>();
             if (id != null)
@@ -25,7 +32,7 @@ public class PlayersNearWater : NetworkBehaviour
     //Remove a player from the list when it moves away.
     void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Player"))
+        if (collision.gameObject.layer == playerLayer)
         {
             NetworkIdentity id = collision.gameObject.GetComponent<NetworkIdentity>();
             if (id != null)

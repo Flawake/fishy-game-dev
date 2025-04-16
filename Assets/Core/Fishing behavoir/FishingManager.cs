@@ -17,12 +17,12 @@ public class FishingManager : NetworkBehaviour
     [SerializeField] PlayerInventory inventory;
     [SerializeField] PlayerData playerData;
     [SerializeField] RodAnimator rodAnimator;
+    [SerializeField] Collider2D fishCollider;
     FishFight fishFight;
     CaughtDialogData caughtData;
 
     //gameObjects
     [SerializeField] Camera playerCamera;
-    [SerializeField] Collider2D playerCollider;
     GameObject fishFightDialog;
     GameObject caughtDialog;
 
@@ -108,6 +108,16 @@ public class FishingManager : NetworkBehaviour
         return true;
     }
 
+    Vector2 collisionPoint = Vector2.zero;
+    Vector2 obstaclePoint = Vector2.zero;
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawSphere(collisionPoint, 0.1f);
+        Gizmos.color = Color.green;
+        Gizmos.DrawSphere(obstaclePoint, 0.1f);
+    }
+
     //This function checks if the position clicked is a fishing spot and if that fishing spot is valid.
     //This is first being done on the client and later on the server.
     bool IsFishingSpot(Vector2 clickedPos, out RaycastHit2D water)
@@ -125,25 +135,33 @@ public class FishingManager : NetworkBehaviour
 
         RaycastHit2D hit = Physics2D.Raycast(clickedPos, Vector2.zero, float.MaxValue, waterLayer);
 
-        //Needed in the future to test if there are no objects in the way of the line.
-        //RaycastHit2D hit = Physics2D.Raycast(transform.position, new Vector2(clickedPos.x - transform.position.x, clickedPos.y - transform.position.y), Vector2.Distance(clickedPos, transform.position), waterLayer);
         if (!hit)
         {
             return false;
         }
 
         // also make sure there are no objects between the player and the water.
-        int obstacleLayer = ~LayerMask.GetMask("Water", "Player");
+        int obstacleLayer = ~LayerMask.GetMask("Water", "Player", "Ignore Raycast");
         // add one to make sure there are no float errors, don't know if it is neccessary tough
-        RaycastHit2D[] hits = Physics2D.RaycastAll(clickedPos, new Vector2(transform.position.x - clickedPos.x, transform.position.y - clickedPos.y), rodThrowDistance + 1, obstacleLayer);
+        RaycastHit2D[] hits = Physics2D.RaycastAll(clickedPos, new Vector2(transform.position.x - clickedPos.x, transform.position.y - clickedPos.y), Vector2.Distance(transform.position, clickedPos), obstacleLayer);
         foreach(RaycastHit2D obstacle in hits) {
-            if(Vector2.Distance(obstacle.point, transform.position) > 0.2f) {
+            if(Vector2.Distance(obstacle.point, transform.position) > 0.6f) {
+                obstaclePoint = obstacle.point;
                 return false;
             }
         }
 
+        // Same raycasthit, but from player to throwdirection to make sure that the collision point is inside the player's fish collider
+        hits = Physics2D.RaycastAll(transform.position, new Vector2(clickedPos.x - transform.position.x, clickedPos.y - transform.position.y), rodThrowDistance + 1, obstacleLayer);
+        if(hits.Length == 0) {
+            return false;
+        }
+        collisionPoint = hits[0].point;
+        if(!fishCollider.OverlapPoint(hits[0].point)) {
+            return false;
+        }
         // We are sure that the click was inside a water collider, but the click can still be on an object that is inside the water. We also need to check for that.
-        CompositeCollider2D walkable = SceneObjectCache.GetWorldCollider(this.gameObject.scene);
+        CompositeCollider2D walkable = SceneObjectCache.GetWorldCollider(gameObject.scene);
         // is there a better way then to cycle the GeometryType???
         if(isClient) {
             walkable.geometryType = CompositeCollider2D.GeometryType.Polygons;
