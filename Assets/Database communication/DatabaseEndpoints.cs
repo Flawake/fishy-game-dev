@@ -1,7 +1,7 @@
 public static class DatabaseEndpoints
 {
-    public static string serverAddress = "https://fishydatabase.djoleden.nl/";
-    //public static string serverAddress = "http://127.0.0.1:8080/";
+    //public static string serverAddress = "https://fishydatabase.djoleden.nl/";
+    public static string serverAddress = "http://127.0.0.1:8080/";
     public static string databaseAccessToken = "t";
     //TODO: make this /account/...
     public static string loginEndpoint = serverAddress + "login";
@@ -18,4 +18,7 @@ public static class DatabaseEndpoints
     public static string adjustMoneyEndpoint = serverAddress + "adjustMoney";
     public static string addXPEndpoint = serverAddress + "addXP";
     public static string addPlaytime = serverAddress + "addPlaytime";
+    
+    public static string addMailEndpoint = serverAddress + "addMail";
+    public static string retreiveMailsEndpoint = serverAddress + "retreiveMails";
 }

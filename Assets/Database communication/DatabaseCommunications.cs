@@ -257,7 +257,18 @@ public static class DatabaseCommunications
     [Server]
     public static void AddMail(Mail mail)
     {
-        Debug.LogWarning("Saving a mail to the db has not yet been implemented");
+        WWWForm addNewMail = new WWWForm();
+        addNewMail.AddField("auth_token", DatabaseEndpoints.databaseAccessToken);
+        addNewMail.AddField("mailUuid", mail.mailUuid.ToString());
+        addNewMail.AddField("senderUuid", mail.senderUuid.ToString());
+        addNewMail.AddField("receiverUuid", mail.receiverUuid.ToString());
+        addNewMail.AddField("prevMailUuid", mail.prevMailUuid.ToString());
+        addNewMail.AddField("sendTime", mail.sendTime.ToString("O"));
+        addNewMail.AddField("mailTitle", mail.title);
+        addNewMail.AddField("mailMessage", mail.message);
+        
+        string endpoint = DatabaseEndpoints.addMailEndpoint;
+        WebRequestHandler.SendWebRequest(endpoint, addNewMail);
     }
 
     [Server]

@@ -3,12 +3,56 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+[Serializable]
+public class MailWrapper
+{
+    public Mail[] mails;
+}
 public class MailSystem : NetworkBehaviour
 {
     [SerializeField] Guid receiverUuid;
 
     [SerializeField]
     List<Mail> playerMails = new List<Mail>();
+
+    [Command]
+    void CmdGetMails()
+    {
+        RpcSyncMails(playerMails);
+    }
+
+    [TargetRpc]
+    void RpcSyncMails(List<Mail> _playerMails)
+    {
+        playerMails.Clear();
+        foreach (Mail mail in _playerMails)
+        {
+            playerMails.Add(mail);
+        }
+    }
+
+    public override void OnStartLocalPlayer()
+    {
+        CmdGetMails();
+        base.OnStartLocalPlayer();
+    }
+
+    public bool ParseMails(string jsonMails)
+    {
+        try
+        {
+            MailWrapper mails = JsonUtility.FromJson<MailWrapper>(jsonMails);
+            foreach (Mail mail in mails.mails)
+            {
+                playerMails.Add(mail);
+            }
+            return true;
+        } catch (Exception e)
+        {
+            Debug.LogWarning(e);
+            return false;
+        }
+    }
 
     void LoadMails(List<Mail> mails)
     {
@@ -37,6 +81,11 @@ public class MailSystem : NetworkBehaviour
 
     public void ResetUuid() {
         receiverUuid = Guid.Empty;
+    }
+
+    public Guid GenerateMailGuid()
+    {
+        return Guid.NewGuid();
     }
 
     public void SetupNewMail(Guid _receiverUuid)
@@ -68,8 +117,8 @@ public class MailSystem : NetworkBehaviour
         //if yes, send mail.
         //if no, check if player is in different server and send mail to there.
         //Put message in the database (with the uuid instead of player names).
+        mailToSend.mailUuid = GenerateMailGuid();
         mailToSend.senderUuid = sender.identity.GetComponent<PlayerData>().GetUuid();
-        mailToSend.mailUid = sender.identity.GetComponent<PlayerData>().GetAndIncreaeLastItemUID() + 1;
         mailToSend.sendTime = DateTime.Now;
         DatabaseCommunications.AddMail(mailToSend);
         if(GameNetworkManager.connUUID.TryGetValue(mailToSend.receiverUuid, out NetworkConnectionToClient conn))
