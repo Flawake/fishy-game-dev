@@ -162,6 +162,11 @@ public class GameNetworkManager : NetworkManager
     /// Makes the player character ready and requests data from database
     void OnBeginCreateCharacter(NetworkConnectionToClient conn, CreateCharacterMessage _characterData)
     {
+        conn.authenticationData = new PlayerAuthData
+        {
+            playerData = null,
+            playerMails = null,
+        };
         GameObject player = Instantiate(playerPrefab);
         //Hard coded value
         player.transform.position = new Vector3(0, 0, 0);
@@ -185,43 +190,66 @@ public class GameNetworkManager : NetworkManager
         WWWForm getInventoryForm = new WWWForm();
         getInventoryForm.AddField("auth_token", DatabaseEndpoints.databaseAccessToken);
         getInventoryForm.AddField("uuid", uuid.ToString());
+        
+        WWWForm getMailsForm = new WWWForm();
+        getMailsForm.AddField("auth_token", DatabaseEndpoints.databaseAccessToken);
+        getMailsForm.AddField("uuid", uuid.ToString());
 
         GameObject[] objectsArray = { player };
 
-        WebRequestHandler.SendWebRequest(DatabaseEndpoints.getInventoryEndpoint, getInventoryForm, conn, objectsArray, OnEndCreateCharacter);
+        WebRequestHandler.SendWebRequest(DatabaseEndpoints.getInventoryEndpoint, getInventoryForm, conn, objectsArray, PlayerDataReceived);
+        WebRequestHandler.SendWebRequest(DatabaseEndpoints.retreiveMailsEndpoint, getInventoryForm, conn, objectsArray, PlayerMailsReveived);
+    }
+
+    [Server]
+    void PlayerDataReceived(WebRequestHandler.ResponseMessageData data)
+    {
+        PlayerAuthData authData = data.Connection.authenticationData as PlayerAuthData;
+        authData.playerData = data;
+        if (authData.IsDataComplete())
+        {
+            OnEndCreateCharacter(data.Connection);
+        }
+    }
+
+    [Server]
+    void PlayerMailsReveived(WebRequestHandler.ResponseMessageData data)
+    {
+        PlayerAuthData authData = data.Connection.authenticationData as PlayerAuthData;
+        authData.playerMails = data;
+        if (authData.IsDataComplete())
+        {
+            OnEndCreateCharacter(data.Connection);
+        }
     }
 
     [Server]
     ///Spawns player in when all data from the database has been received
-    void OnEndCreateCharacter(WebRequestHandler.ResponseMessageData data)
+    void OnEndCreateCharacter(NetworkConnectionToClient conn)
     {
-        if (data.EndRequestReason == WebRequestHandler.RequestEndReason.timeout)
+        WebRequestHandler.ResponseMessageData playerData = (conn.authenticationData as PlayerAuthData).playerData.Value;
+        WebRequestHandler.ResponseMessageData mailData = (conn.authenticationData as PlayerAuthData).playerMails.Value;
+        PlayerData dataPlayer = playerData.Objects[0].GetComponent<PlayerData>();
+        MailSystem playerMails = mailData.Objects[0].GetComponent<MailSystem>();
+        if (
+            dataPlayer.ParsePlayerData(playerData.ResponseData) &&
+            playerMails.ParseMails(mailData.ResponseData)) 
         {
-            Debug.Log("Timeout");
-            data.Connection.Disconnect();
-        }
-        if (data.Objects.Length < 1)
-        {
-            data.Connection.Disconnect();
-            return;
-        }
-        PlayerData dataPlayer = data.Objects[0].GetComponent<PlayerData>();
-        if (dataPlayer.ParsePlayerData(data.ResponseData)) {
-            NetworkServer.AddPlayerForConnection(data.Connection, data.Objects[0]);
+            NetworkServer.AddPlayerForConnection(conn, playerData.Objects[0]);
             PlayerConnectionInfo playerConnection = new PlayerConnectionInfo
             {
                 uuid = dataPlayer.GetUuidAsString(),
                 playerConnectionTime = NetworkTime.time,
             };
-            connectedPlayersInfo.Add(data.Connection.connectionId, playerConnection);
+            connectedPlayersInfo.Add(conn.connectionId, playerConnection);
         }
         else
         {
-            data.Connection.Send(new DisconnectMessage {
+            conn.Send(new DisconnectMessage {
                 reason = ClientDisconnectReason.InvalidPlayerData,
                 reasonText = "Inventory data was invalid, please reconnect to the game.",
             });
-            StartCoroutine(DelayedDisconnect(data.Connection, 1f));
+            StartCoroutine(DelayedDisconnect(conn, 1f));
         }
     }
 
@@ -252,6 +280,23 @@ public class GameNetworkManager : NetworkManager
     {
         yield return new WaitForSeconds(delay);
         connection.Disconnect();
+    }
+}
+
+//Data of the player used when authenticating
+public class PlayerAuthData
+{
+    public WebRequestHandler.ResponseMessageData? playerData;
+    public WebRequestHandler.ResponseMessageData? playerMails;
+
+    public bool IsDataComplete()
+    {
+        if (playerData != null && playerMails != null)
+        {
+            return true;
+        }
+
+        return false;
     }
 }
 
