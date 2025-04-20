@@ -106,11 +106,10 @@ public class MailGuiManager : MonoBehaviour
     }
     public void LoadMailPreviews(List<Mail> mailCollection) {
         //Clear every mail before loading new ones
-        foreach(Transform trans in mailPreviewHolderTransform) {
-            Destroy(trans);
+        foreach(Transform mail in mailPreviewHolderTransform) {
+            Destroy(mail.gameObject);
         }
         foreach(Mail mail in mailCollection) {
-            Debug.Log("mail preview added");
             GameObject mailPreview = Instantiate(mailPreviewPrefab, mailPreviewHolderTransform);
             mailPreview.GetComponent<MailPreview>().InitMailPreview(mail);
         }
