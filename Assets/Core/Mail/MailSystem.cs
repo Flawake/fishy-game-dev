@@ -104,7 +104,6 @@ public class MailSystem : NetworkBehaviour
           title,
           message
         );
-        Debug.Log("receiver: " + receiverUuid.ToString());
         receiverUuid = Guid.Empty;
         CmdSendMail(newMail);
     }
@@ -139,8 +138,5 @@ public class MailSystem : NetworkBehaviour
         // which is the other player's client.
 
         NetworkClient.connection.identity.GetComponentInChildren<MailSystem>().ClientAddMail(mail);
-        Debug.Log("Received mail: ");
-        Debug.Log("title: " + mail.title);
-        Debug.Log("messsage: " + mail.message);
     }
 }
