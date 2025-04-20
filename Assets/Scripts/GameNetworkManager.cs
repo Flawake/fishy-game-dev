@@ -16,7 +16,6 @@ public class GameNetworkManager : NetworkManager
     // Server-only cross-reference of connections to player names
     internal static readonly Dictionary<NetworkConnectionToClient, string> connNames = new Dictionary<NetworkConnectionToClient, string>();
     internal static readonly DualDict<NetworkConnectionToClient, Guid> connUUID = new DualDict<NetworkConnectionToClient, Guid>();
-    internal static readonly HashSet<string> playerNames = new HashSet<string>();
 
     //netID and start time (time.time);
     internal static readonly Dictionary<int, PlayerConnectionInfo> connectedPlayersInfo = new Dictionary<int, PlayerConnectionInfo>();
@@ -56,9 +55,6 @@ public class GameNetworkManager : NetworkManager
     public override void OnServerDisconnect(NetworkConnectionToClient conn)
     {
         AddPlaytimeToDatabase(conn);
-        // remove player name from the HashSet
-        if (conn.authenticationData != null)
-            playerNames.Remove((string)conn.authenticationData);
 
         // remove connection from Dictionary of conn > names
         connNames.Remove(conn);
@@ -162,11 +158,6 @@ public class GameNetworkManager : NetworkManager
     /// Makes the player character ready and requests data from database
     void OnBeginCreateCharacter(NetworkConnectionToClient conn, CreateCharacterMessage _characterData)
     {
-        conn.authenticationData = new PlayerAuthData
-        {
-            playerData = null,
-            playerMails = null,
-        };
         GameObject player = Instantiate(playerPrefab);
         //Hard coded value
         player.transform.position = new Vector3(0, 0, 0);
@@ -194,11 +185,16 @@ public class GameNetworkManager : NetworkManager
         WWWForm getMailsForm = new WWWForm();
         getMailsForm.AddField("auth_token", DatabaseEndpoints.databaseAccessToken);
         getMailsForm.AddField("uuid", uuid.ToString());
+        
+        conn.authenticationData = new PlayerAuthData
+        {
+            playerObject = player,
+            playerData = null,
+            playerMails = null,
+        };
 
-        GameObject[] objectsArray = { player };
-
-        WebRequestHandler.SendWebRequest(DatabaseEndpoints.getInventoryEndpoint, getInventoryForm, conn, objectsArray, PlayerDataReceived);
-        WebRequestHandler.SendWebRequest(DatabaseEndpoints.retreiveMailsEndpoint, getInventoryForm, conn, objectsArray, PlayerMailsReveived);
+        WebRequestHandler.SendWebRequest(DatabaseEndpoints.getInventoryEndpoint, getInventoryForm, conn, PlayerDataReceived);
+        WebRequestHandler.SendWebRequest(DatabaseEndpoints.retreiveMailsEndpoint, getMailsForm, conn, PlayerMailsReveived);
     }
 
     [Server]
@@ -229,13 +225,14 @@ public class GameNetworkManager : NetworkManager
     {
         WebRequestHandler.ResponseMessageData playerData = (conn.authenticationData as PlayerAuthData).playerData.Value;
         WebRequestHandler.ResponseMessageData mailData = (conn.authenticationData as PlayerAuthData).playerMails.Value;
-        PlayerData dataPlayer = playerData.Objects[0].GetComponent<PlayerData>();
-        MailSystem playerMails = mailData.Objects[0].GetComponent<MailSystem>();
+        GameObject playerObject = (conn.authenticationData as PlayerAuthData).playerObject;
+        PlayerData dataPlayer = playerObject.GetComponent<PlayerData>();
+        MailSystem playerMails = playerObject.GetComponent<MailSystem>();
         if (
             dataPlayer.ParsePlayerData(playerData.ResponseData) &&
             playerMails.ParseMails(mailData.ResponseData)) 
         {
-            NetworkServer.AddPlayerForConnection(conn, playerData.Objects[0]);
+            NetworkServer.AddPlayerForConnection(conn, playerObject);
             PlayerConnectionInfo playerConnection = new PlayerConnectionInfo
             {
                 uuid = dataPlayer.GetUuidAsString(),
@@ -245,10 +242,6 @@ public class GameNetworkManager : NetworkManager
         }
         else
         {
-            conn.Send(new DisconnectMessage {
-                reason = ClientDisconnectReason.InvalidPlayerData,
-                reasonText = "Inventory data was invalid, please reconnect to the game.",
-            });
             StartCoroutine(DelayedDisconnect(conn, 1f));
         }
     }
@@ -276,16 +269,21 @@ public class GameNetworkManager : NetworkManager
     }
 
     [Server]
-    private IEnumerator DelayedDisconnect(NetworkConnection connection, float delay)
+    private IEnumerator DelayedDisconnect(NetworkConnection conn, float delay)
     {
+        conn.Send(new DisconnectMessage {
+            reason = ClientDisconnectReason.InvalidPlayerData,
+            reasonText = "Could not parse your data.",
+        });
         yield return new WaitForSeconds(delay);
-        connection.Disconnect();
+        conn.Disconnect();
     }
 }
 
 //Data of the player used when authenticating
 public class PlayerAuthData
 {
+    public GameObject playerObject;
     public WebRequestHandler.ResponseMessageData? playerData;
     public WebRequestHandler.ResponseMessageData? playerMails;
 

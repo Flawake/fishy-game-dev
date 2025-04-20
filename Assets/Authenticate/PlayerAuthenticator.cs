@@ -57,7 +57,6 @@ public class PlayerAuthenticator : NetworkAuthenticator
     static void ResetStatics()
     {
         GameNetworkManager.connNames.Clear();
-        GameNetworkManager.playerNames.Clear();
     }
 
     /// <summary>
