@@ -1476,9 +1476,9 @@ MonoBehaviour:
   port: 24468
   batchSend: 1
   waitBeforeSend: 1
-  clientUseWss: 0
+  clientUseWss: 1
   clientWebsocketSettings:
-    ClientPortOption: 0
+    ClientPortOption: 2
     CustomClientPort: 24469
   minimumLogLevel: 3
 --- !u!4 &302649093
