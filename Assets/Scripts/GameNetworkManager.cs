@@ -2,6 +2,7 @@ using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Mirror.SimpleWeb;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -25,6 +26,29 @@ public class GameNetworkManager : NetworkManager
     public string[] subScenes;
 
     public static List<AsyncOperation> scenesUnloading = new List<AsyncOperation>();
+
+    public override void Awake()
+    {
+        EnvConfig.LoadEnv();
+        if (transport is SimpleWebTransport swt)
+        {
+#if UNITY_EDITOR
+            swt.clientUseWss = false;
+            swt.clientWebsocketSettings.ClientPortOption = WebsocketPortOption.DefaultSameAsServer;
+#endif
+            swt.port = EnvConfig.Port;
+            if (swt.clientWebsocketSettings.ClientPortOption == WebsocketPortOption.SpecifyPort)
+            {
+                swt.clientWebsocketSettings.CustomClientPort = EnvConfig.ClientPort;
+            }
+        }
+        else
+        {
+            Debug.LogWarning("Environment variables port could not be set");
+        }
+
+        base.Awake();
+    }
 
     public override void Update()
     {
