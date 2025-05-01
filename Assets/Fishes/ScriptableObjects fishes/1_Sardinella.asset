@@ -17,7 +17,7 @@ MonoBehaviour:
   description: A sardinella grunt like never seen before.
   fishImage: {fileID: -1514307481, guid: 49451a7352426004db60846701f8941f, type: 3}
   minimumLength: 8
-  maximumLength: 16
+  maximumLength: 50
   avarageLength: 12
   minimumWeightGrams: 120
   maximumWeightGrams: 247

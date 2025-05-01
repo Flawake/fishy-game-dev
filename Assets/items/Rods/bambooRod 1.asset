@@ -19,7 +19,7 @@ MonoBehaviour:
   description: The rod everyone begins with.
   stackable: 0
   name: bamboo rod
-  strength: 60
+  strength: 40
   durabilityIsInfinite: 0
   throwIns: -1
   newPriceCoins: 0
