@@ -19698,6 +19698,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fishFightDialog: {fileID: 7084858615502475132}
   fightSlider: {fileID: 7745720870682770366}
+  fightSliderTransform: {fileID: 1671177700498293731}
   progressBar: {fileID: 9194507682801843103}
   redRight: {fileID: 7792712787861862794}
   redLeft: {fileID: 9187302657495750716}

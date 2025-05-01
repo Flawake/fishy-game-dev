@@ -278,7 +278,6 @@ public class PlayerAuthenticator : NetworkAuthenticator
 
             //https://mirror-networking.gitbook.io/docs/manual/transports/websockets-transport/reverse-proxy
             //https://mirror-networking.gitbook.io/docs/manual/transports/encryption-transport
-            Debug.LogWarning("Username and password are being send in plain text. This should be encrypted.");
             LoginRequestMessage authRequestMessage = new LoginRequestMessage
             {
                 authUsername = usernameField.text,

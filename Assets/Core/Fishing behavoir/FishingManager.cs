@@ -40,7 +40,7 @@ public class FishingManager : NetworkBehaviour
 
     [SyncVar]
     float elapsedFishingTime = 0;
-    float elapsedFishFightTime = 0;
+    float fightStartTime = 0;
 
     //count in ms, since this is more precise
     int minFishingTimeSeconds;
@@ -258,9 +258,9 @@ public class FishingManager : NetworkBehaviour
 
     [Command]
     void CmdRegisterCaughtFish() {
-        if (elapsedFishFightTime < minFishingTimeSeconds)
+        if (Time.time - fightStartTime < minFishingTimeSeconds)
         {
-            Debug.LogWarning("The fishing period was too short. Should be " + minFishingTimeSeconds + " s, but was " + elapsedFishFightTime);
+            Debug.LogWarning("The fishing period was too short. Should be " + minFishingTimeSeconds + " s, but was " + (Time.time - fightStartTime));
             return;
         }
         else
@@ -335,13 +335,7 @@ public class FishingManager : NetworkBehaviour
     void ProgressFishing()
     {
         //Only run the function when the player is fishing.
-        if (!isFishing) {
-            return;
-        }
-
-        if(fightStarted)
-        {
-            elapsedFishFightTime += Time.deltaTime;
+        if (!isFishing || fightStarted) {
             return;
         }
 
@@ -355,15 +349,13 @@ public class FishingManager : NetworkBehaviour
 
         if (!fishGenerated)
         {
-            Debug.Log("No fish could be generated at FishingManager.CmdStartFishing");
-
             RpcEndFishing(EndFishingReason.noFishGenerated);
             ServerEndFishing();
             return;
         }
 
         minFishingTimeSeconds = Random.Range(6, 11);
-        elapsedFishFightTime = 0;
+        fightStartTime = Time.time;
         RpcStartFight(currentFish, minFishingTimeSeconds);
         fightStarted = true;
     }

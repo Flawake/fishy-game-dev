@@ -18,7 +18,7 @@ MonoBehaviour:
     m. They feed mainly on crustaceans and small fishes.
   fishImage: {fileID: -407536755, guid: 49451a7352426004db60846701f8941f, type: 3}
   minimumLength: 11
-  maximumLength: 40
+  maximumLength: 50
   avarageLength: 25
   minimumWeightGrams: 200
   maximumWeightGrams: 1000
@@ -30,6 +30,6 @@ MonoBehaviour:
   Date: 
   breedSuccessRate: 0
   breedPrice: 0
-  baitType: 8
+  baitType: 10
   rarity: 1
   locations: 0

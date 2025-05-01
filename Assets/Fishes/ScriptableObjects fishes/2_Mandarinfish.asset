@@ -17,7 +17,7 @@ MonoBehaviour:
   description: A mandarinfish like never seen before.
   fishImage: {fileID: 324082554, guid: 49451a7352426004db60846701f8941f, type: 3}
   minimumLength: 2
-  maximumLength: 5
+  maximumLength: 50
   avarageLength: 4
   minimumWeightGrams: 0
   maximumWeightGrams: 0
