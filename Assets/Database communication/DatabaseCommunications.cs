@@ -1,201 +1,283 @@
+using System;
+using System.Text;
 using UnityEngine;
 using Mirror;
-using System;
 
-//TODO: can this class be static and should we make it static?
 public static class DatabaseCommunications
 {
+    [Server]
+    public static void LoginRequest(string username, string password, NetworkConnectionToClient conn, WebRequestHandler.WebRequestCallback callback)
+    {
+        LoginRequest requestData = new LoginRequest
+        {
+            username = username,
+            password = password,
+        };
+        
+        string json = JsonUtility.ToJson(requestData);
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
+        WebRequestHandler.SendWebRequest(DatabaseEndpoints.loginEndpoint, bodyRaw, conn, callback);
+    }
+    
+    [Server]
+    public static void RegisterRequest(string username, string password, string email, NetworkConnectionToClient conn, WebRequestHandler.WebRequestCallback callback)
+    {
+        CreateUserRequest requestData = new CreateUserRequest
+        {
+            username = username,
+            password = password,
+            email = email,
+        };
+        
+        string json = JsonUtility.ToJson(requestData);
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
+        WebRequestHandler.SendWebRequest(DatabaseEndpoints.registerEndpoint, bodyRaw, conn, callback);
+    }
+
+    [Server]
+    public static void RetreivePlayerData(Guid userID, NetworkConnectionToClient conn, WebRequestHandler.WebRequestCallback callback)
+    {
+        RetreiveDataRequest requestData = new RetreiveDataRequest
+        {
+            user_id = userID.ToString()
+        };
+        
+        string json = JsonUtility.ToJson(requestData);
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
+        WebRequestHandler.SendWebRequest(DatabaseEndpoints.getPlayerDataEndpoint, bodyRaw, conn, callback);
+
+    }
 
     //TODO: we should do something when the request fails at the webrequesthandlers
     [Server]
-    public static void RequestInventory(NetworkConnectionToClient conn, string userName)
+    public static void RequestPlayerData(NetworkConnectionToClient conn, string userName)
     {
         WWWForm getInventoryForm = new WWWForm();
         getInventoryForm.AddField("auth_token", DatabaseEndpoints.databaseAccessToken);
         getInventoryForm.AddField("user", userName);
 
-        WebRequestHandler.SendWebRequest(DatabaseEndpoints.getInventoryEndpoint, getInventoryForm);
+        WebRequestHandler.SendWebRequest(DatabaseEndpoints.getPlayerDataEndpoint, getInventoryForm);
     }
 
-
-
     [Server]
-    public static void AddItem(ItemObject item, bool asNewItem, string uuid)
+    public static void AddStatFish(CurrentFish fish, Guid userID)
     {
-        string type;
-        int amount;
-
-        WWWForm addItemInventory = new WWWForm();
-
-        if (item is rodObject rod)
+        AddFishRequest requestData = new AddFishRequest
         {
-            type = "rod";
-            amount = rod.throwIns;
-            if(asNewItem)
-            {
-                addItemInventory.AddField("id", rod.id);
-                addItemInventory.AddField("uid", rod.uid);
-            }
-            else
-            {
-                addItemInventory.AddField("iid", rod.uid);
-            }
-        }
-        else if (item is baitObject bait)
+            user_id = userID.ToString(),
+            length = fish.length,
+            fish_id = fish.id,
+            area_id = -1,
+            bait_id = -1,
+        };
+        
+        string json = JsonUtility.ToJson(requestData);
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
+
+        string endpoint = DatabaseEndpoints.addFishStatEndpoint;
+
+        WebRequestHandler.SendWebRequest(DatabaseEndpoints.addFishStatEndpoint, bodyRaw);
+    }
+
+    [Server]
+    public static  void ChangeFishCoinsAmount(int amount, Guid userID)
+    {
+        ChangeCoinsRequest requestData = new ChangeCoinsRequest
         {
-            type = "bait";
-            amount = bait.throwIns;
-            if (asNewItem)
-            {
-                addItemInventory.AddField("id", bait.id);
-                addItemInventory.AddField("uid", 0);
-            }
-            else
-            {
-                addItemInventory.AddField("iid", bait.id);
-            }
-        }
-        else if (item is FishObject fish)
+            user_id = userID.ToString(),
+            amount = amount,
+        };
+        
+        
+        string json = JsonUtility.ToJson(requestData);
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
+        WebRequestHandler.SendWebRequest(DatabaseEndpoints.changeCoinsEndpoint, bodyRaw);
+    }
+
+    [Server]
+    public static void ChangeFishBucksAmount(int amount, Guid userID)
+    {
+        
+        ChangeBucksRequest requestData = new ChangeBucksRequest
         {
-            type = "fish";
-            amount = fish.amount;
-            if (asNewItem)
-            {
-                addItemInventory.AddField("id", fish.id);
-                addItemInventory.AddField("uid", 0);
-            }
-            else
-            {
-                addItemInventory.AddField("iid", fish.id);
-            }
-        }
-        else
+            user_id = userID.ToString(),
+            amount = amount,
+        };
+        
+        
+        string json = JsonUtility.ToJson(requestData);
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
+        WebRequestHandler.SendWebRequest(DatabaseEndpoints.changeBucksEndpoint, bodyRaw);
+    }
+
+    [Server]
+    public static void AddXP(int amount, Guid userID)
+    {
+        AddXPRequest requestData = new AddXPRequest
         {
-            Debug.LogWarning($"Could not add {item} to the database, unsopported item");
-            return;
-        }
-        //Add a item to the inventory
-        addItemInventory.AddField("auth_token", DatabaseEndpoints.databaseAccessToken);
-        addItemInventory.AddField("uuid", uuid);
-        addItemInventory.AddField("type", type);
-        addItemInventory.AddField("amount", amount);
+            user_id = userID.ToString(),
+            amount = amount,
+        };
+        
+        string json = JsonUtility.ToJson(requestData);
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
+        WebRequestHandler.SendWebRequest(DatabaseEndpoints.addXPEndpoint, bodyRaw);
+    }
 
-        string endpoint = DatabaseEndpoints.addExistingItemEndpoint;
-
-        if (asNewItem)
+    [Server]
+    public static void AddPlaytime(int amount, Guid userID)
+    {
+        AddPlayTimeRequest requestData = new AddPlayTimeRequest
         {
-            endpoint = DatabaseEndpoints.addNewItemEndpoint;
-        }
-
-        WebRequestHandler.SendWebRequest(endpoint, addItemInventory);
+            user_id = userID.ToString(),
+            amount = amount,
+        };
+        
+        string json = JsonUtility.ToJson(requestData);
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
+        WebRequestHandler.SendWebRequest(DatabaseEndpoints.addPlaytime, bodyRaw);
     }
 
     [Server]
-    public static void AddStatFish(CurrentFish fish, string uuid)
+    public static void SelectOtherItem(ItemObject item, Guid userID)
     {
-        //Add a fish to the player statistics
-        //We are sending the length as max_length, the database server checks if it indeed is the new max length
-        string fishStat = "stat_fish{\"id\": " + fish.id + ", \"amount\": " + 1 + ", \"max_length\": " + fish.length + "}";
-        WWWForm addFishStat = new WWWForm();
-        addFishStat.AddField("auth_token", DatabaseEndpoints.databaseAccessToken);
-        addFishStat.AddField("uuid", uuid);
-        addFishStat.AddField("id", fish.id);
-        addFishStat.AddField("amount", 1);
-        addFishStat.AddField("length", fish.length);
-        WebRequestHandler.SendWebRequest(DatabaseEndpoints.addFishStatEndpoint, addFishStat);
-    }
-
-    [Server]
-    public static  void ChangeFishCoinsAmount(int amount, string uuid)
-    {
-        WWWForm adjustMoneyForm = new WWWForm();
-        adjustMoneyForm.AddField("auth_token", DatabaseEndpoints.databaseAccessToken);
-        adjustMoneyForm.AddField("uuid", uuid);
-        adjustMoneyForm.AddField("type", "coin");
-        adjustMoneyForm.AddField("amount", amount);
-        WebRequestHandler.SendWebRequest(DatabaseEndpoints.adjustMoneyEndpoint, adjustMoneyForm);
-    }
-
-    [Server]
-    public static void ChangeFishBucksAmount(int amount, string uuid)
-    {
-        WWWForm adjustMoneyForm = new WWWForm();
-        adjustMoneyForm.AddField("auth_token", DatabaseEndpoints.databaseAccessToken);
-        adjustMoneyForm.AddField("uuid", uuid);
-        adjustMoneyForm.AddField("type", "buck");
-        adjustMoneyForm.AddField("amount", amount);
-        WebRequestHandler.SendWebRequest(DatabaseEndpoints.adjustMoneyEndpoint, adjustMoneyForm);
-    }
-
-    [Server]
-    public static void AddXP(int amount, string uuid) {
-        WWWForm addXPForm = new WWWForm();
-        addXPForm.AddField("auth_token", DatabaseEndpoints.databaseAccessToken);
-        addXPForm.AddField("uuid", uuid);
-        addXPForm.AddField("amount", amount);
-        WebRequestHandler.SendWebRequest(DatabaseEndpoints.addXPEndpoint, addXPForm);
-    }
-
-    [Server]
-    public static void AddPlaytime(int amount, string uuid)
-    {
-        WWWForm addPlatimeForm = new WWWForm();
-        addPlatimeForm.AddField("auth_token", DatabaseEndpoints.databaseAccessToken);
-        addPlatimeForm.AddField("uuid", uuid);
-        addPlatimeForm.AddField("time", amount);
-        WebRequestHandler.SendWebRequest(DatabaseEndpoints.addPlaytime, addPlatimeForm);
-    }
-
-    [Server]
-    public static void SelectOtherItem(ItemObject item, string uuid)
-    {
-        string type;
+        ItemType type;
         int id;
+        Guid? itemUid = null;
 
+        //Select a different item as using
+        WWWForm otherItemSelectForm = new WWWForm();
         if (item is rodObject)
         {
-            type = rodObject.AsString();
-            id = item.uid;
+            itemUid = item.uuid;
+            id = item.id;
+            type = ItemType.Rod;
         }
         else if (item is baitObject)
         {
-            type = baitObject.AsString();
             id = item.id;
+            type = ItemType.Bait;
         }
         else
         {
             Debug.Log("Only a bait and a rod should be selectable");
             return;
         }
-        //Select a different item as using
-        WWWForm otherItemSelectForm = new WWWForm();
-        otherItemSelectForm.AddField("auth_token", DatabaseEndpoints.databaseAccessToken);
-        otherItemSelectForm.AddField("uuid", uuid);
-        otherItemSelectForm.AddField("type", type);
-        otherItemSelectForm.AddField("uid", id);
-        WebRequestHandler.SendWebRequest(DatabaseEndpoints.selectOtherItemEndpoint, otherItemSelectForm);
+
+        SelectItemRequest requestData = new SelectItemRequest
+        {
+            user_id = userID.ToString(),
+            item_id = id,
+            item_uid = itemUid.ToString(),
+            item_type = type,
+        };
+        
+        string json = JsonUtility.ToJson(requestData);
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
+        WebRequestHandler.SendWebRequest(DatabaseEndpoints.selectItemEndpoint, bodyRaw);
+    }
+    
+    [Server]
+    public static void AddNewItem(ItemObject item, Guid userID)
+    {
+        int amount;
+        int item_id;
+        Guid? item_uid = null;
+
+        if (item is rodObject rod)
+        {
+            amount = rod.throwIns;
+            item_id = rod.id;
+            item_uid = rod.uuid;
+        }
+        else if (item is baitObject bait)
+        {
+            amount = bait.throwIns;
+            item_id = bait.id;
+        }
+        else if (item is FishObject fish)
+        {
+            amount = fish.amount;
+            item_id = fish.id;
+        }
+        else
+        {
+            Debug.LogWarning($"Could not add {item} to the database, unsopported item");
+            return;
+        }
+
+        AddItemRequest requestData = new AddItemRequest
+        {
+            user_id = userID.ToString(),
+            amount = amount,
+            item_id = item_id,
+            item_uid = item_uid.ToString(),
+            cell_id = 0,
+        };
+        
+        string json = JsonUtility.ToJson(requestData);
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
+        WebRequestHandler.SendWebRequest(DatabaseEndpoints.addNewItemEndpoint, bodyRaw);
+    }
+    
+    public static void IncreaseItem(ItemObject item, Guid userID)
+    {
+        int amount;
+        int item_id;
+        Guid? item_uid = null;
+
+        if (item is rodObject rod)
+        {
+            amount = rod.throwIns;
+            item_id = rod.id;
+            item_uid = rod.uuid;
+        }
+        else if (item is baitObject bait)
+        {
+            amount = bait.throwIns;
+            item_id = bait.id;
+        }
+        else if (item is FishObject fish)
+        {
+            amount = fish.amount;
+            item_id = fish.id;
+        }
+        else
+        {
+            Debug.LogWarning($"Could not add {item} to the database, unsopported item");
+            return;
+        }
+
+        IncreaseItemRequest requestData = new IncreaseItemRequest
+        {
+            user_id = userID.ToString(),
+            amount = amount,
+            item_id = item_id,
+            item_uid = item_uid.ToString(),
+        };
+        
+        string json = JsonUtility.ToJson(requestData);
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
+        WebRequestHandler.SendWebRequest(DatabaseEndpoints.addExistingItemEndpoint, bodyRaw);
     }
 
     [Server]
-    public static void ReduceItem(ItemObject item, int amount, string uuid)
+    public static void ReduceItem(ItemObject item, int amount, Guid userID)
     {
-        string type;
-        int id = int.MinValue;
-
+        Guid? itemUid = null;
+        int itemID;
         if (item is rodObject)
         {
-            type = rodObject.AsString();
-            id = item.uid;
+            itemUid = item.uuid;
+            itemID = item.id;
         }
         else if (item is baitObject)
         {
-            type = baitObject.AsString();
-            id = item.id;
+            itemID = item.id;
         }
         else if(item is FishObject)
         {
-            type = FishObject.AsString();
-            id = item.id;
+            itemID = item.id;
         }
         else
         {
@@ -203,38 +285,37 @@ public static class DatabaseCommunications
             return;
         }
 
-        //Add a item to the inventory
-        WWWForm addItemInventory = new WWWForm();
-        addItemInventory.AddField("auth_token", DatabaseEndpoints.databaseAccessToken);
-        addItemInventory.AddField("uuid", uuid);
-        addItemInventory.AddField("type", type);
-        addItemInventory.AddField("uid", id);
-        addItemInventory.AddField("amount", amount);
-
-        string endpoint = DatabaseEndpoints.reduceItemEndpoint;
-
-        WebRequestHandler.SendWebRequest(endpoint, addItemInventory);
+        DegradeItemRequest requestData = new DegradeItemRequest
+        {
+            user_id = userID.ToString(),
+            amount = amount,
+            item_id = item.id,
+            item_uid = item.uuid.ToString(),
+        };
+        string json = JsonUtility.ToJson(requestData);
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
+        WebRequestHandler.SendWebRequest(DatabaseEndpoints.reduceItemEndpoint, bodyRaw);
     }
 
     [Server]
-    public static void DestroyItem(ItemObject item, string uuid)
+    public static void DestroyItem(ItemObject item, Guid userID)
     {
-        string type;
         int id;
+        Guid? itemUid = null;
 
+        WWWForm destroyItemForm = new WWWForm();
+        
         if (item is rodObject)
         {
-            type = rodObject.AsString();
-            id = item.uid;
+            itemUid = item.uuid;
+            id = item.id;
         }
         else if (item is baitObject)
         {
-            type = baitObject.AsString();
             id = item.id;
         }
         else if (item is FishObject)
         {
-            type = FishObject.AsString();
             id = item.id;
         }
         else
@@ -243,37 +324,47 @@ public static class DatabaseCommunications
             return;
         }
 
-        WWWForm addItemInventory = new WWWForm();
-        addItemInventory.AddField("auth_token", DatabaseEndpoints.databaseAccessToken);
-        addItemInventory.AddField("uuid", uuid);
-        addItemInventory.AddField("type", type);
-        addItemInventory.AddField("u/id", id);
-
-        string endpoint = DatabaseEndpoints.removeItemEndpoint;
-
-        WebRequestHandler.SendWebRequest(endpoint, addItemInventory);
+        DestroyItemRequest requestData = new DestroyItemRequest
+        {
+            user_id = userID.ToString(),
+            item_id = id,
+            item_uid = itemUid.ToString(),
+        };
+        
+        string json = JsonUtility.ToJson(requestData);
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
+        WebRequestHandler.SendWebRequest(DatabaseEndpoints.removeItemEndpoint, destroyItemForm);
     }
 
     [Server]
     public static void AddMail(Mail mail)
     {
-        WWWForm addNewMail = new WWWForm();
-        addNewMail.AddField("auth_token", DatabaseEndpoints.databaseAccessToken);
-        addNewMail.AddField("mailUuid", mail.mailUuid.ToString());
-        addNewMail.AddField("senderUuid", mail.senderUuid.ToString());
-        addNewMail.AddField("receiverUuid", mail.receiverUuid.ToString());
-        addNewMail.AddField("prevMailUuid", mail.prevMailUuid.ToString());
-        addNewMail.AddField("sendTime", mail.sendTime.ToString("O"));
-        addNewMail.AddField("mailTitle", mail.title);
-        addNewMail.AddField("mailMessage", mail.message);
+        CreateMailRequest requestData = new CreateMailRequest
+        {
+            mail_id = mail.mailUuid.ToString(),
+            sender_id = mail.senderUuid.ToString(),
+            receiver_ids = new string[] { mail.receiverUuid.ToString() },
+            title = mail.title,
+            message = mail.message,
+        };
         
-        string endpoint = DatabaseEndpoints.addMailEndpoint;
-        WebRequestHandler.SendWebRequest(endpoint, addNewMail);
+        string json = JsonUtility.ToJson(requestData);
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
+        WebRequestHandler.SendWebRequest(DatabaseEndpoints.addMailEndpoint, bodyRaw);
     }
 
     [Server]
-    public static void ReadMail(int mailUID, bool read)
+    public static void ReadMail(Guid mailUID, Guid userID, bool read)
     {
-        Debug.LogWarning("Saving the read status of a mail to the db has not yet been implemented");
+        ReadMailRequest requestData = new ReadMailRequest
+        {
+            mail_id = mailUID.ToString(),
+            user_id = userID.ToString(),
+            read = read,
+        };
+        
+        string json = JsonUtility.ToJson(requestData);
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
+        WebRequestHandler.SendWebRequest(DatabaseEndpoints.readMailEndpoint, bodyRaw);
     }
 }

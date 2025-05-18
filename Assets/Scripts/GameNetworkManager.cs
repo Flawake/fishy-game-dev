@@ -11,7 +11,7 @@ public class GameNetworkManager : NetworkManager
 {
     internal struct PlayerConnectionInfo
     {
-        public string uuid;
+        public Guid userID;
         public double playerConnectionTime;
     }
     // Server-only cross-reference of connections to player names
@@ -95,11 +95,11 @@ public class GameNetworkManager : NetworkManager
     {
         if (connectedPlayersInfo.TryGetValue(conn.connectionId, out PlayerConnectionInfo playerInfo))
         {
-            DatabaseCommunications.AddPlaytime((int)(NetworkTime.time - playerInfo.playerConnectionTime), playerInfo.uuid);
+            DatabaseCommunications.AddPlaytime((int)(NetworkTime.time - playerInfo.playerConnectionTime), playerInfo.userID);
         }
         else
         {
-            Debug.LogWarning($"playerStartTime was not foud for a player {conn.connectionId}");
+            Debug.LogWarning($"playerStartTime was not foud for a player, connid {conn.connectionId}");
         }
     }
 
@@ -201,42 +201,24 @@ public class GameNetworkManager : NetworkManager
 
         dataPlayer.SetUsername(name);
         dataPlayer.SetRandomColor();
-
-        WWWForm getInventoryForm = new WWWForm();
-        getInventoryForm.AddField("auth_token", DatabaseEndpoints.databaseAccessToken);
-        getInventoryForm.AddField("uuid", uuid.ToString());
-        
-        WWWForm getMailsForm = new WWWForm();
-        getMailsForm.AddField("auth_token", DatabaseEndpoints.databaseAccessToken);
-        getMailsForm.AddField("uuid", uuid.ToString());
-        
         conn.authenticationData = new PlayerAuthData
         {
             playerObject = player,
             playerData = null,
-            playerMails = null,
         };
-
-        WebRequestHandler.SendWebRequest(DatabaseEndpoints.getInventoryEndpoint, getInventoryForm, conn, PlayerDataReceived);
-        WebRequestHandler.SendWebRequest(DatabaseEndpoints.retreiveMailsEndpoint, getMailsForm, conn, PlayerMailsReveived);
+        
+        DatabaseCommunications.RetreivePlayerData(uuid, conn, PlayerDataReceived);
     }
 
     [Server]
     void PlayerDataReceived(WebRequestHandler.ResponseMessageData data)
     {
+        if (data.EndRequestReason != WebRequestHandler.RequestEndReason.success)
+        {
+            data.Connection.Disconnect();
+        }
         PlayerAuthData authData = data.Connection.authenticationData as PlayerAuthData;
         authData.playerData = data;
-        if (authData.IsDataComplete())
-        {
-            OnEndCreateCharacter(data.Connection);
-        }
-    }
-
-    [Server]
-    void PlayerMailsReveived(WebRequestHandler.ResponseMessageData data)
-    {
-        PlayerAuthData authData = data.Connection.authenticationData as PlayerAuthData;
-        authData.playerMails = data;
         if (authData.IsDataComplete())
         {
             OnEndCreateCharacter(data.Connection);
@@ -248,21 +230,25 @@ public class GameNetworkManager : NetworkManager
     void OnEndCreateCharacter(NetworkConnectionToClient conn)
     {
         WebRequestHandler.ResponseMessageData playerData = (conn.authenticationData as PlayerAuthData).playerData.Value;
-        WebRequestHandler.ResponseMessageData mailData = (conn.authenticationData as PlayerAuthData).playerMails.Value;
         GameObject playerObject = (conn.authenticationData as PlayerAuthData).playerObject;
         PlayerData dataPlayer = playerObject.GetComponent<PlayerData>();
-        MailSystem playerMails = playerObject.GetComponent<MailSystem>();
-        if (
-            dataPlayer.ParsePlayerData(playerData.ResponseData) &&
-            playerMails.ParseMails(mailData.ResponseData)) 
+        
+        if (GameNetworkManager.connUUID.TryGetValue(conn, out Guid uuid) && uuid != Guid.Empty)
         {
-            NetworkServer.AddPlayerForConnection(conn, playerObject);
-            PlayerConnectionInfo playerConnection = new PlayerConnectionInfo
+            if(dataPlayer.ParsePlayerData(playerData.ResponseData, uuid))
             {
-                uuid = dataPlayer.GetUuidAsString(),
-                playerConnectionTime = NetworkTime.time,
-            };
-            connectedPlayersInfo.Add(conn.connectionId, playerConnection);
+                NetworkServer.AddPlayerForConnection(conn, playerObject);
+                PlayerConnectionInfo playerConnection = new PlayerConnectionInfo
+                {
+                    userID = dataPlayer.GetUuid(),
+                    playerConnectionTime = NetworkTime.time,
+                };
+                connectedPlayersInfo.Add(conn.connectionId, playerConnection);
+            }
+            else
+            {
+                StartCoroutine(DelayedDisconnect(conn, 1f));
+            }
         }
         else
         {
@@ -309,11 +295,10 @@ public class PlayerAuthData
 {
     public GameObject playerObject;
     public WebRequestHandler.ResponseMessageData? playerData;
-    public WebRequestHandler.ResponseMessageData? playerMails;
 
     public bool IsDataComplete()
     {
-        if (playerData != null && playerMails != null)
+        if (playerData != null)
         {
             return true;
         }

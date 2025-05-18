@@ -9,12 +9,12 @@ public class PlayerFishdexFishes : NetworkBehaviour
     [Server]
     public void SaveFishStats(UserData playerData)
     {
-        if(playerData.stats.fishes == null)
+        if(playerData.fish_data.Length == 0)
         {
             return;
         }
 
-        foreach(UserData.CaughtFish fish in playerData.stats.fishes)
+        foreach(UserData.FishData fish in playerData.fish_data)
         {
             statFishContainer.Add(new StatFish(fish));
         }

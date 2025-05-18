@@ -8,11 +8,11 @@ public class StatFish
     public int maxCaughtLength;
     //TODO: add caught area's
 
-    public StatFish(UserData.CaughtFish fish)
+    public StatFish(UserData.FishData fish)
     {
-        id = fish.id;
+        id = fish.fish_id;
         amount = fish.amount;
-        maxCaughtLength = fish.maxLength;
+        maxCaughtLength = fish.max_length;
     }
 
     public StatFish(int _id, int _amount, int _maxCaughtLength)

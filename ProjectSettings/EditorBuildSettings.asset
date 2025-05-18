@@ -20,4 +20,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Marshall.unity
     guid: bb15018e9c573464b9d587721e3f44d2
+  - enabled: 1
+    path: Assets/Scenes/Laketown.unity
+    guid: 0cd81375904f2844f995778fb991c91b
   m_configObjects: {}
+  m_UseUCBPForAssetBundles: 0

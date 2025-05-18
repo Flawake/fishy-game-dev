@@ -12,11 +12,11 @@ public class baitObject : ItemObject
     public ItemBaitType baitType;
     public void Awake()
     {
-        type = ItemType.bait;
+        type = ItemType.Bait;
     }
 
     public static string AsString()
     {
-        return "bait";
+        return "Bait";
     }
 }

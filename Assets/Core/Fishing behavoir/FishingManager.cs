@@ -128,6 +128,7 @@ public class FishingManager : NetworkBehaviour
 
         if (Vector2.Distance(transform.position, clickedPos) > rodThrowDistance)
         {
+            DebugFishingSpot("No fishing spot, distance was too big");
             return false;
         }
 
@@ -137,6 +138,7 @@ public class FishingManager : NetworkBehaviour
 
         if (!hit)
         {
+            DebugFishingSpot("No hit on the water");
             return false;
         }
 
@@ -147,6 +149,7 @@ public class FishingManager : NetworkBehaviour
         foreach(RaycastHit2D obstacle in hits) {
             if(Vector2.Distance(obstacle.point, transform.position) > 0.6f) {
                 obstaclePoint = obstacle.point;
+                DebugFishingSpot("Obstacle in between the player and the fishingplace");
                 return false;
             }
         }
@@ -154,10 +157,12 @@ public class FishingManager : NetworkBehaviour
         // Same raycasthit, but from player to throwdirection to make sure that the collision point is inside the player's fish collider
         hits = Physics2D.RaycastAll(transform.position, new Vector2(clickedPos.x - transform.position.x, clickedPos.y - transform.position.y), rodThrowDistance + 1, obstacleLayer);
         if(hits.Length == 0) {
+            DebugFishingSpot("Why are there 0 hits?");
             return false;
         }
         collisionPoint = hits[0].point;
         if(!fishCollider.OverlapPoint(hits[0].point)) {
+            DebugFishingSpot("The fishingpoint git is not inside the player fishing collider");
             return false;
         }
         // We are sure that the click was inside a water collider, but the click can still be on an object that is inside the water. We also need to check for that.
@@ -171,16 +176,26 @@ public class FishingManager : NetworkBehaviour
             walkable.geometryType = CompositeCollider2D.GeometryType.Outlines;
         }
         if(doesOverlap) {
+            DebugFishingSpot("The fishingspot is on a walkable area");
             return false;
         }
 
         if (!hit.collider.gameObject.GetComponent<PlayersNearWater>().GetPlayersNearPuddle().Contains(this.GetComponent<NetworkIdentity>().netId))
         {
+            DebugFishingSpot("The player is not even near the water");
             return false;
         }
 
         water = hit;
         return true;
+    }
+
+    void DebugFishingSpot(string message) {
+#if UNITY_EDITOR
+#if true
+        Debug.LogWarning(message);
+#endif
+#endif
     }
 
     [Client]

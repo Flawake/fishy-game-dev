@@ -1570,6 +1570,7 @@ MonoBehaviour:
   - Assets/Scenes/Beach.unity
   - Assets/Scenes/Marshall.unity
   - Assets/Scenes/Tropical.unity
+  - Assets/Scenes/Laketown.unity
 --- !u!114 &302649097
 MonoBehaviour:
   m_ObjectHideFlags: 0
