@@ -4,63 +4,44 @@ using System;
 [Serializable]
 public struct UserData
 {
-    public byte[] uuid;
-    public PlayerInventory inventory;
-    public PlayerStats stats;
-    public bool showInv;
-    public int lastItemUID;
-    public int selectedRodUid;
-    public int selectedBaitId;
-
+    public string name;
+    public int xp;
+    public int coins;
+    public int bucks;
+    public ulong total_playtime;
+    public Guid? selected_rod;
+    public int? selected_bait;
+    public FishData[] fish_data;
+    public InventoryItem[] inventory_items;
+    public MailEntry[] mailbox;
+    
     [Serializable]
-    public struct PlayerInventory
+    public struct FishData
     {
-        //Each item has 2 id's, one wich tells what item it is(id) and one to hold items apart from each other(uid)
-        public Rod[]? rods;
-        public Bait[]? baits;
-        public Fish[]? fishes;
-    }
-
-    [Serializable]
-    public struct Rod
-    {
-        public int uid;
-        public int id;
-        public int durability;
-    }
-
-    [Serializable]
-    public struct Bait
-    {
-        public int uid;
-        public int id;
+        public int fish_id;
         public int amount;
+        public int max_length;
+        public DateTime first_caught;
+        public int[] areas;
+        public int[] baits;
     }
-
+    
     [Serializable]
-    public struct Fish
+    public struct InventoryItem
     {
-        public int id;
+        public int item_id;
+        public Guid? item_uuid;
+        public ItemType itemType;
         public int amount;
+        public int cell_id;
     }
-
+    
     [Serializable]
-    public struct PlayerStats
+    public struct MailEntry
     {
-        public int xp;
-        public CaughtFish[]? fishes;
-        public int coins;
-        public int bucks;
-        public int biggestFishCm;
-        public ulong playtime;
-    }
-
-    [Serializable]
-    public struct CaughtFish
-    {
-        public int id;
-        public int amount;
-        public int maxLength;
+        public Guid mail_id;
+        public string title;
+        public string message;
     }
 }
 #nullable disable

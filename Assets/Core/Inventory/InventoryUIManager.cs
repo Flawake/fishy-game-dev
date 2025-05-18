@@ -184,22 +184,22 @@ public class InventoryUIManager : MonoBehaviour
             ItemType type = itemObject.type;
             if (filter != 0)
             {
-                if (type == ItemType.rod && filter != ItemFiler.rods)
+                if (type == ItemType.Rod && filter != ItemFiler.rods)
                 {
                     continue;
                 }
-                else if (type == ItemType.bait && filter != ItemFiler.baits)
+                else if (type == ItemType.Bait && filter != ItemFiler.baits)
                 {
                     continue;
                 }
-                else if (type == ItemType.fish && filter != ItemFiler.fishes)
+                else if (type == ItemType.Fish && filter != ItemFiler.fishes)
                 {
                     continue;
                 }
             }
 
             if (itemObject is rodObject rod) {
-                if (playerData.GetSelectedRod() != null && playerData.GetSelectedRod().uid == rod.uid) { 
+                if (playerData.GetSelectedRod() != null && playerData.GetSelectedRod().uuid == rod.uuid) { 
                     itemSelected = true;
                 }
             }
@@ -235,7 +235,7 @@ public class InventoryUIManager : MonoBehaviour
             name = rod.name;
             amount = rod.throwIns;
 
-            if (playerData.GetSelectedRod() != null && playerData.GetSelectedRod().uid == rod.uid)
+            if (playerData.GetSelectedRod() != null && playerData.GetSelectedRod().uuid == rod.uuid)
             {
                 itemPreviewSelectedItemMark.SetActive(true);
             }
@@ -264,7 +264,7 @@ public class InventoryUIManager : MonoBehaviour
         itemAmountText.text = amount.ToString();
         itemPreviewImage.sprite = _item.sprite;
 
-        if (_item.type == ItemType.rod || _item.type == ItemType.bait)
+        if (_item.type == ItemType.Rod || _item.type == ItemType.Bait)
         {
             useItemButton.SetActive(true);
         }

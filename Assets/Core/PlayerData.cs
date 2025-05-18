@@ -49,7 +49,14 @@ public class PlayerData : NetworkBehaviour
     //We don't want to sync the rod since we want the player to have the selectedRod be a reference to a rod in the inventory.
     //We only need the id to do this. So the ID is synced and the selectedItem is found from the inventory
     [SyncVar(hook = nameof(SelectedRodChanged))]
-    int selectedRodUid;
+    string selectedRodUidStr;
+
+    public Guid SelectedRodUid
+    {
+        get => Guid.TryParse(selectedRodUidStr, out var guid) ? guid : Guid.Empty;
+        set => selectedRodUidStr = value.ToString();
+    }
+    
     [SyncVar(hook = nameof(SelectedBaitChanged))]
     int selectedBaitId;
 
@@ -102,11 +109,11 @@ public class PlayerData : NetworkBehaviour
     {
         if (!fromDatabase)
         {
-            DatabaseCommunications.SelectOtherItem(newRod, GetUuidAsString());
+            DatabaseCommunications.SelectOtherItem(newRod, GetUuid());
         }
         //TODO: ask the database what the new rod is to see if the write has succeeded
         selectedRod = newRod;
-        selectedRodUid = newRod.uid;
+        SelectedRodUid = newRod.uuid;
     }
 
     [Command]
@@ -114,7 +121,7 @@ public class PlayerData : NetworkBehaviour
     {
         if (selectedRod != null)
         {
-            if (selectedRod.uid == newRod.uid)
+            if (selectedRod.uuid == newRod.uuid)
             {
                 return;
             }
@@ -124,7 +131,7 @@ public class PlayerData : NetworkBehaviour
         rodObject rodInventoryReference;
         if (newRod.stackable)
         {
-            rodInventoryReference = inventory.GetRodByUID(newRod.uid);
+            rodInventoryReference = inventory.GetRodByUID(newRod.uuid);
         }
         else
         {
@@ -147,7 +154,7 @@ public class PlayerData : NetworkBehaviour
     {
         if (!fromDatabase)
         {
-            DatabaseCommunications.SelectOtherItem(newBait, GetUuidAsString());
+            DatabaseCommunications.SelectOtherItem(newBait, GetUuid());
         }
         //TODO: ask the database what the new rod is to see if the write has gone correctly
         selectedBait = newBait;
@@ -187,19 +194,22 @@ public class PlayerData : NetworkBehaviour
         SelectNewBait(baitInventoryReference, false);
     }
 
-    void SelectedRodChanged(int _, int newRodUid)
+    void SelectedRodChanged(string oldValue, string newValue)
     {
         if (!isLocalPlayer)
         {
             return;
         }
-        StartCoroutine(SelectedRodChangedCoroutine(newRodUid));
+        
+        Guid _ = Guid.TryParse(oldValue, out var o) ? o : Guid.Empty;
+        Guid newRodUuid = Guid.TryParse(newValue, out var n) ? n : Guid.Empty;
+        StartCoroutine(SelectedRodChangedCoroutine(newRodUuid));
     }
 
     //Inventory might not yet be synced so it may not yet have the item available in the inventory
-    IEnumerator SelectedRodChangedCoroutine(int newRodUid) {
+    IEnumerator SelectedRodChangedCoroutine(Guid newRodUuid) {
         rodObject newRod;
-        while ((newRod = inventory.GetRodByUID(newRodUid)) == null)
+        while ((newRod = inventory.GetRodByUID(newRodUuid)) == null)
         {
             yield return new WaitForSeconds(0.05f);
         }
@@ -240,7 +250,7 @@ public class PlayerData : NetworkBehaviour
     [TargetRpc]
     private void RpcChangeRodStats(rodObject rod, int amount) {
         //rodObject here is a nely created rod, we need to get the rod reference from the player inventory.
-        rodObject inventoryRod = inventory.GetRodByUID(rod.uid);
+        rodObject inventoryRod = inventory.GetRodByUID(rod.uuid);
         inventoryRod.throwIns += amount;
     }
 
@@ -248,7 +258,7 @@ public class PlayerData : NetworkBehaviour
     [Server]
     public void ChangeRodQuality(rodObject rod, int amount)
     {
-        if (rod.durabilityIsInfinite || rod.uid < 0)
+        if (rod.durabilityIsInfinite || rod.uuid == Guid.Empty)
         {
             return;
         }
@@ -278,7 +288,7 @@ public class PlayerData : NetworkBehaviour
         {
             if (amount < 0)
             {
-                DatabaseCommunications.ReduceItem(rod, Mathf.Abs(amount), GetUuidAsString());
+                DatabaseCommunications.ReduceItem(rod, Mathf.Abs(amount), GetUuid());
             }
             else
             {
@@ -328,7 +338,7 @@ public class PlayerData : NetworkBehaviour
         {
             if (amount < 0)
             {
-                DatabaseCommunications.ReduceItem(bait, Mathf.Abs(amount), GetUuidAsString());
+                DatabaseCommunications.ReduceItem(bait, Mathf.Abs(amount), GetUuid());
             }
             else
             {
@@ -350,31 +360,7 @@ public class PlayerData : NetworkBehaviour
     }
 
     [Server]
-    public void SetLastitemUID(int num)
-    {
-        lastItemUID = num;
-    }
-
-    [Server]
-    public void IncreaseLastitemUID(int amount)
-    {
-        lastItemUID += amount;
-    }
-
-    public int GetLastitemUID()
-    {
-        return lastItemUID;
-    }
-
-    public int GetAndIncreaeLastItemUID()
-    {
-        int id = GetLastitemUID();
-        IncreaseLastitemUID(1);
-        return id;
-    }
-
-    [Server]
-    public bool ParsePlayerData(string jsonPlayerData)
+    public bool ParsePlayerData(string jsonPlayerData, Guid userID)
     {
         try
         {
@@ -382,14 +368,13 @@ public class PlayerData : NetworkBehaviour
             inventory.SaveInventory(playerData);
             fishdexFishes.SaveFishStats(playerData);
 
-            SetUuid(GuidFromBytes(playerData.uuid));
-            SetFishCoins(playerData.stats.coins);
-            SetFishBucks(playerData.stats.bucks);
-            SetXp(playerData.stats.xp);
+            SetUuid(userID);
+            SetFishCoins(playerData.coins);
+            SetFishBucks(playerData.bucks);
+            SetXp(playerData.xp);
             SetStartPlayTime();
-            SetTotalPlayTimeAtStart(playerData.stats.playtime);
-            SetLastitemUID(playerData.lastItemUID);
-            SetShowInventory(playerData.showInv);
+            SetTotalPlayTimeAtStart(playerData.total_playtime);
+            SetShowInventory(false);
         } catch (Exception e)
         {
             Debug.LogWarning(e);

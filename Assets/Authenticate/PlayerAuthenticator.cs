@@ -109,15 +109,9 @@ public class PlayerAuthenticator : NetworkAuthenticator
             // disconnect the client after 1 second so that response message gets delivered
             StartCoroutine(DelayedDisconnect(conn, 1f));
         }
-
+        
         GameNetworkManager.connNames.Add(conn, username);
-
-        WWWForm loginForm = new WWWForm();
-        loginForm.AddField("auth_token", DatabaseEndpoints.databaseAccessToken);
-        loginForm.AddField("user", username);
-        loginForm.AddField("password", password);
-
-        WebRequestHandler.SendWebRequest(DatabaseEndpoints.loginEndpoint, loginForm, conn, EndLoginRequestMessage);
+        DatabaseCommunications.LoginRequest(username, password, conn, EndLoginRequestMessage);
     }
 
     void OnRegisterRequestMessage(NetworkConnectionToClient conn, RegisterRequestMessage msg)
@@ -132,14 +126,7 @@ public class PlayerAuthenticator : NetworkAuthenticator
         string email = msg.registerEmail;
 
         GameNetworkManager.connNames.Add(conn, username);
-
-        WWWForm registerForm = new WWWForm();
-        registerForm.AddField("auth_token", DatabaseEndpoints.databaseAccessToken);
-        registerForm.AddField("user", username);
-        registerForm.AddField("password", password);
-        registerForm.AddField("email", email);
-
-        WebRequestHandler.SendWebRequest(DatabaseEndpoints.registerEndpoint, registerForm, conn, EndRegisterRequestMessage);
+        DatabaseCommunications.RegisterRequest(username, password, email, conn, EndRegisterRequestMessage);
     }
 
     void EndLoginRequestMessage(WebRequestHandler.ResponseMessageData response)
@@ -162,9 +149,9 @@ public class PlayerAuthenticator : NetworkAuthenticator
             {
                 AuthResponse loginResponse = JsonUtility.FromJson<AuthResponse>(response.ResponseData);
                 Debug.Log($"loginResponse code = {loginResponse.code}");
-                if (loginResponse.code == 0)
+                if (loginResponse.code == 200)
                 {
-                    Guid playerUuid = Guid.Parse(loginResponse.uuid);
+                    Guid playerUuid = Guid.Parse(JwtUtils.GetUuidFromJwt(loginResponse.jwt));
                     GameNetworkManager.connUUID.Add(conn, playerUuid);
                     SendResponse(0, isLogin, conn);
 

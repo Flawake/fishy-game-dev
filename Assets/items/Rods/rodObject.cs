@@ -14,11 +14,11 @@ public class rodObject : ItemObject
 
     public void Awake()
     {
-        type = ItemType.rod;
+        type = ItemType.Rod;
     }
 
     public static string AsString()
     {
-        return "rod";
+        return "Rod";
     }
 }

@@ -29,11 +29,11 @@ public class StoreManager : NetworkBehaviour
         StoreItemObject[] itemsToSearch;
         StoreItemObject itemToBuy = null;
         //Don't trust the player on giving the whole item, only give the details that identify the item and then search the item that corresponds to it on the server.
-        if(type == ItemType.rod)
+        if(type == ItemType.Rod)
         {
             itemsToSearch = ItemsInGame.storeItemRods;
         }
-        else if(type == ItemType.bait)
+        else if(type == ItemType.Bait)
         {
             itemsToSearch = ItemsInGame.storeItemBaits;
         }

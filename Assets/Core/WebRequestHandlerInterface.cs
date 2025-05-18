@@ -66,6 +66,32 @@ public static class WebRequestHandler
         unknown,
     }
 
+    public static void SendWebRequest(string uri, byte[] requestBody)
+    {
+        SendWebRequest(uri, requestBody, null, null, null);
+    }
+    
+    public static void SendWebRequest(string url, byte[] requestBody, WebRequestCallback callback)
+    {
+        SendWebRequest(url, requestBody, null, null, callback);
+    }
+    
+    public static void SendWebRequest(string url, byte[] requestBody, NetworkConnectionToClient connection, WebRequestCallback callback)
+    {
+        SendWebRequest(url, requestBody, connection, null, callback);
+    }
+    
+    public static void SendWebRequest(string url, byte[] requestBody, NetworkConnectionToClient connection, GameObject[] objects, WebRequestCallback callback)
+    {
+        UnityWebRequest request = new UnityWebRequest(url, "POST");
+        request.uploadHandler = new UploadHandlerRaw(requestBody);
+        request.downloadHandler = new DownloadHandlerBuffer();
+        request.SetRequestHeader("Content-Type", "application/json");
+
+        request.SendWebRequest();
+        ongoingRequests.Add(new RequestMessageData(connection, request, objects, callback));
+    }
+    
     public static void SendWebRequest(string uri, WWWForm data)
     {
         SendWebRequest(uri, data, null, null, null);

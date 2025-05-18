@@ -11,18 +11,18 @@ public class PlayerDataSyncManager : MonoBehaviour
     PlayerFishdexFishes fishdexFishes;
 
     public void ChangeFishCoinsAmount(int amount) {
-        DatabaseCommunications.ChangeFishCoinsAmount(amount, playerData.GetUuidAsString());
+        DatabaseCommunications.ChangeFishCoinsAmount(amount, playerData.GetUuid());
         playerData.ChangeFishCoinsAmount(amount);
     }
 
     public void ChangeFishBucksAmount(int amount)
     {
-        DatabaseCommunications.ChangeFishBucksAmount(amount, playerData.GetUuidAsString());
+        DatabaseCommunications.ChangeFishBucksAmount(amount, playerData.GetUuid());
         playerData.ChangeFishBucksAmount(amount);
     }
 
     public void AddXP(int amount) {
-        DatabaseCommunications.AddXP(amount, playerData.GetUuidAsString());
+        DatabaseCommunications.AddXP(amount, playerData.GetUuid());
         playerData.AddXp(amount);
     }
 
@@ -32,17 +32,23 @@ public class PlayerDataSyncManager : MonoBehaviour
     }
 
     public void AddItem(ItemObject item, CurrentFish fish, bool fromCaugh) {
-        bool asNewItem = !inventory.ContainsItem(item);
-        DatabaseCommunications.AddItem(item, asNewItem, playerData.GetUuidAsString());
+        if (inventory.ContainsItem(item))
+        {
+            DatabaseCommunications.IncreaseItem(item, playerData.GetUuid());  
+        }
+        else
+        {
+            DatabaseCommunications.AddNewItem(item, playerData.GetUuid());   
+        }
         if (fish != null && fromCaugh) {
             fishdexFishes.AddStatFish(fish);
-            DatabaseCommunications.AddStatFish(fish, playerData.GetUuidAsString());
+            DatabaseCommunications.AddStatFish(fish, playerData.GetUuid());
         }
         inventory.AddItem(item);
     }
 
     public void DestroyItem(ItemObject item) {
         inventory.RemoveItem(item);
-        DatabaseCommunications.DestroyItem(item, playerData.GetUuidAsString());
+        DatabaseCommunications.DestroyItem(item, playerData.GetUuid());
     }
 }

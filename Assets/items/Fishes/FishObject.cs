@@ -7,11 +7,11 @@ public class FishObject : ItemObject
     public int amount;
     public void Awake()
     {
-        type = ItemType.fish;
+        type = ItemType.Fish;
     }
 
     public static string AsString()
     {
-        return "fish";
+        return "Fish";
     }
 }

@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-// "https://fishydatabase.djoleden.nl/", "http://127.0.0.1:8080/"
+// "https://fishydatabase.djoleden.nl/", "http://127.0.0.1:8000/"
 public static class EnvConfig
 {
     public static string DatabaseAccessServer = "";
@@ -12,7 +12,7 @@ public static class EnvConfig
     public static void LoadEnv()
     {
         #if UNITY_EDITOR
-            DatabaseAccessServer = "https://fishydatabase.djoleden.nl/";
+            DatabaseAccessServer = "http://127.0.0.1:8000/";
             DatabaseAccessToken = "t";
             Port = 24468;
             ClientPort = 24469;
