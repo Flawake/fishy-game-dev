@@ -393,10 +393,16 @@ public class PlayerController : NetworkBehaviour
         playerRigidbody.position = newPos;
     }
 
+    public void ServerTeleportPlayer(Vector2 pos)
+    {
+        transform.position = pos;
+        lastVerifiedPosition = transform.position;
+        TargetSetPosition(pos);
+    }
+
     [TargetRpc]
     void TargetSetPosition(Vector2 position)
     {
-        Debug.Log("Teleporting player to a new position, probably due to cheating or an error...");
         transform.position = new Vector3(position.x, position.y, transform.position.z);
     }
 
