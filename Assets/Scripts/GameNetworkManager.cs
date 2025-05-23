@@ -260,7 +260,13 @@ public class GameNetworkManager : NetworkManager
     void OnPlayerMoveMessage(NetworkConnectionToClient conn, MovePlayerMessage data)
     {
         SceneManager.MoveGameObjectToScene(conn.identity.gameObject, SceneManager.GetSceneByName(data.requestedScene));
-            conn.Send(new SceneMessage()
+        if (data.requestedScene != null && data.requestedScene != "WorldMap" && conn.identity != null)
+        {
+            conn.identity.gameObject.GetComponentInChildren<PlayerController>().ServerTeleportPlayer(
+                spawnPoint.GetRandomSpawnPoint(data.requestedScene)
+                );
+        }
+        conn.Send(new SceneMessage()
         {
             sceneName = data.requestedScene,
             sceneOperation = SceneOperation.LoadAdditive
