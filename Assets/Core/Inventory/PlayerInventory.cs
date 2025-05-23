@@ -24,6 +24,7 @@ public class PlayerInventory : NetworkBehaviour
 
         foreach (UserData.InventoryItem item in userData.inventory_items)
         {
+            Debug.Log($"Item: {item.item_id}, {item.amount}, {item.item_uuid.Value.ToString()}");
             switch (item.itemType)
             {
                 case ItemType.Rod:

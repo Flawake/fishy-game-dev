@@ -1,7 +1,6 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 #nullable enable
-#pragma warning disable CS8618
 // Authenticate requests
 [Serializable]
 public class LoginRequest
@@ -145,4 +144,3 @@ public class CreateUserRequest
     public string password;
 }
 #nullable disable
-#pragma warning restore CS8618

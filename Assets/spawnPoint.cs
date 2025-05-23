@@ -11,7 +11,6 @@ public class spawnPoint : MonoBehaviour
     [ServerCallback]
     private void Awake()
     {
-        Debug.Log("Awake is running, test to see if this is server or client build");
         if (!spawnPoints.ContainsKey(transform.gameObject.scene.name))
         {
             spawnPoints[transform.gameObject.scene.name] = new List<Vector2>();
