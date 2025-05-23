@@ -12,9 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4683c9780d884be4eb6d0a31eb34da24, type: 3}
   m_Name: Dough
   m_EditorClassIdentifier: 
-  uid: 0
   type: 1
-  id: 1
+  id: 1001
   sprite: {fileID: -1103356744, guid: 348fd75c34b094f4c8e92ac960402ba7, type: 3}
   description: Just dough
   stackable: 1

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b5141122112dac4b99e5eae6103348e, type: 3}
   m_Name: 1_Sardinella
   m_EditorClassIdentifier: 
-  id: 1
+  id: 10001
   name: Sardinella
   description: A sardinella grunt like never seen before.
   fishImage: {fileID: -1514307481, guid: 49451a7352426004db60846701f8941f, type: 3}

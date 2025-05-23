@@ -12,9 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4683c9780d884be4eb6d0a31eb34da24, type: 3}
   m_Name: Worms
   m_EditorClassIdentifier: 
-  uid: 0
   type: 1
-  id: 2
+  id: 1002
   sprite: {fileID: 1851052415, guid: 348fd75c34b094f4c8e92ac960402ba7, type: 3}
   description: Worms
   stackable: 1

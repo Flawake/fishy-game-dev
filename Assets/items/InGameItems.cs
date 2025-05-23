@@ -11,6 +11,9 @@ public class InGameItems : MonoBehaviour
     [SerializeField] private StoreItemObject[] storeItemRods;
     [SerializeField] private StoreItemObject[] storeItemBaits;
     [SerializeField] private StoreItemObject[] storeItemMisc;
+    
+    // Item ID to item type lookup
+    private Dictionary<int, ItemType> idToTypeLut = new();
 
     private void Awake()
     {
@@ -20,6 +23,24 @@ public class InGameItems : MonoBehaviour
         ItemsInGame.storeItemRods = storeItemRods;
         ItemsInGame.storeItemBaits = storeItemBaits;
         ItemsInGame.storeItemMisc = storeItemMisc;
+        ItemsInGame.storeItemMisc = storeItemMisc;
+        ItemsInGame.idToTypeLut = idToTypeLut;
+    }
+    
+    private void Start()
+    {
+        foreach (rodObject rod in ItemsInGame.rodsInGame)
+        {
+            idToTypeLut.Add(rod.id, ItemType.Rod);
+        }
+        foreach (baitObject bait in ItemsInGame.baitsInGame)
+        {
+            idToTypeLut.Add(bait.id, ItemType.Bait);
+        }
+        foreach (FishConfiguration fish in ItemsInGame.fishesInGame)
+        {
+            idToTypeLut.Add(fish.id, ItemType.Fish);
+        }
     }
 
 #if UNITY_EDITOR 
@@ -36,6 +57,8 @@ static class ItemsInGame
     public static StoreItemObject[] storeItemRods;
     public static StoreItemObject[] storeItemBaits;
     public static StoreItemObject[] storeItemMisc;
+    
+    public static Dictionary<int, ItemType> idToTypeLut;
 
     public static FishConfiguration getFishByID(int id)
     {

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b5141122112dac4b99e5eae6103348e, type: 3}
   m_Name: 5_Dab
   m_EditorClassIdentifier: 
-  id: 5
+  id: 10005
   name: Dab
   description: Adults live mainly on sandy bottoms, from a few meters to about 100
     m. They feed mainly on crustaceans and small fishes.

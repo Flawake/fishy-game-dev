@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using Mirror;
+using Random = UnityEngine.Random;
 
 public class FishingManager : NetworkBehaviour
 {
@@ -92,6 +94,22 @@ public class FishingManager : NetworkBehaviour
         // Player clicked on a fishing spot, but is currently not allowed to fish because of an active object preventing it.
         if(player.GetObjectsPreventingFishing() != 0)
         {
+            return true;
+        }
+
+        if (playerData.GetSelectedRod() == null)
+        {
+            InventoryUIManager inventoryManager = GetComponentInChildren<InventoryUIManager>();
+            inventoryManager.ToggleBackPack(InventoryUIManager.ItemFiler.Rods);
+            Debug.LogWarning("Open inventory rods page...");
+            return true;
+        }
+        
+        if (playerData.GetSelectedBait() == null)
+        {
+            InventoryUIManager inventoryManager = GetComponentInChildren<InventoryUIManager>();
+            inventoryManager.ToggleBackPack(InventoryUIManager.ItemFiler.Baits);
+            Debug.LogWarning("Open inventory baits page...");
             return true;
         }
 
@@ -281,7 +299,12 @@ public class FishingManager : NetworkBehaviour
         else
         {
             TargetShowCaughtDialog();
-            FishObject fishObject = ItemObjectGenerator.FishObjectFromMinimal(currentFish.id, 1);
+            FishObject fishObject = ItemObjectGenerator.FishObjectFromMinimal(Guid.Empty, currentFish.id, 1);
+            inventory.ContainsItem(fishObject, out Guid? itemUuid);
+            if (itemUuid.HasValue)
+            {
+                fishObject.uuid = itemUuid.Value;
+            }
             playerDataManager.AddItem(fishObject, currentFish, true);
             playerDataManager.AddXP(currentFish.xp);
         }

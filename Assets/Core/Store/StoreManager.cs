@@ -1,3 +1,4 @@
+using System;
 using Mirror;
 using UnityEngine;
 
@@ -47,6 +48,14 @@ public class StoreManager : NetworkBehaviour
         {
             if(item.itemObject.id == itemID) { 
                 itemToBuy = item.Clone();
+                itemToBuy.itemObject.uuid = Guid.NewGuid();
+                if (inventory.ContainsItem(itemToBuy.itemObject, out Guid? itemUuid))
+                {
+                    if (itemUuid.HasValue)
+                    {
+                        itemToBuy.itemObject.uuid = itemUuid.Value;
+                    }
+                }
                 break;
             }
         }

@@ -45,12 +45,12 @@ public class InventoryUIManager : MonoBehaviour
     readonly Dictionary<string, GameObject> selectMenuButtons = new();
 
     [Serializable]
-    private enum ItemFiler
+    public enum ItemFiler
     {
-        all = 0,
-        rods = 1,
-        baits = 2,
-        fishes = 3
+        All = 0,
+        Rods = 1,
+        Baits = 2,
+        Fishes = 3
     }
 
     [Serializable]
@@ -90,10 +90,10 @@ public class InventoryUIManager : MonoBehaviour
 
     public void ToggleBackPack()
     {
-        ToggleBackPack(ItemFiler.rods);
+        ToggleBackPack(ItemFiler.Rods);
     }
 
-    void ToggleBackPack(ItemFiler filter)
+    public void ToggleBackPack(ItemFiler filter)
     {
         if (inventoryUI.activeInHierarchy == false)
         {
@@ -155,15 +155,15 @@ public class InventoryUIManager : MonoBehaviour
         //TODO: keep a reference to the inventory
         PlayerInventory inventory = GetComponentInParent<PlayerInventory>();
         bool firstItemSet = false;
-        if(filter == ItemFiler.all || filter == ItemFiler.rods)
+        if(filter == ItemFiler.All || filter == ItemFiler.Rods)
         {
             firstItemSet = AddContainerToInventory(inventory.rodContainer, filter, firstItemSet);
         }
-        if (filter == ItemFiler.all || filter == ItemFiler.baits)
+        if (filter == ItemFiler.All || filter == ItemFiler.Baits)
         {
             firstItemSet = AddContainerToInventory(inventory.baitContainer, filter, firstItemSet);
         }
-        if (filter == ItemFiler.all || filter == ItemFiler.fishes)
+        if (filter == ItemFiler.All || filter == ItemFiler.Fishes)
         {
             firstItemSet = AddContainerToInventory(inventory.fishContainer, filter, firstItemSet);
         }
@@ -184,15 +184,15 @@ public class InventoryUIManager : MonoBehaviour
             ItemType type = itemObject.type;
             if (filter != 0)
             {
-                if (type == ItemType.Rod && filter != ItemFiler.rods)
+                if (type == ItemType.Rod && filter != ItemFiler.Rods)
                 {
                     continue;
                 }
-                else if (type == ItemType.Bait && filter != ItemFiler.baits)
+                else if (type == ItemType.Bait && filter != ItemFiler.Baits)
                 {
                     continue;
                 }
-                else if (type == ItemType.Fish && filter != ItemFiler.fishes)
+                else if (type == ItemType.Fish && filter != ItemFiler.Fishes)
                 {
                     continue;
                 }

@@ -111,7 +111,6 @@ public class PlayerData : NetworkBehaviour
         {
             DatabaseCommunications.SelectOtherItem(newRod, GetUuid());
         }
-        //TODO: ask the database what the new rod is to see if the write has succeeded
         selectedRod = newRod;
         SelectedRodUid = newRod.uuid;
     }
@@ -129,7 +128,7 @@ public class PlayerData : NetworkBehaviour
 
         //The newRod variable might be a newly crafted rod, so get it as a reference from the inventory, then the inventory get's updated when this specific item is updated
         rodObject rodInventoryReference;
-        if (newRod.stackable)
+        if (!newRod.stackable)
         {
             rodInventoryReference = inventory.GetRodByUID(newRod.uuid);
         }

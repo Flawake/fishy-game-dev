@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b5141122112dac4b99e5eae6103348e, type: 3}
   m_Name: 3_White-edged lyretail 1
   m_EditorClassIdentifier: 
-  id: 3
+  id: 10003
   name: White-edged lyretail
   description: A White-edged lyretail like never seen before.
   fishImage: {fileID: -1595273772, guid: 49451a7352426004db60846701f8941f, type: 3}

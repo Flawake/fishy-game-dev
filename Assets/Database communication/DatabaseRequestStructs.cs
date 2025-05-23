@@ -1,5 +1,4 @@
 using System;
-#nullable enable
 // Authenticate requests
 [Serializable]
 public class LoginRequest
@@ -21,7 +20,7 @@ public class AddItemRequest
 {
     public string user_id;
     public int item_id;
-    public string? item_uid;
+    public string item_uid;
     public int amount;
     public int cell_id;
 }
@@ -30,8 +29,7 @@ public class AddItemRequest
 public class DegradeItemRequest
 {
     public string user_id;
-    public int item_id;
-    public string? item_uid;
+    public string item_uid;
     public int amount;
 }
 
@@ -39,8 +37,7 @@ public class DegradeItemRequest
 public class IncreaseItemRequest
 {
     public string user_id;
-    public int item_id;
-    public string? item_uid;
+    public string item_uid;
     public int amount;
 }
 
@@ -48,8 +45,7 @@ public class IncreaseItemRequest
 public class DestroyItemRequest
 {
     public string user_id;
-    public int item_id;
-    public string? item_uid;
+    public string item_uid;
 }
 
 // Mail requests
@@ -92,9 +88,8 @@ public class ArchiveMailRequest
 public class SelectItemRequest
 {
     public string user_id;
-    public int item_id;
-    public string? item_uid;
-    public ItemType item_type;
+    public string item_uid;
+    public string item_type;
 }
 [Serializable]
 public class AddXPRequest
@@ -142,4 +137,3 @@ public class CreateUserRequest
     public string username;
     public string password;
 }
-#nullable disable

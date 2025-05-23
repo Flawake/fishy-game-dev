@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 //Item manager should manage the syncronisation of items between the server and client.
@@ -32,8 +33,12 @@ public class PlayerDataSyncManager : MonoBehaviour
     }
 
     public void AddItem(ItemObject item, CurrentFish fish, bool fromCaugh) {
-        if (inventory.ContainsItem(item))
+        if (inventory.ContainsItem(item, out Guid? itemUuid))
         {
+            if (itemUuid.HasValue)
+            {
+                item.uuid = itemUuid.Value;
+            }
             DatabaseCommunications.IncreaseItem(item, playerData.GetUuid());  
         }
         else

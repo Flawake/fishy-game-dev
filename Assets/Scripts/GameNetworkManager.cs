@@ -207,7 +207,7 @@ public class GameNetworkManager : NetworkManager
             playerData = null,
         };
         
-        DatabaseCommunications.RetreivePlayerData(uuid, conn, PlayerDataReceived);
+        DatabaseCommunications.RetrievePlayerData(uuid, conn, PlayerDataReceived);
     }
 
     [Server]

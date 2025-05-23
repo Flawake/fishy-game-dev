@@ -75,14 +75,14 @@ public static class ItemObjectGenerator
         return inventoryBait;
     }
 
-    public static FishObject FishObjectFromMinimal(int id, int amount)
+    public static FishObject FishObjectFromMinimal(Guid uuid, int id, int amount)
     {
         FishObject inventoryFish = (FishObject)ScriptableObject.CreateInstance("FishObject");
 
         try
         {
             FishConfiguration fish = Array.Find(ItemsInGame.fishesInGame, element => element.id == id);
-            inventoryFish.uuid = Guid.Empty;
+            inventoryFish.uuid = uuid;
             inventoryFish.id = id;
             inventoryFish.name = fish.name;
             inventoryFish.description = fish.description;
@@ -137,6 +137,7 @@ public static class ItemObjectSerializer
         else if (item is FishObject fish)
         {
             writer.WriteByte(FISH);
+            writer.WriteGuid(fish.uuid);
             writer.WriteInt(fish.id);
             writer.WriteInt(fish.amount);
         }
@@ -163,9 +164,10 @@ public static class ItemObjectSerializer
                 }
             case FISH:
                 {
+                    Guid uuid = reader.ReadGuid();
                     int id = reader.ReadInt();
                     int amount = reader.ReadInt();
-                    return ItemObjectGenerator.FishObjectFromMinimal(id, amount);
+                    return ItemObjectGenerator.FishObjectFromMinimal(uuid, id, amount);
                 }
             default:
                 throw new Exception($"Invalid item type {type}");

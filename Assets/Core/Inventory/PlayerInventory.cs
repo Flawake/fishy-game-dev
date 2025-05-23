@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using Mirror;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 
 public class PlayerInventory : NetworkBehaviour
@@ -24,57 +26,61 @@ public class PlayerInventory : NetworkBehaviour
 
         foreach (UserData.InventoryItem item in userData.inventory_items)
         {
-            switch (item.itemType)
+            if (ItemsInGame.idToTypeLut.TryGetValue(item.item_id, out var itemType))
             {
-                case ItemType.Rod:
-                    if (item.item_uuid.HasValue)
-                    {
-                        rodObject inventoryRod = ItemObjectGenerator.RodObjectFromMinimal(item.item_uuid.Value, item.item_id, item.amount);
+                switch (itemType) 
+                {
+                    case ItemType.Rod:
+                        rodObject inventoryRod = ItemObjectGenerator.RodObjectFromMinimal(item.itemUuid, item.item_id, item.amount);
                         if(inventoryRod == null)
                         {
-                            Debug.LogWarning($"Tried to create a rod from id: {item.item_uuid.Value} failed");
+                            Debug.LogWarning($"Trying to create a rod from id: {item.item_id} failed");
                             continue;
                         }
                         AddItem(inventoryRod);
 
                         //TODO: find a better place for this.
-                        if (inventoryRod.uuid == userData.selected_rod)
+                        if (inventoryRod.uuid == userData.SelectedRod)
                         {
                             playerData.SelectNewRod(inventoryRod, true);
                         }
-                    }
-                    break;
-                case ItemType.Bait:
-                    baitObject inventoryBait = ItemObjectGenerator.BaitObjectFromMinimal(item.item_uuid ?? Guid.Empty, item.item_id, item.amount);
-                    if(inventoryBait == null)
-                    {
-                        Debug.LogWarning($"Tried to create a bait from id: {item.item_id} failed");
-                        continue;
-                    }
-                    AddItem(inventoryBait);
-
-                    //TODO: find a better place for this.
-                    if (inventoryBait.id == userData.selected_bait)
-                    {
-                        playerData.SelectNewBait(inventoryBait, true);
-                    }
-                    break;
-                case ItemType.Fish:
-                    FishObject inventoryFish = ItemObjectGenerator.FishObjectFromMinimal(item.item_id, item.amount);
-                    if (inventoryFish == null)
-                    {
-                        Debug.LogWarning($"Tried to create a fish from id: {item.item_id} failed");
-                        continue;
-                    }
-
-                    AddItem(inventoryFish);
-                    break;
-                case ItemType.Extra:
-                    Debug.LogWarning($"item {item.itemType} can not yet be added to the inventory");
-                    break;
-                default:
-                    Debug.LogError($"item {item.itemType} not recognised");
-                    break;
+                        break;
+                    case ItemType.Bait:
+                        baitObject inventoryBait = ItemObjectGenerator.BaitObjectFromMinimal(item.itemUuid, item.item_id, item.amount);
+                        if(inventoryBait == null)
+                        {
+                            Debug.LogWarning($"Tried to create a bait from id: {item.item_id} failed");
+                            continue;
+                        }
+                        AddItem(inventoryBait);
+    
+                        //TODO: find a better place for this.
+                        if (inventoryBait.uuid == userData.SelectedBait)
+                        {
+                            playerData.SelectNewBait(inventoryBait, true);
+                        }
+                       break;
+                    case ItemType.Fish:
+                        FishObject inventoryFish = ItemObjectGenerator.FishObjectFromMinimal(item.itemUuid, item.item_id, item.amount);
+                        if (inventoryFish == null)
+                        {
+                            Debug.LogWarning($"Tried to create a fish from id: {item.item_id} failed");
+                            continue;
+                        }
+    
+                        AddItem(inventoryFish);
+                        break;
+                    case ItemType.Extra:
+                        Debug.LogWarning($"item {itemType} can not yet be added to the inventory");
+                        break;
+                    default:
+                        Debug.LogError($"item {itemType} not recognised");
+                        break;
+                }
+            }
+            else
+            {
+                Debug.LogWarning($"Could not find an item with id {item.item_id}");
             }
         }
     }
@@ -166,36 +172,47 @@ public class PlayerInventory : NetworkBehaviour
         }
     }
 
-    public bool ContainsItem(ItemObject item)
+    public bool ContainsItem(ItemObject item, out Guid? itemUuid)
     {
         if (item is rodObject)
         {
-            return ContainsItemInContainer(rodContainer, item);
+            itemUuid = item.uuid;
+            return ContainsItemInContainer(rodContainer, item, out Guid? _);
         }
         else if (item is baitObject)
         {
-            return ContainsItemInContainer(baitContainer, item);
+            if (ContainsItemInContainer(baitContainer, item, out Guid? _itemUuid))
+            {
+                itemUuid = _itemUuid;
+                return true;
+            }
         }
         else if (item is FishObject)
         {
-            return ContainsItemInContainer(fishContainer, item);
+            if (ContainsItemInContainer(fishContainer, item, out Guid? _itemUuid))
+            {
+                itemUuid = _itemUuid;
+                return true;
+            }
         }
         else
         {
             Debug.LogWarning($"item should be of type: rod, bait or fish but was: {item}");
         }
+
+        itemUuid = null;
         return false;
     }
 
-    private bool ContainsItemInContainer(SyncList<InventoryItem> container, ItemObject item)
+    private bool ContainsItemInContainer(SyncList<InventoryItem> container, ItemObject item, out Guid? item_uuid)
     {
         foreach (InventoryItem _item in container)
         {
             if (item.stackable)
             {
-                //uid might be 0 for items that can only be in the inventory once... Stackable items
                 if (item.id == _item.item.id)
                 {
+                    item_uuid = _item.item.uuid;
                     return true;
                 }
             }
@@ -203,10 +220,12 @@ public class PlayerInventory : NetworkBehaviour
             {
                 if (item.uuid == _item.item.uuid)
                 {
+                    item_uuid = _item.item.uuid;
                     return true;
                 }
             }
         }
+        item_uuid = null;
         return false;
     }
 

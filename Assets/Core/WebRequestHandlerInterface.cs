@@ -91,28 +91,6 @@ public static class WebRequestHandler
         request.SendWebRequest();
         ongoingRequests.Add(new RequestMessageData(connection, request, objects, callback));
     }
-    
-    public static void SendWebRequest(string uri, WWWForm data)
-    {
-        SendWebRequest(uri, data, null, null, null);
-    }
-
-    public static void SendWebRequest(string uri, WWWForm data, WebRequestCallback callback)
-    {
-        SendWebRequest(uri, data, null, null, callback);
-    }
-
-    public static void SendWebRequest(string uri, WWWForm data, NetworkConnectionToClient connection, WebRequestCallback callback)
-    {
-        SendWebRequest(uri, data, connection, null, callback);
-    }
-
-    public static void SendWebRequest(string uri, WWWForm data, NetworkConnectionToClient connection, GameObject[] _objects, WebRequestCallback callback)
-    {
-        UnityWebRequest webRequest = UnityWebRequest.Post(uri, data);
-        webRequest.SendWebRequest();
-        ongoingRequests.Add(new RequestMessageData(connection, webRequest, _objects, callback));
-    }
 
     public static void CheckOngoingRequests()
     {

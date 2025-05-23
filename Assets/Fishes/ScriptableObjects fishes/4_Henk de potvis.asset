@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b5141122112dac4b99e5eae6103348e, type: 3}
   m_Name: 4_Henk de potvis
   m_EditorClassIdentifier: 
-  id: 4
+  id: 10004
   name: Henk de potvis
   description: I dont know how your rod handled this fish.
   fishImage: {fileID: -72455022, guid: 49451a7352426004db60846701f8941f, type: 3}

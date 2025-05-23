@@ -35,7 +35,7 @@ public static class DatabaseCommunications
     }
 
     [Server]
-    public static void RetreivePlayerData(Guid userID, NetworkConnectionToClient conn, WebRequestHandler.WebRequestCallback callback)
+    public static void RetrievePlayerData(Guid userID, NetworkConnectionToClient conn, WebRequestHandler.WebRequestCallback callback)
     {
         RetreiveDataRequest requestData = new RetreiveDataRequest
         {
@@ -46,17 +46,6 @@ public static class DatabaseCommunications
         byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
         WebRequestHandler.SendWebRequest(DatabaseEndpoints.getPlayerDataEndpoint, bodyRaw, conn, callback);
 
-    }
-
-    //TODO: we should do something when the request fails at the webrequesthandlers
-    [Server]
-    public static void RequestPlayerData(NetworkConnectionToClient conn, string userName)
-    {
-        WWWForm getInventoryForm = new WWWForm();
-        getInventoryForm.AddField("auth_token", DatabaseEndpoints.databaseAccessToken);
-        getInventoryForm.AddField("user", userName);
-
-        WebRequestHandler.SendWebRequest(DatabaseEndpoints.getPlayerDataEndpoint, getInventoryForm);
     }
 
     [Server]
@@ -142,20 +131,15 @@ public static class DatabaseCommunications
     public static void SelectOtherItem(ItemObject item, Guid userID)
     {
         ItemType type;
-        int id;
-        Guid? itemUid = null;
+        Debug.Log(item.uuid.ToString());
 
         //Select a different item as using
-        WWWForm otherItemSelectForm = new WWWForm();
         if (item is rodObject)
         {
-            itemUid = item.uuid;
-            id = item.id;
             type = ItemType.Rod;
         }
         else if (item is baitObject)
         {
-            id = item.id;
             type = ItemType.Bait;
         }
         else
@@ -167,9 +151,8 @@ public static class DatabaseCommunications
         SelectItemRequest requestData = new SelectItemRequest
         {
             user_id = userID.ToString(),
-            item_id = id,
-            item_uid = itemUid.ToString(),
-            item_type = type,
+            item_uid = item.uuid.ToString(),
+            item_type = type.ToString(),
         };
         
         string json = JsonUtility.ToJson(requestData);
@@ -182,7 +165,7 @@ public static class DatabaseCommunications
     {
         int amount;
         int item_id;
-        Guid? item_uid = null;
+        Guid item_uid;
 
         if (item is rodObject rod)
         {
@@ -194,11 +177,13 @@ public static class DatabaseCommunications
         {
             amount = bait.throwIns;
             item_id = bait.id;
+            item_uid = bait.uuid;
         }
         else if (item is FishObject fish)
         {
             amount = fish.amount;
             item_id = fish.id;
+            item_uid = fish.uuid;
         }
         else
         {
@@ -223,24 +208,22 @@ public static class DatabaseCommunications
     public static void IncreaseItem(ItemObject item, Guid userID)
     {
         int amount;
-        int item_id;
-        Guid? item_uid = null;
+        Guid item_uid;
 
         if (item is rodObject rod)
         {
             amount = rod.throwIns;
-            item_id = rod.id;
             item_uid = rod.uuid;
         }
         else if (item is baitObject bait)
         {
             amount = bait.throwIns;
-            item_id = bait.id;
+            item_uid = bait.uuid;
         }
         else if (item is FishObject fish)
         {
             amount = fish.amount;
-            item_id = fish.id;
+            item_uid = fish.uuid;
         }
         else
         {
@@ -252,7 +235,6 @@ public static class DatabaseCommunications
         {
             user_id = userID.ToString(),
             amount = amount,
-            item_id = item_id,
             item_uid = item_uid.ToString(),
         };
         
@@ -264,32 +246,10 @@ public static class DatabaseCommunications
     [Server]
     public static void ReduceItem(ItemObject item, int amount, Guid userID)
     {
-        Guid? itemUid = null;
-        int itemID;
-        if (item is rodObject)
-        {
-            itemUid = item.uuid;
-            itemID = item.id;
-        }
-        else if (item is baitObject)
-        {
-            itemID = item.id;
-        }
-        else if(item is FishObject)
-        {
-            itemID = item.id;
-        }
-        else
-        {
-            Debug.LogWarning($"Could not reduce {item}, unsopported item");
-            return;
-        }
-
         DegradeItemRequest requestData = new DegradeItemRequest
         {
             user_id = userID.ToString(),
             amount = amount,
-            item_id = item.id,
             item_uid = item.uuid.ToString(),
         };
         string json = JsonUtility.ToJson(requestData);
@@ -300,40 +260,15 @@ public static class DatabaseCommunications
     [Server]
     public static void DestroyItem(ItemObject item, Guid userID)
     {
-        int id;
-        Guid? itemUid = null;
-
-        WWWForm destroyItemForm = new WWWForm();
-        
-        if (item is rodObject)
-        {
-            itemUid = item.uuid;
-            id = item.id;
-        }
-        else if (item is baitObject)
-        {
-            id = item.id;
-        }
-        else if (item is FishObject)
-        {
-            id = item.id;
-        }
-        else
-        {
-            Debug.LogWarning($"Could not destroy {item}, unsopported item");
-            return;
-        }
-
         DestroyItemRequest requestData = new DestroyItemRequest
         {
             user_id = userID.ToString(),
-            item_id = id,
-            item_uid = itemUid.ToString(),
+            item_uid = item.uuid.ToString(),
         };
         
         string json = JsonUtility.ToJson(requestData);
         byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
-        WebRequestHandler.SendWebRequest(DatabaseEndpoints.removeItemEndpoint, destroyItemForm);
+        WebRequestHandler.SendWebRequest(DatabaseEndpoints.removeItemEndpoint, bodyRaw);
     }
 
     [Server]

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b5141122112dac4b99e5eae6103348e, type: 3}
   m_Name: 0_Bluestriped grunt
   m_EditorClassIdentifier: 
-  id: 0
+  id: 10000
   name: Bluestriped grunt
   description: A Bluestriped grunt like never seen before.
   fishImage: {fileID: 1552086863, guid: 49451a7352426004db60846701f8941f, type: 3}
