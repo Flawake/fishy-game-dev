@@ -1,4 +1,5 @@
 using System;
+#nullable enable
 // Authenticate requests
 [Serializable]
 public class LoginRequest
@@ -137,3 +138,4 @@ public class CreateUserRequest
     public string username;
     public string password;
 }
+#nullable disable
