@@ -3716,7 +3716,7 @@ Transform:
   m_Children:
   - {fileID: 600458862}
   - {fileID: 2123580901}
-  - {fileID: 1836629657
+  - {fileID: 1836629657}
   - {fileID: 1623867017}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
