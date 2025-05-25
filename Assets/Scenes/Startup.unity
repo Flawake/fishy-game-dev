@@ -1571,6 +1571,7 @@ MonoBehaviour:
   - Assets/Scenes/Marshall.unity
   - Assets/Scenes/Tropical.unity
   - Assets/Scenes/Laketown.unity
+  - Assets/Scenes/RioTropical.unity
 --- !u!114 &302649097
 MonoBehaviour:
   m_ObjectHideFlags: 0
