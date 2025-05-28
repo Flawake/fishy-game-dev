@@ -120,12 +120,12 @@ PolygonCollider2D:
     m_Bits: 4294967295
   m_IsTrigger: 0
   m_UsedByEffector: 0
-  m_CompositeOperation: 3
+  m_CompositeOperation: 1
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.15295263}
+    pivot: {x: 0.5, y: 0.19835359}
     oldSize: {x: 1.96, y: 2.44}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
@@ -134,13 +134,13 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: -0.16469765, y: 0.1594677}
-      - {x: -0.19868279, y: 0.09354973}
-      - {x: -0.09889984, y: 0.0041923523}
-      - {x: 0.055553913, y: -0.012605667}
-      - {x: 0.16883731, y: 0.021595001}
-      - {x: 0.2584722, y: 0.09710121}
-      - {x: 0.23916286, y: 0.14324605}
+    - - {x: -0.16046739, y: 0.050230026}
+      - {x: -0.2085092, y: -0.0077114105}
+      - {x: -0.0684185, y: -0.09518814}
+      - {x: 0.054888964, y: -0.120391846}
+      - {x: 0.19809198, y: -0.08208847}
+      - {x: 0.26912713, y: -0.008903503}
+      - {x: 0.20843929, y: 0.049904227}
   m_UseDelaunayMesh: 0
 --- !u!1 &3257131224354571102
 GameObject:
@@ -168,7 +168,7 @@ Transform:
   m_GameObject: {fileID: 3257131224354571102}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.02, y: 0.015, z: 0}
+  m_LocalPosition: {x: 0.0151, y: -0.0811, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

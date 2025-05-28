@@ -8,6 +8,7 @@ public class SetCompositeColliderTrigger : MonoBehaviour
 
     public void Start()
     {
+        coll.GenerateGeometry();
         if(NetworkServer.active) {
             ApplyServerSettings();
         }
