@@ -187,11 +187,11 @@ public class FishingManager : NetworkBehaviour
         CompositeCollider2D walkable = SceneObjectCache.GetWorldCollider(gameObject.scene);
         // is there a better way then to cycle the GeometryType???
         if(isClient) {
-            walkable.geometryType = CompositeCollider2D.GeometryType.Polygons;
+            //walkable.geometryType = CompositeCollider2D.GeometryType.Polygons;
         }
         bool doesOverlap = walkable.OverlapPoint(clickedPos);
         if(isClient) {
-            walkable.geometryType = CompositeCollider2D.GeometryType.Outlines;
+            //walkable.geometryType = CompositeCollider2D.GeometryType.Outlines;
         }
         if(doesOverlap) {
             DebugFishingSpot("The fishingspot is on a walkable area");

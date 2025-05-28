@@ -486,7 +486,7 @@ public class PlayerController : NetworkBehaviour
         checkPosition.y += playerCollider.offset.y;
         float maxDistance = 0.06f + (playerCollider.size.y / 2);
 
-        if (!coll.OverlapPoint(checkPosition))
+        if (coll.OverlapPoint(checkPosition))
         {
             Vector2 closestPoint = coll.ClosestPoint(checkPosition);
             if (Vector2.Distance(closestPoint, checkPosition) > maxDistance)
