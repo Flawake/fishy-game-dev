@@ -25,8 +25,14 @@ MonoBehaviour:
   minMartketPrice: 1
   maxMarketPrice: 2
   rarityFactor: 0.1
-  Time: 0
-  Date: 0
+  timeRanges:
+  - BeginTime:
+      hours: 0
+      minutes: 0
+    EndTime:
+      hours: 1
+      minutes: 0
+  dateRanges: []
   breedSuccessRate: 0
   breedPrice: 0
   baitType: 18

@@ -20,6 +20,7 @@ public struct SerializableDate
     public DateTime ToDateTime(int year = 2000)
     {
         // Clamp the day to the max days in the month to prevent exceptions
+        Debug.Log($"monthx: {month}");
         int daysInMonth = DateTime.DaysInMonth(year, month);
         int safeDay = Mathf.Clamp(day, 1, daysInMonth);
         return new DateTime(year, month, safeDay);
@@ -70,6 +71,7 @@ public class DateRange
 
     public bool DateRangeContainsDate(SerializableDate date)
     {
+        // Dummy year should be a leap year
         var dummyYear = 2000;
 
         DateTime start = BeginDate.ToDateTime(dummyYear);

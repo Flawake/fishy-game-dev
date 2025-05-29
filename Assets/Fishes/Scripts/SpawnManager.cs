@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using Random = UnityEngine.Random;
 
 public class SpawnManager : NetworkBehaviour
 {
@@ -74,6 +76,51 @@ public class SpawnManager : NetworkBehaviour
             if (!BaitEnumsDefinition.FishBaitContainsItemBait(possibleFishes[i].baitType, bait))
             {
                 possibleFishes.RemoveAt(i);
+            }
+        }
+        
+        //Remove all fishes that can't be caught at this time
+        for (int i = possibleFishes.Count - 1; i >= 0; i--)
+        {
+            var possibleFish = possibleFishes[i];
+
+            if (possibleFish.timeRanges.Count > 0)
+            {
+                bool inside = false;
+                foreach (TimeRange possibleTime in possibleFish.timeRanges)
+                {
+                    if (possibleTime.TimeRangeContainsTime(DateTime.Now.Hour, DateTime.Now.Minute))
+                    {
+                        inside = true;
+                        break;
+                    }
+                }
+
+                if (!inside)
+                {
+                    possibleFishes.RemoveAt(i);
+                    continue;
+                }
+            }
+            
+            if (possibleFish.dateRanges.Count > 0)
+            {
+                bool inside = false;
+                foreach (DateRange possibleDate in possibleFish.dateRanges)
+                {
+                    Debug.Log($"month: {DateTime.Now.Month}");
+                    if (possibleDate.DateRangeContainsDate(DateTime.Now.Month, DateTime.Now.Day))
+                    {
+                        inside = true;
+                        break;
+                    }
+                }
+
+                if (!inside)
+                {
+                    Debug.Log("Fish out of date range");
+                    possibleFishes.RemoveAt(i);
+                }
             }
         }
 
