@@ -333,8 +333,20 @@ public class FishingManager : NetworkBehaviour
         if (water)
         {
             SpawnableFishes spawnable = water.collider.gameObject.GetComponent<SpawnableFishes>();
-
-            (currentFish, fishGenerated) = spawnable.GenerateFish(playerData.GetSelectedBait().baitType);
+            FishSpots fishSpots = water.collider.gameObject.GetComponent<FishSpots>();
+            
+            if (spawnable == null || fishSpots == null)
+            {
+                Debug.LogError("Missing required components on water object.");
+                return;
+            }
+            
+            (currentFish, fishGenerated) = (new CurrentFish(), false);
+            
+            if (fishSpots.ShouldGeneratefish(placeToThrow))
+            {
+                (currentFish, fishGenerated) = spawnable.GenerateFish(playerData.GetSelectedBait().baitType);
+            }
 
             timeTillResultsSeconds = Random.Range(5, 11);
 
