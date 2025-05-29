@@ -11,11 +11,22 @@ enum FishSpotType
     Good
 }
 
-struct FishSpot
+class FishSpot
 {
     public Vector2 centrePoint;
     public Vector2 size;
     public FishSpotType spotType;
+
+    // Helper method to check if a point is inside this FishSpot
+    public bool Contains(Vector2 point)
+    {
+        Vector2 halfSize = size * 3f;
+        Vector2 min = centrePoint - halfSize;
+        Vector2 max = centrePoint + halfSize;
+
+        return point.x >= min.x && point.x <= max.x &&
+               point.y >= min.y && point.y <= max.y;
+    }
 }
 
 struct Grid
@@ -52,7 +63,6 @@ public class FishSpots : NetworkBehaviour
                 {
                     if (hit.gameObject == waterCollider.gameObject)
                     {
-                        Debug.Log("hit registered");
                         fishSpots.Add(new FishSpot
                         {
                             size = new Vector2(areaGrid.GridSize, areaGrid.GridSize),
@@ -101,8 +111,9 @@ public class FishSpots : NetworkBehaviour
         }
     }
 
-    private float lastGeneratedTime = 0;
-    float timeBetweenGenerations = 10;
+    private float lastGeneratedTime = float.MinValue;
+    // * 60 to go from sec to min
+    float timeBetweenGenerations = 10 * 60;
     private void Update()
     {
         if (lastGeneratedTime + timeBetweenGenerations < Time.time)
@@ -156,5 +167,40 @@ public class FishSpots : NetworkBehaviour
                 spotType = FishSpotType.Bad,
             };
         }
+    }
+
+    public bool ShouldGeneratefish(Vector2 throwPosition)
+    {
+        foreach (FishSpot spot in fishSpots)
+        {
+            if (spot.Contains(throwPosition))
+            {
+                switch (spot.spotType)
+                {
+                    case FishSpotType.Uninitialized:
+                        return true;
+                    case FishSpotType.Bad:
+                        return Random.Range(0, 10) >= 8;
+                    case FishSpotType.Normal:
+                        return Random.Range(0, 10) >= 3;
+                    case FishSpotType.Good:
+                        return true;
+                }
+            }
+        }
+        return false;
+    }
+    
+    
+    [Command]
+    void CmdGetFishingSpots()
+    {
+        RpcGetFishingSpots(fishSpots);
+    }
+
+    [ClientRpc]
+    void RpcGetFishingSpots(List<FishSpot> fishSpots)
+    {
+        this.fishSpots = fishSpots;
     }
 }

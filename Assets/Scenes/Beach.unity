@@ -4623,6 +4623,7 @@ GameObject:
   - component: {fileID: 1426061389}
   - component: {fileID: 1426061392}
   - component: {fileID: 1426061393}
+  - component: {fileID: 1426061394}
   m_Layer: 4
   m_Name: Water
   m_TagString: Untagged
@@ -4791,6 +4792,23 @@ MonoBehaviour:
   serverOnly: 0
   visibility: 0
   hasSpawned: 0
+--- !u!114 &1426061394
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1426061386}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e0e9715f6bc6436b990e92f8aa82126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  coll: {fileID: 47428300}
+  waterCollider: {fileID: 1426061392}
 --- !u!1001 &1493568506
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -1,4 +1,17 @@
+using System;
 using UnityEngine;
+
+public class TimeRange
+{
+    public TimeSpan BeginTime;
+    public TimeSpan EndTime;
+}
+
+public class DateRange
+{
+    public TimeSpan BeginDate;
+    public TimeSpan EndDate;
+}
 
 [CreateAssetMenu(fileName = "FishConfig", menuName = "Fishes/config", order = 1), System.Serializable]
 public class FishConfiguration : ScriptableObject
@@ -22,10 +35,8 @@ public class FishConfiguration : ScriptableObject
     [Space(20)]
     //1 is normal, 0.1 is 10 times as rare.
     public float rarityFactor;  
-    //0 for always, has to be in format: "HH:MM - HH:MM _ HH:MM - HH:MM ..."
-    public string Time;
-    //0 for always, has to be in format: "Day:Month - Day:Month _ Day:Month - Day:Month ..."
-    public string Date;
+    public TimeRange timeRange;
+    public DateRange dateRange;
     [Space(20)]
     public int breedSuccessRate;
     public int breedPrice;
