@@ -58,9 +58,10 @@ class NodeMap
     public Node CreateNode(Vector2Int pointInArray, GameObject objectSearchingPath)
     {
         Vector2 nodeWorldPoint = NodeToWorldPoint(new Vector2(pointInArray.x, pointInArray.y));
+        // Make the collider as least as big as half the player collider plus a little.
         Collider2D[] hits = Physics2D.OverlapAreaAll(
-            new Vector2(nodeWorldPoint.x - NodeSize / 2, nodeWorldPoint.y - NodeSize / 2),
-            new Vector2(nodeWorldPoint.x + NodeSize / 2, nodeWorldPoint.y + NodeSize / 2)
+            new Vector2(nodeWorldPoint.x - 0.2f, nodeWorldPoint.y - 0.2f),
+            new Vector2(nodeWorldPoint.x + 0.2f, nodeWorldPoint.y + 0.2f)
         );
         bool isWalkable = true;
         foreach (Collider2D hit in hits)
