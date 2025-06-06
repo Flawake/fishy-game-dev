@@ -58,9 +58,10 @@ class NodeMap
     public Node CreateNode(Vector2Int pointInArray, GameObject objectSearchingPath)
     {
         Vector2 nodeWorldPoint = NodeToWorldPoint(new Vector2(pointInArray.x, pointInArray.y));
+        // Make the collider as least as big as half the player collider plus a little.
         Collider2D[] hits = Physics2D.OverlapAreaAll(
-            new Vector2(nodeWorldPoint.x - NodeSize / 2, nodeWorldPoint.y - NodeSize / 2),
-            new Vector2(nodeWorldPoint.x + NodeSize / 2, nodeWorldPoint.y + NodeSize / 2)
+            new Vector2(nodeWorldPoint.x - 0.2f, nodeWorldPoint.y - 0.2f),
+            new Vector2(nodeWorldPoint.x + 0.2f, nodeWorldPoint.y + 0.2f)
         );
         bool isWalkable = true;
         foreach (Collider2D hit in hits)
@@ -134,6 +135,7 @@ public class PathFinding : MonoBehaviour
             path.Add(curr.WorldPoint);
             curr.isPath = true;
         }
+        path.Reverse();
         return FilterPath(path);
     }
 
@@ -169,7 +171,7 @@ public class PathFinding : MonoBehaviour
         map.StartNode.gscore = 0;
         map.StartNode.fscore = ManhattanDistance(map.StartNode.WorldPoint, map.EndNode.WorldPoint);
 
-        List<Vector2> path = new List<Vector2>();
+        List<Vector2> path;
         (bool found, Node closestEndNode) = CalculatePath(out path);
         if (!found)
         {
@@ -197,7 +199,7 @@ public class PathFinding : MonoBehaviour
             }
         }
 
-        return null;
+        return path;
     }
 
     (bool, Node) CalculatePath(out List<Vector2> foundPath)
