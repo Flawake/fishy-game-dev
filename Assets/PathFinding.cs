@@ -139,7 +139,7 @@ public class PathFinding : MonoBehaviour
         return FilterPath(path);
     }
 
-    public List<Vector2> FindPath(Vector2 StartPoint, Vector2 EndPoint)
+    public Vector2[] FindPath(Vector2 StartPoint, Vector2 EndPoint)
     {
         float distance = Vector2.Distance(StartPoint, EndPoint);
         float nodeSize = distance / 50;
