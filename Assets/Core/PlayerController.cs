@@ -11,6 +11,8 @@ public class PlayerController : NetworkBehaviour
     float lastVerifiedtime = float.MinValue;
     Vector2? lastVerifiedPosition = null;
 
+    private List<Vector2> nextMoves = null;
+
     public Rigidbody2D playerRigidbody;
 
     [SerializeField] Transform playerTransform;
@@ -246,7 +248,7 @@ public class PlayerController : NetworkBehaviour
         }
         
         // Click was not on the water or another player and the mouse was not over a ui element. Walk to the clicked position
-        pathFinding.FindPath(this.transform.position, clickedPos);
+        nextMoves = pathFinding.FindPath(this.transform.position, clickedPos);
 
         //We should not return but look what else the click could have been for.
     }
@@ -267,7 +269,7 @@ public class PlayerController : NetworkBehaviour
 
         if(moveAction != null)
         {
-            Move(moveAction.ReadValue<Vector2>());
+            SetMoveVariables(moveAction.ReadValue<Vector2>());
         }
         else
         {
@@ -338,7 +340,7 @@ public class PlayerController : NetworkBehaviour
         playerAnimator.SetFloat("Vertical", dir.y);
     }
 
-    public void Move(Vector2 dir)
+    public void SetMoveVariables(Vector2 dir)
     {
         if (!isLocalPlayer)
         {
@@ -351,6 +353,30 @@ public class PlayerController : NetworkBehaviour
             return;
         }
         hasVelocity = dir != Vector2.zero;
+        if (hasVelocity)
+        {
+            nextMoves = null;
+        }
+        else
+        {
+            if (nextMoves != null)
+            {
+                dir = nextMoves[0] - (Vector2)transform.position;
+                hasVelocity = true;
+                if (Vector2.Distance(nextMoves[0], transform.position) < 0.1)
+                {
+                    if(nextMoves.Count > 0)
+                    {
+                        nextMoves.RemoveAt(0);
+                        if (nextMoves.Count == 0)
+                        {
+                            nextMoves = null;
+                            hasVelocity = false;
+                        }
+                    }
+                }
+            }
+        }
         movementVector = dir.normalized;
         foreach (Collider2D col in objectsCollidingPlayer)
         {
@@ -397,8 +423,10 @@ public class PlayerController : NetworkBehaviour
         playerRigidbody.position = newPos;
     }
 
+    [Server]
     public void ServerTeleportPlayer(Vector2 pos)
     {
+        nextMoves = null;
         transform.position = pos;
         lastVerifiedPosition = transform.position;
         TargetSetPosition(pos);
@@ -407,6 +435,7 @@ public class PlayerController : NetworkBehaviour
     [TargetRpc]
     void TargetSetPosition(Vector2 position)
     {
+        nextMoves = null;
         transform.position = new Vector3(position.x, position.y, transform.position.z);
     }
 

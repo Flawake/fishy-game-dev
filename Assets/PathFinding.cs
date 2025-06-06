@@ -134,10 +134,11 @@ public class PathFinding : MonoBehaviour
             path.Add(curr.WorldPoint);
             curr.isPath = true;
         }
+        path.Reverse();
         return FilterPath(path);
     }
 
-    public Vector2[] FindPath(Vector2 StartPoint, Vector2 EndPoint)
+    public List<Vector2> FindPath(Vector2 StartPoint, Vector2 EndPoint)
     {
         float distance = Vector2.Distance(StartPoint, EndPoint);
         float nodeSize = distance / 50;
@@ -169,7 +170,7 @@ public class PathFinding : MonoBehaviour
         map.StartNode.gscore = 0;
         map.StartNode.fscore = ManhattanDistance(map.StartNode.WorldPoint, map.EndNode.WorldPoint);
 
-        List<Vector2> path = new List<Vector2>();
+        List<Vector2> path;
         (bool found, Node closestEndNode) = CalculatePath(out path);
         if (!found)
         {
@@ -197,7 +198,7 @@ public class PathFinding : MonoBehaviour
             }
         }
 
-        return null;
+        return path;
     }
 
     (bool, Node) CalculatePath(out List<Vector2> foundPath)
