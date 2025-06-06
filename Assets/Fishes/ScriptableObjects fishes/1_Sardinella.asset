@@ -27,11 +27,17 @@ MonoBehaviour:
   rarityFactor: 0.1
   timeRanges:
   - BeginTime:
-      hours: 0
+      hours: 6
+      minutes: 1
+    EndTime:
+      hours: 9
+      minutes: 14
+  - BeginTime:
+      hours: 15
       minutes: 0
     EndTime:
-      hours: 1
-      minutes: 0
+      hours: 22
+      minutes: 50
   dateRanges: []
   breedSuccessRate: 0
   breedPrice: 0

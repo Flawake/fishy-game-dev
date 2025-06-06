@@ -20,6 +20,7 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] GameObject playerCanvasPrefab;
     [SerializeField] BoxCollider2D playerCollider;
     [SerializeField] ViewPlayerStats viewPlayerStats;
+    [SerializeField] PathFinding pathFinding;
 
     //Speed in units per seconds
     public float movementSpeed = 1.7f;
@@ -243,6 +244,9 @@ public class PlayerController : NetworkBehaviour
         if (fishingManager.ProcessFishing(clickedPos) || objectsPreventingFishing > 0) {
             return;
         }
+        
+        // Click was not on the water or another player and the mouse was not over a ui element. Walk to the clicked position
+        pathFinding.FindPath(this.transform.position, clickedPos);
 
         //We should not return but look what else the click could have been for.
     }
