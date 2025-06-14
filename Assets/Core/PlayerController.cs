@@ -435,6 +435,7 @@ public class PlayerController : NetworkBehaviour
     [TargetRpc]
     void TargetSetPosition(Vector2 position)
     {
+        Debug.Log("Forced target position");
         nextMoves = null;
         transform.position = new Vector3(position.x, position.y, transform.position.z);
     }
@@ -463,6 +464,7 @@ public class PlayerController : NetworkBehaviour
 
         if (!CheckSpeedValid(position, prevPos))
         {
+            Debug.Log("Speed was invalid");
             transform.position = new Vector3(prevPos.x, prevPos.y, transform.position.z);;
             lastVerifiedPosition = transform.position;
             TargetSetPosition(transform.position);
@@ -471,6 +473,7 @@ public class PlayerController : NetworkBehaviour
 
         Vector2 newValidPos;
         if (!CheckNewPosValid(position, prevPos, out newValidPos)) {
+            Debug.Log("Pos was invalid");
             transform.position = new Vector3(newValidPos.x, newValidPos.y, transform.position.z);
             lastVerifiedPosition = transform.position;
             TargetSetPosition(transform.position);
