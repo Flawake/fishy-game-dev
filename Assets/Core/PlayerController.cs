@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Mirror;
+using System;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
@@ -13,8 +14,7 @@ public class PlayerController : NetworkBehaviour
 
     private List<Vector2> nextMoves = null;
 
-    public Rigidbody2D playerRigidbody;
-
+    [SerializeField] Rigidbody2D playerRigidbody;
     [SerializeField] Transform playerTransform;
     [SerializeField] Camera playerCamera;
     [SerializeField] Animator playerAnimator;
@@ -27,16 +27,11 @@ public class PlayerController : NetworkBehaviour
     //Speed in units per seconds
     public float movementSpeed = 1.7f;
 
-    PlayerControls playerControls;
-    InputAction moveAction;
+    private PlayerInputHandler inputHandler;
 
     GameObject worldBounds;
 
-    Vector2 movementVector;
-
     bool movementDirty; //true if new position has not yet been send to the server;
-    bool hasVelocity;   //set's wether the player has a velocity. needed for the animations
-
     int objectsPreventingMovement = 0;
     int objectsPreventingFishing = 0;
 
@@ -120,6 +115,16 @@ public class PlayerController : NetworkBehaviour
         return true;
     }
 
+    void OnDrawGizmos()
+    {
+        if (!isServer)
+        {
+            return;
+        }
+        Gizmos.color = Color.red;
+        Gizmos.DrawSphere((Vector2)lastVerifiedPosition, 0.2f);
+    }
+
     void ClampCamera() {
         if (worldBounds == null)
         {
@@ -145,7 +150,6 @@ public class PlayerController : NetworkBehaviour
     }
 
     Vector2 ClampPlayerMovement(Vector2 movementVector) {
-        //TODO: Don't return movementVector but vector2.zero. This is used for testing the scene travel
         if(worldBounds == null)
         {
             if (!FindWorldBoundsObject())
@@ -168,33 +172,33 @@ public class PlayerController : NetworkBehaviour
         float minYPlayer = worldBounds.transform.position.y - (worldBounds.transform.lossyScale.y / 2) + playerHeight;
         float maxYPlayer = worldBounds.transform.position.y - (worldBounds.transform.lossyScale.y / 2) + worldBounds.transform.lossyScale.y - playerHeight;
 
-        float newXposition = this.transform.position.x;
-        float newYposition = this.transform.position.y;
+        float newXposition = transform.position.x;
+        float newYposition = transform.position.y;
 
         //Clamp position and movement vector
-        if (this.transform.position.x <= minXPlayer && movementVector.x < 0)
+        if (transform.position.x <= minXPlayer && movementVector.x < 0)
         {
             movementVector.x = 0;
             newXposition = minXPlayer;
         }
-        else if (this.transform.position.x >= maxXPlayer && movementVector.x > 0)
+        else if (transform.position.x >= maxXPlayer && movementVector.x > 0)
         {
             movementVector.x = 0;
             newXposition = maxXPlayer;
         }
 
-        if (this.transform.position.y <= minYPlayer && movementVector.y < 0)
+        if (transform.position.y <= minYPlayer && movementVector.y < 0)
         {
             movementVector.y = 0;
             newYposition = minYPlayer;
         }
-        else if (this.transform.position.y >= maxYPlayer && movementVector.y > 0)
+        else if (transform.position.y >= maxYPlayer && movementVector.y > 0)
         {
             movementVector.y = 0;
             newYposition = maxYPlayer;
         }
 
-        this.transform.position = new Vector3(newXposition, newYposition, this.transform.position.z);
+        transform.position = new Vector3(newXposition, newYposition, transform.position.z);
         return movementVector;
     }
 
@@ -227,28 +231,37 @@ public class PlayerController : NetworkBehaviour
     //This function is being called from the PlayerController input system. It triggers when the left mouse button in clicked.
     public void ProcessMouseClick(InputAction.CallbackContext context)
     {
-        if (!isLocalPlayer || !gameOnForeground || !context.performed) {
-            return; 
+        if (!isLocalPlayer || !gameOnForeground || !context.performed)
+        {
+            return;
         }
 
         Vector2 mousePos = Mouse.current.position.ReadValue();
 
         // This helps, but we still need to check for objectsPreventingFishing since this does not account for clicks outside a canvas.
-        if (IsPointerOverUI(mousePos)) {
+        if (IsPointerOverUI(mousePos))
+        {
             return; // UI already handled this
         }
-        
+
         Vector2 clickedPos = playerCamera.ScreenToWorldPoint(mousePos);
         //Check for mouse click starting at objects with most priority, return if the click has been handled.
-        if (viewPlayerStats.ProcesPlayerCheck(clickedPos)) {
+        if (viewPlayerStats.ProcesPlayerCheck(clickedPos))
+        {
             return;
         }
-        if (fishingManager.ProcessFishing(clickedPos) || objectsPreventingFishing > 0) {
+        if (fishingManager.ProcessFishing(clickedPos) || objectsPreventingFishing > 0)
+        {
             return;
         }
-        
+
         // Click was not on the water or another player and the mouse was not over a ui element. Walk to the clicked position
-        nextMoves = pathFinding.FindPath(this.transform.position, clickedPos);
+        System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
+        nextMoves = pathFinding.FindPath(transform.position, clickedPos);
+        stopwatch.Stop();
+
+        Debug.Log($"Finding path took {stopwatch.Elapsed.TotalMilliseconds} ms");
+
 
         //We should not return but look what else the click could have been for.
     }
@@ -262,27 +275,35 @@ public class PlayerController : NetworkBehaviour
 
     private void FixedUpdate()
     {
-        if(!isLocalPlayer)
-        {
+        if (!isLocalPlayer || inputHandler == null)
+        { 
             return;
         }
 
-        if(moveAction != null)
+        if (fishingManager.isFishing || objectsPreventingMovement > 0)
         {
-            SetMoveVariables(moveAction.ReadValue<Vector2>());
+            ApplyAnimation(false);
+            return;
         }
-        else
+        Vector2 dir = inputHandler.MoveAction.ReadValue<Vector2>();
+
+        if (HasVelocity(dir))
         {
-            if (movementVector == null)
-            {
-                return;
-            }
+            nextMoves = null;
         }
 
+        Vector2 movementVector = CalculateMovementVector(dir);
         movementVector = ClampPlayerMovement(movementVector);
-        if(movementVector != Vector2.zero)
+
+        // We want the player to look in the direction of their input to let the game feel more responsive. This is only locally, but who cares?
+        bool isMoving = HasVelocity(movementVector);
+        Vector2 animationDirection = isMoving ? movementVector : dir;
+
+        ApplyAnimation(animationDirection, isMoving);
+
+        if (movementVector != Vector2.zero)
         {
-            //We need to set this globally to true. The data is only send once every x milliseconds. If the time has not yet passed the new movement wont be send.
+            //We need to set this globally to true. The data is only send once every x milliseconds. If the time has not yet passed, the new movement wont be send.
             //We do send the movement in this case a few frames later when the time has passed altough we might not be moving anymore.
             movementDirty = true;
         }
@@ -301,17 +322,16 @@ public class PlayerController : NetworkBehaviour
         playerRigidbody.linearVelocity = moveDir.normalized * speed;
     }
 
-    void ApplyAnimation()
+    void ApplyAnimation(bool hasVelocity)
     {
-        ApplyAnimation(Vector2.zero);
+        ApplyAnimation(Vector2.zero, hasVelocity);
     }
 
-    void ApplyAnimation(Vector2 dir) 
+    void ApplyAnimation(Vector2 dir, bool hasVelocity) 
     {
         float delayTime = 0.07f;
-        bool moving = dir != Vector2.zero;
         dir = dir.normalized;
-        if (moving)
+        if (HasVelocity(dir))
         {
             if (Time.time - lastTimeMovedDiagonally > delayTime || (lastTimeMovedDiagonallyVector != dir && dir.x != 0 && dir.y != 0))
             {
@@ -340,44 +360,27 @@ public class PlayerController : NetworkBehaviour
         playerAnimator.SetFloat("Vertical", dir.y);
     }
 
-    public void SetMoveVariables(Vector2 dir)
+    private bool HasVelocity(Vector2 dir)
     {
-        if (!isLocalPlayer)
+        return dir != Vector2.zero;
+    }
+
+    public Vector2 CalculateMovementVector(Vector2 dir)
+    {
+        if (nextMoves != null)
         {
-            return;
-        }
-        if (fishingManager.isFishing || objectsPreventingMovement > 0)
-        {
-            hasVelocity = false;
-            ApplyAnimation();
-            return;
-        }
-        hasVelocity = dir != Vector2.zero;
-        if (hasVelocity)
-        {
-            nextMoves = null;
-        }
-        else
-        {
-            if (nextMoves != null)
+            dir = nextMoves[0] - (Vector2)transform.position;
+            // Don't make this value too small or the player will osscilate around this point. ALso don't make it too big or the player will not be properly allinged with the grid
+            if (Vector2.Distance(nextMoves[0], transform.position) < 0.1)
             {
-                dir = nextMoves[0] - (Vector2)transform.position;
-                hasVelocity = true;
-                if (Vector2.Distance(nextMoves[0], transform.position) < 0.1)
+                nextMoves.RemoveAt(0);
+                if (nextMoves.Count == 0)
                 {
-                    if(nextMoves.Count > 0)
-                    {
-                        nextMoves.RemoveAt(0);
-                        if (nextMoves.Count == 0)
-                        {
-                            nextMoves = null;
-                            hasVelocity = false;
-                        }
-                    }
+                    nextMoves = null;
                 }
             }
         }
-        movementVector = dir.normalized;
+        Vector2 movementVector = dir.normalized;
         foreach (Collider2D col in objectsCollidingPlayer)
         {
             //Only walk if not walking into a collider
@@ -386,41 +389,46 @@ public class PlayerController : NetworkBehaviour
             if (angle < 50f)
             {
                 movementVector = Vector2.zero;
-                hasVelocity = false;
             }
         }
-        ApplyAnimation(dir);
+        return movementVector;
     }
 
+    [Client]
     public void MoveOtherPlayerLocally(Vector2 dir, Vector2 targetPos)
     {
-        if(isLocalPlayer)
+        if (isLocalPlayer)
         {
             return;
         }
-        hasVelocity = dir != Vector2.zero;
-        ApplyAnimation(dir);
+        ApplyAnimation(dir, HasVelocity(dir));
         dir = ClampPlayerMovement(dir);
-        Vector2 newPos = (movementSpeed * Time.deltaTime * dir) + (Vector2)playerRigidbody.position;
+        Vector2 newPos = (movementSpeed * Time.deltaTime * dir) + playerRigidbody.position;
         //Clamp the position to the target position if the movement goes beyond the targetposition in this frame.
-        if(transform.position.x < targetPos.x && newPos.x > targetPos.x)
+        playerRigidbody.position = ClampPlayerMovement(transform.position, newPos, targetPos);
+    }
+
+    [Client]
+    private Vector2 ClampPlayerMovement(Vector2 curPos, Vector2 nextPos, Vector2 targetPos)
+    {
+        if (curPos.x < targetPos.x && nextPos.x > targetPos.x)
         {
-            newPos.x = targetPos.x;
+            nextPos.x = targetPos.x;
         }
-        else if (transform.position.x > targetPos.x && newPos.x < targetPos.x)
+        else if (curPos.x > targetPos.x && nextPos.x < targetPos.x)
         {
-            newPos.x = targetPos.x;
+            nextPos.x = targetPos.x;
         }
 
-        if (transform.position.y < targetPos.y && newPos.y > targetPos.y)
+        if (curPos.y < targetPos.y && nextPos.y > targetPos.y)
         {
-            newPos.y = targetPos.y;
+            nextPos.y = targetPos.y;
         }
-        else if (transform.position.y > targetPos.y && newPos.y < targetPos.y)
+        else if (curPos.y > targetPos.y && nextPos.y < targetPos.y)
         {
-            newPos.y = targetPos.y;
+            nextPos.y = targetPos.y;
         }
-        playerRigidbody.position = newPos;
+        return nextPos;
     }
 
     [Server]
@@ -451,7 +459,7 @@ public class PlayerController : NetworkBehaviour
             locatedScene = activeScene;
         }
 
-        if (lastVerifiedPosition == null)
+        if (!lastVerifiedPosition.HasValue)
         {
             //preserve the z position
             transform.position = new Vector3(position.x, position.y, transform.position.z);
@@ -462,17 +470,18 @@ public class PlayerController : NetworkBehaviour
 
         Vector2 prevPos = (Vector2)lastVerifiedPosition;
 
-        if (!CheckSpeedValid(position, prevPos))
+        if (!CheckSpeedValid(position, prevPos, movementSpeed))
         {
             Debug.Log("Speed was invalid");
-            transform.position = new Vector3(prevPos.x, prevPos.y, transform.position.z);;
+            transform.position = new Vector3(prevPos.x, prevPos.y, transform.position.z);
             lastVerifiedPosition = transform.position;
             TargetSetPosition(transform.position);
             return;
         }
 
         Vector2 newValidPos;
-        if (!CheckNewPosValid(position, prevPos, out newValidPos)) {
+        if (!CheckNewPosValid(position, out newValidPos))
+        {
             Debug.Log("Pos was invalid");
             transform.position = new Vector3(newValidPos.x, newValidPos.y, transform.position.z);
             lastVerifiedPosition = transform.position;
@@ -485,28 +494,34 @@ public class PlayerController : NetworkBehaviour
 
     //Anti cheat function, should detect a client doing speed hacking
     [Server]
-    bool CheckSpeedValid(Vector2 position, Vector2 prevPos) {
+    bool CheckSpeedValid(Vector2 position, Vector2 prevPos, float speed)
+    {
         //Check for speed hacking
-
-        if (Time.time - lastVerifiedtime > 0.5f)
+        if (Time.time - lastVerifiedtime < 0.5f)
         {
-            float checkTime = lastVerifiedtime;
-            lastVerifiedtime = Time.time;
-            lastVerifiedPosition = position;
-            Vector2 AbsoluteMovement = new Vector2(Mathf.Abs(position.x - prevPos.x), Mathf.Abs(position.y - prevPos.y));
-            float absoluteDistance = Mathf.Sqrt(Mathf.Pow(AbsoluteMovement.x, 2) + Mathf.Pow(AbsoluteMovement.y, 2));
-            //Times 1.2 to account for network latency related issues.
-            if (absoluteDistance > movementSpeed * Mathf.Min((float)(Time.time - checkTime), 2f) * 1.2)
-            {
-                return false;
-            }
+            return true;
         }
+
+        float maxAllowedDistance = speed * Mathf.Min(Time.time - lastVerifiedtime, 2f) * 1.2f;
+        float actualDistance = Vector2.Distance(position, prevPos);
+
+        lastVerifiedtime = Time.time;
+        lastVerifiedPosition = position;
+
+        //Times 1.2 to account for network latency related issues.
+        if (actualDistance > maxAllowedDistance)
+        {
+            Debug.Log(maxAllowedDistance);
+            Debug.Log(actualDistance);
+            return false;
+        }
+
         return true;
     }
 
     //Anti cheat function, should detect if a client tries to walk on something unwalkable
     [Server]
-    bool CheckNewPosValid(Vector2 position, Vector2 prevPos, out Vector2 newValidPos) {
+    bool CheckNewPosValid(Vector2 position, out Vector2 newValidPos) {
         CompositeCollider2D coll = SceneObjectCache.GetWorldCollider(locatedScene);
 
         newValidPos = Vector2.zero;
@@ -547,11 +562,7 @@ public class PlayerController : NetworkBehaviour
         {
             return;
         }
-        playerControls = new PlayerControls();
-        playerControls.Player.Fishing.performed += ProcessMouseClick;
-        playerControls.Player.Fishing.Enable();
-        moveAction = playerControls.Player.Move;
-        moveAction.Enable();
+        inputHandler = new PlayerInputHandler(ProcessMouseClick);
     }
 
     private void OnDisable()
@@ -560,7 +571,27 @@ public class PlayerController : NetworkBehaviour
         {
             return;
         }
-        moveAction.Disable();
-        playerControls.Player.Fishing.Disable();
+        inputHandler?.Dispose();
+    }
+}
+
+public class PlayerInputHandler
+{
+    private PlayerControls controls;
+    public InputAction MoveAction => controls.Player.Move;
+
+    public PlayerInputHandler(Action<InputAction.CallbackContext> onFishingPerformed)
+    {
+        controls = new PlayerControls();
+        controls.Player.Fishing.performed += onFishingPerformed;
+        controls.Player.Fishing.Enable();
+        controls.Player.Move.Enable();
+    }
+
+    public void Dispose()
+    {
+        controls.Player.Fishing.Disable();
+        controls.Player.Move.Disable();
+        controls.Dispose();
     }
 }
