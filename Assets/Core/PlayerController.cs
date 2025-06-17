@@ -22,7 +22,6 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] GameObject playerCanvasPrefab;
     [SerializeField] BoxCollider2D playerCollider;
     [SerializeField] ViewPlayerStats viewPlayerStats;
-    [SerializeField] PathFinding pathFinding;
 
     //Speed in units per seconds
     public float movementSpeed = 1.7f;
@@ -113,16 +112,6 @@ public class PlayerController : NetworkBehaviour
             return false;
         }
         return true;
-    }
-
-    void OnDrawGizmos()
-    {
-        if (!isServer)
-        {
-            return;
-        }
-        Gizmos.color = Color.red;
-        Gizmos.DrawSphere((Vector2)lastVerifiedPosition, 0.2f);
     }
 
     void ClampCamera() {
@@ -257,7 +246,7 @@ public class PlayerController : NetworkBehaviour
 
         // Click was not on the water or another player and the mouse was not over a ui element. Walk to the clicked position
         System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
-        nextMoves = pathFinding.FindPath(transform.position, clickedPos);
+        nextMoves = PathFinding.FindPath(transform.position, clickedPos, gameObject);
         stopwatch.Stop();
 
         Debug.Log($"Finding path took {stopwatch.Elapsed.TotalMilliseconds} ms");

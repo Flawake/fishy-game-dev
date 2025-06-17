@@ -13,6 +13,16 @@ class Node
     public float distanceToGoal;
     public bool isPath;
 
+    public Node()
+    {
+        WorldPoint = Vector2.zero;
+        walkable = false;
+        gscore = float.MaxValue;
+        fscore = float.MaxValue;
+        distanceToGoal = float.MaxValue;
+        isPath = false;
+    }
+
     public Node(Vector2 _worldPoint, bool _walkable)
     {
         WorldPoint = _worldPoint;
@@ -23,7 +33,7 @@ class Node
         isPath = false;
     }
 
-    public void resetToDefault()
+    public void ResetToDefault()
     {
         gscore = float.MaxValue;
         fscore = float.MaxValue;
@@ -43,8 +53,8 @@ class NodeMap
     public Vector2 NodeToWorldPoint(Vector2 point)
     {
         return new Vector2(
-            MapOrigin.x + ((point.x + 0.5f)- Nodes.GetLength(0) / 2f) * NodeSize,
-            MapOrigin.y + ((point.y + 0.5f)- Nodes.GetLength(0) / 2f) * NodeSize
+            MapOrigin.x + ((point.x + 0.5f) - Nodes.GetLength(0) / 2f) * NodeSize,
+            MapOrigin.y + ((point.y + 0.5f) - Nodes.GetLength(0) / 2f) * NodeSize
         );
     }
 
@@ -55,7 +65,7 @@ class NodeMap
         return new Vector2Int(x, y);
     }
 
-    public Node CreateNode(Vector2Int pointInArray, GameObject objectSearchingPath)
+    public void AddNodeToMap(Node n, Vector2Int pointInArray, GameObject objectSearchingPath)
     {
         Vector2 nodeWorldPoint = NodeToWorldPoint(new Vector2(pointInArray.x, pointInArray.y));
         // Make the collider as least as big as half the player collider plus a little.
@@ -72,29 +82,68 @@ class NodeMap
                 break;
             }
         }
-        Node newNode = new Node(nodeWorldPoint, isWalkable);
-        Nodes[pointInArray.x, pointInArray.y] = newNode;
-        return newNode;
+        n.walkable = isWalkable;
+        n.WorldPoint = nodeWorldPoint;
+        Nodes[pointInArray.x, pointInArray.y] = n;
     }
 }
-public class PathFinding : MonoBehaviour
+
+class NodePool
 {
-    NodeMap map = new NodeMap();
-    float ManhattanDistance(Vector2 a, Vector2 b)
+    private Stack<Node> pool = new Stack<Node>();
+
+    //Initialize the nodepool with x amount of nodes before the game starts to save cpu cycles when they matter.
+    public NodePool(int amount)
+    {
+        List<Node> nodes = new List<Node>();
+        for (int i = 0; i < amount; i++)
+        {
+            nodes.Add(Get());
+        }
+        foreach (Node n in nodes)
+        {
+            Return(n);
+        }
+    }
+
+    public Node Get()
+    {
+        if (pool.Count > 0)
+        {
+            Node node = pool.Pop();
+            node.ResetToDefault();
+            return node;
+        }
+        return new Node();
+    }
+
+    public void Return(Node node)
+    {
+        pool.Push(node);
+    }
+}
+
+public static class PathFinding
+{
+    readonly static NodeMap map = new NodeMap();
+    static NodePool nodepool = new NodePool(5000);
+    static float ManhattanDistance(Vector2 a, Vector2 b)
     {
         return Mathf.Abs(a.x - b.x) + Mathf.Abs(a.y - b.y);
     }
-    
+
     internal static List<Vector2> FilterPath(List<Vector2> path)
     {
         if (path == null || path.Count < 3)
         {
             return path;
         }
-        
-        List<Vector2> filtered = new List<Vector2>();
-        filtered.Add(path[0]);
-        
+
+        List<Vector2> filtered = new List<Vector2>
+        {
+            path[0]
+        };
+
         Vector2 GetDirection(Vector2 from, Vector2 to)
         {
             Vector2 diff = to - from;
@@ -103,9 +152,9 @@ public class PathFinding : MonoBehaviour
                 diff.y == 0 ? 0 : (diff.y > 0 ? 1 : -1)
             );
         }
-        
+
         Vector2 prevDir = GetDirection(path[0], path[1]);
-        
+
         for (int i = 1; i < path.Count - 1; i++)
         {
             Vector2 currDir = GetDirection(path[i], path[i + 1]);
@@ -123,7 +172,7 @@ public class PathFinding : MonoBehaviour
 
         return filtered;
     }
-    
+
     static List<Vector2> ReconstructPath(Dictionary<Node, Node> fromPath, Node curr)
     {
         List<Vector2> path = new List<Vector2>();
@@ -139,7 +188,7 @@ public class PathFinding : MonoBehaviour
         return FilterPath(path);
     }
 
-    public List<Vector2> FindPath(Vector2 StartPoint, Vector2 EndPoint)
+    public static List<Vector2> FindPath(Vector2 StartPoint, Vector2 EndPoint, GameObject objectNeedingPath)
     {
         float distance = Vector2.Distance(StartPoint, EndPoint);
         float nodeSize = distance / 50;
@@ -147,7 +196,7 @@ public class PathFinding : MonoBehaviour
         int arraySize = (int)(distance / nodeSize) * 4;
         //Make sure the arraysize is always uneven so we have a node at our midpoint
         arraySize = arraySize % 2 == 0 ? arraySize + 1 : arraySize;
-        
+
         map.Nodes = new Node[arraySize, arraySize];
         map.NodeSize = nodeSize;
         // Set the map origin in the middle of the map
@@ -160,96 +209,77 @@ public class PathFinding : MonoBehaviour
                 map.Nodes[i, j] = null;
             }
         }
-        
+
         Vector2Int startNodeCoord = map.WorldPointToNode(StartPoint);
-        Node startNode = map.CreateNode(startNodeCoord, gameObject);
+        Node startNode = nodepool.Get();
+        map.AddNodeToMap(startNode, startNodeCoord, objectNeedingPath);
         map.StartNode = startNode;
         Vector2Int endNodeCoord = map.WorldPointToNode(EndPoint);
-        Node endNode = map.CreateNode(endNodeCoord, gameObject);
+        Node endNode = nodepool.Get();
+        map.AddNodeToMap(endNode, endNodeCoord, objectNeedingPath);
         map.EndNode = endNode;
-        
+
         map.StartNode.gscore = 0;
         map.StartNode.fscore = ManhattanDistance(map.StartNode.WorldPoint, map.EndNode.WorldPoint);
 
         List<Vector2> path;
-        (bool found, Node closestEndNode) = CalculatePath(out path);
+        bool found = CalculatePath(out path, objectNeedingPath);
         if (!found)
         {
-            if (closestEndNode != null)
-            {
-                for (int i = 0; i < map.Nodes.GetLength(0); i++)
-                {
-                    for (int j = 0; j < map.Nodes.GetLength(0); j++)
-                    {
-                        if (map.Nodes[i, j] != null)
-                        {
-                            map.Nodes[i, j].resetToDefault();
-                        }
-                    }
-                }
+            Debug.LogWarning("Could not find path");
+        }
 
-                map.EndNode = closestEndNode;
-                map.StartNode.gscore = 0;
-                map.StartNode.fscore = ManhattanDistance(map.StartNode.WorldPoint, map.EndNode.WorldPoint);
-                (found, _) = CalculatePath(out path);
-            }
-            if (!found)
+        foreach (Node n in map.Nodes)
+        {
+            if (n == null)
             {
-                Debug.LogWarning("Could not find path");
+                continue;
             }
+            nodepool.Return(n);
         }
 
         return path;
     }
 
-    (bool, Node) CalculatePath(out List<Vector2> foundPath)
+    static bool CalculatePath(out List<Vector2> foundPath, GameObject objectNeedingPath)
     {
         foundPath = null;
         Node closestSoFar = map.StartNode;
-        HashSet<Node> openSet = new HashSet<Node>();
-        openSet.Add(map.StartNode);
-        
+        PriorityQueue<Node> openSet = new PriorityQueue<Node>();
+        openSet.Enqueue(map.StartNode, map.StartNode.fscore);
+
         // First Node from, second Node current
         Dictionary<Node, Node> cameFrom = new Dictionary<Node, Node>();
 
         while (openSet.Count > 0)
         {
             Node currentNode = null;
-            float lowestScore = int.MaxValue;
-            foreach (Node openNode in openSet)
-            {
-                if (openNode.fscore < lowestScore)
-                {
-                    lowestScore = openNode.fscore;
-                    currentNode = openNode;
-                }
-            }
-            
+            currentNode = openSet.Dequeue();
+
             if (currentNode == null)
             {
                 Debug.LogWarning("No path found");
-                return (false, null);
+                return false;
             }
-            
+
             currentNode.distanceToGoal = ManhattanDistance(currentNode.WorldPoint, map.EndNode.WorldPoint);
             if (currentNode.distanceToGoal < closestSoFar.distanceToGoal)
             {
                 closestSoFar = currentNode;
             }
-            
+
             if (currentNode == map.EndNode)
             {
                 foundPath = ReconstructPath(cameFrom, map.EndNode);
-                return (true, null);
+                return true;
             }
-                
-            openSet.Remove(currentNode);
+
             List<Node> neighbours = new List<Node>();
             Vector2Int currentNodePos = map.WorldPointToNode(currentNode.WorldPoint);
-            
+
             int maxX = map.Nodes.GetLength(0);
             int maxY = map.Nodes.GetLength(1);
-            
+
             for (int x = -1; x <= 1; x++)
             {
                 for (int y = -1; y <= 1; y++)
@@ -265,7 +295,8 @@ public class PathFinding : MonoBehaviour
                         Node neighbour = map.Nodes[currentNodePos.x + x, currentNodePos.y + y];
                         if (neighbour == null)
                         {
-                            Node newNode = map.CreateNode(new Vector2Int(currentNodePos.x + x, currentNodePos.y + y), gameObject);
+                            Node newNode = nodepool.Get();
+                            map.AddNodeToMap(newNode, new Vector2Int(currentNodePos.x + x, currentNodePos.y + y), objectNeedingPath);
                             neighbour = newNode;
                         }
                         if (neighbour.walkable)
@@ -291,16 +322,17 @@ public class PathFinding : MonoBehaviour
                     neighbour.gscore = tentativeGscore;
                     neighbour.fscore = tentativeGscore + ManhattanDistance(neighbour.WorldPoint, map.EndNode.WorldPoint);
                     cameFrom[neighbour] = currentNode;
-                    openSet.Add(neighbour);
+                    openSet.Enqueue(neighbour, neighbour.fscore);
                 }
             }
         }
         Debug.LogWarning("No path found");
         Debug.LogWarning($"Cheapest score: {closestSoFar.fscore}, is start: {map.StartNode == closestSoFar}");
-        return (false, closestSoFar);
+        foundPath = ReconstructPath(cameFrom, closestSoFar);
+        return foundPath.Count != 0;
     }
 
-    private void OnDrawGizmos()
+    private static void OnDrawGizmos()
     {
         if (map?.Nodes == null)
         {
@@ -324,7 +356,7 @@ public class PathFinding : MonoBehaviour
                 {
                     Gizmos.color = Color.yellow;
                 }
-                else if(!node.walkable)
+                else if (!node.walkable)
                 {
                     Gizmos.color = Color.red;
                 }
@@ -336,9 +368,9 @@ public class PathFinding : MonoBehaviour
                 {
                     Gizmos.color = Color.cyan;
                 }
-                
+
                 Vector3 center = new Vector3(
-                    map.MapOrigin.x + ((i + 0.5f)- map.Nodes.GetLength(0) / 2f) * map.NodeSize,
+                    map.MapOrigin.x + ((i + 0.5f) - map.Nodes.GetLength(0) / 2f) * map.NodeSize,
                     map.MapOrigin.y + ((j + 0.5f) - map.Nodes.GetLength(1) / 2f) * map.NodeSize,
                     0
                 );
