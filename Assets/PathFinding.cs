@@ -1,6 +1,11 @@
 using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 using UnityEditor;
+using System;
+using Unity.Collections;
+using Unity.Jobs;
+using System.Linq;
 
 class Node
 {
@@ -10,18 +15,8 @@ class Node
     public float gscore;
     // fScore(N) is the estimated path from n to end
     public float fscore;
-    public float distanceToGoal;
     public bool isPath;
-
-    public Node()
-    {
-        WorldPoint = Vector2.zero;
-        walkable = false;
-        gscore = float.MaxValue;
-        fscore = float.MaxValue;
-        distanceToGoal = float.MaxValue;
-        isPath = false;
-    }
+    public bool beenSearched;
 
     public Node(Vector2 _worldPoint, bool _walkable)
     {
@@ -29,112 +24,112 @@ class Node
         walkable = _walkable;
         gscore = float.MaxValue;
         fscore = float.MaxValue;
-        distanceToGoal = float.MaxValue;
         isPath = false;
+        beenSearched = false;
     }
 
     public void ResetToDefault()
     {
         gscore = float.MaxValue;
         fscore = float.MaxValue;
-        distanceToGoal = float.MaxValue;
         isPath = false;
+        beenSearched = false;
     }
 }
 
 class NodeMap
 {
+    public const float NodeSize = 0.2f;
     public Node[,] Nodes;
     public Node StartNode;
     public Node EndNode;
-    public float NodeSize;
     public Vector2 MapOrigin;
 
     public Vector2 NodeToWorldPoint(Vector2 point)
     {
         return new Vector2(
             MapOrigin.x + ((point.x + 0.5f) - Nodes.GetLength(0) / 2f) * NodeSize,
-            MapOrigin.y + ((point.y + 0.5f) - Nodes.GetLength(0) / 2f) * NodeSize
+            MapOrigin.y + ((point.y + 0.5f) - Nodes.GetLength(1) / 2f) * NodeSize
         );
-    }
+}
 
-    public Vector2Int WorldPointToNode(Vector2 point)
+    public Vector2Int WorldPointToMapPos(Vector2 point)
     {
         int x = Mathf.FloorToInt((point.x - MapOrigin.x) / NodeSize + Nodes.GetLength(0) / 2f);
         int y = Mathf.FloorToInt((point.y - MapOrigin.y) / NodeSize + Nodes.GetLength(1) / 2f);
         return new Vector2Int(x, y);
     }
 
-    public void AddNodeToMap(Node n, Vector2Int pointInArray, GameObject objectSearchingPath)
+    public void AddNodeToMap(Node n, Vector2Int pointInArray, CompositeCollider2D worldCollider)
     {
-        Vector2 nodeWorldPoint = NodeToWorldPoint(new Vector2(pointInArray.x, pointInArray.y));
-        // Make the collider as least as big as half the player collider plus a little.
+        n.WorldPoint = NodeToWorldPoint(new Vector2(pointInArray.x, pointInArray.y));
         Collider2D[] hits = Physics2D.OverlapAreaAll(
-            new Vector2(nodeWorldPoint.x - 0.2f, nodeWorldPoint.y - 0.2f),
-            new Vector2(nodeWorldPoint.x + 0.2f, nodeWorldPoint.y + 0.2f)
+            new Vector2(n.WorldPoint.x - (NodeSize / 2), n.WorldPoint.y - (NodeSize / 2)),
+            new Vector2(n.WorldPoint.x + (NodeSize / 2), n.WorldPoint.y + (NodeSize / 2))
         );
         bool isWalkable = true;
         foreach (Collider2D hit in hits)
         {
-            if (hit == SceneObjectCache.GetWorldCollider(objectSearchingPath.scene))
+            if (hit == worldCollider)
             {
                 isWalkable = false;
                 break;
             }
         }
         n.walkable = isWalkable;
-        n.WorldPoint = nodeWorldPoint;
         Nodes[pointInArray.x, pointInArray.y] = n;
     }
-}
 
-class NodePool
-{
-    private Stack<Node> pool = new Stack<Node>();
-
-    //Initialize the nodepool with x amount of nodes before the game starts to save cpu cycles when they matter.
-    public NodePool(int amount)
+    public void ResetMap()
     {
-        List<Node> nodes = new List<Node>();
-        for (int i = 0; i < amount; i++)
+        for (int x = 0; x < Nodes.GetLength(0); x++)
         {
-            nodes.Add(Get());
-        }
-        foreach (Node n in nodes)
-        {
-            Return(n);
+            for (int y = 0; y < Nodes.GetLength(1); y++)
+            {
+                Nodes[x, y].ResetToDefault();
+            }
         }
     }
 
-    public Node Get()
+    public void PrebuildMap(CompositeCollider2D mapCollider)
     {
-        if (pool.Count > 0)
+        int nodeCountX = (int)(Mathf.Ceil(mapCollider.bounds.size.x) / NodeSize);
+        int nodeCountY = (int)(Mathf.Ceil(mapCollider.bounds.size.y) / NodeSize);
+        MapOrigin = new Vector2(mapCollider.bounds.min.x + (mapCollider.bounds.size.x / 2), mapCollider.bounds.min.y + (mapCollider.bounds.size.y / 2));
+        Nodes = new Node[nodeCountX, nodeCountY];
+        for (int x = 0; x < nodeCountX; x++)
         {
-            Node node = pool.Pop();
-            node.ResetToDefault();
-            return node;
+            for (int y = 0; y < nodeCountY; y++)
+            {
+                Node node = new Node(Vector2.zero, false);
+                AddNodeToMap(node, new Vector2Int(x, y), mapCollider);
+            }
         }
-        return new Node();
-    }
-
-    public void Return(Node node)
-    {
-        pool.Push(node);
     }
 }
 
-public static class PathFinding
+public class PathFinding : MonoBehaviour
 {
-    readonly static NodeMap map = new NodeMap();
-    static NodePool nodepool = new NodePool(5000);
-    static float ManhattanDistance(Vector2 a, Vector2 b)
+    private Dictionary<GameObject, (Vector2, Vector2, Action<List<Vector2>>)> pathsToDo = new Dictionary<GameObject, (Vector2, Vector2, Action<List<Vector2>>)>();
+    private bool pathfinderRunning = false;
+    readonly NodeMap map = new NodeMap();
+
+    [SerializeField] bool showGizmos = false;
+    
+    private void Awake()
     {
-        return Mathf.Abs(a.x - b.x) + Mathf.Abs(a.y - b.y);
+        map.PrebuildMap(SceneObjectCache.GetWorldCollider(gameObject.scene));
+        StartCoroutine(updatePathRequests());
+    }
+    
+    float EndDistance(Vector2 a, Vector2 b)
+    {
+        return Vector2.Distance(a, b) * 2;
     }
 
     internal static List<Vector2> FilterPath(List<Vector2> path)
     {
-        if (path == null || path.Count < 3)
+        if (path.Count() < 3)
         {
             return path;
         }
@@ -155,7 +150,7 @@ public static class PathFinding
 
         Vector2 prevDir = GetDirection(path[0], path[1]);
 
-        for (int i = 1; i < path.Count - 1; i++)
+        for (int i = 1; i < path.Count() - 1; i++)
         {
             Vector2 currDir = GetDirection(path[i], path[i + 1]);
 
@@ -165,15 +160,14 @@ public static class PathFinding
                 filtered.Add(path[i]);
                 prevDir = currDir;
             }
-            // else direction same: skip this point
         }
         // Add the endpoint
-        filtered.Add(path[path.Count - 1]);
+        filtered.Add(path[path.Count() - 1]);
 
         return filtered;
     }
 
-    static List<Vector2> ReconstructPath(Dictionary<Node, Node> fromPath, Node curr)
+    List<Vector2> ReconstructPath(Dictionary<Node, Node> fromPath, Node curr)
     {
         List<Vector2> path = new List<Vector2>();
         curr.isPath = true;
@@ -188,62 +182,116 @@ public static class PathFinding
         return FilterPath(path);
     }
 
-    public static List<Vector2> FindPath(Vector2 StartPoint, Vector2 EndPoint, GameObject objectNeedingPath)
-    {
-        float distance = Vector2.Distance(StartPoint, EndPoint);
-        float nodeSize = distance / 50;
-        nodeSize = Mathf.Clamp(nodeSize, 0.03f, 1f);
-        int arraySize = (int)(distance / nodeSize) * 4;
-        //Make sure the arraysize is always uneven so we have a node at our midpoint
-        arraySize = arraySize % 2 == 0 ? arraySize + 1 : arraySize;
-
-        map.Nodes = new Node[arraySize, arraySize];
-        map.NodeSize = nodeSize;
-        // Set the map origin in the middle of the map
-        map.MapOrigin = StartPoint;
-
-        for (int i = 0; i < arraySize; i++)
-        {
-            for (int j = 0; j < arraySize; j++)
-            {
-                map.Nodes[i, j] = null;
+     public void queueNewPath(Vector2 StartPoint, Vector2 EndPoint, GameObject caller, Action<List<Vector2>> callback) {
+        if(!pathfinderRunning) {
+            FindPath(StartPoint, EndPoint, callback);
+        }
+        else {
+            if(pathsToDo.ContainsKey(caller)) {
+                pathsToDo[caller] = (StartPoint, EndPoint, callback);
+            }
+            else {
+                pathsToDo.Add(caller, (StartPoint, EndPoint, callback));
             }
         }
-
-        Vector2Int startNodeCoord = map.WorldPointToNode(StartPoint);
-        Node startNode = nodepool.Get();
-        map.AddNodeToMap(startNode, startNodeCoord, objectNeedingPath);
-        map.StartNode = startNode;
-        Vector2Int endNodeCoord = map.WorldPointToNode(EndPoint);
-        Node endNode = nodepool.Get();
-        map.AddNodeToMap(endNode, endNodeCoord, objectNeedingPath);
-        map.EndNode = endNode;
-
-        map.StartNode.gscore = 0;
-        map.StartNode.fscore = ManhattanDistance(map.StartNode.WorldPoint, map.EndNode.WorldPoint);
-
-        List<Vector2> path;
-        bool found = CalculatePath(out path, objectNeedingPath);
-        if (!found)
-        {
-            Debug.LogWarning("Could not find path");
-        }
-
-        foreach (Node n in map.Nodes)
-        {
-            if (n == null)
-            {
-                continue;
-            }
-            nodepool.Return(n);
-        }
-
-        return path;
     }
 
-    static bool CalculatePath(out List<Vector2> foundPath, GameObject objectNeedingPath)
+    IEnumerator updatePathRequests() {
+        while(true) {
+            if(pathfinderRunning == false && pathsToDo.Count > 0) {
+                var first = pathsToDo.First();
+                pathsToDo.Remove(first.Key);
+                (Vector2 start, Vector2 end, Action<List<Vector2>> callback) = first.Value;
+                FindPath(start, end, callback);
+            }
+            yield return 0;
+        }
+    }
+
+    void FindPath(Vector2 StartPoint, Vector2 EndPoint, Action<List<Vector2>> callback)
     {
-        foundPath = null;
+        if(pathfinderRunning == true) {
+            Debug.LogWarning("Logic error, void FindPath was already running");
+        }
+        pathfinderRunning = true;
+        map.ResetMap();
+
+        Vector2Int startNodeCoord = map.WorldPointToMapPos(StartPoint);
+        map.StartNode = map.Nodes[startNodeCoord.x, startNodeCoord.y];
+        Vector2Int endNodeCoord = map.WorldPointToMapPos(EndPoint);
+        map.EndNode = map.Nodes[endNodeCoord.x, endNodeCoord.y];
+
+        if (!map.EndNode.walkable)
+        {
+            // Find closest neighbour that is walkable
+            map.EndNode = FindClosestWalkable(map.EndNode);
+        }
+
+        map.StartNode.gscore = 0;
+        map.StartNode.fscore = EndDistance(map.StartNode.WorldPoint, map.EndNode.WorldPoint);
+
+        StartCoroutine(CalculatePath(callback));
+    }
+
+    Node FindClosestWalkable(Node endNode)
+    {
+        Queue<Vector2Int> queue = new Queue<Vector2Int>();
+        HashSet<Vector2Int> visited = new HashSet<Vector2Int>();
+
+        queue.Enqueue(map.WorldPointToMapPos(endNode.WorldPoint));
+        visited.Add(map.WorldPointToMapPos(endNode.WorldPoint));
+
+        bool found = false;
+
+        Vector2Int[] directions = {
+            new Vector2Int(1, 0), new Vector2Int(-1, 0),
+            new Vector2Int(0, 1), new Vector2Int(0, -1),
+            new Vector2Int(1, 1), new Vector2Int(1, -1),
+            new Vector2Int(-1, 1), new Vector2Int(-1, -1)
+        };
+
+        while (queue.Count > 0)
+        {
+            Vector2Int current = queue.Dequeue();
+
+            foreach (Vector2Int dir in directions)
+            {
+                Vector2Int neighbourCoord = current + dir;
+                if (neighbourCoord.x < 0 || neighbourCoord.x > map.Nodes.GetLength(0) ||
+                neighbourCoord.y < 0 || neighbourCoord.y > map.Nodes.GetLength(1) ||
+                visited.Contains(neighbourCoord)
+                )
+                {
+                    continue;
+                }
+
+                visited.Add(neighbourCoord);
+
+                Node neighbour = map.Nodes[neighbourCoord.x, neighbourCoord.y];
+
+                if (neighbour.walkable)
+                {
+                    endNode = neighbour;
+                    found = true;
+                    break;
+                }
+
+                queue.Enqueue(neighbourCoord);
+            }
+        }
+
+        if (!found)
+        {
+            Debug.LogWarning("No walkable node found near the end point.");
+        }
+        return endNode;
+    }
+
+    //1/50th of a second.
+    const float maxBlockingTime = 0.02f;
+    IEnumerator CalculatePath(Action<List<Vector2>> doneCallback)
+    {
+        List<Vector2> foundPath = new List<Vector2>();
         Node closestSoFar = map.StartNode;
         PriorityQueue<Node> openSet = new PriorityQueue<Node>();
         openSet.Enqueue(map.StartNode, map.StartNode.fscore);
@@ -251,31 +299,31 @@ public static class PathFinding
         // First Node from, second Node current
         Dictionary<Node, Node> cameFrom = new Dictionary<Node, Node>();
 
+        System.Diagnostics.Stopwatch watchdog = System.Diagnostics.Stopwatch.StartNew();
         while (openSet.Count > 0)
         {
-            Node currentNode = null;
-            currentNode = openSet.Dequeue();
-
-            if (currentNode == null)
-            {
-                Debug.LogWarning("No path found");
-                return false;
+            if(watchdog.Elapsed.TotalSeconds > maxBlockingTime) {
+                Debug.Log("Pauzing pathfinder one frame");
+                yield return 0;
+                watchdog.Restart();
             }
+            Node currentNode = openSet.Dequeue();
 
-            currentNode.distanceToGoal = ManhattanDistance(currentNode.WorldPoint, map.EndNode.WorldPoint);
-            if (currentNode.distanceToGoal < closestSoFar.distanceToGoal)
-            {
+            if(currentNode.fscore  < closestSoFar.fscore) {
                 closestSoFar = currentNode;
             }
 
             if (currentNode == map.EndNode)
             {
                 foundPath = ReconstructPath(cameFrom, map.EndNode);
-                return true;
+                //return true;
+                doneCallback(foundPath);
+                pathfinderRunning = false;
+                yield break;
             }
 
             List<Node> neighbours = new List<Node>();
-            Vector2Int currentNodePos = map.WorldPointToNode(currentNode.WorldPoint);
+            Vector2Int currentNodePos = map.WorldPointToMapPos(currentNode.WorldPoint);
 
             int maxX = map.Nodes.GetLength(0);
             int maxY = map.Nodes.GetLength(1);
@@ -293,12 +341,6 @@ public static class PathFinding
                         currentNodePos.y + y > 0 && currentNodePos.y + y < maxY)
                     {
                         Node neighbour = map.Nodes[currentNodePos.x + x, currentNodePos.y + y];
-                        if (neighbour == null)
-                        {
-                            Node newNode = nodepool.Get();
-                            map.AddNodeToMap(newNode, new Vector2Int(currentNodePos.x + x, currentNodePos.y + y), objectNeedingPath);
-                            neighbour = newNode;
-                        }
                         if (neighbour.walkable)
                         {
                             neighbours.Add(neighbour);
@@ -307,9 +349,11 @@ public static class PathFinding
                 }
             }
 
-            foreach (Node neighbour in neighbours)
+            for (int i = 0; i < neighbours.Count; i++)
             {
-                Vector2Int neighbourPos = map.WorldPointToNode(neighbour.WorldPoint);
+                Node neighbour = neighbours[i];
+
+                Vector2Int neighbourPos = map.WorldPointToMapPos(neighbour.WorldPoint);
                 Vector2Int diff = currentNodePos - neighbourPos;
 
                 int dx = Mathf.Abs(diff.x);
@@ -319,22 +363,25 @@ public static class PathFinding
                 float tentativeGscore = currentNode.gscore + cost;
                 if (tentativeGscore < neighbour.gscore)
                 {
+                    neighbour.beenSearched = true;
                     neighbour.gscore = tentativeGscore;
-                    neighbour.fscore = tentativeGscore + ManhattanDistance(neighbour.WorldPoint, map.EndNode.WorldPoint);
+                    neighbour.fscore = tentativeGscore + EndDistance(neighbour.WorldPoint, map.EndNode.WorldPoint);
                     cameFrom[neighbour] = currentNode;
                     openSet.Enqueue(neighbour, neighbour.fscore);
                 }
             }
         }
         Debug.LogWarning("No path found");
-        Debug.LogWarning($"Cheapest score: {closestSoFar.fscore}, is start: {map.StartNode == closestSoFar}");
+        Debug.LogWarning($"Cheapest score: {closestSoFar.fscore}, is start: {map.StartNode.WorldPoint == closestSoFar.WorldPoint}");
         foundPath = ReconstructPath(cameFrom, closestSoFar);
-        return foundPath.Count != 0;
+        doneCallback(foundPath);
+        pathfinderRunning = false;
+        yield return 0;
     }
 
-    private static void OnDrawGizmos()
+    private void OnDrawGizmos()
     {
-        if (map?.Nodes == null)
+        if (!showGizmos || map?.Nodes == null)
         {
             return;
         }
@@ -343,38 +390,39 @@ public static class PathFinding
             for (int j = 0; j < map.Nodes.GetLength(1); j++)   // columns
             {
                 Node node = map.Nodes[i, j];
-                if (node == null)
-                {
-                    continue;
-                }
                 // Do something with node
-                if (map.StartNode == node)
+                if (map.StartNode.WorldPoint == node.WorldPoint)
                 {
                     Gizmos.color = Color.green;
                 }
-                else if (map.EndNode == node)
+                else if (map.EndNode.WorldPoint == node.WorldPoint)
                 {
                     Gizmos.color = Color.yellow;
                 }
                 else if (!node.walkable)
                 {
-                    Gizmos.color = Color.red;
+                    Gizmos.color = new Color(1f, 0f, 0f, 0.3f);
                 }
                 else if (node.isPath)
                 {
                     Gizmos.color = Color.magenta;
                 }
+                else if(node.beenSearched) {
+                    Gizmos.color = new Color(0.1f, 0.2f, 0.3f, 0.3f);
+                }
                 else
                 {
-                    Gizmos.color = Color.cyan;
+                    Gizmos.color =  new Color(0.0f, 1f, 1f, 0.3f);
                 }
 
                 Vector3 center = new Vector3(
-                    map.MapOrigin.x + ((i + 0.5f) - map.Nodes.GetLength(0) / 2f) * map.NodeSize,
-                    map.MapOrigin.y + ((j + 0.5f) - map.Nodes.GetLength(1) / 2f) * map.NodeSize,
+                    map.MapOrigin.x + ((i + 0.5f) - map.Nodes.GetLength(0) / 2f) * NodeMap.NodeSize,
+                    map.MapOrigin.y + ((j + 0.5f) - map.Nodes.GetLength(1) / 2f) * NodeMap.NodeSize,
                     0
                 );
-                Gizmos.DrawCube(center, new Vector3(map.NodeSize, map.NodeSize, map.NodeSize));
+                Gizmos.DrawCube(center, new Vector3(NodeMap.NodeSize, NodeMap.NodeSize, NodeMap.NodeSize));
+                Gizmos.color = new Color(1f, 0.2f, 0.4f, 0.3f);
+                Gizmos.DrawWireCube(center, new Vector3(NodeMap.NodeSize, NodeMap.NodeSize, NodeMap.NodeSize));
             }
         }
     }
@@ -409,10 +457,10 @@ public static class PathFilterValidator
             var result = PathFinding.FilterPath(test.input);
 
             // Simple manual comparison:
-            if (result.Count == test.expected.Count)
+            if (result.Count() == test.expected.Count())
             {
                 bool allMatch = true;
-                for (int i = 0; i < result.Count; i++)
+                for (int i = 0; i < result.Count(); i++)
                 {
                     if (result[i] != test.expected[i])
                     {

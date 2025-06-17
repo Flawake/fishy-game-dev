@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Unity.Collections;
+using System.Linq;
 
 public class PlayerController : NetworkBehaviour
 {
@@ -217,6 +219,16 @@ public class PlayerController : NetworkBehaviour
         return false;
     }
 
+    System.Diagnostics.Stopwatch stopwatch;
+
+    public void PathFindRequestCallback(List<Vector2> path)
+    {
+        nextMoves = path;
+        stopwatch.Stop();
+
+        Debug.Log($"Finding path took {stopwatch.Elapsed.TotalMilliseconds} ms");
+    }
+
     //This function is being called from the PlayerController input system. It triggers when the left mouse button in clicked.
     public void ProcessMouseClick(InputAction.CallbackContext context)
     {
@@ -245,16 +257,10 @@ public class PlayerController : NetworkBehaviour
         }
 
         // Click was not on the water or another player and the mouse was not over a ui element. Walk to the clicked position
-        System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
-        nextMoves = PathFinding.FindPath(transform.position, clickedPos, gameObject);
-        stopwatch.Stop();
-
-        Debug.Log($"Finding path took {stopwatch.Elapsed.TotalMilliseconds} ms");
-
-
-        //We should not return but look what else the click could have been for.
+        stopwatch = System.Diagnostics.Stopwatch.StartNew();
+        PathFinding pathFinder = SceneObjectCache.GetPathFinding(gameObject.scene);
+        pathFinder.queueNewPath(transform.position, clickedPos, gameObject, PathFindRequestCallback);
     }
-
     float lastTimeMovedDiagonally = 0;
     Vector2 lastTimeMovedDiagonallyVector = new Vector2();
 

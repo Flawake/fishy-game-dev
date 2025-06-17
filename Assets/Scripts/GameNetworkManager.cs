@@ -53,12 +53,12 @@ public class GameNetworkManager : NetworkManager
     public override void Update()
     {
         base.Update();
-        if(NetworkServer.active || scenesUnloading.Count == 0)
+        if (NetworkServer.active || scenesUnloading.Count == 0)
         {
             return;
         }
 
-        for(int i = scenesUnloading.Count - 1; i >= 0; i--)
+        for (int i = scenesUnloading.Count - 1; i >= 0; i--)
         {
             if (scenesUnloading[i].isDone)
             {
@@ -67,7 +67,7 @@ public class GameNetworkManager : NetworkManager
         }
 
         //Only enable camera and eventsystem when everything else has been loaded
-        if(scenesUnloading.Count == 0)
+        if (scenesUnloading.Count == 0)
         {
             SetEventSystemActive(networkSceneName, true);
             NetworkClient.connection.identity.transform.GetComponentInChildren<PlayerInfoUIManager>().ShowCanvas();
