@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Mandarinfish_0: -6819402960122084032
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

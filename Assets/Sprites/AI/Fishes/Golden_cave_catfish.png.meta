@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Golden_cave_catfish_0: 1257416047695568722
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

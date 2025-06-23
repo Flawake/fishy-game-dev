@@ -6,6 +6,8 @@ public static class SceneObjectCache
 {
     private static Dictionary<Scene, CompositeCollider2D> colliderLookup = new();
 
+    private static Dictionary<Scene, PathFinding> pathfinderLookup = new();
+
     public static CompositeCollider2D GetWorldCollider(Scene scene)
     {
         if (colliderLookup.TryGetValue(scene, out var collider))
@@ -19,6 +21,25 @@ public static class SceneObjectCache
                 CompositeCollider2D coll = obj.GetComponent<CompositeCollider2D>();
                 colliderLookup[scene] = coll;
                 return coll;
+            }
+        }
+
+        return null;
+    }
+
+    public static PathFinding GetPathFinding(Scene scene)
+    {
+        if (pathfinderLookup.TryGetValue(scene, out var pathfinder))
+        {
+            return pathfinder;
+        }
+        
+        foreach (GameObject obj in scene.GetRootGameObjects())
+        {
+            if(obj.name == "Root") {
+                PathFinding pathFinder = obj.GetComponent<PathFinding>();
+                pathfinderLookup[scene] = pathFinder;
+                return pathFinder;
             }
         }
 

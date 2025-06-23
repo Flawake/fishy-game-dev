@@ -1730,7 +1730,6 @@ GameObject:
   - component: {fileID: 2600673011262952092}
   - component: {fileID: 1917053837910666563}
   - component: {fileID: 871487665807593460}
-  - component: {fileID: 8512615810858034268}
   - component: {fileID: 3633833880793104609}
   m_Layer: 3
   m_Name: Player
@@ -1831,7 +1830,6 @@ MonoBehaviour:
   playerCanvasPrefab: {fileID: 317572525315915485, guid: df0b21c3c22cb2a4094a5d56a2992ed5, type: 3}
   playerCollider: {fileID: 3951641916827187384}
   viewPlayerStats: {fileID: 185256930224777548}
-  pathFinding: {fileID: 8512615810858034268}
   movementSpeed: 1.7
   totalPositionSendsPerSecond: 10
 --- !u!50 &4128126692504098922
@@ -2031,18 +2029,6 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   playerMails: []
---- !u!114 &8512615810858034268
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7976679866149745988}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1d739606f5ac7fb889210794d978733a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!210 &3633833880793104609
 SortingGroup:
   m_ObjectHideFlags: 0
