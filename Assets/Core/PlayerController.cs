@@ -40,9 +40,6 @@ public class PlayerController : NetworkBehaviour
 
     List<Collider2D> objectsCollidingPlayer = new List<Collider2D>();
 
-    //The scene that the player is in, used to get worldbound and the compositecollider
-    Scene locatedScene;
-
     public void IncreaseObjectsPreventingMovement()
     {
         objectsPreventingMovement++;
@@ -81,7 +78,8 @@ public class PlayerController : NetworkBehaviour
     void Start()
     {
         worldBounds = GameObject.Find("World bounds");
-        if (!isLocalPlayer) {
+        if (!isLocalPlayer)
+        {
             return;
         }
         Instantiate(playerCanvasPrefab, playerTransform);
@@ -90,7 +88,7 @@ public class PlayerController : NetworkBehaviour
 
     private void Update()
     {
-        if(objectsPreventingFishing < 0)
+        if (objectsPreventingFishing < 0)
         {
             objectsPreventingFishing = 0;
             Debug.LogError("objectsPreventingFishing was less then 0, this should not have happened");
@@ -109,17 +107,18 @@ public class PlayerController : NetworkBehaviour
     bool FindWorldBoundsObject()
     {
         worldBounds = GameObject.Find("WorldBounds");
-        if(worldBounds == null)
+        if (worldBounds == null)
         {
             return false;
         }
         return true;
     }
 
-    void ClampCamera() {
+    void ClampCamera()
+    {
         if (worldBounds == null)
         {
-            if(!FindWorldBoundsObject())
+            if (!FindWorldBoundsObject())
             {
                 return;
             }
@@ -140,15 +139,16 @@ public class PlayerController : NetworkBehaviour
         playerCamera.transform.position = new Vector3(Mathf.Clamp(playerCamera.transform.position.x, minXCamera, maxXCamera), Mathf.Clamp(playerCamera.transform.position.y, minYCamera, maxYCamera), playerCamera.transform.position.z);
     }
 
-    Vector2 ClampPlayerMovement(Vector2 movementVector) {
-        if(worldBounds == null)
+    Vector2 ClampPlayerMovement(Vector2 movementVector)
+    {
+        if (worldBounds == null)
         {
             if (!FindWorldBoundsObject())
             {
                 return movementVector;
             }
         }
-        if(objectsPreventingMovement > 0 || fishingManager.isFishing)
+        if (objectsPreventingMovement > 0 || fishingManager.isFishing)
         {
             movementVector = Vector2.zero;
             return movementVector;
@@ -193,7 +193,8 @@ public class PlayerController : NetworkBehaviour
         return movementVector;
     }
 
-    void EnableGameObjects() {
+    void EnableGameObjects()
+    {
         playerCollider.enabled = true;
     }
 
@@ -271,7 +272,7 @@ public class PlayerController : NetworkBehaviour
     private void FixedUpdate()
     {
         if (!isLocalPlayer || inputHandler == null)
-        { 
+        {
             return;
         }
 
@@ -322,7 +323,7 @@ public class PlayerController : NetworkBehaviour
         ApplyAnimation(Vector2.zero, hasVelocity);
     }
 
-    void ApplyAnimation(Vector2 dir, bool hasVelocity) 
+    void ApplyAnimation(Vector2 dir, bool hasVelocity)
     {
         float delayTime = 0.07f;
         dir = dir.normalized;
@@ -349,7 +350,8 @@ public class PlayerController : NetworkBehaviour
     }
 
     //Function is called while throwing in the rod to make the player face the direction that the line is thrown.
-    public void SetPlayerAnimationForDirection(Vector2 dir) {
+    public void SetPlayerAnimationForDirection(Vector2 dir)
+    {
         dir = dir.normalized;
         playerAnimator.SetFloat("Horizontal", dir.x);
         playerAnimator.SetFloat("Vertical", dir.y);
@@ -432,6 +434,7 @@ public class PlayerController : NetworkBehaviour
         nextMoves = null;
         transform.position = pos;
         lastVerifiedPosition = transform.position;
+        lastVerifiedtime = Time.time;
         TargetSetPosition(pos);
     }
 
@@ -447,13 +450,6 @@ public class PlayerController : NetworkBehaviour
     void CmdSendMoveToServer(Vector2 position)
     {
 
-        //Get current scene to filter for the correct CompositeCollider2D and gameobjects in this scene.
-        Scene activeScene = gameObject.scene;
-        if (activeScene != locatedScene)
-        {
-            locatedScene = activeScene;
-        }
-
         if (!lastVerifiedPosition.HasValue)
         {
             //preserve the z position
@@ -463,25 +459,33 @@ public class PlayerController : NetworkBehaviour
             return;
         }
 
-        Vector2 prevPos = (Vector2)lastVerifiedPosition;
+        Vector2 prevPos = lastVerifiedPosition.Value;
+        byte speedRes = CheckSpeedValid(position, prevPos, movementSpeed);
 
-        if (!CheckSpeedValid(position, prevPos, movementSpeed))
+        if (speedRes == 1)
         {
             Debug.Log("Speed was invalid");
             transform.position = new Vector3(prevPos.x, prevPos.y, transform.position.z);
             lastVerifiedPosition = transform.position;
+            lastVerifiedtime = Time.time;
             TargetSetPosition(transform.position);
             return;
         }
 
-        Vector2 newValidPos;
-        if (!CheckNewPosValid(position, out newValidPos))
+        bool posValid = CheckNewPosValid(position);
+
+        if (!posValid)
         {
             Debug.Log("Pos was invalid");
-            transform.position = new Vector3(newValidPos.x, newValidPos.y, transform.position.z);
+            transform.position = new Vector3(prevPos.x, prevPos.y, transform.position.z);
             lastVerifiedPosition = transform.position;
+            lastVerifiedtime = Time.time;
             TargetSetPosition(transform.position);
             return;
+        }
+
+        if (speedRes == 0 && posValid) {
+            lastVerifiedPosition = position;
         }
 
         transform.position = new Vector3(position.x, position.y, transform.position.z);
@@ -489,37 +493,35 @@ public class PlayerController : NetworkBehaviour
 
     //Anti cheat function, should detect a client doing speed hacking
     [Server]
-    bool CheckSpeedValid(Vector2 position, Vector2 prevPos, float speed)
+    byte CheckSpeedValid(Vector2 position, Vector2 prevPos, float speed)
     {
         //Check for speed hacking
         if (Time.time - lastVerifiedtime < 0.5f)
         {
-            return true;
+            return 255;
         }
 
-        float maxAllowedDistance = speed * Mathf.Min(Time.time - lastVerifiedtime, 2f) * 1.2f;
+        //Times 1.2 to account for network latency related issues.
+        //float maxAllowedDistance = speed * Mathf.Min(Time.time - lastVerifiedtime, 2f) * 1.2f;
+        float maxAllowedDistance = speed * Mathf.Min((float)(Time.time - lastVerifiedtime), 2f) * 1.2f;
         float actualDistance = Vector2.Distance(position, prevPos);
 
         lastVerifiedtime = Time.time;
         lastVerifiedPosition = position;
 
-        //Times 1.2 to account for network latency related issues.
         if (actualDistance > maxAllowedDistance)
         {
-            Debug.Log(maxAllowedDistance);
-            Debug.Log(actualDistance);
-            return false;
+            return 1;
         }
 
-        return true;
+        return 0;
     }
 
     //Anti cheat function, should detect if a client tries to walk on something unwalkable
     [Server]
-    bool CheckNewPosValid(Vector2 position, out Vector2 newValidPos) {
-        CompositeCollider2D coll = SceneObjectCache.GetWorldCollider(locatedScene);
-
-        newValidPos = Vector2.zero;
+    bool CheckNewPosValid(Vector2 position)
+    {
+        CompositeCollider2D coll = SceneObjectCache.GetWorldCollider(gameObject.scene);
 
         if (coll == null)
         {
@@ -528,18 +530,12 @@ public class PlayerController : NetworkBehaviour
             return true;
         }
 
-        Vector3 checkPosition = position;
+        Vector2 checkPosition = position;
         checkPosition.y += playerCollider.offset.y;
-        float maxDistance = 0.06f + (playerCollider.size.y / 2);
 
         if (coll.OverlapPoint(checkPosition))
         {
-            Vector2 closestPoint = coll.ClosestPoint(checkPosition);
-            if (Vector2.Distance(closestPoint, checkPosition) > maxDistance)
-            {
-                newValidPos = closestPoint;
-                return false;
-            }
+            return false;
         }
         return true;
     }
