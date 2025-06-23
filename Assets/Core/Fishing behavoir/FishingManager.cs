@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine;
 using Mirror;
 using Random = UnityEngine.Random;
+using UnityEngine.LowLevelPhysics;
 
 public class FishingManager : NetworkBehaviour
 {
@@ -163,11 +164,17 @@ public class FishingManager : NetworkBehaviour
         // also make sure there are no objects between the player and the water.
         int obstacleLayer = ~LayerMask.GetMask("Water", "Player", "Ignore Raycast");
         // add one to make sure there are no float errors, don't know if it is neccessary tough
-        RaycastHit2D[] hits = Physics2D.RaycastAll(clickedPos, new Vector2(transform.position.x - clickedPos.x, transform.position.y - clickedPos.y), Vector2.Distance(transform.position, clickedPos), obstacleLayer);
-        foreach(RaycastHit2D obstacle in hits) {
-            if(Vector2.Distance(obstacle.point, transform.position) > 0.6f) {
+        CompositeCollider2D coll = SceneObjectCache.GetWorldCollider(gameObject.scene);
+        CompositeCollider2D.GeometryType geoType = coll.geometryType;
+        coll.geometryType = CompositeCollider2D.GeometryType.Outlines;
+        RaycastHit2D[] hits = Physics2D.RaycastAll(clickedPos, new Vector2(transform.position.x - clickedPos.x, transform.position.y - clickedPos.y), Vector2.Distance(clickedPos, transform.position), obstacleLayer);
+        coll.geometryType = geoType;
+        foreach (RaycastHit2D obstacle in hits)
+        {
+            if (Vector2.Distance(obstacle.point, transform.position) > 0.6f)
+            {
                 obstaclePoint = obstacle.point;
-                DebugFishingSpot("Obstacle in between the player and the fishingplace");
+                DebugFishingSpot($"Obstacle in between the player and the fishingplace {obstacle.point}");
                 return false;
             }
         }
@@ -193,7 +200,7 @@ public class FishingManager : NetworkBehaviour
         if(isClient) {
             //walkable.geometryType = CompositeCollider2D.GeometryType.Outlines;
         }
-        if(doesOverlap) {
+        if(!doesOverlap) {
             DebugFishingSpot("The fishingspot is on a walkable area");
             return false;
         }
@@ -210,7 +217,7 @@ public class FishingManager : NetworkBehaviour
 
     void DebugFishingSpot(string message) {
 #if UNITY_EDITOR
-#if false
+#if true
         Debug.LogWarning(message);
 #endif
 #endif
