@@ -217,7 +217,7 @@ public class FishingManager : NetworkBehaviour
 
     void DebugFishingSpot(string message) {
 #if UNITY_EDITOR
-#if true
+#if false
         Debug.LogWarning(message);
 #endif
 #endif

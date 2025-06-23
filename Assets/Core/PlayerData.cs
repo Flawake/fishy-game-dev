@@ -268,7 +268,7 @@ public class PlayerData : NetworkBehaviour
         {
             //Remove item from database and select new one
             //Item with id -1, this should be the standard beginners rod
-            ItemObject rodItem = inventory.GetRodByID(-1);
+            ItemObject rodItem = inventory.GetRodByID(0);
             rodObject newRod = null;
             if (rodItem != null)
             {
@@ -318,7 +318,7 @@ public class PlayerData : NetworkBehaviour
         {
             //Remove item from database and select new one
             //Item with id -1, this should be the standard beginners rod
-            ItemObject baitItem = inventory.GetBaitByID(-1);
+            ItemObject baitItem = inventory.GetBaitByID(1000);
             baitObject newBait = null;
             if (baitItem != null)
             {

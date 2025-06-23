@@ -45,7 +45,6 @@ public class FishSpots : NetworkBehaviour
     
     private void Awake()
     {
-        Debug.Log("running");
         areaGrid.BottomLeft = coll.bounds.min;
         areaGrid.UpperRight = coll.bounds.max;
         areaGrid.GridSize = gridSize;
