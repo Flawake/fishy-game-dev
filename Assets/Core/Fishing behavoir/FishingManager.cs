@@ -143,7 +143,7 @@ public class FishingManager : NetworkBehaviour
     {
         water = new RaycastHit2D();
 
-        float rodThrowDistance = 10f;
+        float rodThrowDistance = 2.3f;
 
         if (Vector2.Distance(transform.position, clickedPos) > rodThrowDistance)
         {

@@ -491,22 +491,33 @@ public class PlayerController : NetworkBehaviour
         transform.position = new Vector3(position.x, position.y, transform.position.z);
     }
 
+    System.Diagnostics.Stopwatch speedCheckTimer = new System.Diagnostics.Stopwatch();
+
     //Anti cheat function, should detect a client doing speed hacking
     [Server]
     byte CheckSpeedValid(Vector2 position, Vector2 prevPos, float speed)
     {
+        if(!speedCheckTimer.IsRunning) {
+            speedCheckTimer.Start();
+            return 255;
+        }
+
+        double elapsedSeconds = speedCheckTimer.Elapsed.TotalSeconds;
+
         //Check for speed hacking
-        if (Time.time - lastVerifiedtime < 0.5f)
+        if (elapsedSeconds < 0.5f)
         {
             return 255;
         }
 
         //Times 1.2 to account for network latency related issues.
-        //float maxAllowedDistance = speed * Mathf.Min(Time.time - lastVerifiedtime, 2f) * 1.2f;
-        float maxAllowedDistance = speed * Mathf.Min((float)(Time.time - lastVerifiedtime), 2f) * 1.2f;
+        //float maxAllowedDistance = speed * Mathf.Min(Time.time - lastVerifiedtime, 2f) * 1.4f;
+        float maxAllowedDistance = speed * (float)Mathf.Min((float)elapsedSeconds, 2f) * 2f;
         float actualDistance = Vector2.Distance(position, prevPos);
 
-        lastVerifiedtime = Time.time;
+
+        // Subtract the frame time for extra savety margin.
+        speedCheckTimer.Restart();
         lastVerifiedPosition = position;
 
         if (actualDistance > maxAllowedDistance)
