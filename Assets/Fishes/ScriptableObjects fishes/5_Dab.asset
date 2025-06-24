@@ -26,19 +26,7 @@ MonoBehaviour:
   minMartketPrice: 0
   maxMarketPrice: 0
   rarityFactor: 1
-  timeRanges:
-  - BeginTime:
-      hours: 6
-      minutes: 1
-    EndTime:
-      hours: 9
-      minutes: 14
-  - BeginTime:
-      hours: 15
-      minutes: 0
-    EndTime:
-      hours: 22
-      minutes: 50
+  timeRanges: []
   dateRanges: []
   breedSuccessRate: 0
   breedPrice: 0

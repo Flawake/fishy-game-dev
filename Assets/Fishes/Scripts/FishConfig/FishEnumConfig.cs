@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public enum FishRarity : int
 {
     COMMON =        0b00001,
@@ -39,6 +41,16 @@ public class FishEnumConfig
             FishRarity.EPIC => "Epic",
             FishRarity.LEGENDARY => "Legendary",
             _ => "Null",
+        };
+    }
+
+    public static Color RarityToColor(FishRarity rarity) {
+        return rarity switch {
+            FishRarity.COMMON => Color.white,
+            FishRarity.UNCOMMON => Color.green,
+            FishRarity.RARE => Color.blue,
+            FishRarity.EPIC => new Color(130, 0, 255, 255),
+            FishRarity.LEGENDARY => Color.yellow,
         };
     }
 }
