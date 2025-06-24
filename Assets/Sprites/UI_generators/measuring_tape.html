@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Fixed Measuring Tape</title>
+  <style>
+    body {
+      margin: 0;
+      background: #1e1e1e;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      color: white;
+      font-family: sans-serif;
+    }
+    button {
+      margin-top: 20px;
+      padding: 8px 16px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="tapeCanvas" width="224" height="64" style="border-radius: 8 px;"></canvas>
+  <button onclick="download()">Download PNG</button>
+
+  <script>
+    const canvas = document.getElementById('tapeCanvas');
+    const ctx = canvas.getContext('2d');
+    const width = canvas.width;
+    const height = canvas.height;
+    const radius = 16;
+
+    // Clear canvas
+    ctx.clearRect(0, 0, width, height);
+
+    // Draw rounded rect background with vertical dark gradient and low alpha
+    function drawRoundedRect(ctx, x, y, w, h, r) {
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.lineTo(x + w - r, y);
+      ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+      ctx.lineTo(x + w, y + h - r);
+      ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+      ctx.lineTo(x + r, y + h);
+      ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+      ctx.lineTo(x, y + r);
+      ctx.quadraticCurveTo(x, y, x + r, y);
+      ctx.closePath();
+    }
+
+    const gradient = ctx.createLinearGradient(0, 0, 0, height);
+    gradient.addColorStop(0, 'rgba(0, 0, 0, 0.3)');
+    gradient.addColorStop(1, 'rgba(0, 0, 0, 0.1)');
+
+    drawRoundedRect(ctx, 0, 0, width, height, radius);
+    ctx.fillStyle = gradient;
+    ctx.fill();
+
+    // Style for tape ticks and text
+    ctx.strokeStyle = '#FFEB3B';
+    ctx.fillStyle = '#FFEB3B';
+    ctx.lineWidth = 2;
+    ctx.font = '12px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+
+    const mainUnit = 50; // px between main ticks
+    const halfUnit = mainUnit / 2; // 25px
+    const quarterUnit = mainUnit / 4; // 12.5px
+
+    const labels = ['0', '1', '2', '...', ''];
+
+    // Draw main ticks and labels (only up to label 3 replaced by '...')
+    for (let i = 0; i <= mainUnit * (labels.length - 1); i += mainUnit) {
+      ctx.beginPath();
+      ctx.moveTo(i + 13, 0);
+      ctx.lineTo(i + 13, 32); // main tick height
+      ctx.stroke();
+
+      const labelIndex = i / mainUnit;
+      const label = labels[labelIndex] || '';
+      ctx.fillText(label, i + 13, 36);
+    }
+
+    // Draw half ticks (medium height)
+    for (let i = halfUnit; i <= width; i += mainUnit) {
+      ctx.beginPath();
+      ctx.moveTo(i + 13, 0);
+      ctx.lineTo(i + 13, 20); // medium tick height
+      ctx.stroke();
+    }
+
+    // Draw quarter ticks (small height)
+    for (let i = quarterUnit; i <= width; i += quarterUnit) {
+      // Skip if it's also a main or half tick position
+      if (i % mainUnit === 0 || i % mainUnit === halfUnit) continue;
+      ctx.beginPath();
+      ctx.moveTo(i + 13, 0);
+      ctx.lineTo(i + 13, 12); // small tick height
+      ctx.stroke();
+    }
+
+    function download() {
+      const link = document.createElement('a');
+      link.download = 'measuring_tape.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+  </script>
+</body>
+</html>
+

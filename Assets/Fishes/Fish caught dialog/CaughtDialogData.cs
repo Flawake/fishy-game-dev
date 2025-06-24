@@ -15,21 +15,17 @@ public class CaughtDialogData : MonoBehaviour
     [SerializeField]
     TMP_Text lengthField;
     [SerializeField]
-    TMP_Text weightField;
-    [SerializeField]
     TMP_Text xpField;
 
     public void SetData(CurrentFish fishdata)
     {
-        InGameItems itemsInGame = GameObject.Find("NetworkManager").GetComponent<InGameItems>();
-
-        fishSprite.sprite = Array.Find(ItemsInGame.fishesInGame, element => element.id == fishdata.id).fishImage;
-
-        nameField.text = "";
+        FishConfiguration fish = ItemsInGame.getFishByID(fishdata.id);
+        nameField.text = fish.name;
+        fishSprite.sprite = fish.fishImage;
         rarityField.text = FishEnumConfig.RarityToString(fishdata.rarity);
+        rarityField.color = FishEnumConfig.RarityToColor(fishdata.rarity);
         lengthField.text = fishdata.length.ToString();
-        weightField.text = ((float)fishdata.weight / 100).ToString();
-        xpField.text = fishdata.xp.ToString();
+        xpField.text = fishdata.xp.ToString() + " XP";
 
     }
 
