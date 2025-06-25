@@ -257,8 +257,8 @@ public class PathFinding : MonoBehaviour
             foreach (Vector2Int dir in directions)
             {
                 Vector2Int neighbourCoord = current + dir;
-                if (neighbourCoord.x < 0 || neighbourCoord.x > map.Nodes.GetLength(0) ||
-                neighbourCoord.y < 0 || neighbourCoord.y > map.Nodes.GetLength(1) ||
+                if (neighbourCoord.x < 0 || neighbourCoord.x > map.Nodes.GetLength(0) -1 ||
+                neighbourCoord.y < 0 || neighbourCoord.y > map.Nodes.GetLength(1) - 1 ||
                 visited.Contains(neighbourCoord)
                 )
                 {
