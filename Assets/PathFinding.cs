@@ -167,7 +167,7 @@ public class PathFinding : MonoBehaviour
         return filtered;
     }
 
-    List<Vector2> ReconstructPath(Dictionary<Node, Node> fromPath, Node curr)
+    List<Vector2> ReconstructPath(Dictionary<Node, Node> fromPath, Node curr, Node originalEndnode)
     {
         List<Vector2> path = new List<Vector2>();
         curr.isPath = true;
@@ -179,6 +179,10 @@ public class PathFinding : MonoBehaviour
             curr.isPath = true;
         }
         path.Reverse();
+        if (path[^1] != originalEndnode.WorldPoint)
+        {
+            path.Add(originalEndnode.WorldPoint);
+        }
         return FilterPath(path);
     }
 
@@ -220,7 +224,7 @@ public class PathFinding : MonoBehaviour
         map.StartNode = map.Nodes[startNodeCoord.x, startNodeCoord.y];
         Vector2Int endNodeCoord = map.WorldPointToMapPos(EndPoint);
         map.EndNode = map.Nodes[endNodeCoord.x, endNodeCoord.y];
-
+        Node original = map.EndNode;
         if (!map.EndNode.walkable)
         {
             // Find closest neighbour that is walkable
@@ -230,7 +234,7 @@ public class PathFinding : MonoBehaviour
         map.StartNode.gscore = 0;
         map.StartNode.fscore = EndDistance(map.StartNode.WorldPoint, map.EndNode.WorldPoint);
 
-        StartCoroutine(CalculatePath(callback));
+        StartCoroutine(CalculatePath(original, callback));
     }
 
     Node FindClosestWalkable(Node endNode)
@@ -282,9 +286,9 @@ public class PathFinding : MonoBehaviour
 
     //1/50th of a second.
     const float maxBlockingTime = 0.02f;
-    IEnumerator CalculatePath(Action<List<Vector2>> doneCallback)
+    IEnumerator CalculatePath(Node originalEndnode, Action<List<Vector2>> doneCallback)
     {
-        List<Vector2> foundPath = new List<Vector2>();
+        List<Vector2> foundPath;
         Node closestSoFar = map.StartNode;
         PriorityQueue<Node> openSet = new PriorityQueue<Node>();
         openSet.Enqueue(map.StartNode, map.StartNode.fscore);
@@ -301,13 +305,13 @@ public class PathFinding : MonoBehaviour
             }
             Node currentNode = openSet.Dequeue();
 
-            if(currentNode.fscore  < closestSoFar.fscore) {
+            if(currentNode.fscore < closestSoFar.fscore) {
                 closestSoFar = currentNode;
             }
 
             if (currentNode == map.EndNode)
             {
-                foundPath = ReconstructPath(cameFrom, map.EndNode);
+                foundPath = ReconstructPath(cameFrom, map.EndNode, originalEndnode);
                 //return true;
                 doneCallback(foundPath);
                 pathfinderRunning = false;
@@ -365,7 +369,7 @@ public class PathFinding : MonoBehaviour
         }
         Debug.LogWarning("No path found");
         Debug.LogWarning($"Cheapest score: {closestSoFar.fscore}, is start: {map.StartNode.WorldPoint == closestSoFar.WorldPoint}");
-        foundPath = ReconstructPath(cameFrom, closestSoFar);
+        foundPath = ReconstructPath(cameFrom, closestSoFar, originalEndnode);
         doneCallback(foundPath);
         pathfinderRunning = false;
         yield return 0;
