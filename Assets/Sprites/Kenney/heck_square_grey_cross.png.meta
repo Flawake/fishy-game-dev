@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      heck_square_grey_cross_0: 7197510585688216559
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
