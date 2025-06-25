@@ -241,8 +241,6 @@ public class PathFinding : MonoBehaviour
         queue.Enqueue(map.WorldPointToMapPos(endNode.WorldPoint));
         visited.Add(map.WorldPointToMapPos(endNode.WorldPoint));
 
-        bool found = false;
-
         Vector2Int[] directions = {
             new Vector2Int(1, 0), new Vector2Int(-1, 0),
             new Vector2Int(0, 1), new Vector2Int(0, -1),
@@ -271,19 +269,14 @@ public class PathFinding : MonoBehaviour
 
                 if (neighbour.walkable)
                 {
-                    endNode = neighbour;
-                    found = true;
-                    break;
+                    return neighbour;
                 }
 
                 queue.Enqueue(neighbourCoord);
             }
         }
 
-        if (!found)
-        {
-            Debug.LogWarning("No walkable node found near the end point.");
-        }
+        Debug.LogWarning("No walkable node found near the end point.");
         return endNode;
     }
 
@@ -303,7 +296,6 @@ public class PathFinding : MonoBehaviour
         while (openSet.Count > 0)
         {
             if(watchdog.Elapsed.TotalSeconds > maxBlockingTime) {
-                Debug.Log("Pauzing pathfinder one frame");
                 yield return 0;
                 watchdog.Restart();
             }
