@@ -64,8 +64,8 @@ class NodeMap
     {
         n.WorldPoint = NodeToWorldPoint(new Vector2(pointInArray.x, pointInArray.y));
         Collider2D[] hits = Physics2D.OverlapAreaAll(
-            new Vector2(n.WorldPoint.x - (NodeSize / 2), n.WorldPoint.y - (NodeSize / 2)),
-            new Vector2(n.WorldPoint.x + (NodeSize / 2), n.WorldPoint.y + (NodeSize / 2))
+            new Vector2(n.WorldPoint.x - NodeSize, n.WorldPoint.y - NodeSize),
+            new Vector2(n.WorldPoint.x + NodeSize, n.WorldPoint.y + NodeSize)
         );
         bool isWalkable = true;
         foreach (Collider2D hit in hits)
