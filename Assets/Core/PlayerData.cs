@@ -1,6 +1,7 @@
 using Mirror;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerData : NetworkBehaviour
@@ -19,6 +20,9 @@ public class PlayerData : NetworkBehaviour
     int availableFishCoins;
     [SerializeField]
     int availableFishBucks;
+    private HashSet<Guid> friendlist = new HashSet<Guid>();
+    // bool to indicate wether the reqeust was a sent or a receiver request.
+    private Dictionary<Guid, bool> pendingFriendRequests = new Dictionary<Guid, bool>();
 
     //Variables that are synced between ALL players
     [SyncVar, SerializeField]
@@ -436,6 +440,121 @@ public class PlayerData : NetworkBehaviour
                 SetChatColor(Color.black);
                 break;
         }
+    }
+
+    [Server]
+    public bool GuidInFriendList(Guid userID)
+    {
+        return friendlist.Contains(userID);
+    }
+
+    [Server]
+    public bool FriendrequestSendToGuid(Guid userID)
+    {
+        if (pendingFriendRequests.TryGetValue(userID, out bool requestSent))
+        {
+            return requestSent;
+        }
+
+        return false;
+    }
+
+    public HashSet<Guid> GetFriendList()
+    {
+        return friendlist;
+    }
+
+    public Dictionary<Guid, bool> GetPendingFriendRequests()
+    {
+        return pendingFriendRequests;
+    }
+
+    public bool FriendrequestReceivedFromGuid(Guid userID)
+    {
+        if (pendingFriendRequests.TryGetValue(userID, out bool requestSent))
+        {
+            return !requestSent;
+        }
+
+        return false;
+    }
+
+    [TargetRpc]
+    public void ClientSetFriendList(HashSet<Guid> newFriendlist)
+    {
+        friendlist = newFriendlist;
+    }
+
+    // Callable from both server and client
+    public void AddToFriendList(Guid userID)
+    {
+        friendlist.Add(userID);
+        if (isServer)
+        {
+            ClientAddToFriendList(userID);
+        }
+    }
+
+    [TargetRpc]
+    private void ClientAddToFriendList(Guid userID)
+    {
+        friendlist.Add(userID);
+    }
+
+    // Callable from both server and client
+    public void RemoveFromFriendList(Guid userID)
+    {
+        friendlist.Remove(userID);
+        if (isServer)
+        {
+            ClientRemoveFromFriendList(userID);
+        }
+    }
+
+    [TargetRpc]
+    private void ClientRemoveFromFriendList(Guid userID)
+    {
+        friendlist.Remove(userID);
+    }
+
+    [TargetRpc]
+    public void ClientSetFriendRequestList(Dictionary<Guid, bool> newFriendRequestlist)
+    {
+        pendingFriendRequests = newFriendRequestlist;
+    }
+
+
+    public void AddNewFriendRequest(Guid userID, bool requestSend)
+    {
+        pendingFriendRequests.Add(userID, requestSend);
+        if (isServer)
+        {
+            ClientAddToFriendRequestList(userID, requestSend);
+        }
+    }
+
+    [TargetRpc]
+    private void ClientAddToFriendRequestList(Guid userID, bool requestSend)
+    {
+        pendingFriendRequests.Add(userID, requestSend);
+    }
+
+    // Callable from both server and client
+    public void RemoveFromFriendRequestList(Guid userID)
+    {
+        pendingFriendRequests.Remove(userID);
+        if (isServer)
+        {
+            ClientRemoveFromFriendRequestList(userID);
+        }
+    }
+
+    // This will most likely get called twice, once from the client itself and once from the server.
+    // But we need the interface in both cases and it doesn't really matter except for a few wasted clock cycles
+    [TargetRpc]
+    private void ClientRemoveFromFriendRequestList(Guid userID)
+    {
+        pendingFriendRequests.Remove(userID);
     }
 
     [Server]

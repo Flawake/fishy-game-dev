@@ -124,7 +124,7 @@ public class PathFinding : MonoBehaviour
     
     float EndDistance(Vector2 a, Vector2 b)
     {
-        return Vector2.Distance(a, b) * 2;
+        return Vector2.Distance(a, b) * 4;
     }
 
     internal static List<Vector2> FilterPath(List<Vector2> path)
@@ -424,6 +424,7 @@ public class PathFinding : MonoBehaviour
     }
 }
 
+#if UNITY_EDITOR
 [InitializeOnLoad]
 public static class PathFilterValidator
 {
@@ -477,3 +478,4 @@ public static class PathFilterValidator
         Debug.Log($"FilterPath validation done. Passed: {passed}, Failed: {failed}");
     }
 }
+#endif
