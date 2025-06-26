@@ -21,5 +21,9 @@ public static class DatabaseEndpoints
     public static string addMailEndpoint = serverAddress + "mail/create";
     public static string readMailEndpoint = serverAddress + "mail/change_read_state";
     
+    public static string createFriendRequestEndpoint = serverAddress + "friend/add_friend_request";
+    public static string handleFriendRequestEndpoint = serverAddress + "friend/handle_request";
+    public static string removeFriendEndpoint = serverAddress + "friend/remove_friend";
+    
     public static string getPlayerDataEndpoint = serverAddress + "data/retreive_all_playerdata";
 }

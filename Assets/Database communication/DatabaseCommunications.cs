@@ -18,7 +18,51 @@ public static class DatabaseCommunications
         byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
         WebRequestHandler.SendWebRequest(DatabaseEndpoints.loginEndpoint, bodyRaw, conn, callback);
     }
+
+    [Server]
+    public static void AddFriendRequest(Guid userOne, Guid userTwo, Guid senderID)
+    {
+        CreateFriendRequest requestData = new CreateFriendRequest
+        {
+            user_one = userOne.ToString(),
+            user_two = userTwo.ToString(),
+            sender_id = senderID.ToString(),
+        };
+        
+        string json = JsonUtility.ToJson(requestData);
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
+        WebRequestHandler.SendWebRequest(DatabaseEndpoints.createFriendRequestEndpoint, bodyRaw);
+    }
     
+    [Server]
+    public static void HandleFriendRequest(Guid userOne, Guid userTwo, bool accepted)
+    {
+        HandleFriendRequest requestData = new HandleFriendRequest
+        {
+            user_one = userOne.ToString(),
+            user_two = userTwo.ToString(),
+            request_accepted = accepted,
+        };
+        
+        string json = JsonUtility.ToJson(requestData);
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
+        WebRequestHandler.SendWebRequest(DatabaseEndpoints.handleFriendRequestEndpoint, bodyRaw);
+    }
+
+    [Server]
+    public static void RemoveFriend(Guid userOne, Guid userTwo)
+    {
+        RemoveFriendRequest requestData = new RemoveFriendRequest
+        {
+            user_one = userOne.ToString(),
+            user_two = userTwo.ToString(),
+        };
+
+        string json = JsonUtility.ToJson(requestData);
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
+        WebRequestHandler.SendWebRequest(DatabaseEndpoints.removeFriendEndpoint, bodyRaw);
+    }
+
     [Server]
     public static void RegisterRequest(string username, string password, string email, NetworkConnectionToClient conn, WebRequestHandler.WebRequestCallback callback)
     {
@@ -205,6 +249,7 @@ public static class DatabaseCommunications
         WebRequestHandler.SendWebRequest(DatabaseEndpoints.addNewItemEndpoint, bodyRaw);
     }
     
+    [Server]
     public static void IncreaseItem(ItemObject item, Guid userID)
     {
         int amount;
