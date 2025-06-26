@@ -21,5 +21,8 @@ public static class DatabaseEndpoints
     public static string addMailEndpoint = serverAddress + "mail/create";
     public static string readMailEndpoint = serverAddress + "mail/change_read_state";
     
+    public static string createFiendRequestEndpoint = serverAddress + "fiend/create";
+    public static string handleFiendRequestEndpoint = serverAddress + "fiend/handle";
+    
     public static string getPlayerDataEndpoint = serverAddress + "data/retreive_all_playerdata";
 }

@@ -1,4 +1,6 @@
 using System;
+using UnityEngine;
+
 #nullable enable
 // Authenticate requests
 [Serializable]
@@ -128,6 +130,21 @@ public class AddFishRequest
     public int fish_id;
     public int bait_id;
     public int area_id;
+}
+
+[Serializable]
+public class CreateFriendRequest
+{
+    public Guid sender;
+    public Guid receiver;
+}
+
+[Serializable]
+public class HandleFriendRequest
+{
+    public Guid sender;
+    public Guid receiver;
+    public bool accepted;
 }
 
 // user requests

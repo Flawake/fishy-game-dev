@@ -18,6 +18,35 @@ public static class DatabaseCommunications
         byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
         WebRequestHandler.SendWebRequest(DatabaseEndpoints.loginEndpoint, bodyRaw, conn, callback);
     }
+
+    [Server]
+    public static void AddFriendRequest(Guid sender, Guid receiver)
+    {
+        CreateFriendRequest requestData = new CreateFriendRequest
+        {
+            sender = sender,
+            receiver = receiver,
+        };
+        
+        string json = JsonUtility.ToJson(requestData);
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
+        WebRequestHandler.SendWebRequest(DatabaseEndpoints.createFiendRequestEndpoint, bodyRaw);
+    }
+    
+    [Server]
+    public static void HandleFriendRequest(Guid sender, Guid receiver, bool accepted)
+    {
+        HandleFriendRequest requestData = new HandleFriendRequest
+        {
+            sender = sender,
+            receiver = receiver,
+            accepted = accepted,
+        };
+        
+        string json = JsonUtility.ToJson(requestData);
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
+        WebRequestHandler.SendWebRequest(DatabaseEndpoints.handleFiendRequestEndpoint, bodyRaw);
+    }
     
     [Server]
     public static void RegisterRequest(string username, string password, string email, NetworkConnectionToClient conn, WebRequestHandler.WebRequestCallback callback)
@@ -205,6 +234,7 @@ public static class DatabaseCommunications
         WebRequestHandler.SendWebRequest(DatabaseEndpoints.addNewItemEndpoint, bodyRaw);
     }
     
+    [Server]
     public static void IncreaseItem(ItemObject item, Guid userID)
     {
         int amount;

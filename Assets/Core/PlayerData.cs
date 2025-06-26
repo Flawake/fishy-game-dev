@@ -1,6 +1,7 @@
 using Mirror;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerData : NetworkBehaviour
@@ -19,6 +20,9 @@ public class PlayerData : NetworkBehaviour
     int availableFishCoins;
     [SerializeField]
     int availableFishBucks;
+    List<Guid> friendlist = new List<Guid>();
+    // bool to indicate wether the reqeust was a sent or a receiver request.
+    List<(Guid, bool)> pendingRequests = new List<(Guid, bool)>();
 
     //Variables that are synced between ALL players
     [SyncVar, SerializeField]
