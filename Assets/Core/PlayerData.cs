@@ -20,9 +20,9 @@ public class PlayerData : NetworkBehaviour
     int availableFishCoins;
     [SerializeField]
     int availableFishBucks;
-    List<Guid> friendlist = new List<Guid>();
+    HashSet<Guid> friendlist = new HashSet<Guid>();
     // bool to indicate wether the reqeust was a sent or a receiver request.
-    List<(Guid, bool)> pendingRequests = new List<(Guid, bool)>();
+    Dictionary<Guid, bool> pendingFriendRequests = new Dictionary<Guid, bool>();
 
     //Variables that are synced between ALL players
     [SyncVar, SerializeField]
@@ -440,6 +440,23 @@ public class PlayerData : NetworkBehaviour
                 SetChatColor(Color.black);
                 break;
         }
+    }
+
+    [Server]
+    public bool GuidInFriendList(Guid userID)
+    {
+        return friendlist.Contains(userID);
+    }
+
+    [Server]
+    public bool FriendrequestSendToGuid(Guid userID)
+    {
+        if (pendingFriendRequests.TryGetValue(userID, out bool requestSent))
+        {
+            return requestSent;
+        }
+
+        return false;
     }
 
     [Server]
