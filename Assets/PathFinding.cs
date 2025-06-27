@@ -424,6 +424,7 @@ public class PathFinding : MonoBehaviour
     }
 }
 
+#if UNITY_EDITOR
 [InitializeOnLoad]
 public static class PathFilterValidator
 {
@@ -477,3 +478,4 @@ public static class PathFilterValidator
         Debug.Log($"FilterPath validation done. Passed: {passed}, Failed: {failed}");
     }
 }
+#endif
