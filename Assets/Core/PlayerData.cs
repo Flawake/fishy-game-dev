@@ -460,6 +460,41 @@ public class PlayerData : NetworkBehaviour
     }
 
     [Server]
+    public bool FriendrequestReceivedFromGuid(Guid userID)
+    {
+        if (pendingFriendRequests.TryGetValue(userID, out bool requestSent))
+        {
+            return !requestSent;
+        }
+
+        return false;
+    }
+
+    [Server]
+    public void AddNewFriendRequest(Guid userID, bool requestSent)
+    {
+        pendingFriendRequests.Add(userID, requestSent);
+    }
+
+    [Server]
+    public void RemovePendingFriendRequest(Guid userID)
+    {
+        pendingFriendRequests.Remove(userID);
+    }
+
+    [Server]
+    public void AddFriend(Guid userID)
+    {
+        friendlist.Add(userID);
+    }
+
+    [Server]
+    public void RemoveFriend(Guid userID)
+    {
+        friendlist.Remove(userID);
+    }
+
+    [Server]
     public void SetChatColor(Color32 color)
     {
         chatColor = color;

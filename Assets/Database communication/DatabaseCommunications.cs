@@ -32,6 +32,24 @@ public static class DatabaseCommunications
         byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
         WebRequestHandler.SendWebRequest(DatabaseEndpoints.createFiendRequestEndpoint, bodyRaw);
     }
+
+    [Server]
+    public static void AddFriend()
+    {
+
+    }
+
+    [Server]
+    public static void RemoveFriendRequest()
+    {
+
+    }
+
+    [Server]
+    public static void RemoveFriend()
+    {
+
+    }
     
     [Server]
     public static void HandleFriendRequest(Guid sender, Guid receiver, bool accepted)
