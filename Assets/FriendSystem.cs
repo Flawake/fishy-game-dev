@@ -2,7 +2,7 @@ using System;
 using Mirror;
 using UnityEngine;
 
-public class FriendSystem : MonoBehaviour
+public class FriendSystem : NetworkBehaviour
 {
     static Guid playerToBefriend = Guid.Empty;
     [SerializeField] PlayerData playerData;
@@ -32,17 +32,18 @@ public class FriendSystem : MonoBehaviour
     }
 
     [Server]
-    void AnswerFriendRequest(Guid userID, bool accepted, NetworkConnectionToClient conn = null)
+    void AnswerFriendRequest(Guid answeredPlayerRequest, bool accepted, NetworkConnectionToClient conn = null)
     {
         PlayerData playerData = conn.identity.GetComponent<PlayerData>();
-        if (!playerData.FriendrequestReceivedFromGuid(userID))
+        DatabaseCommunications.HandleFriendRequest(playerData.GetUuid(), answeredPlayerRequest, accepted);
+        if (!playerData.FriendrequestReceivedFromGuid(answeredPlayerRequest))
         {
             return;
         }
-        playerData.RemovePendingFriendRequest(userID);
+        playerData.RemovePendingFriendRequest(answeredPlayerRequest);
         if (accepted)
         {
-            playerData.AddFriend(userID);
+            playerData.AddFriend(answeredPlayerRequest);
         }
     }
 

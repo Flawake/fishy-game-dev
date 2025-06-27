@@ -30,25 +30,7 @@ public static class DatabaseCommunications
         
         string json = JsonUtility.ToJson(requestData);
         byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
-        WebRequestHandler.SendWebRequest(DatabaseEndpoints.createFiendRequestEndpoint, bodyRaw);
-    }
-
-    [Server]
-    public static void AddFriend()
-    {
-
-    }
-
-    [Server]
-    public static void RemoveFriendRequest()
-    {
-
-    }
-
-    [Server]
-    public static void RemoveFriend()
-    {
-
+        WebRequestHandler.SendWebRequest(DatabaseEndpoints.createFriendRequestEndpoint, bodyRaw);
     }
     
     [Server]
@@ -63,9 +45,23 @@ public static class DatabaseCommunications
         
         string json = JsonUtility.ToJson(requestData);
         byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
-        WebRequestHandler.SendWebRequest(DatabaseEndpoints.handleFiendRequestEndpoint, bodyRaw);
+        WebRequestHandler.SendWebRequest(DatabaseEndpoints.handleFriendRequestEndpoint, bodyRaw);
     }
-    
+
+    [Server]
+    public static void RemoveFriend(Guid sender, Guid receiver)
+    {
+        RemoveFriendRequest requestData = new RemoveFriendRequest
+        {
+            sender = sender,
+            receiver = receiver,
+        };
+
+        string json = JsonUtility.ToJson(requestData);
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
+        WebRequestHandler.SendWebRequest(DatabaseEndpoints.handleFriendRequestEndpoint, bodyRaw);
+    }
+
     [Server]
     public static void RegisterRequest(string username, string password, string email, NetworkConnectionToClient conn, WebRequestHandler.WebRequestCallback callback)
     {

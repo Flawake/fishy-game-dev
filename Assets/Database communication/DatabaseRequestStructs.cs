@@ -147,6 +147,13 @@ public class HandleFriendRequest
     public bool accepted;
 }
 
+[Serializable]
+public class RemoveFriendRequest
+{
+    public Guid sender;
+    public Guid receiver;
+}
+
 // user requests
 [Serializable]
 public class CreateUserRequest
