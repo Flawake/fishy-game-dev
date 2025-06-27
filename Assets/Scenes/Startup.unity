@@ -1605,6 +1605,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 3572eae8e386df841a92e4feb3aa4ba7, type: 2}
   - {fileID: 11400000, guid: f4c61ed6413137f459f7a4056ab813ae, type: 2}
   - {fileID: 11400000, guid: 8e5d4333c8e464d4e993ab84622340f0, type: 2}
+  - {fileID: 11400000, guid: f7429bba557b26b4cb54f033f30cc6ff, type: 2}
+  - {fileID: 11400000, guid: 68681938c5bac7a4daf45271d908253b, type: 2}
   rodsInGame:
   - {fileID: 11400000, guid: b9e1fb0dc4b5f8f49be5336235a35a83, type: 2}
   baitsInGame:

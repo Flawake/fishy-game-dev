@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: 3_White-edged lyretail 1
   m_EditorClassIdentifier: 
   id: 10003
-  name: White-edged lyretail
+  name: White-edged Lyretail
   description: A White-edged lyretail like never seen before.
   fishImage: {fileID: -1595273772, guid: 49451a7352426004db60846701f8941f, type: 3}
   minimumLength: 23

@@ -10,25 +10,26 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2b5141122112dac4b99e5eae6103348e, type: 3}
-  m_Name: 0_Bluestriped grunt
+  m_Name: 8_Grammonus-Yunokawai
   m_EditorClassIdentifier: 
-  id: 10000
-  name: Bluestriped Grunt
-  description: A Bluestriped grunt like never seen before.
-  fishImage: {fileID: 1552086863, guid: 49451a7352426004db60846701f8941f, type: 3}
-  minimumLength: 11
-  maximumLength: 46
-  avarageLength: 25
-  minimumWeightGrams: 103
-  maximumWeightGrams: 750
-  avarageWeightGrams: 410
-  minMartketPrice: 1
-  maxMarketPrice: 2
-  rarityFactor: 1
+  id: 10008
+  name: Grammonus Yunokawai
+  description: very few is known about it, other thant that it lives in completely
+    dark caves.
+  fishImage: {fileID: 0}
+  minimumLength: 7
+  maximumLength: 10
+  avarageLength: 8
+  minimumWeightGrams: 0
+  maximumWeightGrams: 0
+  avarageWeightGrams: 0
+  minMartketPrice: 0
+  maxMarketPrice: 0
+  rarityFactor: 0.2
   timeRanges: []
   dateRanges: []
   breedSuccessRate: 0
   breedPrice: 0
-  baitType: 26
-  rarity: 1
-  locations: 0
+  baitType: 0
+  rarity: 16
+  locations: 1
