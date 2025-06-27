@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b5141122112dac4b99e5eae6103348e, type: 3}
+  m_Name: 6_Honeycomb_Cowfish
+  m_EditorClassIdentifier: 
+  id: 10006
+  name: Honeycomb Cowfish
+  description: Why would you call a fish like this?
+  fishImage: {fileID: 0}
+  minimumLength: 23
+  maximumLength: 65
+  avarageLength: 35
+  minimumWeightGrams: 0
+  maximumWeightGrams: 0
+  avarageWeightGrams: 0
+  minMartketPrice: 3
+  maxMarketPrice: 5
+  rarityFactor: 1
+  timeRanges: []
+  dateRanges: []
+  breedSuccessRate: 0
+  breedPrice: 0
+  baitType: 10
+  rarity: 4
+  locations: 1
