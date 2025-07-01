@@ -459,6 +459,18 @@ public class PlayerData : NetworkBehaviour
         return false;
     }
 
+    [Client]
+    public HashSet<Guid> GetFriendList()
+    {
+        return friendlist;
+    }
+
+    [Client]
+    public Dictionary<Guid, bool> GetPendingFriendRequests()
+    {
+        return pendingFriendRequests;
+    }
+
     [Server]
     public bool FriendrequestReceivedFromGuid(Guid userID)
     {

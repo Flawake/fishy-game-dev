@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using TMPro;
-using Unity.Mathematics;
 using UnityEngine;
 
 public class MailGuiManager : MonoBehaviour

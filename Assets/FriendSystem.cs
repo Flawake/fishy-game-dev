@@ -18,6 +18,18 @@ public class FriendSystem : NetworkBehaviour
         playerToBefriend = Guid.Empty;
     }
 
+    [Client]
+    public void RemoveFriend(Guid friendToRemove)
+    {
+        CommandRemoveFriend(friendToRemove);
+    }
+
+    [Command]
+    public void CommandRemoveFriend(Guid friendToRemove, NetworkConnectionToClient conn = null)
+    {
+        DatabaseCommunications.RemoveFriend(playerData.GetUuid(), friendToRemove);
+    }
+
     [Server]
     void SendFriendRequest(Guid playerToBefriend, NetworkConnectionToClient conn = null)
     {
