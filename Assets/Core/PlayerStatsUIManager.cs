@@ -8,8 +8,7 @@ public class PlayerStatsUIManager : MonoBehaviour
     PlayerController controller;
     private PlayerData _playerData;
     
-    [SerializeField]
-    GameObject infoUI;
+    [SerializeField] GameObject infoUI;
     
     private void Start()
     {
@@ -51,4 +50,9 @@ public class PlayerStatsUIManager : MonoBehaviour
         Debug.Log("TestFunction");
     }
 
+    // Called from button in game
+    public void ClickFriendRequestButton() {
+        FriendSystem friendSystem = GetComponentInParent<FriendSystem>();
+        friendSystem.MakeNewFriendRequest(_playerData.GetUuid());
+    }
 }

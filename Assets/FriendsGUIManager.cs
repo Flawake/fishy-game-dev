@@ -27,6 +27,7 @@ public class FriendsGUIManager : MonoBehaviour
     
     public void OpenFriendManager()
     {
+        LoadFriends();
         background.SetActive(true);
     }
 
@@ -47,6 +48,7 @@ public class FriendsGUIManager : MonoBehaviour
         Debug.Log($"Searching for friend {friendName}");
     }
 
+    //Also called from button in game
     public void LoadFriends()
     {
         // Remove previous content items first.
@@ -64,18 +66,24 @@ public class FriendsGUIManager : MonoBehaviour
         }
     }
 
+    //Also called from button in game
     public void LoadFriendRequests()
     {
+        // Remove previous content items first.
+        foreach (Transform child in contentHolder.transform)
+        {
+            Destroy(child.gameObject);
+        }
         Dictionary<Guid, bool> pendingRequests = GetPlayerData().GetPendingFriendRequests();
         foreach ((Guid playerID, bool requestSent) in pendingRequests)
         {
             if (requestSent)
             {
-                
+
             }
             else
             {
-                
+
             }
             GameObject pendingFriend = Instantiate(PendingFriendPreviewPrefab, contentHolder.transform);
             FriendPreviewData previewData = pendingFriend.GetComponent<FriendPreviewData>();

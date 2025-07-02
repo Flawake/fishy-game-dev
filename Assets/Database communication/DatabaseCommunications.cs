@@ -24,8 +24,8 @@ public static class DatabaseCommunications
     {
         CreateFriendRequest requestData = new CreateFriendRequest
         {
-            sender = sender,
-            receiver = receiver,
+            sender = sender.ToString(),
+            receiver = receiver.ToString(),
         };
         
         string json = JsonUtility.ToJson(requestData);
@@ -38,9 +38,9 @@ public static class DatabaseCommunications
     {
         HandleFriendRequest requestData = new HandleFriendRequest
         {
-            sender = sender,
-            receiver = receiver,
-            accepted = accepted,
+            sender = sender.ToString(),
+            receiver = receiver.ToString(),
+            request_accepted = accepted,
         };
         
         string json = JsonUtility.ToJson(requestData);
@@ -53,13 +53,13 @@ public static class DatabaseCommunications
     {
         RemoveFriendRequest requestData = new RemoveFriendRequest
         {
-            sender = sender,
-            receiver = receiver,
+            sender = sender.ToString(),
+            receiver = receiver.ToString(),
         };
 
         string json = JsonUtility.ToJson(requestData);
         byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
-        WebRequestHandler.SendWebRequest(DatabaseEndpoints.handleFriendRequestEndpoint, bodyRaw);
+        WebRequestHandler.SendWebRequest(DatabaseEndpoints.removeFriendEndpoint, bodyRaw);
     }
 
     [Server]

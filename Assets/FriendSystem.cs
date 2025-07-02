@@ -4,18 +4,31 @@ using UnityEngine;
 
 public class FriendSystem : NetworkBehaviour
 {
-    static Guid playerToBefriend = Guid.Empty;
     [SerializeField] PlayerData playerData;
 
+    public bool CanSendRequest(Guid receiverID)
+    {
+        if (!isLocalPlayer && !isServer)
+        {
+            Debug.Log("This function should only be called on the localplayer or the server");
+            return false;
+        }
+        // Check if player already has an unanswered friend request running or if the player is already a friend
+        if (playerData.GuidInFriendList(receiverID) || playerData.FriendrequestSendToGuid(receiverID) || playerData.GetUuid() == receiverID)
+        {
+            return false;
+        }
+        return true;
+    }
+
     [Client]
-    void MakeNewFriendRequest()
+    public void MakeNewFriendRequest(Guid playerToBefriend)
     {
         if (playerToBefriend == Guid.Empty)
         {
             Debug.LogWarning("playerToBefriend was empty, this should be impossible");
         }
-        SendFriendRequest(playerToBefriend);
-        playerToBefriend = Guid.Empty;
+        CMDSendFriendRequest(playerToBefriend);
     }
 
     [Client]
@@ -30,17 +43,23 @@ public class FriendSystem : NetworkBehaviour
         DatabaseCommunications.RemoveFriend(playerData.GetUuid(), friendToRemove);
     }
 
-    [Server]
-    void SendFriendRequest(Guid playerToBefriend, NetworkConnectionToClient conn = null)
+    [Command]
+    void CMDSendFriendRequest(Guid playerToBefriend, NetworkConnectionToClient conn = null)
     {
+        Debug.Log("Sending friend request");
         PlayerData playerData = conn.identity.GetComponent<PlayerData>();
-        // Check if player already has an unanswered friend request running or if the player is already a friend
-        if (playerData.GuidInFriendList(playerToBefriend) || playerData.FriendrequestSendToGuid(playerToBefriend))
+        FriendSystem playerFriendSystem = conn.identity.GetComponent<FriendSystem>();
+        if (!playerFriendSystem.CanSendRequest(playerToBefriend))
         {
             return;
         }
         DatabaseCommunications.AddFriendRequest(playerData.GetUuid(), playerToBefriend);
         playerData.AddNewFriendRequest(playerToBefriend, true);
+
+        if(GameNetworkManager.connUUID.TryGetValue(playerToBefriend, out NetworkConnectionToClient receiverConn))
+        {
+            TargetReceiveFriendRequest(receiverConn, playerData.GetUuid());
+        }
     }
 
     [Server]
@@ -60,8 +79,8 @@ public class FriendSystem : NetworkBehaviour
     }
 
     [TargetRpc]
-    void ReceiveFriendRequest(Guid sendingPlayerID)
+    void TargetReceiveFriendRequest(NetworkConnectionToClient conn, Guid sendingPlayerID)
     {
-        playerData.AddNewFriendRequest(playerToBefriend, false);
+        playerData.AddNewFriendRequest(sendingPlayerID, false);
     }
 }
