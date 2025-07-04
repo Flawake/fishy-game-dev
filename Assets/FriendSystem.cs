@@ -28,28 +28,33 @@ public class FriendSystem : NetworkBehaviour
         {
             Debug.LogWarning("playerToBefriend was empty, this should be impossible");
         }
-        CMDSendFriendRequest(playerToBefriend);
+        // Call the command on the main player object, not on the receiver's object
+        NetworkClient.connection.identity.GetComponent<FriendSystem>().CmdSendFriendRequest(playerToBefriend);
+        //CmdSendFriendRequest(playerToBefriend);
     }
 
     [Client]
     public void RemoveFriend(Guid friendToRemove)
     {
-        CommandRemoveFriend(friendToRemove);
+        CmdRemoveFriend(friendToRemove);
     }
 
     [Command]
-    public void CommandRemoveFriend(Guid friendToRemove, NetworkConnectionToClient conn = null)
+    public void CmdRemoveFriend(Guid friendToRemove, NetworkConnectionToClient conn = null)
     {
-        DatabaseCommunications.RemoveFriend(playerData.GetUuid(), friendToRemove);
+        PlayerData playerData = conn.identity.GetComponent<PlayerData>();
+        if (playerData.GuidInFriendList(friendToRemove))
+        {
+            playerData.RemoveFriend(friendToRemove);
+            DatabaseCommunications.RemoveFriend(playerData.GetUuid(), friendToRemove);
+        }
     }
 
     [Command]
-    void CMDSendFriendRequest(Guid playerToBefriend, NetworkConnectionToClient conn = null)
+    void CmdSendFriendRequest(Guid playerToBefriend)
     {
         Debug.Log("Sending friend request");
-        PlayerData playerData = conn.identity.GetComponent<PlayerData>();
-        FriendSystem playerFriendSystem = conn.identity.GetComponent<FriendSystem>();
-        if (!playerFriendSystem.CanSendRequest(playerToBefriend))
+        if (!CanSendRequest(playerToBefriend))
         {
             return;
         }
@@ -62,15 +67,14 @@ public class FriendSystem : NetworkBehaviour
         }
     }
 
-    [Server]
-    void AnswerFriendRequest(Guid answeredPlayerRequest, bool accepted, NetworkConnectionToClient conn = null)
+    [Command]
+    public void CmdAnswerFriendRequest(Guid answeredPlayerRequest, bool accepted, NetworkConnectionToClient conn = null)
     {
-        PlayerData playerData = conn.identity.GetComponent<PlayerData>();
-        DatabaseCommunications.HandleFriendRequest(playerData.GetUuid(), answeredPlayerRequest, accepted);
         if (!playerData.FriendrequestReceivedFromGuid(answeredPlayerRequest))
         {
             return;
         }
+        DatabaseCommunications.HandleFriendRequest(playerData.GetUuid(), answeredPlayerRequest, accepted);
         playerData.RemovePendingFriendRequest(answeredPlayerRequest);
         if (accepted)
         {
@@ -79,8 +83,10 @@ public class FriendSystem : NetworkBehaviour
     }
 
     [TargetRpc]
-    void TargetReceiveFriendRequest(NetworkConnectionToClient conn, Guid sendingPlayerID)
+    void TargetReceiveFriendRequest(NetworkConnectionToClient _, Guid sendingPlayerID)
     {
+        // First argument is the connection on which this function will run
+        Debug.Log("Receiving friend request");
         playerData.AddNewFriendRequest(sendingPlayerID, false);
     }
 }

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3229360575682777195}
   - component: {fileID: 4079951536343397536}
   m_Layer: 5
-  m_Name: RemoveFriend
+  m_Name: DeclineFriend
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -123,7 +123,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1627055631616581886}
         m_TargetAssemblyTypeName: FriendPreviewData, Assembly-CSharp
-        m_MethodName: RemoveFriend
+        m_MethodName: DeclineFriendRequest
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -267,7 +267,7 @@ GameObject:
   - component: {fileID: 505343916942429807}
   - component: {fileID: 2345981580977784528}
   m_Layer: 5
-  m_Name: Message
+  m_Name: Accept friend
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -377,7 +377,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1627055631616581886}
         m_TargetAssemblyTypeName: FriendPreviewData, Assembly-CSharp
-        m_MethodName: MessagePlayer
+        m_MethodName: AcceptFriendRequest
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -681,7 +681,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Message
+  m_text: Accept friend
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -817,7 +817,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Remove friend
+  m_text: Decline friend
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

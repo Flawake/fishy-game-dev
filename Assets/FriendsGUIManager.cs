@@ -61,7 +61,7 @@ public class FriendsGUIManager : MonoBehaviour
         {
             GameObject friendPreview = Instantiate(FriendPreviewPrefab, contentHolder.transform);
             FriendPreviewData previewData = friendPreview.GetComponent<FriendPreviewData>();
-            previewData.setGuid(friend);
+            previewData.SetGuid(friend);
             previewData.SetPlayerName("Can't show name yet");
         }
     }
