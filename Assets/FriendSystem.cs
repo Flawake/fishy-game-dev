@@ -63,7 +63,8 @@ public class FriendSystem : NetworkBehaviour
 
         if(GameNetworkManager.connUUID.TryGetValue(playerToBefriend, out NetworkConnectionToClient receiverConn))
         {
-            TargetReceiveFriendRequest(receiverConn, playerData.GetUuid());
+            PlayerData receivingPlayersData = receiverConn.identity.GetComponent<PlayerData>();
+            receivingPlayersData.AddNewFriendRequest(playerData.GetUuid(), false);
         }
     }
 
@@ -80,13 +81,5 @@ public class FriendSystem : NetworkBehaviour
         {
             playerData.AddFriend(answeredPlayerRequest);
         }
-    }
-
-    [TargetRpc]
-    void TargetReceiveFriendRequest(NetworkConnectionToClient _, Guid sendingPlayerID)
-    {
-        // First argument is the connection on which this function will run
-        Debug.Log("Receiving friend request");
-        playerData.AddNewFriendRequest(sendingPlayerID, false);
     }
 }

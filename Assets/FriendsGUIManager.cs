@@ -54,7 +54,7 @@ public class FriendsGUIManager : MonoBehaviour
         // Remove previous content items first.
         foreach (Transform child in contentHolder.transform)
         {
-            Destroy(child);
+            Destroy(child.gameObject);
         }
         HashSet<Guid> friends = GetPlayerData().GetFriendList();
         foreach (Guid friend in friends)

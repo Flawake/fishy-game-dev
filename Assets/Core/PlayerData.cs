@@ -483,27 +483,67 @@ public class PlayerData : NetworkBehaviour
     }
 
     [Server]
-    public void AddNewFriendRequest(Guid userID, bool requestSent)
+    public void AddNewFriendRequest(Guid userID, bool requestSend)
     {
-        pendingFriendRequests.Add(userID, requestSent);
+        pendingFriendRequests.Add(userID, requestSend);
+        ClientAddToFriendRequestList(userID, requestSend);
     }
 
     [Server]
     public void RemovePendingFriendRequest(Guid userID)
     {
         pendingFriendRequests.Remove(userID);
+        ClientRemoveFromFriendRequestList(userID);
     }
 
     [Server]
     public void AddFriend(Guid userID)
     {
         friendlist.Add(userID);
+        ClientAddToFriendList(userID);
     }
 
     [Server]
     public void RemoveFriend(Guid userID)
     {
         friendlist.Remove(userID);
+        ClientRemoveFromFriendList(userID);
+    }
+
+    [ClientRpc]
+    public void ClientSetFriendList(HashSet<Guid> newFriendlist)
+    {
+        friendlist = newFriendlist;
+    }
+
+    [ClientRpc]
+    public void ClientAddToFriendList(Guid userID)
+    {
+        friendlist.Add(userID);
+    }
+
+    [ClientRpc]
+    public void ClientRemoveFromFriendList(Guid userID)
+    {
+        friendlist.Remove(userID);
+    }
+
+    [ClientRpc]
+    public void ClientSetFriendRequestList(Dictionary<Guid, bool> newFriendRequestlist)
+    {
+        pendingFriendRequests = newFriendRequestlist;
+    }
+
+    [ClientRpc]
+    public void ClientAddToFriendRequestList(Guid userID, bool requestSend)
+    {
+        pendingFriendRequests.Add(userID, requestSend);
+    }
+
+    [ClientRpc]
+    public void ClientRemoveFromFriendRequestList(Guid userID)
+    {
+        pendingFriendRequests.Remove(userID);
     }
 
     [Server]
