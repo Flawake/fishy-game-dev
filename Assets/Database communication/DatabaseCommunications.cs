@@ -20,12 +20,13 @@ public static class DatabaseCommunications
     }
 
     [Server]
-    public static void AddFriendRequest(Guid sender, Guid receiver)
+    public static void AddFriendRequest(Guid userOne, Guid userTwo, Guid senderID)
     {
         CreateFriendRequest requestData = new CreateFriendRequest
         {
-            sender = sender.ToString(),
-            receiver = receiver.ToString(),
+            user_one = userOne.ToString(),
+            user_two = userTwo.ToString(),
+            sender_id = senderID.ToString(),
         };
         
         string json = JsonUtility.ToJson(requestData);
@@ -34,12 +35,12 @@ public static class DatabaseCommunications
     }
     
     [Server]
-    public static void HandleFriendRequest(Guid sender, Guid receiver, bool accepted)
+    public static void HandleFriendRequest(Guid userOne, Guid userTwo, bool accepted)
     {
         HandleFriendRequest requestData = new HandleFriendRequest
         {
-            sender = sender.ToString(),
-            receiver = receiver.ToString(),
+            user_one = userOne.ToString(),
+            user_two = userTwo.ToString(),
             request_accepted = accepted,
         };
         

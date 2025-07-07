@@ -485,8 +485,15 @@ public class PlayerData : NetworkBehaviour
     [Server]
     public void AddNewFriendRequest(Guid userID, bool requestSend)
     {
-        pendingFriendRequests.Add(userID, requestSend);
-        ClientAddToFriendRequestList(userID, requestSend);
+        if (!pendingFriendRequests.ContainsKey(userID))
+        {
+            pendingFriendRequests.Add(userID, requestSend);
+            ClientAddToFriendRequestList(userID, requestSend);
+        }
+        else
+        {
+            Debug.LogWarning("Friend request was already added, skipping this one, TODO: check if friend can be auto accepted");
+        }
     }
 
     [Server]
@@ -500,47 +507,82 @@ public class PlayerData : NetworkBehaviour
     public void AddFriend(Guid userID)
     {
         friendlist.Add(userID);
-        ClientAddToFriendList(userID);
+        AddToFriendList(userID);
     }
 
     [Server]
     public void RemoveFriend(Guid userID)
     {
         friendlist.Remove(userID);
-        ClientRemoveFromFriendList(userID);
+        RemoveFromFriendList(userID);
     }
 
-    [ClientRpc]
+    [TargetRpc]
     public void ClientSetFriendList(HashSet<Guid> newFriendlist)
     {
         friendlist = newFriendlist;
     }
 
-    [ClientRpc]
+    // Callable from both server and client
+    public void AddToFriendList(Guid userID)
+    {
+        if (isServer)
+        {
+            ClientAddToFriendList(userID);
+            return;
+        }
+        friendlist.Add(userID);
+    }
+
+    [TargetRpc]
     public void ClientAddToFriendList(Guid userID)
     {
         friendlist.Add(userID);
     }
 
-    [ClientRpc]
+    // Callable from both server and client
+    public void RemoveFromFriendList(Guid userID)
+    {
+        if (isServer)
+        {
+            ClientRemoveFromFriendList(userID);
+            return;
+        }
+        friendlist.Remove(userID);
+    }
+
+    [TargetRpc]
     public void ClientRemoveFromFriendList(Guid userID)
     {
         friendlist.Remove(userID);
     }
 
-    [ClientRpc]
+    [TargetRpc]
     public void ClientSetFriendRequestList(Dictionary<Guid, bool> newFriendRequestlist)
     {
         pendingFriendRequests = newFriendRequestlist;
     }
 
-    [ClientRpc]
+    [TargetRpc]
     public void ClientAddToFriendRequestList(Guid userID, bool requestSend)
     {
         pendingFriendRequests.Add(userID, requestSend);
     }
 
-    [ClientRpc]
+    // Callable from both server and client
+    public void RemoveFromFriendRequestList(Guid userID)
+    {
+        if (isServer)
+        {
+            ClientRemoveFromFriendRequestList(userID);
+            return;
+        }
+        pendingFriendRequests.Remove(userID);
+    }
+
+    // This will most likely get called twice, once from the client itself and once from the server.
+    // But we need the interface in both cases and it doesn't really matter except for a few wasted clock cycles
+    [TargetRpc]
     public void ClientRemoveFromFriendRequestList(Guid userID)
     {
         pendingFriendRequests.Remove(userID);

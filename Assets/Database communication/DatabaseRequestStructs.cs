@@ -135,15 +135,16 @@ public class AddFishRequest
 [Serializable]
 public class CreateFriendRequest
 {
-    public string sender;
-    public string receiver;
+    public string user_one;
+    public string user_two;
+    public string sender_id;
 }
 
 [Serializable]
 public class HandleFriendRequest
 {
-    public string sender;
-    public string receiver;
+    public string user_one;
+    public string user_two;
     public bool request_accepted;
 }
 

@@ -58,7 +58,7 @@ public class FriendSystem : NetworkBehaviour
         {
             return;
         }
-        DatabaseCommunications.AddFriendRequest(playerData.GetUuid(), playerToBefriend);
+        DatabaseCommunications.AddFriendRequest(playerData.GetUuid(), playerToBefriend, playerData.GetUuid());
         playerData.AddNewFriendRequest(playerToBefriend, true);
 
         if(GameNetworkManager.connUUID.TryGetValue(playerToBefriend, out NetworkConnectionToClient receiverConn))

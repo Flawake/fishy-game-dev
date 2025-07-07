@@ -57,5 +57,15 @@ public class FriendPreviewData : MonoBehaviour
     {
         FriendSystem _friendSystem = GetFriendSystem();
         _friendSystem.CmdAnswerFriendRequest(friendGUID, accepted);
+        // Also reflect the changes locally to skip waiting on the network
+        PlayerData playerData = GetComponentInParent<PlayerData>();
+        playerData.RemoveFromFriendRequestList(friendGUID);
+
+        if (accepted)
+        {
+            playerData.AddToFriendList(friendGUID);
+        }
+        FriendsGUIManager friendsGUI = GetComponentInParent<FriendsGUIManager>();
+        friendsGUI.RefreshRequestGUI();
     }
 }

@@ -43,6 +43,15 @@ public class FriendsGUIManager : MonoBehaviour
         }
     }
 
+    public void RefreshRequestGUI()
+    {
+        if (!background.activeSelf)
+        {
+            return;
+        }
+        LoadFriendRequests();
+    }
+
     public void SearchFriendName(string friendName)
     {
         Debug.Log($"Searching for friend {friendName}");
@@ -87,6 +96,8 @@ public class FriendsGUIManager : MonoBehaviour
             }
             GameObject pendingFriend = Instantiate(PendingFriendPreviewPrefab, contentHolder.transform);
             FriendPreviewData previewData = pendingFriend.GetComponent<FriendPreviewData>();
+            previewData.SetGuid(playerID);
+            previewData.SetPlayerName("Can't show name yet");
         }
     }
 }
