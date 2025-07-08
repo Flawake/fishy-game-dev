@@ -23583,8 +23583,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   background: {fileID: 557647458770206351}
-  FriendPreviewPrefab: {fileID: 2582590114672642350, guid: e331e7408b6d0304f96ad0b5c0a02a06, type: 3}
-  PendingFriendPreviewPrefab: {fileID: 2582590114672642350, guid: 352909110b4fca15e8843aa08e7359d1, type: 3}
+  FriendPreviewPrefab: {fileID: 2582590114672642350, guid: 352909110b4fca15e8843aa08e7359d1, type: 3}
+  PendingFriendPreviewPrefab: {fileID: 2582590114672642350, guid: e331e7408b6d0304f96ad0b5c0a02a06, type: 3}
   contentHolder: {fileID: 7847114697972791558}
 --- !u!1 &7940278669765737124
 GameObject:

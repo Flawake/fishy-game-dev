@@ -30,7 +30,6 @@ public class FriendSystem : NetworkBehaviour
         }
         // Call the command on the main player object, not on the receiver's object
         NetworkClient.connection.identity.GetComponent<FriendSystem>().CmdSendFriendRequest(playerToBefriend);
-        //CmdSendFriendRequest(playerToBefriend);
     }
 
     [Client]
@@ -75,11 +74,23 @@ public class FriendSystem : NetworkBehaviour
         {
             return;
         }
+
+        Guid callerID = conn.identity.GetComponent<PlayerData>().GetUuid();
+        GameNetworkManager.connUUID.TryGetValue(answeredPlayerRequest, out NetworkConnectionToClient receiverConn);
+            
+        if (receiverConn != null)
+        {
+            playerData.RemovePendingFriendRequest(callerID);
+        }
         DatabaseCommunications.HandleFriendRequest(playerData.GetUuid(), answeredPlayerRequest, accepted);
         playerData.RemovePendingFriendRequest(answeredPlayerRequest);
         if (accepted)
         {
-            playerData.AddFriend(answeredPlayerRequest);
+            playerData.AddToFriendList(answeredPlayerRequest);
+            if (receiverConn != null)
+            {
+                playerData.AddToFriendList(callerID);
+            }
         }
     }
 }

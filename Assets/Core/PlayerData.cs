@@ -492,7 +492,13 @@ public class PlayerData : NetworkBehaviour
         }
         else
         {
-            Debug.LogWarning("Friend request was already added, skipping this one, TODO: check if friend can be auto accepted");
+            // Check if the other request was send by the player himself due to a cheat or if it actually already came from the other player.
+            pendingFriendRequests.TryGetValue(userID, out bool sentReq);
+            if (sentReq != requestSend)
+            {
+                FriendSystem friendSystem = GetComponentInChildren<FriendSystem>();
+                friendSystem.CmdAnswerFriendRequest(userID, true);
+            }
         }
     }
 
@@ -501,13 +507,6 @@ public class PlayerData : NetworkBehaviour
     {
         pendingFriendRequests.Remove(userID);
         ClientRemoveFromFriendRequestList(userID);
-    }
-
-    [Server]
-    public void AddFriend(Guid userID)
-    {
-        friendlist.Add(userID);
-        AddToFriendList(userID);
     }
 
     [Server]
@@ -526,12 +525,11 @@ public class PlayerData : NetworkBehaviour
     // Callable from both server and client
     public void AddToFriendList(Guid userID)
     {
+        friendlist.Add(userID);
         if (isServer)
         {
             ClientAddToFriendList(userID);
-            return;
         }
-        friendlist.Add(userID);
     }
 
     [TargetRpc]
