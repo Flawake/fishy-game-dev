@@ -10,25 +10,25 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2b5141122112dac4b99e5eae6103348e, type: 3}
-  m_Name: 0_Bluestriped grunt
+  m_Name: 6_Honeycomb_Cowfish
   m_EditorClassIdentifier: 
-  id: 10000
-  name: Bluestriped Grunt
-  description: A Bluestriped grunt like never seen before.
-  fishImage: {fileID: 1552086863, guid: 49451a7352426004db60846701f8941f, type: 3}
-  minimumLength: 11
-  maximumLength: 46
+  id: 10006
+  name: Honeycomb Cowfish
+  description: they neither give honey nor milk.
+  fishImage: {fileID: 0}
+  minimumLength: 18
+  maximumLength: 50
   avarageLength: 25
-  minimumWeightGrams: 103
-  maximumWeightGrams: 750
-  avarageWeightGrams: 410
-  minMartketPrice: 1
-  maxMarketPrice: 2
+  minimumWeightGrams: 0
+  maximumWeightGrams: 0
+  avarageWeightGrams: 0
+  minMartketPrice: 3
+  maxMarketPrice: 5
   rarityFactor: 1
   timeRanges: []
   dateRanges: []
   breedSuccessRate: 0
   breedPrice: 0
-  baitType: 26
-  rarity: 1
-  locations: 0
+  baitType: 10
+  rarity: 4
+  locations: 1
