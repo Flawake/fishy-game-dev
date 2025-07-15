@@ -15,6 +15,8 @@ public struct UserData
     public FishData[] fish_data;
     public InventoryItem[] inventory_items;
     public MailEntry[] mailbox;
+    public Friend[] friends;
+    public FriendRequest[] friend_requests;
     
     public Guid? SelectedRod
     {
@@ -61,6 +63,61 @@ public struct UserData
         public string message;
         
         public Guid MailID => Guid.Parse(mail_id);
+    }
+
+    [Serializable]
+    public struct Friend
+    {
+        public string user_one;
+        public string user_two;
+        
+        public Guid UserOne
+        {
+            get
+            {
+                return Guid.Parse(user_one);
+            }
+        }
+        
+        public Guid UserTwo
+        {
+            get
+            {
+                return Guid.Parse(user_two);
+            }
+        }
+    }
+
+    [Serializable]
+    public struct FriendRequest
+    {
+        public string user_one;
+        public string user_two;
+        public string request_sender_id;
+        
+        public Guid UserOne
+        {
+            get
+            {
+                return Guid.Parse(user_one);
+            }
+        }
+        
+        public Guid UserTwo
+        {
+            get
+            {
+                return Guid.Parse(user_two);
+            }
+        }
+        
+        public Guid RequestSenderId
+        {
+            get
+            {
+                return Guid.Parse(request_sender_id);
+            }
+        }
     }
 }
 #nullable disable

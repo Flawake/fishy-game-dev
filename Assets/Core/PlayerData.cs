@@ -377,6 +377,8 @@ public class PlayerData : NetworkBehaviour
             SetXp(playerData.xp);
             SetStartPlayTime();
             SetTotalPlayTimeAtStart(playerData.total_playtime);
+            ServerSetFriendList(playerData.friends);
+            ServerSetFriendRequests(playerData.friend_requests);
             SetShowInventory(false);
         } catch (Exception e)
         {
@@ -479,8 +481,27 @@ public class PlayerData : NetworkBehaviour
         return false;
     }
 
+    [Server]
+    private void ServerSetFriendList(UserData.Friend[] friends)
+    {
+        foreach (UserData.Friend friend in friends)
+        {
+            if (friend.UserOne != GetUuid() && friend.UserTwo != GetUuid())
+            {
+                Debug.LogWarning($"Got a friend in the friend list where user_one nor user_two matches the player uuid: user_one {friend.UserOne}, user_two {friend.UserTwo}, player_uuid {GetUuid()}");
+            }
+
+            friendlist.Add(friend.UserOne == GetUuid() ? friend.UserTwo : friend.UserOne);
+        }
+    }
+
+    [Command]
+    private void CmdGetFriendList() {
+        RpcSetFriendList(friendlist);
+    }
+
     [TargetRpc]
-    public void ClientSetFriendList(HashSet<Guid> newFriendlist)
+    private void RpcSetFriendList(HashSet<Guid> newFriendlist)
     {
         friendlist = newFriendlist;
     }
@@ -517,8 +538,25 @@ public class PlayerData : NetworkBehaviour
         friendlist.Remove(userID);
     }
 
+    [Server]
+    private void ServerSetFriendRequests(UserData.FriendRequest[] requests)
+    {
+        foreach (UserData.FriendRequest request in requests)
+        {
+            pendingFriendRequests.Add(
+                request.UserOne == GetUuid() ? request.UserTwo : request.UserOne,
+                request.RequestSenderId == GetUuid()
+                );
+        }
+    }
+
+    [Command]
+    private void CmdGetFriendRequestList() {
+        ClientSetFriendRequestList(pendingFriendRequests);
+    }
+
     [TargetRpc]
-    public void ClientSetFriendRequestList(Dictionary<Guid, bool> newFriendRequestlist)
+    private void ClientSetFriendRequestList(Dictionary<Guid, bool> newFriendRequestlist)
     {
         pendingFriendRequests = newFriendRequestlist;
     }
@@ -714,6 +752,8 @@ public class PlayerData : NetworkBehaviour
         {
             CmdGetFishCoins();
             CmdGetFishBucks();
+            CmdGetFriendList();
+            CmdGetFriendRequestList();
         }
     }
 }
