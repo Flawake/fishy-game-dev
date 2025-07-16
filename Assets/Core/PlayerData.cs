@@ -2,6 +2,7 @@ using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using NewItemSystem;
 using UnityEngine;
 
 public class PlayerData : NetworkBehaviour
@@ -61,11 +62,12 @@ public class PlayerData : NetworkBehaviour
         set => selectedRodUidStr = value.ToString();
     }
     
+    // Default the value to -1 (no bait has that value) To trigger a change when the player selected the bait with id 0
     [SyncVar(hook = nameof(SelectedBaitChanged))]
-    int selectedBaitId;
+    int selectedBaitId = -1;
 
-    rodObject selectedRod;
-    baitObject selectedBait;
+    private ItemInstance selectedRod;
+    private ItemInstance selectedBait;
 
     public event Action selectedRodChanged;
     public event Action selectedBaitChanged;
@@ -109,18 +111,21 @@ public class PlayerData : NetworkBehaviour
     }
 
     [Server]
-    public void SelectNewRod(rodObject newRod, bool fromDatabase)
+    public void SelectNewRod(ItemInstance newRod, bool fromDatabase)
     {
         if (!fromDatabase)
         {
-            DatabaseCommunications.SelectOtherItem(newRod, GetUuid());
+            if (newRod != null)
+            {
+                DatabaseCommunications.SelectOtherItem(newRod, GetUuid());
+            }
         }
         selectedRod = newRod;
         SelectedRodUid = newRod.uuid;
     }
 
     [Command]
-    public void CmdSelectNewRod(rodObject newRod)
+    public void CmdSelectNewRod(ItemInstance newRod)
     {
         if (selectedRod != null)
         {
@@ -131,15 +136,15 @@ public class PlayerData : NetworkBehaviour
         }
 
         //The newRod variable might be a newly crafted rod, so get it as a reference from the inventory, then the inventory get's updated when this specific item is updated
-        rodObject rodInventoryReference;
-        if (!newRod.stackable)
+        ItemInstance rodInventoryReference;
+        if (newRod.def.MaxStack == 1)
         {
-            rodInventoryReference = inventory.GetRodByUID(newRod.uuid);
+            rodInventoryReference = inventory.GetRodByUuid(newRod.uuid);
         }
         else
         {
             //Probably never needed, but catch it and warn just in case, why do rods have the stackable flag at all???
-            Debug.LogWarning("Why does this rod have the stackable flag set???");
+            Debug.LogWarning("Why does this rod have a stacksize of more than one???");
             return;
         }
 
@@ -149,37 +154,44 @@ public class PlayerData : NetworkBehaviour
             return;
         }
 
+        if (!rodInventoryReference.HasBehaviour<RodBehaviour>())
+        {
+            Debug.Log("Given item has no RodBehaviour attached");
+        }
+
         SelectNewRod(rodInventoryReference, false);
     }
 
     [Server]
-    public void SelectNewBait(baitObject newBait, bool fromDatabase)
+    public void SelectNewBait(ItemInstance newBait, bool fromDatabase)
     {
         if (!fromDatabase)
         {
-            DatabaseCommunications.SelectOtherItem(newBait, GetUuid());
+            if (newBait != null)
+            {
+                DatabaseCommunications.SelectOtherItem(newBait, GetUuid());
+            }
         }
-        //TODO: ask the database what the new rod is to see if the write has gone correctly
         selectedBait = newBait;
-        selectedBaitId = newBait.id;
+        selectedBaitId = newBait.def.Id;
     }
 
     [Command]
-    public void CmdSelectNewBait(baitObject newBait)
+    public void CmdSelectNewBait(ItemInstance newBait)
     {
         if (selectedBait != null)
         {
-            if (selectedBait.id == newBait.id)
+            if (selectedBait.def.Id == newBait.def.Id)
             {
                 return;
             }
         }
 
         //The newBait variable might be a newly crafted bait, so get it as a reference from the inventory, then the inventory get's updated when this specific item is updated
-        baitObject baitInventoryReference;
-        if (newBait.stackable)
+        ItemInstance baitInventoryReference;
+        if (newBait.def.MaxStack > 1)
         {
-            baitInventoryReference = inventory.GetBaitByID(newBait.id);
+            baitInventoryReference = inventory.GetBaitByDefinitionId(newBait.def.Id);
         }
         else
         {
@@ -211,8 +223,8 @@ public class PlayerData : NetworkBehaviour
 
     //Inventory might not yet be synced so it may not yet have the item available in the inventory
     IEnumerator SelectedRodChangedCoroutine(Guid newRodUuid) {
-        rodObject newRod;
-        while ((newRod = inventory.GetRodByUID(newRodUuid)) == null)
+        ItemInstance newRod;
+        while ((newRod = inventory.GetRodByUuid(newRodUuid)) == null)
         {
             yield return new WaitForSeconds(0.05f);
         }
@@ -231,8 +243,8 @@ public class PlayerData : NetworkBehaviour
 
     IEnumerator SelectedBaitChangedCoroutine(int newBaitId)
     {
-        baitObject newBait;
-        while ((newBait = inventory.GetBaitByID(newBaitId))  == null)
+        ItemInstance newBait;
+        while ((newBait = inventory.GetBaitByDefinitionId(newBaitId))  == null)
         {
             yield return new WaitForSeconds(0.05f);
         }
@@ -240,58 +252,61 @@ public class PlayerData : NetworkBehaviour
         selectedBaitChanged?.Invoke();
     }
 
-    public rodObject GetSelectedRod()
+    public ItemInstance GetSelectedRod()
     {
         return selectedRod;
     }
 
-    public baitObject GetSelectedBait()
+    public ItemInstance GetSelectedBait()
     {
         return selectedBait;
     }
 
     [TargetRpc]
-    private void RpcChangeRodStats(rodObject rod, int amount) {
+    private void RpcChangeRodStats(ItemInstance rod, int amount) {
         //rodObject here is a nely created rod, we need to get the rod reference from the player inventory.
-        rodObject inventoryRod = inventory.GetRodByUID(rod.uuid);
-        inventoryRod.throwIns += amount;
+        ItemInstance inventoryRod = inventory.GetRodByUuid(rod.uuid);
+        inventoryRod.GetState<DurabilityState>().remaining += amount;
     }
 
     //TODO: make a function for in the syncManager, this should do the DB calls.
     [Server]
-    public void ChangeRodQuality(rodObject rod, int amount)
+    public void ChangeRodQuality(ItemInstance rod, int amount)
     {
-        if (rod.durabilityIsInfinite || rod.uuid == Guid.Empty)
+        RodBehaviour rodBehaviour = rod.def.GetBehaviour<RodBehaviour>();
+        DurabilityBehaviour durabilityBehaviour = rod.def.GetBehaviour<DurabilityBehaviour>();
+        if (rodBehaviour == null)
+        {
+            Debug.Log("rod has no rodBehaviour");
+            return;
+        }
+        // Bait has infinite durability or can't be removed from inventory
+        if (durabilityBehaviour == null || rod.def.IsStatic)
         {
             return;
         }
-        rod.throwIns += amount;
+        rod.GetState<DurabilityState>().remaining += amount;
         RpcChangeRodStats(rod, amount);
 
-        if (rod.throwIns <= 0)
+        if (rod.GetState<DurabilityState>().remaining <= 0)
         {
             //Remove item from database and select new one
             //Item with id -1, this should be the standard beginners rod
-            ItemObject rodItem = inventory.GetRodByID(0);
-            rodObject newRod = null;
-            if (rodItem != null)
+            ItemInstance rodItem = inventory.GetRodByDefinitionId(0);
+            if (rodItem == null)
             {
-                newRod = rodItem as rodObject;
-            }
-            if (newRod == null)
-            {
-                Debug.LogWarning("newRod returned was null");
+                Debug.LogWarning("rodItem returned was null, TODO: disconnect player");
                 return;
             }
             //TODO: only change to the new rod when the rod goes out of the water.
-            SelectNewRod(newRod, false);
+            SelectNewRod(rodItem, false);
             playerDataManager.DestroyItem(rod);
         }
         else
         {
             if (amount < 0)
             {
-                DatabaseCommunications.ReduceItem(rod, Mathf.Abs(amount), GetUuid());
+                DatabaseCommunications.AddOrUpdateItem(rod, GetUuid());
             }
             else
             {
@@ -301,47 +316,50 @@ public class PlayerData : NetworkBehaviour
     }
 
     [TargetRpc]
-    private void RpcChangeBaitStats(baitObject bait, int amount)
+    private void RpcChangeBaitStats(ItemInstance bait, int amount)
     {
         //baitObject here is a nely created bait, we need to get the bait reference from the player inventory.
-        baitObject inventoryBait = inventory.GetBaitByID(bait.id);
-        inventoryBait.throwIns += amount;
+        ItemInstance inventoryBait = inventory.GetBaitByDefinitionId(bait.def.Id);
+        inventoryBait.GetState<DurabilityState>().remaining += amount;
     }
 
     [Server]
-    public void ChangeBaitQuality(baitObject bait, int amount)
+    public void ChangeBaitQuality(ItemInstance bait, int amount)
     {
-        if (bait.durabilityIsInfinite || bait.id < 0)
+        BaitBehaviour baitBehaviour = bait.def.GetBehaviour<BaitBehaviour>();
+        DurabilityBehaviour durabilityBehaviour = bait.def.GetBehaviour<DurabilityBehaviour>();
+        if (baitBehaviour == null)
+        {
+            Debug.Log("bait has no baitBehaviour");
+            return;
+        }
+        // Bait has infinite durability or can't be removed from inventory
+        if (durabilityBehaviour == null || bait.def.IsStatic)
         {
             return;
         }
-        bait.throwIns += amount;
+        bait.GetState<DurabilityState>().remaining += amount;
         RpcChangeBaitStats(bait, amount);
 
-        if (bait.throwIns <= 0)
+        if (bait.GetState<DurabilityState>().remaining <= 0)
         {
             //Remove item from database and select new one
-            //Item with id -1, this should be the standard beginners rod
-            ItemObject baitItem = inventory.GetBaitByID(1000);
-            baitObject newBait = null;
-            if (baitItem != null)
+            //Item with id 1000, this should be the standard beginners rod
+            ItemInstance baitItem = inventory.GetBaitByDefinitionId(1000);
+            if (baitItem == null)
             {
-                newBait = baitItem as baitObject;
-            }
-            if (newBait == null)
-            {
-                Debug.LogWarning("newBait returned was null");
+                Debug.LogWarning("newBait returned was null, TODO: disconnect player");
                 return;
             }
             //TODO: only change to the new rod when the rod goes out of the water.
-            SelectNewBait(newBait, false);
+            SelectNewBait(baitItem, false);
             playerDataManager.DestroyItem(bait);
         }
         else
         {
             if (amount < 0)
             {
-                DatabaseCommunications.ReduceItem(bait, Mathf.Abs(amount), GetUuid());
+                DatabaseCommunications.AddOrUpdateItem(bait, GetUuid());
             }
             else
             {

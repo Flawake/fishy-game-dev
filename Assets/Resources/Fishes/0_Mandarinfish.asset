@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 466ab68691b39318784f667dc1da5678, type: 3}
+  m_Name: 0_Mandarinfish
+  m_EditorClassIdentifier: 
+  id: 10000
+  displayName: Mandarinfish
+  description: "The mandarinfish (Synchiropus splendidus) lives in the warm reefs
+    of the Indo-Pacific, often hiding in coral crevices during the day. Its vivid
+    blue color comes from light-reflecting cells called iridophores, not pigments
+    \u2014 a rare trait in fish. At dusk, males perform a short mating dance with
+    females. Lacking scales, it protects itself with a foul-smelling, toxic mucus
+    that deters predators. Though only about 6 cm long, its striking appearance and
+    secretive behavior have made it both a scientific marvel and a reef legend."
+  icon: {fileID: 21300000, guid: 01262f3b3021d879db1811400413dc0e, type: 3}
+  maxStack: 2147483647
+  canStack: 1
+  isStatic: 0
+  behaviours:
+  - rid: 7137400945896849509
+  references:
+    version: 2
+    RefIds:
+    - rid: 7137400945896849509
+      type: {class: FishBehaviour, ns: NewItemSystem, asm: Assembly-CSharp}
+      data:
+        minimumLength: 4
+        maximumLength: 7
+        avarageLength: 5
+        minMartketPrice: 0
+        maxMarketPrice: 0
+        bitesOn: 10
+        rarity: 4
+        locations: 1
+        rarityFactor: 1
+        timeRanges:
+        - BeginTime:
+            hours: 8
+            minutes: 0
+          EndTime:
+            hours: 17
+            minutes: 0
+        dateRanges:
+        - BeginDate:
+            month: 7
+            day: 1
+          EndDate:
+            month: 9
+            day: 31

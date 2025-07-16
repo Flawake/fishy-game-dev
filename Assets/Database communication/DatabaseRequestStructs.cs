@@ -29,6 +29,14 @@ public class AddItemRequest
 }
 
 [Serializable]
+public class AddOrUpdateItemRequest {
+    public string user_id;
+    public string item_uuid;
+    public int definition_id;
+    public string state_blob; // base64
+}
+
+[Serializable]
 public class DegradeItemRequest
 {
     public string user_id;

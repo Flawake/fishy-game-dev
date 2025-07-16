@@ -1,9 +1,11 @@
 using System;
-using System.Collections;
+using Utils;
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 using Random = UnityEngine.Random;
+using NewItemSystem;
+using System.Linq;
 
 public class SpawnManager : NetworkBehaviour
 {
@@ -14,7 +16,7 @@ public class SpawnManager : NetworkBehaviour
     }
 
     [Server]
-    public FishConfiguration GenerateFish(List<FishConfiguration> fishes, ItemBaitType bait) {
+    public ItemDefinition GenerateFish(List<ItemDefinition> fishes, ItemBaitType bait) {
         //we generate 2 lists first the list of the rarity we're going to catch.
         //After that we generate a second list that takes the rarity factor in account.
         
@@ -24,7 +26,7 @@ public class SpawnManager : NetworkBehaviour
         }
         int spawnNumber = Random.Range(1, 1000);
 
-        List<FishConfiguration> possibleFishes = new List<FishConfiguration>();
+        List<ItemDefinition> possibleFishes = new List<ItemDefinition>();
 
         byte fishRarity = 0;
 
@@ -46,77 +48,67 @@ public class SpawnManager : NetworkBehaviour
             fishRarity = 1;
         }
 
-        //Place all the fishes of a certain rarity in the possibleFishes list
+        // Only consider ItemDefinitions with FishBehaviour
         for (int i = 0; i < fishes.Count; i++)
         {
-            if (fishes[i].rarity == FishRarity.LEGENDARY && fishRarity == 5) {
-                possibleFishes.Add(fishes[i]);
-            }
-            else if (fishes[i].rarity == FishRarity.EPIC && fishRarity == 4)
+            var fishBehaviour = fishes[i].GetBehaviour<FishBehaviour>();
+            if (fishBehaviour == null) continue;
+            FishRarity rarity = fishBehaviour.Rarity;
+            if (rarity == FishRarity.LEGENDARY && fishRarity == 5)
             {
                 possibleFishes.Add(fishes[i]);
             }
-            else if (fishes[i].rarity == FishRarity.RARE && fishRarity == 3)
+            else if (rarity == FishRarity.EPIC && fishRarity == 4)
             {
                 possibleFishes.Add(fishes[i]);
             }
-            else if (fishes[i].rarity == FishRarity.UNCOMMON && fishRarity == 2)
+            else if (rarity == FishRarity.RARE && fishRarity == 3)
             {
                 possibleFishes.Add(fishes[i]);
             }
-            else if (fishes[i].rarity == FishRarity.COMMON && fishRarity == 1)
+            else if (rarity == FishRarity.UNCOMMON && fishRarity == 2)
+            {
+                possibleFishes.Add(fishes[i]);
+            }
+            else if (rarity == FishRarity.COMMON && fishRarity == 1)
             {
                 possibleFishes.Add(fishes[i]);
             }
         }
 
-        //Remove all fishes from the list that do not bite on the currently selected bait
+        // Remove all fishes from the list that do not bite on the currently selected bait
         for (int i = possibleFishes.Count - 1; i >= 0; i--)
         {
-            if (!BaitEnumsDefinition.FishBaitContainsItemBait(possibleFishes[i].baitType, bait))
+            var fishBehaviour = possibleFishes[i].GetBehaviour<FishBehaviour>();
+            if (!BaitEnumsDefinition.FishBaitContainsItemBait(fishBehaviour.BitesOn, bait))
             {
                 possibleFishes.RemoveAt(i);
             }
         }
         
-        //Remove all fishes that can't be caught at this time
+        // Remove all fishes that can't be caught at this time
         for (int i = possibleFishes.Count - 1; i >= 0; i--)
         {
-            var possibleFish = possibleFishes[i];
+            var possibleFish = possibleFishes[i].GetBehaviour<FishBehaviour>();
 
-            if (possibleFish.timeRanges.Count > 0)
+            if (possibleFish.TimeRanges.Count > 0)
             {
-                bool inside = false;
-                foreach (TimeRange possibleTime in possibleFish.timeRanges)
-                {
-                    if (possibleTime.TimeRangeContainsTime(DateTime.Now.Hour, DateTime.Now.Minute))
-                    {
-                        inside = true;
-                        break;
-                    }
-                }
+                bool isInsideAnyRange = possibleFish.TimeRanges
+                    .Any(range => range.TimeRangeContainsTime(DateTime.Now.Hour, DateTime.Now.Minute));
 
-                if (!inside)
+                if (!isInsideAnyRange)
                 {
                     possibleFishes.RemoveAt(i);
                     continue;
                 }
             }
-            
-            if (possibleFish.dateRanges.Count > 0)
-            {
-                bool inside = false;
-                foreach (DateRange possibleDate in possibleFish.dateRanges)
-                {
-                    Debug.Log($"month: {DateTime.Now.Month}");
-                    if (possibleDate.DateRangeContainsDate(DateTime.Now.Month, DateTime.Now.Day))
-                    {
-                        inside = true;
-                        break;
-                    }
-                }
 
-                if (!inside)
+            if (possibleFish.DateRanges.Count > 0)
+            {
+                bool isInsideAnyRange = possibleFish.DateRanges
+                    .Any(range => range.DateRangeContainsDate(DateTime.Now.Month, DateTime.Now.Day));
+
+                if (!isInsideAnyRange)
                 {
                     Debug.Log("Fish out of date range");
                     possibleFishes.RemoveAt(i);
@@ -124,27 +116,30 @@ public class SpawnManager : NetworkBehaviour
             }
         }
 
-        List<FishConfiguration> fishRarityFactor = new List<FishConfiguration>();
-        
+        List<ItemDefinition> fishRarityFactor = new List<ItemDefinition>();
         float rarityFactor = Random.Range(1f, 1000f) / 1000f;
 
-
-        possibleFishes.Sort(delegate (FishConfiguration configA, FishConfiguration configB) {
-            return configA.rarityFactor.CompareTo(configB.rarityFactor);
+        // Sort by rarityFactor from FishBehaviour
+        possibleFishes.Sort((defA, defB) =>
+        {
+            var fishA = defA.GetBehaviour<FishBehaviour>();
+            var fishB = defB.GetBehaviour<FishBehaviour>();
+            return fishA.RarityFactor.CompareTo(fishB.RarityFactor);
         });
 
-        foreach (FishConfiguration config in possibleFishes)
+        for (int i = 0; i < possibleFishes.Count; i++)
         {
+            var config = possibleFishes[i];
+            var currentFish = config.GetBehaviour<FishBehaviour>();
             float previousRarity = 0;
-            int index = possibleFishes.IndexOf(config);
-
-            if (index > 0)
+            if (i > 0)
             {
-                if(possibleFishes[index - 1].rarityFactor != config.rarityFactor)
-                    previousRarity = possibleFishes[index - 1].rarityFactor;
+                var previousFish = possibleFishes[i - 1].GetBehaviour<FishBehaviour>();
+                if (previousFish.RarityFactor != currentFish.RarityFactor)
+                    previousRarity = previousFish.RarityFactor;
             }
 
-            if (rarityFactor <= config.rarityFactor && rarityFactor >= previousRarity)
+            if (rarityFactor <= currentFish.RarityFactor && rarityFactor >= previousRarity)
             {
                 fishRarityFactor.Add(config);
             }

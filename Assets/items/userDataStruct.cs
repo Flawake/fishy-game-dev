@@ -18,14 +18,14 @@ public struct UserData
     public Friend[] friends;
     public FriendRequest[] friend_requests;
     
-    public Guid? SelectedRod
+    public readonly Guid? SelectedRod
     {
         get
         {
             return string.IsNullOrEmpty(selected_rod) ? null : Guid.Parse(selected_rod);
         }
     }
-    public Guid? SelectedBait => string.IsNullOrEmpty(selected_bait) ? null : Guid.Parse(selected_bait);
+    public readonly Guid? SelectedBait => string.IsNullOrEmpty(selected_bait) ? null : Guid.Parse(selected_bait);
     
     [Serializable]
     public struct FishData
@@ -41,18 +41,11 @@ public struct UserData
     [Serializable]
     public struct InventoryItem
     {
-        public int item_id;
-        public string item_uid;  // public so Unity can deserialize
-        public int amount;
-        public int cell_id;
-    
-        public Guid itemUuid
-        {
-            get
-            {
-                return string.IsNullOrEmpty(item_uid) ? Guid.Empty : Guid.Parse(item_uid);
-            }
-        }
+        public string item_uuid;      // Unique instance ID (Guid as string)
+        public int definition_id;     // ItemDefinition ID
+        public string state_blob;     // Base64-encoded state dictionary
+
+        public Guid ItemUuid => string.IsNullOrEmpty(item_uuid) ? Guid.Empty : Guid.Parse(item_uuid);
     }
     
     [Serializable]

@@ -1,4 +1,5 @@
 using System.Collections;
+using NewItemSystem;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -87,7 +88,7 @@ public class FishFight : MonoBehaviour
     {
         playerData = GetComponentInParent<PlayerData>();
         Debug.Log($"FishLength: {currentFish.length}");
-        Debug.Log($"RodStrength: {playerData.GetSelectedRod().strength}");
+        Debug.Log($"RodStrength: {playerData.GetSelectedRod().def.GetBehaviour<RodBehaviour>().Strength}");
 
         gameSize = RandomGameSize(minFishingTime);
 
@@ -102,7 +103,7 @@ public class FishFight : MonoBehaviour
         currentFishOnHook = currentFish;
 
         fishPower = CalculateFishPower(currentFishOnHook.length);
-        rodPower = CalculateRodPower(playerData.GetSelectedRod().strength, fishPower);
+        rodPower = CalculateRodPower(playerData.GetSelectedRod().def.GetBehaviour<RodBehaviour>().Strength, fishPower);
 
         rarity = FishEnumConfig.RatityToInt(currentFishOnHook.rarity);
         redLeft.sizeDelta = new Vector2((1.0f / 8.0f * rarity + 1.0f / 8.0f) / 2.0f * fishFightArea.rect.width, 50);
