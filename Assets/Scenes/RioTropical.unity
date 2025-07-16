@@ -2980,13 +2980,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  fishes:
-  - {fileID: 11400000, guid: fe0281c81c2c40c4ea8599281dc1ac47, type: 2}
-  - {fileID: 11400000, guid: 7277eb2f4568fa14ba5c081640414aec, type: 2}
-  - {fileID: 11400000, guid: 1f8c0b41307434448b0537e91dba28c9, type: 2}
-  - {fileID: 11400000, guid: 3572eae8e386df841a92e4feb3aa4ba7, type: 2}
-  - {fileID: 11400000, guid: f4c61ed6413137f459f7a4056ab813ae, type: 2}
-  - {fileID: 11400000, guid: 8e5d4333c8e464d4e993ab84622340f0, type: 2}
+  fishes: []
 --- !u!114 &600458866
 MonoBehaviour:
   m_ObjectHideFlags: 0

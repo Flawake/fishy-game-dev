@@ -122,7 +122,7 @@ public class PlayerInfoUIManager : MonoBehaviour
                 return;
             }
         }
-        itemHolderRodSprite.sprite = playerData.GetSelectedRod().sprite;
+        itemHolderRodSprite.sprite = playerData.GetSelectedRod().def.Icon;
     }
 
     public void UpdateSelectedBaitImage()
@@ -135,7 +135,7 @@ public class PlayerInfoUIManager : MonoBehaviour
                 return;
             }
         }
-        itemHolderBaitSprite.sprite = playerData.GetSelectedBait().sprite;
+        itemHolderBaitSprite.sprite = playerData.GetSelectedBait().def.Icon;
     }
 
     public void OpenWorldMap()

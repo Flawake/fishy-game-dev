@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 466ab68691b39318784f667dc1da5678, type: 3}
+  m_Name: 1_EpicLuckPotion
+  m_EditorClassIdentifier: 
+  id: 50001
+  displayName: Epic luck potion
+  description: 
+  icon: {fileID: 0}
+  maxStack: 2147483647
+  isStatic: 0
+  behaviours:
+  - rid: 3081823821378879575
+  - rid: 3081823821378879578
+  references:
+    version: 2
+    RefIds:
+    - rid: 3081823821378879575
+      type: {class: LuckPotionBehaviour, ns: NewItemSystem, asm: Assembly-CSharp}
+      data:
+        luckType: 1
+        effectTime: 15
+    - rid: 3081823821378879578
+      type: {class: ShopBehaviour, ns: NewItemSystem, asm: Assembly-CSharp}
+      data:
+        priceCoins: 5
+        priceBucks: -1

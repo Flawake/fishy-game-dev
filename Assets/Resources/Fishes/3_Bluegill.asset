@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 466ab68691b39318784f667dc1da5678, type: 3}
+  m_Name: 3_Bluegill
+  m_EditorClassIdentifier: 
+  id: 10003
+  displayName: Bluegill
+  description: The bluegill, scientifically known as Lepomis macrochirus, is a freshwater
+    fish native to North America, particularly abundant in lakes, ponds, and rivers
+    east of the Rocky Mountains. Recognizable by its deep, flattened body and distinctive
+    blue or black "ear" on the gill cover, the bluegill has been a subject of fascination
+    and symbolism across various cultures.
+  icon: {fileID: 21300000, guid: 3a856f946eb8b6c269fe82dd75df5027, type: 3}
+  maxStack: 2147483647
+  canStack: 1
+  isStatic: 0
+  behaviours:
+  - rid: 7137400945896849509
+  references:
+    version: 2
+    RefIds:
+    - rid: 7137400945896849509
+      type: {class: FishBehaviour, ns: NewItemSystem, asm: Assembly-CSharp}
+      data:
+        minimumLength: 18
+        maximumLength: 41
+        avarageLength: 16
+        minMartketPrice: 0
+        maxMarketPrice: 0
+        bitesOn: 26
+        rarity: 1
+        locations: 1
+        rarityFactor: 1
+        timeRanges: []
+        dateRanges: []

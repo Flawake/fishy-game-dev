@@ -1,4 +1,5 @@
 using Mirror;
+using NewItemSystem;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -28,7 +29,7 @@ public class FishInfoUIManager : MonoBehaviour
     [SerializeField]
     TMP_Text amountCaught;
 
-    FishConfiguration curFish;
+    ItemDefinition curFish;
 
     public void CloseFishInfo()
     {
@@ -38,10 +39,10 @@ public class FishInfoUIManager : MonoBehaviour
 
     public void OpenFishInfo(int fishID)
     {
-        curFish = ItemsInGame.getFishByID(fishID);
-        if (curFish == null)
+        curFish = ItemRegistry.Get(fishID);
+        if (curFish == null || curFish.GetBehaviour<FishBehaviour>() == null)
         {
-            Debug.LogWarning($"Tries to show information about a fish with an ID of {fishID}, but this fish does not seem to be in the game");
+            Debug.LogWarning($"Could not show information about a fish that should have had ID: {fishID}");
             return;
         }
         StatFish statFish = NetworkClient.localPlayer.GetComponentInChildren<PlayerFishdexFishes>().GetStatFish(fishID);
@@ -61,7 +62,7 @@ public class FishInfoUIManager : MonoBehaviour
             amountCaught.text = statFish.amount.ToString();
         }
         fishName.text = curFish.name;
-        fishimage.sprite = curFish.fishImage;
+        fishimage.sprite = curFish.Icon;
         caughtFishInfo.SetActive(true);
     }
 
@@ -71,6 +72,6 @@ public class FishInfoUIManager : MonoBehaviour
         {
             return -1;
         }
-        return curFish.id;
+        return curFish.Id;
     }
 }

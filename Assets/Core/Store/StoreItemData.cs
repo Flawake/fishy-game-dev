@@ -1,3 +1,4 @@
+using NewItemSystem;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -22,7 +23,7 @@ public class StoreItemData : MonoBehaviour
     TMP_Text buyBucksText;
 
 
-    StoreItemObject storeItem;
+    ItemDefinition storeItem;
 
     StoreUIManager storeUIManager;
     StoreManager storeManager;
@@ -67,32 +68,18 @@ public class StoreItemData : MonoBehaviour
         storeManager.BuyItem(storeItem, StoreManager.CurrencyType.bucks);
     }
 
-    public void SetStoreItemData(StoreItemObject item)
+    public void SetStoreItemData(ItemDefinition item)
     {
-        SetStoreItemData(item, item.itemPriceFishCoins, item.itemPriceFishBucks);
+        SetStoreItemData(item, item.GetBehaviour<ShopBehaviour>().PriceCoins, item.GetBehaviour<ShopBehaviour>().PriceBucks);
     }
 
     //Add a interface open where we can set the price manually, maybe for discount for some reason.
-    public void SetStoreItemData(StoreItemObject item, int priceCoins, int priceBucks)
+    public void SetStoreItemData(ItemDefinition item, int priceCoins, int priceBucks)
     {
-        string name;
-        if (item.itemObject is rodObject rod)
-        {
-            name = rod.name;
-        }
-        else if (item.itemObject is baitObject bait)
-        {
-            name = bait.name;
-        }
-        else {
-            Debug.LogWarning($"SetStoreItemData not implemented for{item.itemObject}");
-            return;
-        }
-
         storeItem = item;
-        itemName.text = name;
-        itemDescription.text = item.itemObject.description;
-        itemImageContainer.sprite = item.itemObject.sprite;
+        itemName.text = item.DisplayName;
+        itemDescription.text = item.Description;
+        itemImageContainer.sprite = item.Icon;
         if(priceCoins > 0)
         {
             buyCoinsButton.SetActive(true);

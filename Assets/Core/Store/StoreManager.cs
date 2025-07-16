@@ -1,5 +1,5 @@
-using System;
 using Mirror;
+using NewItemSystem;
 using UnityEngine;
 
 public class StoreManager : NetworkBehaviour
@@ -19,76 +19,55 @@ public class StoreManager : NetworkBehaviour
 
 
     [Client]
-    public void BuyItem(StoreItemObject item, CurrencyType currencyType)
+    public void BuyItem(ItemDefinition item, CurrencyType currencyType)
     {
-        CmdBuyItem(item.itemObject.type, item.itemObject.id, currencyType);
+        CmdBuyItem(item.Id, currencyType);
     }
 
     [Command]
-    void CmdBuyItem(ItemType type, int itemID, CurrencyType currencyType)
+    void CmdBuyItem(int itemID, CurrencyType currencyType)
     {
-        StoreItemObject[] itemsToSearch;
-        StoreItemObject itemToBuy = null;
-        //Don't trust the player on giving the whole item, only give the details that identify the item and then search the item that corresponds to it on the server.
-        if(type == ItemType.Rod)
+        //Don't trust the player on giving the whole item, only use the itemID of the item that the player wants to buy.
+        ItemDefinition item = ItemRegistry.Get(itemID);
+        ShopBehaviour shopBehaviour = item.GetBehaviour<ShopBehaviour>();
+        if (shopBehaviour == null)
         {
-            itemsToSearch = ItemsInGame.storeItemRods;
-        }
-        else if(type == ItemType.Bait)
-        {
-            itemsToSearch = ItemsInGame.storeItemBaits;
-        }
-        else
-        {
-            Debug.LogWarning($"CmdBuyItem does not yet support buying items of type {type}");
+            Debug.LogWarning("Player tried to buy an item which could not be bought");
             return;
         }
 
-        foreach (StoreItemObject item in itemsToSearch)
+        if ((currencyType == CurrencyType.bucks && shopBehaviour.PriceBucks == -1) ||
+            (currencyType == CurrencyType.coins && shopBehaviour.PriceCoins == -1))
         {
-            if(item.itemObject.id == itemID) { 
-                itemToBuy = item.Clone();
-                itemToBuy.itemObject.uuid = Guid.NewGuid();
-                if (inventory.ContainsItem(itemToBuy.itemObject, out Guid? itemUuid))
-                {
-                    if (itemUuid.HasValue)
-                    {
-                        itemToBuy.itemObject.uuid = itemUuid.Value;
-                    }
-                }
-                break;
-            }
-        }
-        if(itemToBuy == null)
-        {
+            Debug.LogWarning("Player tied to buy an item with a currency that the item does not support");
             return;
         }
 
-        if(currencyType == CurrencyType.coins)
+        if(currencyType == CurrencyType.coins && shopBehaviour.PriceCoins != -1)
         {
-            if(itemToBuy.itemPriceFishCoins <= 0)
+            if(playerData.GetFishCoins() < shopBehaviour.PriceCoins)
             {
                 return;
             }
-            if(playerData.GetFishCoins() < itemToBuy.itemPriceFishCoins)
-            {
-                return;
-            }
-            playerDataManager.AddItem(itemToBuy.itemObject);
-            playerDataManager.ChangeFishCoinsAmount(-itemToBuy.itemPriceFishCoins);
+            ItemInstance instance = new ItemInstance(
+                item,
+                item.GetBehaviour<DurabilityBehaviour>()?.MaxDurability ?? -10
+            );
+            playerDataManager.AddItem(instance);
+            playerDataManager.ChangeFishCoinsAmount(-shopBehaviour.PriceCoins);
         }
-        else if(currencyType == CurrencyType.bucks)
+        else if(currencyType == CurrencyType.bucks && shopBehaviour.PriceBucks != -1)
         {
-            if (itemToBuy.itemPriceFishBucks <= 0)
+            if (playerData.GetFishBucks() < shopBehaviour.PriceBucks)
             {
                 return;
             }
-            if (playerData.GetFishBucks() < itemToBuy.itemPriceFishBucks)
-            {
-                return;
-            }
-            playerDataManager.AddItem(itemToBuy.itemObject);
-            playerDataManager.ChangeFishBucksAmount(-itemToBuy.itemPriceFishBucks);
+            ItemInstance instance = new ItemInstance(
+                item,
+                item.GetBehaviour<DurabilityBehaviour>()?.MaxDurability ?? -10
+            );
+            playerDataManager.AddItem(instance);
+            playerDataManager.ChangeFishBucksAmount(-shopBehaviour.PriceBucks);
         }
     }
 }

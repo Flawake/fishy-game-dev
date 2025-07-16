@@ -4,6 +4,7 @@ using UnityEngine;
 using Mirror;
 using Random = UnityEngine.Random;
 using UnityEngine.LowLevelPhysics;
+using NewItemSystem;
 
 public class FishingManager : NetworkBehaviour
 {
@@ -102,7 +103,7 @@ public class FishingManager : NetworkBehaviour
         {
             InventoryUIManager inventoryManager = GetComponentInChildren<InventoryUIManager>();
             inventoryManager.ToggleBackPack(InventoryUIManager.ItemFiler.Rods);
-            Debug.LogWarning("Open inventory rods page...");
+            Debug.Log("Open inventory rods page...");
             return true;
         }
         
@@ -110,7 +111,7 @@ public class FishingManager : NetworkBehaviour
         {
             InventoryUIManager inventoryManager = GetComponentInChildren<InventoryUIManager>();
             inventoryManager.ToggleBackPack(InventoryUIManager.ItemFiler.Baits);
-            Debug.LogWarning("Open inventory baits page...");
+            Debug.Log("Open inventory baits page...");
             return true;
         }
 
@@ -306,13 +307,9 @@ public class FishingManager : NetworkBehaviour
         else
         {
             TargetShowCaughtDialog();
-            FishObject fishObject = ItemObjectGenerator.FishObjectFromMinimal(Guid.Empty, currentFish.id, 1);
-            inventory.ContainsItem(fishObject, out Guid? itemUuid);
-            if (itemUuid.HasValue)
-            {
-                fishObject.uuid = itemUuid.Value;
-            }
-            playerDataManager.AddItem(fishObject, currentFish, true);
+            ItemDefinition fishDef = ItemRegistry.Get(currentFish.id);
+            ItemInstance fishInstance = new ItemInstance(fishDef);
+            playerDataManager.AddItem(fishInstance, currentFish, true);
             playerDataManager.AddXP(currentFish.xp);
         }
     }
@@ -352,7 +349,7 @@ public class FishingManager : NetworkBehaviour
             
             if (fishSpots.ShouldGeneratefish(placeToThrow))
             {
-                (currentFish, fishGenerated) = spawnable.GenerateFish(playerData.GetSelectedBait().baitType);
+                (currentFish, fishGenerated) = spawnable.GenerateFish(playerData.GetSelectedBait().def.GetBehaviour<BaitBehaviour>().BaitType);
             }
 
             timeTillResultsSeconds = Random.Range(5, 11);

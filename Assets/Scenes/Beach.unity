@@ -4898,12 +4898,9 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   fishes:
-  - {fileID: 11400000, guid: fe0281c81c2c40c4ea8599281dc1ac47, type: 2}
-  - {fileID: 11400000, guid: 7277eb2f4568fa14ba5c081640414aec, type: 2}
-  - {fileID: 11400000, guid: 1f8c0b41307434448b0537e91dba28c9, type: 2}
-  - {fileID: 11400000, guid: 3572eae8e386df841a92e4feb3aa4ba7, type: 2}
-  - {fileID: 11400000, guid: f4c61ed6413137f459f7a4056ab813ae, type: 2}
-  - {fileID: 11400000, guid: 8e5d4333c8e464d4e993ab84622340f0, type: 2}
+  - {fileID: 11400000, guid: 92ba94481e48a2471ab1f1253bef00db, type: 2}
+  - {fileID: 11400000, guid: 2b7064c69f7bdc902a9766be6ed4f02b, type: 2}
+  - {fileID: 11400000, guid: d25c95b6861eb4c2c939d8247ca1ac64, type: 2}
 --- !u!114 &1426061391
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5542,7 +5539,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1880219385}
-  - component: {fileID: 1880219386}
   - component: {fileID: 1880219387}
   m_Layer: 4
   m_Name: PierCollider
@@ -5566,28 +5562,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1426061387}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1880219386
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1880219384}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 16f8d4d8291a0324688949ba80b73244, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  fishes:
-  - {fileID: 11400000, guid: fe0281c81c2c40c4ea8599281dc1ac47, type: 2}
-  - {fileID: 11400000, guid: 7277eb2f4568fa14ba5c081640414aec, type: 2}
-  - {fileID: 11400000, guid: 1f8c0b41307434448b0537e91dba28c9, type: 2}
-  - {fileID: 11400000, guid: 3572eae8e386df841a92e4feb3aa4ba7, type: 2}
-  - {fileID: 11400000, guid: f4c61ed6413137f459f7a4056ab813ae, type: 2}
-  - {fileID: 11400000, guid: 8e5d4333c8e464d4e993ab84622340f0, type: 2}
 --- !u!61 &1880219387
 BoxCollider2D:
   m_ObjectHideFlags: 0

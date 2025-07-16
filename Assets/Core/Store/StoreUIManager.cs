@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Linq;
+using NewItemSystem;
 using UnityEngine;
 
 public class StoreUIManager : MonoBehaviour
@@ -42,22 +44,39 @@ public class StoreUIManager : MonoBehaviour
     //Called from button in game
     public void ShowRodsPage()
     {
-        BuildStorePage(ItemsInGame.storeItemRods);
+        List<ItemDefinition> rodsInStore = new();
+        foreach (ItemDefinition item in ItemRegistry.GetFullItemsList())
+        {
+            if (item.GetBehaviour<RodBehaviour>() != null && item.GetBehaviour<ShopBehaviour>() != null)
+            {
+                rodsInStore.Add(item);
+            }
+        }
+        BuildStorePage(rodsInStore.ToArray());
     }
 
     //Called from button in game
     public void ShowBaitsPage()
     {
-        BuildStorePage(ItemsInGame.storeItemBaits);
+        List<ItemDefinition> baitsInStore = new();
+        foreach (ItemDefinition item in ItemRegistry.GetFullItemsList())
+        {
+            if (item.GetBehaviour<BaitBehaviour>() != null && item.GetBehaviour<ShopBehaviour>() != null)
+            {
+                baitsInStore.Add(item);
+            }
+        }
+        BuildStorePage(baitsInStore.ToArray());
     }
 
     //Called from button in game
     public void ShowExtrasPage()
     {
-        BuildStorePage(ItemsInGame.storeItemMisc);
+        Debug.LogWarning("NotImplementedException");
+        //BuildStorePage(ItemsInGame.storeItemMisc);
     }
 
-    private void BuildStorePage(StoreItemObject[] itemObjects)
+    private void BuildStorePage(ItemDefinition[] itemObjects)
     {
         //Remove all previous items
         var children = new List<GameObject>();
@@ -67,7 +86,7 @@ public class StoreUIManager : MonoBehaviour
         }
         children.ForEach(child => Destroy(child));
 
-        foreach (StoreItemObject storeItem in itemObjects)
+        foreach (ItemDefinition storeItem in itemObjects)
         {
             GameObject storeItemHolder = Instantiate(StoreItemPrefab, storeItemsHolder.transform);
             if(!storeItemHolder.TryGetComponent<StoreItemData>(out StoreItemData itemData))

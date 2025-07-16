@@ -1,4 +1,5 @@
 using Mirror;
+using NewItemSystem;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -20,14 +21,19 @@ public class FishdexFishUIBuilder : MonoBehaviour
         fishInfoUI = NetworkClient.localPlayer.GetComponentInChildren<FishInfoUIManager>();
     }
 
-    public void BuildFishdexFish(FishConfiguration fish)
+    public void BuildFishdexFish(ItemDefinition fish)
     {
-        fishID = fish.id;
+        FishBehaviour fishBehaviour = fish.GetBehaviour<FishBehaviour>();
+        if (fishBehaviour == null)
+        {
+            return;
+        }
+        fishID = fish.Id;
         nameField.text = fish.name;
-        fishImage.sprite = fish.fishImage;
-        rarity.text = FishEnumConfig.RarityToString(fish.rarity);
+        fishImage.sprite = fish.Icon;
+        rarity.text = FishEnumConfig.RarityToString(fishBehaviour.Rarity);
 
-        if (NetworkClient.localPlayer.GetComponentInChildren<PlayerFishdexFishes>().ContainsFish(fish.id))
+        if (NetworkClient.localPlayer.GetComponentInChildren<PlayerFishdexFishes>().ContainsFish(fish.Id))
         {
             fishImage.color = Color.white;
         }

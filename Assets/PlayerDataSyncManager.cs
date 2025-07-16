@@ -1,5 +1,7 @@
 using System;
 using UnityEngine;
+using NewItemSystem;
+using Mirror;
 
 //Item manager should manage the syncronisation of items between the server and client.
 public class PlayerDataSyncManager : MonoBehaviour
@@ -11,49 +13,60 @@ public class PlayerDataSyncManager : MonoBehaviour
     [SerializeField]
     PlayerFishdexFishes fishdexFishes;
 
-    public void ChangeFishCoinsAmount(int amount) {
+    [Server]
+    public void ChangeFishCoinsAmount(int amount)
+    {
         DatabaseCommunications.ChangeFishCoinsAmount(amount, playerData.GetUuid());
         playerData.ChangeFishCoinsAmount(amount);
     }
 
+    [Server]
     public void ChangeFishBucksAmount(int amount)
     {
         DatabaseCommunications.ChangeFishBucksAmount(amount, playerData.GetUuid());
         playerData.ChangeFishBucksAmount(amount);
     }
 
-    public void AddXP(int amount) {
+    [Server]
+    public void AddXP(int amount)
+    {
         DatabaseCommunications.AddXP(amount, playerData.GetUuid());
         playerData.AddXp(amount);
     }
 
-    public void AddItem(ItemObject item)
+    [Server]
+    public void AddItem(ItemInstance item)
     {
         AddItem(item, null, false);
     }
 
-    public void AddItem(ItemObject item, CurrentFish fish, bool fromCaugh) {
-        if (inventory.ContainsItem(item, out Guid? itemUuid))
+    [Server]
+    public void AddItem(ItemInstance item, CurrentFish fish, bool fromCaught)
+    {
+        if (fish != null && fromCaught)
         {
-            if (itemUuid.HasValue)
-            {
-                item.uuid = itemUuid.Value;
-            }
-            DatabaseCommunications.IncreaseItem(item, playerData.GetUuid());  
-        }
-        else
-        {
-            DatabaseCommunications.AddNewItem(item, playerData.GetUuid());   
-        }
-        if (fish != null && fromCaugh) {
             fishdexFishes.AddStatFish(fish);
             DatabaseCommunications.AddStatFish(fish, playerData.GetUuid());
         }
-        inventory.AddItem(item);
+
+        ItemInstance toUpdate = inventory.AddItem(item);
+        DatabaseCommunications.AddOrUpdateItem(toUpdate, playerData.GetUuid());
     }
 
-    public void DestroyItem(ItemObject item) {
-        inventory.RemoveItem(item);
+    [Server]
+    public void DestroyItem(ItemInstance item)
+    {
+        inventory.RemoveItem(item.uuid);
         DatabaseCommunications.DestroyItem(item, playerData.GetUuid());
+    }
+
+    internal void ChangeFishCoinsAmount(int? v)
+    {
+        throw new NotImplementedException();
+    }
+
+    internal void ChangeFishBucksAmount(int? v)
+    {
+        throw new NotImplementedException();
     }
 }

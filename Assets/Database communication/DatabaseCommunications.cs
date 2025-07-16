@@ -2,6 +2,15 @@ using System;
 using System.Text;
 using UnityEngine;
 using Mirror;
+using NewItemSystem;
+using System.Linq;
+
+// Extension helpers for ItemInstance behaviour checks
+static class ItemInstanceExtensions {
+    public static bool HasBehaviour<T>(this ItemInstance inst) where T : class, IItemBehaviour {
+        return inst.def.GetBehaviour<T>() != null;
+    }
+}
 
 public static class DatabaseCommunications
 {
@@ -172,22 +181,42 @@ public static class DatabaseCommunications
     }
 
     [Server]
-    public static void SelectOtherItem(ItemObject item, Guid userID)
+    public static void AddOrUpdateItem(ItemInstance item, Guid userID)
     {
-        ItemType type;
-        Debug.Log(item.uuid.ToString());
+        AddOrUpdateItemRequest request = new AddOrUpdateItemRequest
+        {
+            user_id = userID.ToString(),
+            item_uuid = item.uuid.ToString(),
+            definition_id = item.def.Id,
+            state_blob = Convert.ToBase64String(StatePacker.Pack(item.state)),
+        };
+        string json = JsonUtility.ToJson(request);
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
+        WebRequestHandler.SendWebRequest(DatabaseEndpoints.addNewItemEndpoint, bodyRaw);
+    }
 
-        //Select a different item as using
-        if (item is rodObject)
+    [Server]
+    public static void DestroyItem(ItemInstance item, Guid userID)
+    {
+        DestroyItemRequest requestData = new DestroyItemRequest
         {
-            type = ItemType.Rod;
-        }
-        else if (item is baitObject)
-        {
-            type = ItemType.Bait;
-        }
-        else
-        {
+            user_id = userID.ToString(),
+            item_uid = item.uuid.ToString(),
+        };
+        string json = JsonUtility.ToJson(requestData);
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
+        WebRequestHandler.SendWebRequest(DatabaseEndpoints.removeItemEndpoint, bodyRaw);
+    }
+
+    [Server]
+    public static void SelectOtherItem(ItemInstance item, Guid userID)
+    {
+        string itemType;
+        if (item.HasBehaviour<RodBehaviour>())
+            itemType = "Rod";
+        else if (item.HasBehaviour<BaitBehaviour>())
+            itemType = "Bait";
+        else {
             Debug.Log("Only a bait and a rod should be selectable");
             return;
         }
@@ -196,124 +225,11 @@ public static class DatabaseCommunications
         {
             user_id = userID.ToString(),
             item_uid = item.uuid.ToString(),
-            item_type = type.ToString(),
+            item_type = itemType,
         };
-        
         string json = JsonUtility.ToJson(requestData);
         byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
         WebRequestHandler.SendWebRequest(DatabaseEndpoints.selectItemEndpoint, bodyRaw);
-    }
-    
-    [Server]
-    public static void AddNewItem(ItemObject item, Guid userID)
-    {
-        int amount;
-        int item_id;
-        Guid item_uid;
-
-        if (item is rodObject rod)
-        {
-            amount = rod.throwIns;
-            item_id = rod.id;
-            item_uid = rod.uuid;
-        }
-        else if (item is baitObject bait)
-        {
-            amount = bait.throwIns;
-            item_id = bait.id;
-            item_uid = bait.uuid;
-        }
-        else if (item is FishObject fish)
-        {
-            amount = fish.amount;
-            item_id = fish.id;
-            item_uid = fish.uuid;
-        }
-        else
-        {
-            Debug.LogWarning($"Could not add {item} to the database, unsopported item");
-            return;
-        }
-
-        AddItemRequest requestData = new AddItemRequest
-        {
-            user_id = userID.ToString(),
-            amount = amount,
-            item_id = item_id,
-            item_uid = item_uid.ToString(),
-            cell_id = 0,
-        };
-        
-        string json = JsonUtility.ToJson(requestData);
-        byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
-        WebRequestHandler.SendWebRequest(DatabaseEndpoints.addNewItemEndpoint, bodyRaw);
-    }
-    
-    [Server]
-    public static void IncreaseItem(ItemObject item, Guid userID)
-    {
-        int amount;
-        Guid item_uid;
-
-        if (item is rodObject rod)
-        {
-            amount = rod.throwIns;
-            item_uid = rod.uuid;
-        }
-        else if (item is baitObject bait)
-        {
-            amount = bait.throwIns;
-            item_uid = bait.uuid;
-        }
-        else if (item is FishObject fish)
-        {
-            amount = fish.amount;
-            item_uid = fish.uuid;
-        }
-        else
-        {
-            Debug.LogWarning($"Could not add {item} to the database, unsopported item");
-            return;
-        }
-
-        IncreaseItemRequest requestData = new IncreaseItemRequest
-        {
-            user_id = userID.ToString(),
-            amount = amount,
-            item_uid = item_uid.ToString(),
-        };
-        
-        string json = JsonUtility.ToJson(requestData);
-        byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
-        WebRequestHandler.SendWebRequest(DatabaseEndpoints.addExistingItemEndpoint, bodyRaw);
-    }
-
-    [Server]
-    public static void ReduceItem(ItemObject item, int amount, Guid userID)
-    {
-        DegradeItemRequest requestData = new DegradeItemRequest
-        {
-            user_id = userID.ToString(),
-            amount = amount,
-            item_uid = item.uuid.ToString(),
-        };
-        string json = JsonUtility.ToJson(requestData);
-        byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
-        WebRequestHandler.SendWebRequest(DatabaseEndpoints.reduceItemEndpoint, bodyRaw);
-    }
-
-    [Server]
-    public static void DestroyItem(ItemObject item, Guid userID)
-    {
-        DestroyItemRequest requestData = new DestroyItemRequest
-        {
-            user_id = userID.ToString(),
-            item_uid = item.uuid.ToString(),
-        };
-        
-        string json = JsonUtility.ToJson(requestData);
-        byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
-        WebRequestHandler.SendWebRequest(DatabaseEndpoints.removeItemEndpoint, bodyRaw);
     }
 
     [Server]

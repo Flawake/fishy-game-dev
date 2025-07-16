@@ -4,372 +4,201 @@ using Mirror;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using NewItemSystem;
 
 public class PlayerInventory : NetworkBehaviour
 {
-    //Divide the containers for faster accessing
-    public readonly SyncList<InventoryItem> miscContainer = new();
-    public readonly SyncList<InventoryItem> rodContainer = new();
-    public readonly SyncList<InventoryItem> baitContainer = new();
-    public readonly SyncList<InventoryItem> fishContainer = new();
+    // Unified container with the new runtime representation.
+    public readonly SyncList<ItemInstance> items = new();
 
     [SerializeField]
     PlayerData playerData;
 
+    // ------------------------------------------------------------------
+    // Inventory loading -------------------------------------------------
+    // ------------------------------------------------------------------
     [Server]
     public void SaveInventory(UserData userData)
     {
-        miscContainer.Clear();
-        rodContainer.Clear();
-        baitContainer.Clear();
-        fishContainer.Clear();
+        items.Clear();
 
-        foreach (UserData.InventoryItem item in userData.inventory_items)
+        foreach (UserData.InventoryItem inv in userData.inventory_items)
         {
-            if (ItemsInGame.idToTypeLut.TryGetValue(item.item_id, out var itemType))
+            ItemDefinition def = ItemRegistry.Get(inv.definition_id);
+            if (def == null)
             {
-                switch (itemType) 
+                Debug.LogWarning($"Unknown item definition id {inv.definition_id}");
+                continue;
+            }
+            var inst = new ItemInstance { def = def, uuid = inv.ItemUuid };
+            if (!string.IsNullOrEmpty(inv.state_blob))
+            {
+                try
                 {
-                    case ItemType.Rod:
-                        rodObject inventoryRod = ItemObjectGenerator.RodObjectFromMinimal(item.itemUuid, item.item_id, item.amount);
-                        if(inventoryRod == null)
-                        {
-                            Debug.LogWarning($"Trying to create a rod from id: {item.item_id} failed");
-                            continue;
-                        }
-                        AddItem(inventoryRod);
-
-                        //TODO: find a better place for this.
-                        if (inventoryRod.uuid == userData.SelectedRod)
-                        {
-                            playerData.SelectNewRod(inventoryRod, true);
-                        }
-                        break;
-                    case ItemType.Bait:
-                        baitObject inventoryBait = ItemObjectGenerator.BaitObjectFromMinimal(item.itemUuid, item.item_id, item.amount);
-                        if(inventoryBait == null)
-                        {
-                            Debug.LogWarning($"Tried to create a bait from id: {item.item_id} failed");
-                            continue;
-                        }
-                        AddItem(inventoryBait);
-    
-                        //TODO: find a better place for this.
-                        if (inventoryBait.uuid == userData.SelectedBait)
-                        {
-                            playerData.SelectNewBait(inventoryBait, true);
-                        }
-                       break;
-                    case ItemType.Fish:
-                        FishObject inventoryFish = ItemObjectGenerator.FishObjectFromMinimal(item.itemUuid, item.item_id, item.amount);
-                        if (inventoryFish == null)
-                        {
-                            Debug.LogWarning($"Tried to create a fish from id: {item.item_id} failed");
-                            continue;
-                        }
-    
-                        AddItem(inventoryFish);
-                        break;
-                    case ItemType.Extra:
-                        Debug.LogWarning($"item {itemType} can not yet be added to the inventory");
-                        break;
-                    default:
-                        Debug.LogError($"item {itemType} not recognised");
-                        break;
+                    byte[] stateBytes = Convert.FromBase64String(inv.state_blob);
+                    StatePacker.UnpackInto(stateBytes, inst.state);
+                }
+                catch (Exception e)
+                {
+                    Debug.LogWarning($"Failed to unpack state for item {inv.item_uuid}: {e}");
+                    continue;
                 }
             }
-            else
+            items.Add(inst);
+            if (userData.SelectedRod == inst.uuid)
             {
-                Debug.LogWarning($"Could not find an item with id {item.item_id}");
+                if (inst.def.GetBehaviour<RodBehaviour>() == null)
+                {
+                    continue;
+                }
+                playerData.SelectNewRod(inst, true);
+            }
+            if (userData.SelectedBait == inst.uuid)
+            {
+                if (inst.def.GetBehaviour<BaitBehaviour>() == null)
+                {
+                    continue;
+                }
+                playerData.SelectNewBait(inst, true);
             }
         }
+    }
+
+    // ------------------------------------------------------------------
+    // CRUD helpers ------------------------------------------------------
+    // ------------------------------------------------------------------
+
+    /// <summary>
+    /// Interface to add item to player's inventory
+    /// </summary>
+    /// <param name="inst"></param>
+    /// <returns>
+    /// bool, stacked on existing item or not
+    /// </returns>
+    [Server]
+    public ItemInstance AddItem(ItemInstance inst)
+    {
+        if (inst == null) return null;
+        return TryMergeOrAdd(inst);
     }
 
     [Server]
-    public void RemoveItem(ItemObject item)
+    public void RemoveItem(Guid uuid)
     {
-        if(item is rodObject)
+        for (int i = 0; i < items.Count; i++)
         {
-            RemoveItem(rodContainer, item, true);
-        }
-        else if (item is baitObject)
-        {
-            RemoveItem(baitContainer, item, false);
-        }
-        else if(item is FishObject)
-        {
-            RemoveItem(fishContainer, item, false);
-        }
-        else
-        {
-            RemoveItem(miscContainer, item, false);
+            if (items[i].uuid == uuid)
+            {
+                items.RemoveAt(i);
+                break;
+            }
         }
     }
 
-    private void RemoveItem(SyncList<InventoryItem> container, ItemObject item, bool useUID)
+    public ItemInstance GetItem(Guid uuid)
     {
-        for (int i = 0; i < container.Count(); i++)
+        return items.FirstOrDefault(i => i.uuid == uuid);
+    }
+
+    public ItemInstance GetRodByUuid(Guid uuid)
+    {
+        return items.FirstOrDefault(i => i.uuid == uuid && i.HasBehaviour<RodBehaviour>());
+    }
+
+    public ItemInstance GetRodByDefinitionId(int id)
+    {
+        return items.FirstOrDefault(i => i.def.Id == id && i.HasBehaviour<RodBehaviour>());
+    }
+
+    public ItemInstance GetBaitByDefinitionId(int id)
+    {
+        return items.FirstOrDefault(i => i.def.Id == id && i.HasBehaviour<BaitBehaviour>());
+    }
+
+    /// <summary>
+    /// Adds an item to the players inventory
+    /// </summary>
+    /// <param name="inst"></param>
+    /// <returns>
+    /// The item that needs to be written int the db
+    /// </returns>
+    ItemInstance TryMergeOrAdd(ItemInstance inst)
+    {
+        if (inst.def.CanStack)
         {
-            if(useUID)
+            ItemInstance itemRef = items.FirstOrDefault(i => i.def.Id == inst.def.Id);
+            if (itemRef == null)
             {
-                if (container[i].item.uuid == item.uuid)
-                {
-                    container.RemoveAt(i);
-                    break;
-                }
+                items.Add(inst);
+                return inst;
             }
-            else
+
+            if (ServerMergeItem(itemRef, inst))
             {
-                if (container[i].item.id == item.id)
-                {
-                    container.RemoveAt(i);
-                    break;
-                }
+                return itemRef;
             }
+
+            return inst;
         }
+        items.Add(inst);
+        return inst;
     }
 
     [Server]
-    public void AddItem(ItemObject item)
+    private bool ServerMergeItem(ItemInstance original, ItemInstance ghost)
     {
-        if(item is rodObject)
-        {
-            AddItem(rodContainer, item);
-        }
-        else if (item is baitObject)
-        {
-            AddItem(baitContainer, item);
-        }
-        else if (item is FishObject)
-        {
-            AddItem(fishContainer, item);
-        }
-        else
-        {
-            AddItem(miscContainer, item);
-        }
+        TargetMergeItem(original, ghost);
+        return MergeItem(original, ghost);
     }
 
-    private void AddItem(SyncList<InventoryItem> container, ItemObject item)
+    [TargetRpc]
+    private void TargetMergeItem(ItemInstance original, ItemInstance ghost)
     {
-        bool addNewItem = true;
-        if (item.stackable)
+        // Original was send over the server. It is a new at this point, not a ref anymore
+        ItemInstance itemRef = items.FirstOrDefault(i => i.def.Id == original.def.Id);
+        if (itemRef == null)
         {
-            for (int i = 0; i < container.Count; i++)
-            {
-                //Stackable item, look for id. Not uid
-                if (container[i].item.GetType() == item.GetType() && container[i].item.id == item.id)
-                {
-                    container[i] = container[i].AddAmount(item);
-                    addNewItem = false;
-                    break;
-                }
-            }
+            Debug.LogWarning("Could not merge items");
+            return;
         }
-        if (addNewItem)
-        {
-            container.Add(new InventoryItem(item));
-        }
+
+        MergeItem(itemRef, ghost);
     }
 
-    public bool ContainsItem(ItemObject item, out Guid? itemUuid)
+    private bool MergeItem(ItemInstance itemRef, ItemInstance ghost)
     {
-        if (item is rodObject)
+        StackState stackState = itemRef.GetState<StackState>();
+        if (stackState == null)
         {
-            itemUuid = item.uuid;
-            return ContainsItemInContainer(rodContainer, item, out Guid? _);
+            return false;
         }
-        else if (item is baitObject)
-        {
-            if (ContainsItemInContainer(baitContainer, item, out Guid? _itemUuid))
-            {
-                itemUuid = _itemUuid;
-                return true;
-            }
-        }
-        else if (item is FishObject)
-        {
-            if (ContainsItemInContainer(fishContainer, item, out Guid? _itemUuid))
-            {
-                itemUuid = _itemUuid;
-                return true;
-            }
-        }
-        else
-        {
-            Debug.LogWarning($"item should be of type: rod, bait or fish but was: {item}");
-        }
-
-        itemUuid = null;
-        return false;
+        stackState.currentAmount += ghost.GetState<StackState>().currentAmount;
+        itemRef.SetState(stackState);
+        return true;
     }
 
-    private bool ContainsItemInContainer(SyncList<InventoryItem> container, ItemObject item, out Guid? item_uuid)
+    [Server]
+    public void ServerReduceItemAmount(Guid itemUUID, int amount)
     {
-        foreach (InventoryItem _item in container)
-        {
-            if (item.stackable)
-            {
-                if (item.id == _item.item.id)
-                {
-                    item_uuid = _item.item.uuid;
-                    return true;
-                }
-            }
-            else
-            {
-                if (item.uuid == _item.item.uuid)
-                {
-                    item_uuid = _item.item.uuid;
-                    return true;
-                }
-            }
-        }
-        item_uuid = null;
-        return false;
+        TargetReduceItemAmount(itemUUID, amount);
+        ReduceItemAmount(itemUUID, amount);
     }
 
-    public rodObject ReplaceRodByUID(Guid uuid)
+    [TargetRpc]
+    void TargetReduceItemAmount(Guid itemUUID, int amount)
     {
-        ItemObject item = GetItemByUID(uuid, ItemType.Rod);
+        ReduceItemAmount(itemUUID, amount);
+    }
+    void ReduceItemAmount(Guid itemID, int amount)
+    {
+        ItemInstance item = GetItem(itemID);
         if (item == null)
         {
-            return null;
-        }
-        return item as rodObject;
-    }
-
-    public rodObject GetRodByID(int id)
-    {
-        ItemObject item = GetItemByID(id, rodObject.AsString());
-        if(item == null)
-        {
-            return null;
-        }
-        return item as rodObject;
-    }
-
-    public rodObject GetRodByUID(Guid uuid)
-    {
-        ItemObject item = GetItemByUID(uuid, ItemType.Rod);
-        if (item == null)
-        {
-            return null;
-        }
-        return item as rodObject;
-    }
-
-    public baitObject GetBaitByID(int id)
-    {
-        ItemObject item = GetItemByID(id, baitObject.AsString());
-        if (item == null)
-        {
-            return null;
-        }
-        return item as baitObject;
-    }
-
-    public ItemObject GetItemByID(int id, string type)
-    {
-        SyncList<InventoryItem> container;
-        if (type == rodObject.AsString())
-        {
-            container = rodContainer;
-        }
-        else if (type == baitObject.AsString())
-        {
-            container = baitContainer;
-        }
-        else if (type == FishObject.AsString())
-        {
-            container = fishContainer;
-        }
-        else
-        {
-            Debug.LogWarning($"GetItemById is not implemented for {type}");
-            return null;
+            Debug.LogWarning("Could not find a object that needs a amount deduced");
+            return;
         }
 
-        foreach (InventoryItem item in container)
-        {
-            if(item.item.id == id)
-            {
-                return item.item;
-            }
-        }
-        return null;
-    }
-
-    public ItemObject GetItemByUID(Guid uuid, ItemType type)
-    {
-        SyncList<InventoryItem> container;
-        if (type == ItemType.Rod)
-        {
-
-            container = rodContainer;
-        }
-        else if (type == ItemType.Bait)
-        {
-            Debug.LogWarning("A bait should not be found by i'ts UID but by it's ID instead");
-            return null;
-        }
-        else
-        {
-            Debug.LogWarning($"GetItemById is not implemented for {type}");
-            return null;
-        }
-
-        foreach (InventoryItem item in container)
-        {
-            if (item.item.uuid == uuid)
-            {
-                return item.item;
-            }
-        }
-        return null;
-    }
-}
-
-
-[System.Serializable]
-public class InventoryItem
-{
-    public ItemObject item;
-    public InventoryItem(ItemObject _item)
-    {
-        item = _item;
-    }
-    public InventoryItem AddAmount(ItemObject _item)
-    {
-        if (item is baitObject bait && _item is baitObject _bait)
-        {
-            bait.throwIns += _bait.throwIns;
-            return new InventoryItem(bait);
-        } 
-        else if (item is FishObject fish && _item is FishObject _fish)
-        {
-            fish.amount += _fish.amount;
-            return new InventoryItem(fish);
-        }
-        else if (item is rodObject && _item is rodObject)
-        {
-            Debug.LogError("Should not add multiple rod's together");
-            return null;
-        }
-        return null;
-    }
-}
-
-public static class InventoryItemReaderWriter
-{
-    public static void WriteInventoryItem(this NetworkWriter writer, InventoryItem obj)
-    {
-        writer.Write(obj.item);
-    }
-
-    public static InventoryItem ReadInventoryItem(this NetworkReader reader)
-    {
-        return new InventoryItem(reader.Read<ItemObject>());
+        item.GetState<StackState>().currentAmount -= amount;
     }
 }
 

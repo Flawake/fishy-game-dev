@@ -2,20 +2,29 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 using System;
+using NewItemSystem;
 
 public class SpawnableFishes : NetworkBehaviour
 {
-    public List<FishConfiguration> fishes = new List<FishConfiguration>();
+    public List<ItemDefinition> fishes = new List<ItemDefinition>();
 
     protected override void OnValidate()
     {
         base.OnValidate();
+        foreach (ItemDefinition fish in fishes)
+        {
+            if (fish.GetBehaviour<FishBehaviour>() == null)
+            {
+                Debug.LogError("There is a fish in a catch place without a fishBehaviour");
+            }
+        }
         for (int i = 0; i < fishes.Count; i++)
         {
             ScriptableObject currentFish = fishes[i];
             for (int j = 0; j < fishes.Count; j++)
             {
-                if (i == j) {
+                if (i == j)
+                {
                     continue;
                 }
                 if (currentFish == fishes[j])
@@ -23,7 +32,8 @@ public class SpawnableFishes : NetworkBehaviour
                     Debug.LogError("There are some double fishes added in the same water");
                 }
             }
-            if(currentFish == null) {
+            if (currentFish == null)
+            {
                 Debug.LogError("There is a fish in the water that does not exist (null value)");
             }
         }
@@ -33,31 +43,27 @@ public class SpawnableFishes : NetworkBehaviour
     [Server]
     public (CurrentFish, bool) GenerateFish(ItemBaitType bait) {
         // a fish is being generated and returned
-        FishConfiguration generatedFish = SpawnManager.instance.GenerateFish(fishes, bait);
+        ItemDefinition generatedFish = SpawnManager.instance.GenerateFish(fishes, bait);
+        FishBehaviour generatedFishBehaviour = generatedFish.GetBehaviour<FishBehaviour>();
         CurrentFish fishToCatch = new CurrentFish();
         if (generatedFish == null)
         {
             return (fishToCatch, false);
         }
-        fishToCatch.id = generatedFish.id;
-        fishToCatch.maxLength = generatedFish.maximumLength;
-        fishToCatch.minLength = generatedFish.minimumLength;
-        (fishToCatch.length, fishToCatch.weight, fishToCatch.xp) = generateLengthWeightAndXp(generatedFish);
-        fishToCatch.rarity = generatedFish.rarity;
+        fishToCatch.id = generatedFish.Id;
+        fishToCatch.maxLength = generatedFishBehaviour.MaximumLength;
+        fishToCatch.minLength = generatedFishBehaviour.MinimumLength;
+        (fishToCatch.length, fishToCatch.weight, fishToCatch.xp) = GenerateLengthWeightAndXp(generatedFishBehaviour);
+        fishToCatch.rarity = generatedFishBehaviour.Rarity;
         
         return (fishToCatch, true);
     }
 
     [Server]
-    (int, float, int) generateLengthWeightAndXp(FishConfiguration generatedFish)
+    (int, float, int) GenerateLengthWeightAndXp(FishBehaviour generatedFishBehaviour)
     {
-        int length = TriangularDistributionRandomInt(generatedFish.minimumLength, generatedFish.maximumLength, generatedFish.avarageLength);
-        float weight = LinearEqualValue(
-            generatedFish.minimumLength,
-            generatedFish.maximumLength,
-            generatedFish.minimumWeightGrams,
-            generatedFish.maximumWeightGrams,
-            length);
+        int length = TriangularDistributionRandomInt(generatedFishBehaviour.MinimumLength, generatedFishBehaviour.MaximumLength, generatedFishBehaviour.AvarageLength);
+        float weight = 0;
         int xp = 2;
         return (length, weight, xp);
     }
@@ -87,10 +93,5 @@ public class SpawnableFishes : NetworkBehaviour
 
         // Round to nearest integer and clamp it between te min and max value
         return Mathf.Clamp(Mathf.RoundToInt(result), min, max);
-    }
-
-    [Server]
-    float LinearEqualValue(int xMin, int xMax, float yMin, float yMax, int val) {
-        return (val - xMin) * (yMax - yMin) / (xMax - xMin) + yMin;
     }
 }
