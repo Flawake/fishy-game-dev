@@ -3,6 +3,7 @@ using UnityEngine;
 using TMPro;
 using System;
 using Unity.VisualScripting;
+using NewItemSystem;
 
 public class InventoryItemData : MonoBehaviour
 {
@@ -13,7 +14,7 @@ public class InventoryItemData : MonoBehaviour
 
     InventoryUIManager inventoryManager;
 
-    ItemObject item;
+    ItemInstance item;
 
     private void Start()
     {
@@ -35,9 +36,9 @@ public class InventoryItemData : MonoBehaviour
         inventoryManager.ShowItemInfo(item);
     }
 
-    public void SetInventoryItemData(ItemObject _item, bool itemSelected)
+    public void SetInventoryItemData(ItemInstance _item, bool itemSelected)
     {
-        spriteHolder.sprite = _item.sprite;
+        spriteHolder.sprite = _item.def.Icon;
         item = _item;
         itemSelectedMark.SetActive(itemSelected);
     }

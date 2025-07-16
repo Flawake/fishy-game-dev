@@ -5,11 +5,12 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using NewItemSystem;
 
 public class InventoryUIManager : MonoBehaviour
 {
     PlayerController controller;
-    ItemObject item;
+    ItemInstance selectedItem;
     PlayerData playerData;
 
     [SerializeField]
@@ -138,12 +139,12 @@ public class InventoryUIManager : MonoBehaviour
                 }
             }
         }
-        BuildBackPackItems(itemFilter);
+        RebuildInventory(itemFilter);
     }
 
-    void BuildBackPackItems(ItemFiler filter)
+    void RebuildInventory(ItemFiler filter)
     {
-        //Remove all previous items
+        // Remove previous UI entries
         var children = new List<GameObject>();
         foreach (Transform child in itemHolder.transform)
         {
@@ -151,120 +152,50 @@ public class InventoryUIManager : MonoBehaviour
         }
         children.ForEach(child => Destroy(child));
 
-        //Rebuild content using the current inventory
-        //TODO: keep a reference to the inventory
         PlayerInventory inventory = GetComponentInParent<PlayerInventory>();
-        bool firstItemSet = false;
-        if(filter == ItemFiler.All || filter == ItemFiler.Rods)
+        bool firstSet = false;
+        foreach (var inst in inventory.items)
         {
-            firstItemSet = AddContainerToInventory(inventory.rodContainer, filter, firstItemSet);
-        }
-        if (filter == ItemFiler.All || filter == ItemFiler.Baits)
-        {
-            firstItemSet = AddContainerToInventory(inventory.baitContainer, filter, firstItemSet);
-        }
-        if (filter == ItemFiler.All || filter == ItemFiler.Fishes)
-        {
-            firstItemSet = AddContainerToInventory(inventory.fishContainer, filter, firstItemSet);
+            if (!MatchesFilter(inst, filter)) continue;
+
+            GameObject go = Instantiate(inventoryItemPrefab, itemHolder.transform, false);
+            var data = go.GetComponent<InventoryItemData>();
+            data.SetInventoryItemData(inst, false); // selected logic TBD
+
+            if (!firstSet)
+            {
+                data.InventoryItemClicked();
+                firstSet = true;
+            }
         }
     }
 
-    private bool AddContainerToInventory(SyncList<InventoryItem> container, ItemFiler filter, bool firstItemSet)
+    bool MatchesFilter(ItemInstance inst, ItemFiler filter)
     {
-        for (int i = 0; i < container.Count; i++)
-        {
-            //ItemType type = container[i].item.type;
-            ItemObject itemObject = container[i].item;
-            bool itemSelected = false;
-            if(itemObject == null)
-            {
-                Debug.LogWarning("Item in a inventorycontainer is null");
-                continue;
-            }
-            ItemType type = itemObject.type;
-            if (filter != 0)
-            {
-                if (type == ItemType.Rod && filter != ItemFiler.Rods)
-                {
-                    continue;
-                }
-                else if (type == ItemType.Bait && filter != ItemFiler.Baits)
-                {
-                    continue;
-                }
-                else if (type == ItemType.Fish && filter != ItemFiler.Fishes)
-                {
-                    continue;
-                }
-            }
+        if (filter == ItemFiler.All) return true;
 
-            if (itemObject is rodObject rod) {
-                if (playerData.GetSelectedRod() != null && playerData.GetSelectedRod().uuid == rod.uuid) { 
-                    itemSelected = true;
-                }
-            }
-            if (itemObject is baitObject bait)
-            {
-                if (playerData.GetSelectedBait() != null && playerData.GetSelectedBait().id == bait.id)
-                {
-                    itemSelected = true;
-                }
-            }
+        bool isRod = inst.def.GetBehaviour<RodBehaviour>() != null;
+        bool isBait = inst.def.GetBehaviour<BaitBehaviour>() != null;
+        bool isFish = inst.def.GetBehaviour<FishBehaviour>() != null;
 
-            GameObject inventoryItem = Instantiate(inventoryItemPrefab, itemHolder.transform, false);
-            InventoryItemData invItemData = inventoryItem.GetComponent<InventoryItemData>();
-            invItemData.SetInventoryItemData(container[i].item, itemSelected);
-            //Show item info of first item in inventory, just to fill up empty space
-            if (!firstItemSet)
-            {
-                invItemData.InventoryItemClicked();
-                firstItemSet = true;
-            }
-        }
-        return firstItemSet;
+        return (filter == ItemFiler.Rods && isRod) ||
+               (filter == ItemFiler.Baits && isBait) ||
+               (filter == ItemFiler.Fishes && isFish);
     }
 
-    public void ShowItemInfo(ItemObject _item)
+    public void ShowItemInfo(ItemInstance inst)
     {
-        item = _item;
-        string name;
-        int amount;
+        selectedItem = inst;
+        string name = inst.def.DisplayName;
+        int amount = inst.GetState<StackState>()?.currentAmount ?? -9;
         itemPreviewSelectedItemMark.SetActive(false);
-        if (_item is rodObject rod)
-        {
-            name = rod.name;
-            amount = rod.throwIns;
-
-            if (playerData.GetSelectedRod() != null && playerData.GetSelectedRod().uuid == rod.uuid)
-            {
-                itemPreviewSelectedItemMark.SetActive(true);
-            }
-        }
-        else if (_item is baitObject bait)
-        {
-            name = bait.name;
-            amount = bait.throwIns;
-            if (playerData.GetSelectedBait() != null &&  playerData.GetSelectedBait().id == bait.id)
-            {
-                itemPreviewSelectedItemMark.SetActive(true);
-            }
-        }
-        else if (_item is FishObject fish)
-        {
-            name = fish.name;
-            amount = fish.amount;
-        }
-        else
-        {
-            return;
-        }
-
-        itemInfoText.text = _item.description;
+        itemInfoText.text = inst.def.DisplayName;
         itemNameText.text = name;
         itemAmountText.text = amount.ToString();
-        itemPreviewImage.sprite = _item.sprite;
+        itemPreviewImage.sprite = inst.def.Icon;
 
-        if (_item.type == ItemType.Rod || _item.type == ItemType.Bait)
+        bool equippable = inst.def.GetBehaviour<RodBehaviour>() != null || inst.def.GetBehaviour<BaitBehaviour>() != null;
+        if (equippable)
         {
             useItemButton.SetActive(true);
         }
@@ -274,13 +205,11 @@ public class InventoryUIManager : MonoBehaviour
         }
     }
 
-    //Called from game
     public void InventoryItemClicked()
     {
-        ShowItemInfo(item);
+        ShowItemInfo(selectedItem);
     }
 
-    //Called from game (inventory's use button)
     public void UseSelectedItem()
     {
         if (playerData == null)
@@ -291,14 +220,7 @@ public class InventoryUIManager : MonoBehaviour
                 return;
             }
         }
-        if (item is rodObject rod)
-        {
-            playerData.CmdSelectNewRod(rod);
-        }
-        else if (item is baitObject bait)
-        {
-            playerData.CmdSelectNewBait(bait);
-        }
+        // TODO: hook up equip with new system
         CloseBackPack();
     }
 
@@ -310,3 +232,4 @@ public class InventoryUIManager : MonoBehaviour
         }
     }
 }
+

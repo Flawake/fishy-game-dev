@@ -15,6 +15,16 @@ namespace NewItemSystem {
         [SerializeField] int maxDurability = 1;
         [SerializeField] bool infinite;
 
+        public int MaxDurability => maxDurability;
+
+        public static int DurabilityLeft(ItemInstance inst) {
+            var s = inst?.GetState<DurabilityState>();
+            return s?.remaining ?? -1;
+        }
+
+        // Backwards-compat alias
+        public static int GetRemaining(ItemInstance inst) => DurabilityLeft(inst);
+
         public void InitialiseState(Dictionary<Type, IRuntimeBehaviourState> bag) {
             if (infinite) return;
             bag[typeof(DurabilityState)] = new DurabilityState { remaining = maxDurability };
