@@ -7,7 +7,7 @@ public enum LuckPotionType
 }
 
 [CreateAssetMenu(fileName = "LuckPotion", menuName = "Items/LuckPotion", order = 2)]
-public class ItemLuckPotion: ItemObject
+public class ItemLuckPotion : ExtraObject
 {
     public int amount;
     public float duration;

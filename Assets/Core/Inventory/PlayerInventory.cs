@@ -4,6 +4,7 @@ using Mirror;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using NewItemSystem;
 
 public class PlayerInventory : NetworkBehaviour
 {
@@ -12,6 +13,7 @@ public class PlayerInventory : NetworkBehaviour
     public readonly SyncList<InventoryItem> rodContainer = new();
     public readonly SyncList<InventoryItem> baitContainer = new();
     public readonly SyncList<InventoryItem> fishContainer = new();
+    public readonly SyncList<ItemInstance> instances = new(); // NEW unified container
 
     [SerializeField]
     PlayerData playerData;
@@ -19,6 +21,8 @@ public class PlayerInventory : NetworkBehaviour
     [Server]
     public void SaveInventory(UserData userData)
     {
+        // NEW: clear ItemInstance container
+        instances.Clear();
         miscContainer.Clear();
         rodContainer.Clear();
         baitContainer.Clear();
@@ -39,6 +43,9 @@ public class PlayerInventory : NetworkBehaviour
                         }
                         AddItem(inventoryRod);
 
+                        // mirror → ItemInstance
+                        TryAddInstance(LegacyItemAdapter.From(inventoryRod));
+
                         //TODO: find a better place for this.
                         if (inventoryRod.uuid == userData.SelectedRod)
                         {
@@ -53,6 +60,8 @@ public class PlayerInventory : NetworkBehaviour
                             continue;
                         }
                         AddItem(inventoryBait);
+
+                        TryAddInstance(LegacyItemAdapter.From(inventoryBait));
     
                         //TODO: find a better place for this.
                         if (inventoryBait.uuid == userData.SelectedBait)
@@ -69,6 +78,7 @@ public class PlayerInventory : NetworkBehaviour
                         }
     
                         AddItem(inventoryFish);
+                        TryAddInstance(LegacyItemAdapter.From(inventoryFish));
                         break;
                     case ItemType.Extra:
                         Debug.LogWarning($"item {itemType} can not yet be added to the inventory");
@@ -83,6 +93,28 @@ public class PlayerInventory : NetworkBehaviour
                 Debug.LogWarning($"Could not find an item with id {item.item_id}");
             }
         }
+    }
+
+    // --------------------------------------------------------------
+    // NEW helpers working with ItemInstance container
+    // --------------------------------------------------------------
+    void TryAddInstance(ItemInstance inst) {
+        if (inst == null) return;
+
+        // VERY simple merge: if stackable & same definition id and no uuid (stackable items
+        // use Guid.Empty in legacy), merge stack amounts; else push as new instance.
+        if (inst.GetState<StackState>()?.maxStack > 1) {
+            for (int i = 0; i < instances.Count; i++) {
+                if (instances[i].def.Id == inst.def.Id) {
+                    var stackA = instances[i].GetState<StackState>();
+                    var stackB = inst.GetState<StackState>();
+                    stackA.currentAmount += stackB.currentAmount;
+                    instances[i].SetState(stackA);
+                    return;
+                }
+            }
+        }
+        instances.Add(inst);
     }
 
     [Server]
@@ -148,6 +180,9 @@ public class PlayerInventory : NetworkBehaviour
         {
             AddItem(miscContainer, item);
         }
+
+        // Mirror into ItemInstance list
+        TryAddInstance(LegacyItemAdapter.From(item));
     }
 
     private void AddItem(SyncList<InventoryItem> container, ItemObject item)

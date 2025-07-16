@@ -113,7 +113,9 @@ public class PlayerData : NetworkBehaviour
     {
         if (!fromDatabase)
         {
-            DatabaseCommunications.SelectOtherItem(newRod, GetUuid());
+            var inst = LegacyItemAdapter.From(newRod);
+            if (inst != null)
+                DatabaseCommunications.SelectOtherItem(inst, GetUuid());
         }
         selectedRod = newRod;
         SelectedRodUid = newRod.uuid;
@@ -157,7 +159,9 @@ public class PlayerData : NetworkBehaviour
     {
         if (!fromDatabase)
         {
-            DatabaseCommunications.SelectOtherItem(newBait, GetUuid());
+            var instBait = LegacyItemAdapter.From(newBait);
+            if (instBait != null)
+                DatabaseCommunications.SelectOtherItem(instBait, GetUuid());
         }
         //TODO: ask the database what the new rod is to see if the write has gone correctly
         selectedBait = newBait;

@@ -7,9 +7,8 @@ public enum BoosterExperienceType
 }
 
 [CreateAssetMenu(fileName = "ItemBoosterExperience", menuName = "Items/BoosterExperience", order = 2)]
-public class ItemBoosterExperience: ItemObject
+public class ItemBoosterExperience : ExtraObject
 {
-    public int amount;
     public float duration;
     public BoosterExperienceType quality;
     

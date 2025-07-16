@@ -2,6 +2,15 @@ using System;
 using System.Text;
 using UnityEngine;
 using Mirror;
+using NewItemSystem;
+using System.Linq;
+
+// Extension helpers for ItemInstance behaviour checks
+static class ItemInstanceExtensions {
+    public static bool HasBehaviour<T>(this ItemInstance inst) where T : class, IItemBehaviour {
+        return inst.def.GetBehaviour<T>() != null;
+    }
+}
 
 public static class DatabaseCommunications
 {
@@ -172,22 +181,42 @@ public static class DatabaseCommunications
     }
 
     [Server]
-    public static void SelectOtherItem(ItemObject item, Guid userID)
+    public static void AddOrUpdateItem(ItemInstance item, Guid userID)
     {
-        ItemType type;
-        Debug.Log(item.uuid.ToString());
+        AddOrUpdateItemRequest request = new AddOrUpdateItemRequest
+        {
+            user_id = userID.ToString(),
+            item_uuid = item.uuid.ToString(),
+            definition_id = item.def.Id,
+            state_blob = Convert.ToBase64String(StatePacker.Pack(item.state)),
+        };
+        string json = JsonUtility.ToJson(request);
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
+        WebRequestHandler.SendWebRequest(DatabaseEndpoints.addNewItemEndpoint, bodyRaw);
+    }
 
-        //Select a different item as using
-        if (item is rodObject)
+    [Server]
+    public static void DestroyItem(ItemInstance item, Guid userID)
+    {
+        DestroyItemRequest requestData = new DestroyItemRequest
         {
-            type = ItemType.Rod;
-        }
-        else if (item is baitObject)
-        {
-            type = ItemType.Bait;
-        }
-        else
-        {
+            user_id = userID.ToString(),
+            item_uid = item.uuid.ToString(),
+        };
+        string json = JsonUtility.ToJson(requestData);
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
+        WebRequestHandler.SendWebRequest(DatabaseEndpoints.removeItemEndpoint, bodyRaw);
+    }
+
+    [Server]
+    public static void SelectOtherItem(ItemInstance item, Guid userID)
+    {
+        string itemType;
+        if (item.HasBehaviour<RodBehaviour>())
+            itemType = "Rod";
+        else if (item.HasBehaviour<BaitBehaviour>())
+            itemType = "Bait";
+        else {
             Debug.Log("Only a bait and a rod should be selectable");
             return;
         }
@@ -196,9 +225,8 @@ public static class DatabaseCommunications
         {
             user_id = userID.ToString(),
             item_uid = item.uuid.ToString(),
-            item_type = type.ToString(),
+            item_type = itemType,
         };
-        
         string json = JsonUtility.ToJson(requestData);
         byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
         WebRequestHandler.SendWebRequest(DatabaseEndpoints.selectItemEndpoint, bodyRaw);
@@ -228,6 +256,11 @@ public static class DatabaseCommunications
             amount = fish.amount;
             item_id = fish.id;
             item_uid = fish.uuid;
+        }
+        else if(item is ExtraObject special) {
+            amount = special.amount;
+            item_id = special.id;
+            item_uid = Guid.Empty;
         }
         else
         {
@@ -303,20 +336,6 @@ public static class DatabaseCommunications
     }
 
     [Server]
-    public static void DestroyItem(ItemObject item, Guid userID)
-    {
-        DestroyItemRequest requestData = new DestroyItemRequest
-        {
-            user_id = userID.ToString(),
-            item_uid = item.uuid.ToString(),
-        };
-        
-        string json = JsonUtility.ToJson(requestData);
-        byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
-        WebRequestHandler.SendWebRequest(DatabaseEndpoints.removeItemEndpoint, bodyRaw);
-    }
-
-    [Server]
     public static void AddMail(Mail mail)
     {
         CreateMailRequest requestData = new CreateMailRequest
@@ -346,5 +365,47 @@ public static class DatabaseCommunications
         string json = JsonUtility.ToJson(requestData);
         byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
         WebRequestHandler.SendWebRequest(DatabaseEndpoints.readMailEndpoint, bodyRaw);
+    }
+
+    // ------------------------------------------------------------------
+    // Legacy overloads (ItemObject) kept for gradual migration
+    // ------------------------------------------------------------------
+    [System.Obsolete("Use ItemInstance overloads instead")] 
+    [Server]
+    public static void SelectOtherItem(ItemObject item, Guid userID)
+    {
+        ItemType type;
+        if (item is rodObject)
+            type = ItemType.Rod;
+        else if (item is baitObject)
+            type = ItemType.Bait;
+        else {
+            Debug.Log("Only a bait and a rod should be selectable");
+            return;
+        }
+
+        SelectItemRequest requestData = new SelectItemRequest
+        {
+            user_id = userID.ToString(),
+            item_uid = item.uuid.ToString(),
+            item_type = type.ToString(),
+        };
+        string json = JsonUtility.ToJson(requestData);
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
+        WebRequestHandler.SendWebRequest(DatabaseEndpoints.selectItemEndpoint, bodyRaw);
+    }
+
+    [System.Obsolete("Use ItemInstance overloads instead")]
+    [Server]
+    public static void DestroyItem(ItemObject item, Guid userID)
+    {
+        DestroyItemRequest requestData = new DestroyItemRequest
+        {
+            user_id = userID.ToString(),
+            item_uid = item.uuid.ToString(),
+        };
+        string json = JsonUtility.ToJson(requestData);
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
+        WebRequestHandler.SendWebRequest(DatabaseEndpoints.removeItemEndpoint, bodyRaw);
     }
 }

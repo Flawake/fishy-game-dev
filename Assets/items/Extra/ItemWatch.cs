@@ -7,7 +7,7 @@ public enum WatchType
 }
 
 [CreateAssetMenu(fileName = "ItemWatch", menuName = "Items/Watch", order = 2)]
-public class ItemWatch: ItemObject
+public class ItemWatch: ExtraObject
 {
     public int amount;
     public float duration;

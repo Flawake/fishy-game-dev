@@ -104,6 +104,7 @@ public static class ItemObjectSerializer
     const byte ROD = 1;
     const byte BAIT = 2;
     const byte FISH = 3;
+    const byte EXTRA = 4;
     
     public static void WriteGuid(this NetworkWriter writer, Guid guid)
     {
