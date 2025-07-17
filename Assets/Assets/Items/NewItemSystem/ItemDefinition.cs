@@ -11,6 +11,7 @@ namespace NewItemSystem {
         [SerializeField] string displayName;
         [SerializeField] Sprite icon;
         [SerializeField] int maxStack = 1;
+        [SerializeField] bool isStatic = false;
 
         [Header("Behaviours")]
         [SerializeReference] IItemBehaviour[] behaviours;
@@ -22,6 +23,8 @@ namespace NewItemSystem {
         public int MaxStack => maxStack;
         // Rarity moved to FishBehaviour where applicable.
         public IItemBehaviour[] Behaviours => behaviours ?? Array.Empty<IItemBehaviour>();
+        // isStatic tells if the object CAN be removed from the inventory
+        public bool IsStatic => isStatic;
 
         public T GetBehaviour<T>() where T : class, IItemBehaviour {
             return Behaviours.OfType<T>().FirstOrDefault();

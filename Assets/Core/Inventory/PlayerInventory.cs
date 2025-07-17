@@ -71,12 +71,21 @@ public class PlayerInventory : NetworkBehaviour
         return items.FirstOrDefault(i => i.uuid == uuid);
     }
 
-    public ItemInstance GetRod(Guid uuid)
-        => items.FirstOrDefault(i => i.uuid == uuid && i.HasBehaviour<RodBehaviour>());
+    public ItemInstance GetRodByUuid(Guid uuid)
+    {
+        return items.FirstOrDefault(i => i.uuid == uuid && i.HasBehaviour<RodBehaviour>());
+    }
+    
+    public ItemInstance GetRodByDefinitionId(int id)
+    {
+        return items.FirstOrDefault(i => i.def.Id == id && i.HasBehaviour<RodBehaviour>());
+    }
 
     public ItemInstance GetBaitByDefinitionId(int id)
-        => items.FirstOrDefault(i => i.def.Id == id && i.HasBehaviour<BaitBehaviour>());
-
+    {
+        return items.FirstOrDefault(i => i.def.Id == id && i.HasBehaviour<BaitBehaviour>());
+    }
+    
     bool TryMergeOrAdd(ItemInstance inst)
     {
         var stack = inst.GetState<StackState>();
