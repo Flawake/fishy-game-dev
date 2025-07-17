@@ -263,7 +263,7 @@ public class PlayerData : NetworkBehaviour
     }
 
     [TargetRpc]
-    private void RpcChangeRodStats(rodObject rod, int amount) {
+    private void RpcChangeRodStats(ItemInstance rod, int amount) {
         //rodObject here is a nely created rod, we need to get the rod reference from the player inventory.
         ItemInstance inventoryRod = inventory.GetRodByUuid(rod.uuid);
         inventoryRod.throwIns += amount;
@@ -273,7 +273,15 @@ public class PlayerData : NetworkBehaviour
     [Server]
     public void ChangeRodQuality(ItemInstance rod, int amount)
     {
-        if (rod.durabilityIsInfinite || rod.uuid == Guid.Empty || !rod.HasBehaviour<RodBehaviour>())
+        RodBehaviour rodBehaviour = rod.def.GetBehaviour<RodBehaviour>();
+        DurabilityBehaviour durabilityBehaviour = rod.def.GetBehaviour<DurabilityBehaviour>();
+        if (rodBehaviour == null)
+        {
+            Debug.Log("rod has no rodBehaviour");
+            return;
+        }
+        // Bait has infinite durability or can't be removed from inventory
+        if (durabilityBehaviour == null || rod.def.IsStatic)
         {
             return;
         }
@@ -308,10 +316,10 @@ public class PlayerData : NetworkBehaviour
     }
 
     [TargetRpc]
-    private void RpcChangeBaitStats(baitObject bait, int amount)
+    private void RpcChangeBaitStats(ItemInstance bait, int amount)
     {
         //baitObject here is a nely created bait, we need to get the bait reference from the player inventory.
-        ItemInstance inventoryBait = inventory.GetBaitByDefinitionId(bait.id);
+        ItemInstance inventoryBait = inventory.GetBaitByDefinitionId(bait.def.Id);
         inventoryBait.throwIns += amount;
     }
 
@@ -319,11 +327,14 @@ public class PlayerData : NetworkBehaviour
     public void ChangeBaitQuality(ItemInstance bait, int amount)
     {
         BaitBehaviour baitBehaviour = bait.def.GetBehaviour<BaitBehaviour>();
-        if (baitBehaviour == null || bait.def.IsStatic)
+        DurabilityBehaviour durabilityBehaviour = bait.def.GetBehaviour<DurabilityBehaviour>();
+        if (baitBehaviour == null)
         {
+            Debug.Log("bait has no baitBehaviour");
             return;
         }
-        if (bait.durabilityIsInfinite || bait.HasBehaviour<BaitBehaviour>())
+        // Bait has infinite durability or can't be removed from inventory
+        if (durabilityBehaviour == null || bait.def.IsStatic)
         {
             return;
         }
@@ -333,7 +344,7 @@ public class PlayerData : NetworkBehaviour
         if (bait.throwIns <= 0)
         {
             //Remove item from database and select new one
-            //Item with id -1, this should be the standard beginners rod
+            //Item with id 1000, this should be the standard beginners rod
             ItemInstance baitItem = inventory.GetBaitByDefinitionId(1000);
             if (baitItem == null)
             {

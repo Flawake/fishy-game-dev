@@ -4,6 +4,7 @@ using UnityEngine;
 using Mirror;
 using Random = UnityEngine.Random;
 using UnityEngine.LowLevelPhysics;
+using NewItemSystem;
 
 public class FishingManager : NetworkBehaviour
 {
@@ -307,12 +308,8 @@ public class FishingManager : NetworkBehaviour
         {
             TargetShowCaughtDialog();
             FishObject fishObject = ItemObjectGenerator.FishObjectFromMinimal(Guid.Empty, currentFish.id, 1);
-            inventory.ContainsItem(fishObject, out Guid? itemUuid);
-            if (itemUuid.HasValue)
-            {
-                fishObject.uuid = itemUuid.Value;
-            }
-            playerDataManager.AddItem(fishObject, currentFish, true);
+            ItemInstance fishInstance = //TODO
+            playerDataManager.AddItem(fishInstance, currentFish, true);
             playerDataManager.AddXP(currentFish.xp);
         }
     }
@@ -352,7 +349,7 @@ public class FishingManager : NetworkBehaviour
             
             if (fishSpots.ShouldGeneratefish(placeToThrow))
             {
-                (currentFish, fishGenerated) = spawnable.GenerateFish(playerData.GetSelectedBait().baitType);
+                (currentFish, fishGenerated) = spawnable.GenerateFish(playerData.GetSelectedBait().def.GetBehaviour<BaitBehaviour>().BaitType);
             }
 
             timeTillResultsSeconds = Random.Range(5, 11);

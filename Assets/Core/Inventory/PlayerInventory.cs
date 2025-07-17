@@ -88,13 +88,13 @@ public class PlayerInventory : NetworkBehaviour
     
     bool TryMergeOrAdd(ItemInstance inst)
     {
-        var stack = inst.GetState<StackState>();
+        StackState stack = inst.GetState<StackState>();
         if (stack != null && stack.maxStack > 1)
         {
             var existing = items.FirstOrDefault(i => i.def.Id == inst.def.Id);
             if (existing != null)
             {
-                var exStack = existing.GetState<StackState>();
+                StackState exStack = existing.GetState<StackState>();
                 exStack.currentAmount += stack.currentAmount;
                 existing.SetState(exStack);
                 return true;
