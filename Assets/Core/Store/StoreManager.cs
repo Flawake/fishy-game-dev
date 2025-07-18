@@ -1,5 +1,6 @@
 using System;
 using Mirror;
+using NewItemSystem;
 using UnityEngine;
 
 public class StoreManager : NetworkBehaviour
@@ -25,70 +26,41 @@ public class StoreManager : NetworkBehaviour
     }
 
     [Command]
-    void CmdBuyItem(ItemType type, int itemID, CurrencyType currencyType)
+    void CmdBuyItem(int itemID, CurrencyType currencyType)
     {
-        StoreItemObject[] itemsToSearch;
-        StoreItemObject itemToBuy = null;
-        //Don't trust the player on giving the whole item, only give the details that identify the item and then search the item that corresponds to it on the server.
-        if(type == ItemType.Rod)
+        //Don't trust the player on giving the whole item, only use the itemID of the item that the player wants to buy.
+        ItemDefinition itemCopy = ItemsInGame.GetEmptyItemDefinitionCopy(itemID);
+        ShopBehaviour shopBehaviour = itemCopy.GetBehaviour<ShopBehaviour>();
+        if (shopBehaviour == null)
         {
-            itemsToSearch = ItemsInGame.storeItemRods;
-        }
-        else if(type == ItemType.Bait)
-        {
-            itemsToSearch = ItemsInGame.storeItemBaits;
-        }
-        else
-        {
-            Debug.LogWarning($"CmdBuyItem does not yet support buying items of type {type}");
+            Debug.LogWarning("Player tried to buy an item which could not be bought");
             return;
         }
 
-        foreach (StoreItemObject item in itemsToSearch)
+        if ((currencyType == CurrencyType.bucks && shopBehaviour.PriceBucks == -1) ||
+            (currencyType == CurrencyType.coins && shopBehaviour.PriceCoins == -1))
         {
-            if(item.itemObject.id == itemID) { 
-                itemToBuy = item.Clone();
-                itemToBuy.itemObject.uuid = Guid.NewGuid();
-                if (inventory.ContainsItem(itemToBuy.itemObject, out Guid? itemUuid))
-                {
-                    if (itemUuid.HasValue)
-                    {
-                        itemToBuy.itemObject.uuid = itemUuid.Value;
-                    }
-                }
-                break;
-            }
-        }
-        if(itemToBuy == null)
-        {
+            Debug.LogWarning("Player tied to buy an item with a currency that the item does not support");
             return;
         }
 
         if(currencyType == CurrencyType.coins)
         {
-            if(itemToBuy.itemPriceFishCoins <= 0)
-            {
-                return;
-            }
-            if(playerData.GetFishCoins() < itemToBuy.itemPriceFishCoins)
+            if(playerData.GetFishCoins() < shopBehaviour.PriceCoins)
             {
                 return;
             }
             playerDataManager.AddItem(itemToBuy.itemObject);
-            playerDataManager.ChangeFishCoinsAmount(-itemToBuy.itemPriceFishCoins);
+            playerDataManager.ChangeFishCoinsAmount(-shopBehaviour.PriceCoins);
         }
         else if(currencyType == CurrencyType.bucks)
         {
-            if (itemToBuy.itemPriceFishBucks <= 0)
-            {
-                return;
-            }
-            if (playerData.GetFishBucks() < itemToBuy.itemPriceFishBucks)
+            if (playerData.GetFishBucks() < shopBehaviour.PriceBucks)
             {
                 return;
             }
             playerDataManager.AddItem(itemToBuy.itemObject);
-            playerDataManager.ChangeFishBucksAmount(-itemToBuy.itemPriceFishBucks);
+            playerDataManager.ChangeFishBucksAmount(-shopBehaviour.PriceBucks);
         }
     }
 }

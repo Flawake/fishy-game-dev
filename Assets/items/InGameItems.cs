@@ -1,9 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using NewItemSystem;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class InGameItems : MonoBehaviour
 {
+    //Old item definitions
     [SerializeField] private FishConfiguration[] fishesInGame;    //catchable fish
     [SerializeField] private rodObject[] rodsInGame;
     [SerializeField] private baitObject[] baitsInGame;
@@ -11,6 +14,9 @@ public class InGameItems : MonoBehaviour
     [SerializeField] private StoreItemObject[] storeItemRods;
     [SerializeField] private StoreItemObject[] storeItemBaits;
     [SerializeField] private StoreItemObject[] storeItemMisc;
+
+    //New item definition
+    [SerializeField] private ItemDefinition[] itemsInGame;
     
     // Item ID to item type lookup
     private Dictionary<int, ItemType> idToTypeLut = new();
@@ -58,6 +64,8 @@ static class ItemsInGame
     public static StoreItemObject[] storeItemBaits;
     public static StoreItemObject[] storeItemMisc;
     
+    public static ItemDefinition[] allItems;
+    
     public static Dictionary<int, ItemType> idToTypeLut;
 
     public static FishConfiguration getFishByID(int id)
@@ -69,6 +77,19 @@ static class ItemsInGame
                 return fish;
             }
         }
+        return null;
+    }
+
+    public static ItemDefinition GetEmptyItemDefinitionCopy(int itemID)
+    {
+        foreach (ItemDefinition item in allItems)
+        {
+            if (item.Id == itemID)
+            {
+                return item.Clone();
+            }
+        }
+        Debug.Log($"Could not get an item definition for {itemID}");
         return null;
     }
 }
