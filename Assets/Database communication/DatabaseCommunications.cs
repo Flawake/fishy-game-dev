@@ -322,7 +322,7 @@ public static class DatabaseCommunications
     }
 
     [Server]
-    public static void ReduceItem(ItemObject item, int amount, Guid userID)
+    public static void ReduceItem(ItemInstance item, int amount, Guid userID)
     {
         DegradeItemRequest requestData = new DegradeItemRequest
         {

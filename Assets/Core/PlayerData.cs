@@ -266,7 +266,7 @@ public class PlayerData : NetworkBehaviour
     private void RpcChangeRodStats(ItemInstance rod, int amount) {
         //rodObject here is a nely created rod, we need to get the rod reference from the player inventory.
         ItemInstance inventoryRod = inventory.GetRodByUuid(rod.uuid);
-        inventoryRod.throwIns += amount;
+        inventoryRod.GetState<DurabilityState>().remaining += amount;
     }
 
     //TODO: make a function for in the syncManager, this should do the DB calls.
@@ -285,10 +285,10 @@ public class PlayerData : NetworkBehaviour
         {
             return;
         }
-        rod.throwIns += amount;
+        rod.GetState<DurabilityState>().remaining += amount;
         RpcChangeRodStats(rod, amount);
 
-        if (rod.throwIns <= 0)
+        if (rod.GetState<DurabilityState>().remaining <= 0)
         {
             //Remove item from database and select new one
             //Item with id -1, this should be the standard beginners rod
@@ -320,7 +320,7 @@ public class PlayerData : NetworkBehaviour
     {
         //baitObject here is a nely created bait, we need to get the bait reference from the player inventory.
         ItemInstance inventoryBait = inventory.GetBaitByDefinitionId(bait.def.Id);
-        inventoryBait.throwIns += amount;
+        inventoryBait.GetState<DurabilityState>().remaining += amount;
     }
 
     [Server]
@@ -338,10 +338,10 @@ public class PlayerData : NetworkBehaviour
         {
             return;
         }
-        bait.throwIns += amount;
+        bait.GetState<DurabilityState>().remaining += amount;
         RpcChangeBaitStats(bait, amount);
 
-        if (bait.throwIns <= 0)
+        if (bait.GetState<DurabilityState>().remaining <= 0)
         {
             //Remove item from database and select new one
             //Item with id 1000, this should be the standard beginners rod

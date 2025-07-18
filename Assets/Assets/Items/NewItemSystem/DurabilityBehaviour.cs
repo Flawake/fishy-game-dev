@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace NewItemSystem {
     [Serializable]
-    public struct DurabilityState : IRuntimeBehaviourState {
+    public class DurabilityState : IRuntimeBehaviourState {
         public int remaining;
     }
 
@@ -18,7 +18,7 @@ namespace NewItemSystem {
         public int MaxDurability => maxDurability;
 
         public static int DurabilityLeft(ItemInstance inst) {
-            var s = inst?.GetState<DurabilityState>();
+            DurabilityState s = inst?.GetState<DurabilityState>();
             return s?.remaining ?? -1;
         }
 
