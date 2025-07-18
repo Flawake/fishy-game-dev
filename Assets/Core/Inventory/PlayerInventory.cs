@@ -91,14 +91,26 @@ public class PlayerInventory : NetworkBehaviour
         StackState stack = inst.GetState<StackState>();
         if (stack != null && stack.maxStack > 1)
         {
-            var existing = items.FirstOrDefault(i => i.def.Id == inst.def.Id);
-            if (existing != null)
+            int toAdd = stack.currentAmount;
+            foreach (ItemInstance existing in items.Where(i => i.def.Id == inst.def.Id && i.GetState<StackState>()?.currentAmount < stack.maxStack).ToList())
             {
                 StackState exStack = existing.GetState<StackState>();
-                exStack.currentAmount += stack.currentAmount;
+                int space = exStack.maxStack - exStack.currentAmount;
+                int add = Math.Min(space, toAdd);
+                exStack.currentAmount += add;
                 existing.SetState(exStack);
-                return true;
+                toAdd -= add;
+                if (toAdd <= 0) return true;
             }
+            // If there is leftover, create new stacks as needed
+            while (toAdd > 0)
+            {
+                int thisStack = Math.Min(stack.maxStack, toAdd);
+                ItemInstance newStack = new ItemInstance(inst.def, thisStack);
+                items.Add(newStack);
+                toAdd -= thisStack;
+            }
+            return true;
         }
         items.Add(inst);
         return false;

@@ -22,7 +22,7 @@ public class StoreManager : NetworkBehaviour
     [Client]
     public void BuyItem(StoreItemObject item, CurrencyType currencyType)
     {
-        CmdBuyItem(item.itemObject.type, item.itemObject.id, currencyType);
+        CmdBuyItem(item.itemObject.id, currencyType);
     }
 
     [Command]
@@ -44,22 +44,24 @@ public class StoreManager : NetworkBehaviour
             return;
         }
 
-        if(currencyType == CurrencyType.coins)
+        if(currencyType == CurrencyType.coins && shopBehaviour.PriceCoins != -1)
         {
             if(playerData.GetFishCoins() < shopBehaviour.PriceCoins)
             {
                 return;
             }
-            playerDataManager.AddItem(itemToBuy.itemObject);
+            ItemInstance instance = new ItemInstance(itemCopy);
+            playerDataManager.AddItem(instance);
             playerDataManager.ChangeFishCoinsAmount(-shopBehaviour.PriceCoins);
         }
-        else if(currencyType == CurrencyType.bucks)
+        else if(currencyType == CurrencyType.bucks && shopBehaviour.PriceBucks != -1)
         {
             if (playerData.GetFishBucks() < shopBehaviour.PriceBucks)
             {
                 return;
             }
-            playerDataManager.AddItem(itemToBuy.itemObject);
+            ItemInstance instance = new ItemInstance(itemCopy);
+            playerDataManager.AddItem(instance);
             playerDataManager.ChangeFishBucksAmount(-shopBehaviour.PriceBucks);
         }
     }

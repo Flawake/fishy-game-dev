@@ -1,12 +1,13 @@
 // FishBehaviour.cs
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace NewItemSystem {
     [System.Serializable]
-    public class FishBehaviour : IItemBehaviour {
+    public class FishBehaviour : IItemBehaviour, ICloneable {
         [SerializeField] Rarity rarity = Rarity.Common;
-        [SerializeField] FishBaitType bitesOn = FishBaitType.hook | FishBaitType.dough | FishBaitType.meat;
+        [SerializeField] FishBaitType bitesOn;
 
         [Header("Spawn / Meta")]
         [Tooltip("Value between 0‒1 controlling selection probability; lower means rarer.")]
@@ -24,5 +25,12 @@ namespace NewItemSystem {
 
         // Fish behaviour carries no per-instance mutable state.
         public void InitialiseState(Dictionary<System.Type, IRuntimeBehaviourState> bag) { }
+
+        public object Clone() {
+            FishBehaviour copy = (FishBehaviour)this.MemberwiseClone();
+            copy.timeRanges = new List<TimeRange>(this.timeRanges);
+            copy.dateRanges = new List<DateRange>(this.dateRanges);
+            return copy;
+        }
     }
 } 

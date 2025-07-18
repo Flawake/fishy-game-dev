@@ -189,7 +189,7 @@ public class PlayerData : NetworkBehaviour
 
         //The newBait variable might be a newly crafted bait, so get it as a reference from the inventory, then the inventory get's updated when this specific item is updated
         ItemInstance baitInventoryReference;
-        if (newBait.def.stackable)
+        if (newBait.def.MaxStack > 1)
         {
             baitInventoryReference = inventory.GetBaitByDefinitionId(newBait.def.Id);
         }

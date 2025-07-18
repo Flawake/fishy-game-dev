@@ -16,9 +16,11 @@ MonoBehaviour:
   displayName: dough
   icon: {fileID: 0}
   maxStack: 1
+  isStatic: 0
   behaviours:
   - rid: 7137400945896849500
   - rid: 7137400945896849501
+  - rid: 7137400994374352974
   references:
     version: 2
     RefIds:
@@ -31,3 +33,8 @@ MonoBehaviour:
       data:
         maxDurability: 1
         infinite: 0
+    - rid: 7137400994374352974
+      type: {class: ShopBehaviour, ns: NewItemSystem, asm: Assembly-CSharp}
+      data:
+        priceCoins: -1
+        priceBucks: -1

@@ -21,7 +21,6 @@ namespace NewItemSystem {
         public string DisplayName => displayName;
         public Sprite Icon => icon;
         public int MaxStack => maxStack;
-        // Rarity moved to FishBehaviour where applicable.
         public IItemBehaviour[] Behaviours => behaviours ?? Array.Empty<IItemBehaviour>();
         // isStatic tells if the object CAN be removed from the inventory
         public bool IsStatic => isStatic;
@@ -37,6 +36,33 @@ namespace NewItemSystem {
             }
         }
 #endif
+
+        // Runtime deep clone (not an asset, just a memory copy)
+        public ItemDefinition Clone()
+        {
+            ItemDefinition copy = ScriptableObject.CreateInstance<ItemDefinition>();
+            copy.id = this.id;
+            copy.displayName = this.displayName;
+            copy.icon = this.icon;
+            copy.maxStack = this.maxStack;
+            copy.isStatic = this.isStatic;
+            if (this.behaviours != null)
+            {
+                copy.behaviours = new IItemBehaviour[this.behaviours.Length];
+                for (int i = 0; i < this.behaviours.Length; i++)
+                {
+                    if (this.behaviours[i] is ICloneable cloneable)
+                    {
+                        copy.behaviours[i] = (IItemBehaviour)cloneable.Clone();
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException($"Behaviour {this.behaviours[i].GetType().Name} does not implement ICloneable. All behaviours must support deep cloning.");
+                    }
+                }
+            }
+            return copy;
+        }
     }
 
     public enum Rarity { None, Common, Uncommon, Rare, Epic, Legendary }
