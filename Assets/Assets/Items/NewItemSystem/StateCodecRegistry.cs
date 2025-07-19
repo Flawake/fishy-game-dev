@@ -10,22 +10,31 @@ namespace NewItemSystem {
     public static class StateCodecRegistry {
         private static readonly Dictionary<Type, ushort> typeToId = new();
         private static readonly Dictionary<ushort, IStateCodec> idToCodec = new();
-        private static ushort nextId = 1; // 0 reserved
 
         static StateCodecRegistry() {
-            // Force static constructors of core codecs so they self-register.
-            _ = new StackCodec();
-            _ = new DurabilityCodec();
+            // Register core codecs with hardcoded IDs, changing IDs already registered will break existing saves in the db
+            Register(new StackCodec(), 1);
+            Register(new DurabilityCodec(), 2);
         }
 
-        public static void Register(IStateCodec codec) {
+        // Register a codec with a hardcoded ID
+        public static void Register(IStateCodec codec, ushort id) {
             var type = codec.StateType;
             if (typeToId.ContainsKey(type)) {
-                return; // already registered
+                if (typeToId[type] != id)
+                    throw new InvalidOperationException($"Type {type} already registered with a different ID ({typeToId[type]} != {id})");
+                return; // already registered with correct ID
             }
-            ushort id = nextId++;
+            if (idToCodec.ContainsKey(id))
+                throw new InvalidOperationException($"ID {id} already registered for type {idToCodec[id].StateType}");
             typeToId[type] = id;
             idToCodec[id] = codec;
+        }
+
+        // Deprecated: do not use auto-incrementing registration anymore
+        [Obsolete("Use Register(codec, id) with a hardcoded ID instead.")]
+        public static void Register(IStateCodec codec) {
+            throw new NotSupportedException("Use Register(codec, id) with a hardcoded ID instead.");
         }
 
         public static ushort GetId(Type t) {

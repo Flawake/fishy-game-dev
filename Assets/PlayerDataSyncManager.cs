@@ -60,4 +60,14 @@ public class PlayerDataSyncManager : MonoBehaviour
         inventory.RemoveItem(item.uuid);
         DatabaseCommunications.DestroyItem(item, playerData.GetUuid());
     }
+
+    internal void ChangeFishCoinsAmount(int? v)
+    {
+        throw new NotImplementedException();
+    }
+
+    internal void ChangeFishBucksAmount(int? v)
+    {
+        throw new NotImplementedException();
+    }
 }

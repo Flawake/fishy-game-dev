@@ -7,7 +7,7 @@ namespace NewItemSystem {
         public Type StateType => typeof(StackState);
 
         static StackCodec() {
-            StateCodecRegistry.Register(new StackCodec());
+            StateCodecRegistry.Register(new StackCodec(), 1);
         }
 
         public void Write(NetworkWriter writer, IRuntimeBehaviourState genericState) {

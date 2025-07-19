@@ -41,18 +41,11 @@ public struct UserData
     [Serializable]
     public struct InventoryItem
     {
-        public int item_id;
-        public string item_uid;  // public so Unity can deserialize
-        public int amount;
-        public int cell_id;
-    
-        public Guid itemUuid
-        {
-            get
-            {
-                return string.IsNullOrEmpty(item_uid) ? Guid.Empty : Guid.Parse(item_uid);
-            }
-        }
+        public string item_uuid;      // Unique instance ID (Guid as string)
+        public int definition_id;     // ItemDefinition ID
+        public string state_blob;     // Base64-encoded state dictionary
+
+        public Guid ItemUuid => string.IsNullOrEmpty(item_uuid) ? Guid.Empty : Guid.Parse(item_uuid);
     }
     
     [Serializable]

@@ -9,6 +9,7 @@ namespace NewItemSystem {
         [Header("Core")]
         [SerializeField] int id;
         [SerializeField] string displayName;
+        [SerializeField] string description;
         [SerializeField] Sprite icon;
         [SerializeField] int maxStack = 1;
         [SerializeField] bool isStatic = false;
@@ -19,6 +20,7 @@ namespace NewItemSystem {
         // --- Properties ----------------------------------------------------
         public int Id => id;
         public string DisplayName => displayName;
+        public string Description => description;
         public Sprite Icon => icon;
         public int MaxStack => maxStack;
         public IItemBehaviour[] Behaviours => behaviours ?? Array.Empty<IItemBehaviour>();

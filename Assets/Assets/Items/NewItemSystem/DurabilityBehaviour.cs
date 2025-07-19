@@ -39,7 +39,7 @@ namespace NewItemSystem {
         public Type StateType => typeof(DurabilityState);
 
         static DurabilityCodec() {
-            StateCodecRegistry.Register(new DurabilityCodec());
+            StateCodecRegistry.Register(new DurabilityCodec(), 2);
         }
 
         public void Write(NetworkWriter writer, IRuntimeBehaviourState genericState) {

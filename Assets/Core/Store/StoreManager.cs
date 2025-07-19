@@ -20,16 +20,16 @@ public class StoreManager : NetworkBehaviour
 
 
     [Client]
-    public void BuyItem(StoreItemObject item, CurrencyType currencyType)
+    public void BuyItem(ItemDefinition item, CurrencyType currencyType)
     {
-        CmdBuyItem(item.itemObject.id, currencyType);
+        CmdBuyItem(item.Id, currencyType);
     }
 
     [Command]
     void CmdBuyItem(int itemID, CurrencyType currencyType)
     {
         //Don't trust the player on giving the whole item, only use the itemID of the item that the player wants to buy.
-        ItemDefinition itemCopy = ItemsInGame.GetEmptyItemDefinitionCopy(itemID);
+        ItemDefinition itemCopy = ItemRegistry.GetClone(itemID);
         ShopBehaviour shopBehaviour = itemCopy.GetBehaviour<ShopBehaviour>();
         if (shopBehaviour == null)
         {

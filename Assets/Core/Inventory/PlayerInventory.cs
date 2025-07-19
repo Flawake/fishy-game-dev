@@ -24,22 +24,26 @@ public class PlayerInventory : NetworkBehaviour
 
         foreach (UserData.InventoryItem inv in userData.inventory_items)
         {
-            if (!ItemsInGame.idToTypeLut.TryGetValue(inv.item_id, out ItemType t))
+            var def = ItemRegistry.GetClone(inv.definition_id);
+            if (def == null)
             {
-                Debug.LogWarning($"Unknown item id {inv.item_id}");
+                Debug.LogWarning($"Unknown item definition id {inv.definition_id}");
                 continue;
             }
-
-            ItemObject legacyObj = t switch
+            var inst = new ItemInstance { def = def, uuid = inv.ItemUuid };
+            if (!string.IsNullOrEmpty(inv.state_blob))
             {
-                ItemType.Rod  => ItemObjectGenerator.RodObjectFromMinimal(inv.itemUuid, inv.item_id, inv.amount),
-                ItemType.Bait => ItemObjectGenerator.BaitObjectFromMinimal(inv.itemUuid, inv.item_id, inv.amount),
-                ItemType.Fish => ItemObjectGenerator.FishObjectFromMinimal(inv.itemUuid, inv.item_id, inv.amount),
-                _ => null,
-            };
-            if (legacyObj == null) continue;
-            ItemInstance inst = LegacyItemAdapter.From(legacyObj);
-            if (inst != null) items.Add(inst);
+                try
+                {
+                    byte[] stateBytes = Convert.FromBase64String(inv.state_blob);
+                    StatePacker.UnpackInto(stateBytes, inst.state);
+                }
+                catch (Exception e)
+                {
+                    Debug.LogWarning($"Failed to unpack state for item {inv.item_uuid}: {e}");
+                }
+            }
+            items.Add(inst);
         }
     }
 

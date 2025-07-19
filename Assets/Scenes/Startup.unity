@@ -1441,7 +1441,6 @@ GameObject:
   - component: {fileID: 302649091}
   - component: {fileID: 302649095}
   - component: {fileID: 302649097}
-  - component: {fileID: 302649099}
   - component: {fileID: 302649100}
   - component: {fileID: 302649101}
   m_Layer: 0
@@ -1586,39 +1585,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   offsetX: 0
   offsetY: 0
---- !u!114 &302649099
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 302649089}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 09259d0bd11787f40b20742f2a3be79e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fishesInGame:
-  - {fileID: 11400000, guid: fe0281c81c2c40c4ea8599281dc1ac47, type: 2}
-  - {fileID: 11400000, guid: 7277eb2f4568fa14ba5c081640414aec, type: 2}
-  - {fileID: 11400000, guid: 1f8c0b41307434448b0537e91dba28c9, type: 2}
-  - {fileID: 11400000, guid: 3572eae8e386df841a92e4feb3aa4ba7, type: 2}
-  - {fileID: 11400000, guid: f4c61ed6413137f459f7a4056ab813ae, type: 2}
-  - {fileID: 11400000, guid: 8e5d4333c8e464d4e993ab84622340f0, type: 2}
-  rodsInGame:
-  - {fileID: 11400000, guid: b9e1fb0dc4b5f8f49be5336235a35a83, type: 2}
-  baitsInGame:
-  - {fileID: 11400000, guid: af20aff1535c20e4b9fa980b7763f68c, type: 2}
-  - {fileID: 11400000, guid: f771b13e26b79a04cbfd72a5ec61c1a3, type: 2}
-  - {fileID: 11400000, guid: 55a8cf0bcb360fe47a5de65437b5ff7f, type: 2}
-  storeItemRods:
-  - {fileID: 11400000, guid: c1afab1760751eb43ac3c8dbe1cb48d2, type: 2}
-  storeItemBaits:
-  - {fileID: 11400000, guid: 1ca66b6ced022d64f9b08aced799048b, type: 2}
-  - {fileID: 11400000, guid: c4a8c86ecf7c888438d07da495ecef28, type: 2}
-  - {fileID: 11400000, guid: 8d1b49c128610bd40b7a372f0357680d, type: 2}
-  storeItemMisc: []
-  itemsInGame: []
 --- !u!114 &302649100
 MonoBehaviour:
   m_ObjectHideFlags: 0

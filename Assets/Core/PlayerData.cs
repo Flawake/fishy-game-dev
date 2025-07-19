@@ -124,7 +124,7 @@ public class PlayerData : NetworkBehaviour
     }
 
     [Command]
-    public void CmdSelectNewRod(rodObject newRod)
+    public void CmdSelectNewRod(ItemInstance newRod)
     {
         if (selectedRod != null)
         {
@@ -136,14 +136,14 @@ public class PlayerData : NetworkBehaviour
 
         //The newRod variable might be a newly crafted rod, so get it as a reference from the inventory, then the inventory get's updated when this specific item is updated
         ItemInstance rodInventoryReference;
-        if (!newRod.stackable)
+        if (newRod.def.MaxStack == 1)
         {
             rodInventoryReference = inventory.GetRodByUuid(newRod.uuid);
         }
         else
         {
             //Probably never needed, but catch it and warn just in case, why do rods have the stackable flag at all???
-            Debug.LogWarning("Why does this rod have the stackable flag set???");
+            Debug.LogWarning("Why does this rod have a stacksize of more than one???");
             return;
         }
 
@@ -306,7 +306,7 @@ public class PlayerData : NetworkBehaviour
         {
             if (amount < 0)
             {
-                DatabaseCommunications.ReduceItem(rod, Mathf.Abs(amount), GetUuid());
+                DatabaseCommunications.AddOrUpdateItem(rod, GetUuid());
             }
             else
             {
@@ -359,7 +359,7 @@ public class PlayerData : NetworkBehaviour
         {
             if (amount < 0)
             {
-                DatabaseCommunications.ReduceItem(bait, Mathf.Abs(amount), GetUuid());
+                DatabaseCommunications.AddOrUpdateItem(bait, GetUuid());
             }
             else
             {
