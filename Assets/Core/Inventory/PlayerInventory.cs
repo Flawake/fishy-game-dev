@@ -24,7 +24,7 @@ public class PlayerInventory : NetworkBehaviour
 
         foreach (UserData.InventoryItem inv in userData.inventory_items)
         {
-            var def = ItemRegistry.GetClone(inv.definition_id);
+            ItemDefinition def = ItemRegistry.Get(inv.definition_id);
             if (def == null)
             {
                 Debug.LogWarning($"Unknown item definition id {inv.definition_id}");

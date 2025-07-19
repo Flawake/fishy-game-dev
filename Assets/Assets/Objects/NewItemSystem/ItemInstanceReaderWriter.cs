@@ -18,7 +18,7 @@ namespace NewItemSystem {
             Guid uuid = reader.ReadGuid();
             byte[] blob = reader.ReadBytesAndSize();
 
-            var def = ItemRegistry.GetClone(defId);
+            var def = ItemRegistry.Get(defId);
             var inst = new ItemInstance(def) { uuid = uuid };
             StatePacker.UnpackInto(blob, inst.state);
             return inst;

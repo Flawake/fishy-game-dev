@@ -15,6 +15,7 @@ namespace NewItemSystem {
             // Register core codecs with hardcoded IDs, changing IDs already registered will break existing saves in the db
             Register(new StackCodec(), 1);
             Register(new DurabilityCodec(), 2);
+            Register(new FishCatchStateCodec(), 3);
         }
 
         // Register a codec with a hardcoded ID

@@ -1,3 +1,4 @@
+using NewItemSystem;
 using UnityEngine;
 
 public class FishdexUIManager : MonoBehaviour
@@ -15,9 +16,13 @@ public class FishdexUIManager : MonoBehaviour
             Destroy(child.gameObject);
         }
 
-        foreach (FishConfiguration fish in ItemsInGame.fishesInGame) {
+        foreach (ItemDefinition item in ItemRegistry.GetFullItemsList()) {
+            if (item.GetBehaviour<FishBehaviour>() != null)
+            {
+                continue;
+            }
             GameObject newFishdexFish = Instantiate(fishdexContentPrefab, fishdexContentHolder.transform);
-            newFishdexFish.GetComponent<FishdexFishUIBuilder>().BuildFishdexFish(fish);
+            newFishdexFish.GetComponent<FishdexFishUIBuilder>().BuildFishdexFish(item);
         }
     }
 

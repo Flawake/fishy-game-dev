@@ -29,7 +29,7 @@ public class StoreManager : NetworkBehaviour
     void CmdBuyItem(int itemID, CurrencyType currencyType)
     {
         //Don't trust the player on giving the whole item, only use the itemID of the item that the player wants to buy.
-        ItemDefinition itemCopy = ItemRegistry.GetClone(itemID);
+        ItemDefinition itemCopy = ItemRegistry.Get(itemID);
         ShopBehaviour shopBehaviour = itemCopy.GetBehaviour<ShopBehaviour>();
         if (shopBehaviour == null)
         {

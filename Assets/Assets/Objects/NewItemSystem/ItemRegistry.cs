@@ -9,16 +9,12 @@ namespace NewItemSystem {
         private static bool loaded = false;
         
 
-        private static ItemDefinition Get(int id) {
+        public static ItemDefinition Get(int id) {
             EnsureLoaded();
             if (!byId.TryGetValue(id, out var def)) {
                 Debug.LogError($"ItemDefinition with id {id} not found in registry");
             }
             return def;
-        }
-        
-        public static ItemDefinition GetClone(int id) {
-            return Get(id).Clone();
         }
 
         public static ItemDefinition[] GetFullItemsList()

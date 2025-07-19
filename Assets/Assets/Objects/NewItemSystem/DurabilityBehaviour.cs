@@ -11,9 +11,9 @@ namespace NewItemSystem {
     }
 
     [Serializable]
-    public class DurabilityBehaviour : IItemBehaviour, ICloneable {
-        [SerializeField] int maxDurability = 1;
-        [SerializeField] bool infinite;
+    public class DurabilityBehaviour : IItemBehaviour {
+        [SerializeField] private int maxDurability = 1;
+        [SerializeField] private bool infinite;
 
         public int MaxDurability => maxDurability;
 
@@ -28,10 +28,6 @@ namespace NewItemSystem {
         public void InitialiseState(Dictionary<Type, IRuntimeBehaviourState> bag) {
             if (infinite) return;
             bag[typeof(DurabilityState)] = new DurabilityState { remaining = maxDurability };
-        }
-
-        public object Clone() {
-            return this.MemberwiseClone();
         }
     }
 

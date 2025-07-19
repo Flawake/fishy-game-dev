@@ -39,7 +39,7 @@ public class FishInfoUIManager : MonoBehaviour
 
     public void OpenFishInfo(int fishID)
     {
-        curFish = ItemRegistry.GetClone(fishID);
+        curFish = ItemRegistry.Get(fishID);
         if (curFish == null || curFish.GetBehaviour<FishBehaviour>() == null)
         {
             Debug.LogWarning($"Could not show information about a fish that should have had ID: {fishID}");

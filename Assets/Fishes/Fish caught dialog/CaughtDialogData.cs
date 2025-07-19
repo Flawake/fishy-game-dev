@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System;
+using NewItemSystem;
 
 public class CaughtDialogData : MonoBehaviour
 {
@@ -19,9 +20,9 @@ public class CaughtDialogData : MonoBehaviour
 
     public void SetData(CurrentFish fishdata)
     {
-        FishConfiguration fish = ItemsInGame.getFishByID(fishdata.id);
+        ItemDefinition fish = ItemRegistry.Get(fishdata.id);
         nameField.text = fish.name;
-        fishSprite.sprite = fish.fishImage;
+        fishSprite.sprite = fish.Icon;
         rarityField.text = FishEnumConfig.RarityToString(fishdata.rarity);
         rarityField.color = FishEnumConfig.RarityToColor(fishdata.rarity);
         lengthField.text = fishdata.length.ToString();

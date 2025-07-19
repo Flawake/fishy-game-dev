@@ -307,7 +307,7 @@ public class FishingManager : NetworkBehaviour
         else
         {
             TargetShowCaughtDialog();
-            ItemDefinition fishDef = ItemsInGame.GetEmptyItemDefinitionCopy(currentFish.id);
+            ItemDefinition fishDef = ItemRegistry.Get(currentFish.id);
             ItemInstance fishInstance = new ItemInstance(fishDef);
             playerDataManager.AddItem(fishInstance, currentFish, true);
             playerDataManager.AddXP(currentFish.xp);

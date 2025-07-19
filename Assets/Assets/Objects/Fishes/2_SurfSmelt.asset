@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 466ab68691b39318784f667dc1da5678, type: 3}
+  m_Name: 2_SurfSmelt
+  m_EditorClassIdentifier: 
+  id: 10002
+  displayName: Surf Smelt
+  description: "At dusk, just as the surf fades to twilight, schools of surf smelt
+    emerge along sandy beaches, flickering silver in the shallows like living moonlight.
+    They spawn in the breaker zone: tiny sticky eggs cling to wet sand and kelp,
+    laid under the cover of night to the rhythm of crashing surf. Each spring through
+    fall, they rise and fall with the tides, feeding the entire beach ecosystem\u2014from
+    diving seabirds to local halibut and salmon. These slender smelts are modest
+    in size but immense in impact\u2014beach anglers prize them as bait, but in their
+    own right they are a vital thread weaving sea and sand together."
+  icon: {fileID: -4921875259608312698, guid: 4e18281f44f08a48687b5682243c7e4b, type: 3}
+  maxStack: 2147483647
+  isStatic: 0
+  behaviours:
+  - rid: 7137400945896849509
+  references:
+    version: 2
+    RefIds:
+    - rid: 7137400945896849509
+      type: {class: FishBehaviour, ns: NewItemSystem, asm: Assembly-CSharp}
+      data:
+        minimumLength: 7
+        maximumLength: 23
+        avarageLength: 16
+        minMartketPrice: 0
+        maxMarketPrice: 0
+        bitesOn: 74
+        rarity: 1
+        locations: 1
+        rarityFactor: 1
+        timeRanges: []
+        dateRanges: []
