@@ -16,9 +16,12 @@ public class FishdexUIManager : MonoBehaviour
             Destroy(child.gameObject);
         }
 
-        foreach (ItemDefinition item in ItemRegistry.GetFullItemsList()) {
-            if (item.GetBehaviour<FishBehaviour>() != null)
+        Debug.Log($"{ItemRegistry.GetFullItemsList().Length}");
+        foreach (ItemDefinition item in ItemRegistry.GetFullItemsList())
+        {
+            if (item.GetBehaviour<FishBehaviour>() == null)
             {
+                Debug.Log($"Skipping item id: {item.Id}");
                 continue;
             }
             GameObject newFishdexFish = Instantiate(fishdexContentPrefab, fishdexContentHolder.transform);
@@ -34,8 +37,8 @@ public class FishdexUIManager : MonoBehaviour
         }
         else
         {
-            fishdexObject.SetActive(true);
             BuildFishdex();
+            fishdexObject.SetActive(true);
         }
     }
 

@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 4e18281f44f08a48687b5682243c7e4b
+guid: a921b496dd9a0e9ecbcee00e4b15c8c2
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -4921875259608312698
-    second: Surf Smelt_0
+      213: -6726128354008573269
+    second: Steel_rod_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Surf Smelt_0
+      name: Steel_rod_0
       rect:
         serializedVersion: 2
-        x: 41
-        y: 416
-        width: 1209
-        height: 376
+        x: 250
+        y: 90
+        width: 765
+        height: 1101
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 6845342578cf1bbb0800000000000000
-      internalID: -4921875259608312698
+      spriteID: baad2a906edf7a2a0800000000000000
+      internalID: -6726128354008573269
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Surf Smelt_0: -4921875259608312698
+      Steel_rod_0: -6726128354008573269
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

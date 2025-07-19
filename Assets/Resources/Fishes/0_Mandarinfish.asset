@@ -21,7 +21,7 @@ MonoBehaviour:
     females. Lacking scales, it protects itself with a foul-smelling, toxic mucus
     that deters predators. Though only about 6 cm long, its striking appearance and
     secretive behavior have made it both a scientific marvel and a reef legend."
-  icon: {fileID: -6819402960122084032, guid: 01262f3b3021d879db1811400413dc0e, type: 3}
+  icon: {fileID: 21300000, guid: 01262f3b3021d879db1811400413dc0e, type: 3}
   maxStack: 2147483647
   isStatic: 0
   behaviours:

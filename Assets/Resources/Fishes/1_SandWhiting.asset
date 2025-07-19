@@ -23,7 +23,7 @@ MonoBehaviour:
     long been coveted by anglers for their fight and flavour. In their world, beauty
     is subtle and utilitarian\u2014moving in synchrony, half\u2011invisible in foam
     and sunlit ripples."
-  icon: {fileID: -4564679624172858405, guid: 81fe6dfbd8f9955b3b89c9c75af84fbf, type: 3}
+  icon: {fileID: 21300000, guid: 81fe6dfbd8f9955b3b89c9c75af84fbf, type: 3}
   maxStack: 2147483647
   isStatic: 0
   behaviours:

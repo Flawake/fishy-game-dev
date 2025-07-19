@@ -11,6 +11,13 @@ public enum ItemType
     Extra,
 }
 
+public enum RodThrowDistance
+{
+    Close,
+    Medium,
+    Far,
+}
+
 public abstract class ItemObject : ScriptableObject
 {
     public Guid uuid;

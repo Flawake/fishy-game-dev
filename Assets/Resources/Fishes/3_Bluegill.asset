@@ -19,7 +19,7 @@ MonoBehaviour:
     east of the Rocky Mountains. Recognizable by its deep, flattened body and distinctive
     blue or black "ear" on the gill cover, the bluegill has been a subject of fascination
     and symbolism across various cultures.
-  icon: {fileID: 902442554117873065, guid: 3a856f946eb8b6c269fe82dd75df5027, type: 3}
+  icon: {fileID: 21300000, guid: 3a856f946eb8b6c269fe82dd75df5027, type: 3}
   maxStack: 2147483647
   isStatic: 0
   behaviours:

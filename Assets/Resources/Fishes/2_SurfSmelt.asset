@@ -22,7 +22,7 @@ MonoBehaviour:
     diving seabirds to local halibut and salmon. These slender smelts are modest
     in size but immense in impact\u2014beach anglers prize them as bait, but in their
     own right they are a vital thread weaving sea and sand together."
-  icon: {fileID: -4921875259608312698, guid: 4e18281f44f08a48687b5682243c7e4b, type: 3}
+  icon: {fileID: 21300000, guid: 4e18281f44f08a48687b5682243c7e4b, type: 3}
   maxStack: 2147483647
   isStatic: 0
   behaviours:

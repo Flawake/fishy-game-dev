@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 466ab68691b39318784f667dc1da5678, type: 3}
+  m_Name: 2_Worms
+  m_EditorClassIdentifier: 
+  id: 2
+  displayName: Worms
+  description: 
+  icon: {fileID: 21300000, guid: 08e00fcf172a78b44bed5f5d695080ad, type: 3}
+  maxStack: 1
+  isStatic: 0
+  behaviours:
+  - rid: 7137401008670638162
+  - rid: 7137401008670638163
+  - rid: 7137401008670638164
+  references:
+    version: 2
+    RefIds:
+    - rid: 7137401008670638162
+      type: {class: BaitBehaviour, ns: NewItemSystem, asm: Assembly-CSharp}
+      data:
+        baitType: 8
+    - rid: 7137401008670638163
+      type: {class: DurabilityBehaviour, ns: NewItemSystem, asm: Assembly-CSharp}
+      data:
+        maxDurability: 20
+        infinite: 0
+    - rid: 7137401008670638164
+      type: {class: ShopBehaviour, ns: NewItemSystem, asm: Assembly-CSharp}
+      data:
+        priceCoins: 2
+        priceBucks: 500
