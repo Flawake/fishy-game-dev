@@ -164,6 +164,7 @@ public class PlayerData : NetworkBehaviour
     [Server]
     public void SelectNewBait(ItemInstance newBait, bool fromDatabase)
     {
+        Debug.Log("Setting new bait");
         if (!fromDatabase)
         {
             if (newBait != null)

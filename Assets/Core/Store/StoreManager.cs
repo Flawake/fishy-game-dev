@@ -1,4 +1,3 @@
-using System;
 using Mirror;
 using NewItemSystem;
 using UnityEngine;
@@ -29,8 +28,8 @@ public class StoreManager : NetworkBehaviour
     void CmdBuyItem(int itemID, CurrencyType currencyType)
     {
         //Don't trust the player on giving the whole item, only use the itemID of the item that the player wants to buy.
-        ItemDefinition itemCopy = ItemRegistry.Get(itemID);
-        ShopBehaviour shopBehaviour = itemCopy.GetBehaviour<ShopBehaviour>();
+        ItemDefinition item = ItemRegistry.Get(itemID);
+        ShopBehaviour shopBehaviour = item.GetBehaviour<ShopBehaviour>();
         if (shopBehaviour == null)
         {
             Debug.LogWarning("Player tried to buy an item which could not be bought");
@@ -50,7 +49,10 @@ public class StoreManager : NetworkBehaviour
             {
                 return;
             }
-            ItemInstance instance = new ItemInstance(itemCopy);
+            ItemInstance instance = new ItemInstance(
+                item,
+                item.GetBehaviour<DurabilityBehaviour>()?.MaxDurability ?? -10
+            );
             playerDataManager.AddItem(instance);
             playerDataManager.ChangeFishCoinsAmount(-shopBehaviour.PriceCoins);
         }
@@ -60,7 +62,10 @@ public class StoreManager : NetworkBehaviour
             {
                 return;
             }
-            ItemInstance instance = new ItemInstance(itemCopy);
+            ItemInstance instance = new ItemInstance(
+                item,
+                item.GetBehaviour<DurabilityBehaviour>()?.MaxDurability ?? -10
+            );
             playerDataManager.AddItem(instance);
             playerDataManager.ChangeFishBucksAmount(-shopBehaviour.PriceBucks);
         }

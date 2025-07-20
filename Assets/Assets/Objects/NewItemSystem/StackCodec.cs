@@ -13,13 +13,11 @@ namespace NewItemSystem {
         public void Write(NetworkWriter writer, IRuntimeBehaviourState genericState) {
             var s = (StackState)genericState;
             writer.WriteInt(s.currentAmount);
-            writer.WriteInt(s.maxStack);
         }
 
         public IRuntimeBehaviourState Read(NetworkReader reader) {
             return new StackState {
                 currentAmount = reader.ReadInt(),
-                maxStack = reader.ReadInt()
             };
         }
     }

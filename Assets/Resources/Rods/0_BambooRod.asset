@@ -15,7 +15,7 @@ MonoBehaviour:
   id: 1000
   displayName: BambooRod
   description: A basic rod made of bamboo, perfect for beginners testing the waters.
-  icon: {fileID: 21300000, guid: c0aee3a91067f5b4bb455ec4ebe6b587, type: 3}
+  icon: {fileID: 21300000, guid: 06991258ef2b5283d84345eec0fa746a, type: 3}
   maxStack: 1
   isStatic: 1
   behaviours:

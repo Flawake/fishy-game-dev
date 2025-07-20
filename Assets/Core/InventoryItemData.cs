@@ -1,8 +1,5 @@
 using UnityEngine.UI;
 using UnityEngine;
-using TMPro;
-using System;
-using Unity.VisualScripting;
 using NewItemSystem;
 
 public class InventoryItemData : MonoBehaviour

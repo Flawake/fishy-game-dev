@@ -144,6 +144,7 @@ public class InventoryUIManager : MonoBehaviour
 
     void RebuildInventory(ItemFiler filter)
     {
+        Debug.Log(filter);
         // Remove previous UI entries
         var children = new List<GameObject>();
         foreach (Transform child in itemHolder.transform)
@@ -153,20 +154,24 @@ public class InventoryUIManager : MonoBehaviour
         children.ForEach(child => Destroy(child));
 
         PlayerInventory inventory = GetComponentInParent<PlayerInventory>();
-        bool firstSet = false;
-        foreach (var inst in inventory.items)
+        foreach (ItemInstance inst in inventory.items)
         {
             if (!MatchesFilter(inst, filter)) continue;
 
             GameObject go = Instantiate(inventoryItemPrefab, itemHolder.transform, false);
-            var data = go.GetComponent<InventoryItemData>();
-            data.SetInventoryItemData(inst, false); // selected logic TBD
+            InventoryItemData data = go.GetComponent<InventoryItemData>();
+            data.SetInventoryItemData(
+                inst,
+                inst.uuid == playerData.GetSelectedRod().uuid
+            );
+        }
+        Debug.Log(itemHolder.transform.childCount);
 
-            if (!firstSet)
-            {
-                data.InventoryItemClicked();
-                firstSet = true;
-            }
+        // Set the first item as selected
+        if (itemHolder.transform.childCount > 0)
+        {
+            InventoryItemData firstItem = itemHolder.transform.GetChild(0).GetComponent<InventoryItemData>();
+            firstItem.InventoryItemClicked();
         }
     }
 
@@ -187,7 +192,7 @@ public class InventoryUIManager : MonoBehaviour
     {
         selectedItem = inst;
         string name = inst.def.DisplayName;
-        int amount = inst.GetState<StackState>()?.currentAmount ?? -9;
+        int amount = inst.GetState<StackState>()?.currentAmount ?? -10;
         itemPreviewSelectedItemMark.SetActive(false);
         itemInfoText.text = inst.def.DisplayName;
         itemNameText.text = name;
@@ -210,6 +215,7 @@ public class InventoryUIManager : MonoBehaviour
         ShowItemInfo(selectedItem);
     }
 
+    // Called from button ingame
     public void UseSelectedItem()
     {
         if (playerData == null)
@@ -220,7 +226,15 @@ public class InventoryUIManager : MonoBehaviour
                 return;
             }
         }
-        // TODO: hook up equip with new system
+
+        if (selectedItem.def.GetBehaviour<RodBehaviour>() != null)
+        {
+            playerData.CmdSelectNewRod(selectedItem);
+        }
+        else if (selectedItem.def.GetBehaviour<BaitBehaviour>() != null)
+        {
+            playerData.CmdSelectNewBait(selectedItem);
+        }
         CloseBackPack();
     }
 

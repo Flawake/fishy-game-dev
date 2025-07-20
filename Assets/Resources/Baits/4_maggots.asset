@@ -16,7 +16,7 @@ MonoBehaviour:
   displayName: Maggots
   description: 
   icon: {fileID: 21300000, guid: 08e00fcf172a78b44bed5f5d695080ad, type: 3}
-  maxStack: 1
+  maxStack: 2147483647
   isStatic: 0
   behaviours:
   - rid: 7137401008670638162

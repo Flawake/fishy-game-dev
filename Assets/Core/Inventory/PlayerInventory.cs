@@ -44,6 +44,22 @@ public class PlayerInventory : NetworkBehaviour
                 }
             }
             items.Add(inst);
+            if (userData.SelectedRod == inst.uuid)
+            {
+                if (inst.def.GetBehaviour<RodBehaviour>() == null)
+                {
+                    continue;
+                }
+                playerData.SelectNewRod(inst, false);
+            }
+            if (userData.SelectedBait == inst.uuid)
+            {
+                if (inst.def.GetBehaviour<BaitBehaviour>() == null)
+                {
+                    continue;
+                }
+                playerData.SelectNewBait(inst, false);
+            }
         }
     }
 
@@ -93,13 +109,13 @@ public class PlayerInventory : NetworkBehaviour
     bool TryMergeOrAdd(ItemInstance inst)
     {
         StackState stack = inst.GetState<StackState>();
-        if (stack != null && stack.maxStack > 1)
+        if (stack != null && inst.def.MaxStack > 1)
         {
             int toAdd = stack.currentAmount;
-            foreach (ItemInstance existing in items.Where(i => i.def.Id == inst.def.Id && i.GetState<StackState>()?.currentAmount < stack.maxStack).ToList())
+            foreach (ItemInstance existing in items.Where(i => i.def.Id == inst.def.Id && i.GetState<StackState>()?.currentAmount < i.def.MaxStack).ToList())
             {
                 StackState exStack = existing.GetState<StackState>();
-                int space = exStack.maxStack - exStack.currentAmount;
+                int space = existing.def.MaxStack - exStack.currentAmount;
                 int add = Math.Min(space, toAdd);
                 exStack.currentAmount += add;
                 existing.SetState(exStack);
@@ -109,7 +125,7 @@ public class PlayerInventory : NetworkBehaviour
             // If there is leftover, create new stacks as needed
             while (toAdd > 0)
             {
-                int thisStack = Math.Min(stack.maxStack, toAdd);
+                int thisStack = Math.Min(inst.def.MaxStack, toAdd);
                 ItemInstance newStack = new ItemInstance(inst.def, thisStack);
                 items.Add(newStack);
                 toAdd -= thisStack;

@@ -17,7 +17,7 @@ namespace NewItemSystem {
             def = definition;
 
             // Core stack state
-            state[typeof(StackState)] = new StackState { currentAmount = initialStack, maxStack = definition.MaxStack };
+            state[typeof(StackState)] = new StackState { currentAmount = initialStack };
 
             // Behaviours may create their own state
             foreach (var behaviour in definition.Behaviours) {
@@ -42,6 +42,5 @@ namespace NewItemSystem {
     [Serializable]
     public class StackState : IRuntimeBehaviourState {
         public int currentAmount;
-        public int maxStack;
     }
 } 
