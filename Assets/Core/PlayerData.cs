@@ -62,8 +62,9 @@ public class PlayerData : NetworkBehaviour
         set => selectedRodUidStr = value.ToString();
     }
     
+    // Default the value to -1 (no bait has that value) To trigger a change when the player selected the bait with id 0
     [SyncVar(hook = nameof(SelectedBaitChanged))]
-    int selectedBaitId;
+    int selectedBaitId = -1;
 
     private ItemInstance selectedRod;
     private ItemInstance selectedBait;
@@ -164,7 +165,6 @@ public class PlayerData : NetworkBehaviour
     [Server]
     public void SelectNewBait(ItemInstance newBait, bool fromDatabase)
     {
-        Debug.Log("Setting new bait");
         if (!fromDatabase)
         {
             if (newBait != null)
@@ -172,7 +172,6 @@ public class PlayerData : NetworkBehaviour
                 DatabaseCommunications.SelectOtherItem(newBait, GetUuid());
             }
         }
-        //TODO: ask the database what the new rod is to see if the write has gone correctly
         selectedBait = newBait;
         selectedBaitId = newBait.def.Id;
     }

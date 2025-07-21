@@ -41,6 +41,7 @@ public class PlayerInventory : NetworkBehaviour
                 catch (Exception e)
                 {
                     Debug.LogWarning($"Failed to unpack state for item {inv.item_uuid}: {e}");
+                    continue;
                 }
             }
             items.Add(inst);
@@ -50,7 +51,7 @@ public class PlayerInventory : NetworkBehaviour
                 {
                     continue;
                 }
-                playerData.SelectNewRod(inst, false);
+                playerData.SelectNewRod(inst, true);
             }
             if (userData.SelectedBait == inst.uuid)
             {
@@ -58,7 +59,7 @@ public class PlayerInventory : NetworkBehaviour
                 {
                     continue;
                 }
-                playerData.SelectNewBait(inst, false);
+                playerData.SelectNewBait(inst, true);
             }
         }
     }

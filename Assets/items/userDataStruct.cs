@@ -18,14 +18,14 @@ public struct UserData
     public Friend[] friends;
     public FriendRequest[] friend_requests;
     
-    public Guid? SelectedRod
+    public readonly Guid? SelectedRod
     {
         get
         {
             return string.IsNullOrEmpty(selected_rod) ? null : Guid.Parse(selected_rod);
         }
     }
-    public Guid? SelectedBait => string.IsNullOrEmpty(selected_bait) ? null : Guid.Parse(selected_bait);
+    public readonly Guid? SelectedBait => string.IsNullOrEmpty(selected_bait) ? null : Guid.Parse(selected_bait);
     
     [Serializable]
     public struct FishData

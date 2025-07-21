@@ -139,7 +139,6 @@ public class InventoryUIManager : MonoBehaviour
 
     void RebuildInventory(ItemFiler filter)
     {
-        Debug.Log(filter);
         // Remove previous UI entries
         var children = new List<GameObject>();
         foreach (Transform child in itemHolder.transform)
@@ -147,6 +146,8 @@ public class InventoryUIManager : MonoBehaviour
             children.Add(child.gameObject);
         }
         children.ForEach(child => Destroy(child));
+
+        InventoryItemData firstItem = null;
 
         PlayerInventory inventory = GetComponentInParent<PlayerInventory>();
         foreach (ItemInstance inst in inventory.items)
@@ -157,17 +158,15 @@ public class InventoryUIManager : MonoBehaviour
             InventoryItemData data = go.GetComponent<InventoryItemData>();
             data.SetInventoryItemData(
                 inst,
-                inst.uuid == playerData.GetSelectedRod().uuid || inst.uuid == playerData.GetSelectedBait().uuid
+                inst.uuid == playerData.GetSelectedRod()?.uuid || inst.uuid == playerData.GetSelectedBait()?.uuid
             );
-        }
-        Debug.Log(itemHolder.transform.childCount);
 
-        // Set the first item as selected
-        if (itemHolder.transform.childCount > 0)
-        {
-            InventoryItemData firstItem = itemHolder.transform.GetChild(0).GetComponent<InventoryItemData>();
-            firstItem.InventoryItemClicked();
+            if (firstItem == null)
+            {
+                firstItem = data;
+            }
         }
+        firstItem?.InventoryItemClicked();
     }
 
     bool MatchesFilter(ItemInstance inst, ItemFiler filter)
