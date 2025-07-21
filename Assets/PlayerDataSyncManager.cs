@@ -43,15 +43,14 @@ public class PlayerDataSyncManager : MonoBehaviour
     [Server]
     public void AddItem(ItemInstance item, CurrentFish fish, bool fromCaught)
     {
-        // First update the local inventory (this may merge stacks and change quantities).
         if (fish != null && fromCaught)
         {
             fishdexFishes.AddStatFish(fish);
             DatabaseCommunications.AddStatFish(fish, playerData.GetUuid());
         }
 
-        inventory.AddItem(item);
-        DatabaseCommunications.AddOrUpdateItem(item, playerData.GetUuid());
+        ItemInstance toUpdate = inventory.AddItem(item);
+        DatabaseCommunications.AddOrUpdateItem(toUpdate, playerData.GetUuid());
     }
 
     [Server]

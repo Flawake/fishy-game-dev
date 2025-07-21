@@ -22,6 +22,7 @@ MonoBehaviour:
   behaviours:
   - rid: 7137401008670638156
   - rid: 7137401008670638157
+  - rid: 7137401058115977292
   references:
     version: 2
     RefIds:
@@ -35,3 +36,8 @@ MonoBehaviour:
       data:
         priceCoins: 150
         priceBucks: -1
+    - rid: 7137401058115977292
+      type: {class: DurabilityBehaviour, ns: NewItemSystem, asm: Assembly-CSharp}
+      data:
+        maxDurability: 800
+        infinite: 0

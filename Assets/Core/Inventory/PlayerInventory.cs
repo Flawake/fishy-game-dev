@@ -67,11 +67,19 @@ public class PlayerInventory : NetworkBehaviour
     // ------------------------------------------------------------------
     // CRUD helpers ------------------------------------------------------
     // ------------------------------------------------------------------
+
+    /// <summary>
+    /// Interface to add item to player's inventory
+    /// </summary>
+    /// <param name="inst"></param>
+    /// <returns>
+    /// bool, stacked on existing item or not
+    /// </returns>
     [Server]
-    public void AddItem(ItemInstance inst)
+    public ItemInstance AddItem(ItemInstance inst)
     {
-        if (inst == null) return;
-        TryMergeOrAdd(inst);
+        if (inst == null) return null;
+        return TryMergeOrAdd(inst);
     }
 
     [Server]
@@ -96,7 +104,7 @@ public class PlayerInventory : NetworkBehaviour
     {
         return items.FirstOrDefault(i => i.uuid == uuid && i.HasBehaviour<RodBehaviour>());
     }
-    
+
     public ItemInstance GetRodByDefinitionId(int id)
     {
         return items.FirstOrDefault(i => i.def.Id == id && i.HasBehaviour<RodBehaviour>());
@@ -106,35 +114,82 @@ public class PlayerInventory : NetworkBehaviour
     {
         return items.FirstOrDefault(i => i.def.Id == id && i.HasBehaviour<BaitBehaviour>());
     }
-    
-    bool TryMergeOrAdd(ItemInstance inst)
+
+    /// <summary>
+    /// Adds an item to the players inventory
+    /// </summary>
+    /// <param name="inst"></param>
+    /// <returns>
+    /// The item that needs to be written int the db
+    /// </returns>
+    ItemInstance TryMergeOrAdd(ItemInstance inst)
     {
+        // Exception for bait behaviour, work on durability instead of the stack
+        if (inst.def.GetBehaviour<BaitBehaviour>() != null)
+        {
+            ItemInstance ret = ServerUpdateBaitDurability(inst);
+            if (ret == inst)
+            {
+                items.Add(inst);
+            }
+            return ret;
+        }
         StackState stack = inst.GetState<StackState>();
         if (stack != null && inst.def.MaxStack > 1)
         {
-            int toAdd = stack.currentAmount;
-            foreach (ItemInstance existing in items.Where(i => i.def.Id == inst.def.Id && i.GetState<StackState>()?.currentAmount < i.def.MaxStack).ToList())
+            // Just overstack for now if there is at least one object available to insert. To keep game and database in sync
+            ItemInstance itemRef = items.First(i => i.def.Id == inst.def.Id && i.GetState<StackState>()?.currentAmount < i.def.MaxStack);
+            if (itemRef != null)
             {
-                StackState exStack = existing.GetState<StackState>();
-                int space = existing.def.MaxStack - exStack.currentAmount;
-                int add = Math.Min(space, toAdd);
-                exStack.currentAmount += add;
-                existing.SetState(exStack);
-                toAdd -= add;
-                if (toAdd <= 0) return true;
+                itemRef.GetState<StackState>().currentAmount += inst.GetState<StackState>().currentAmount;
+                RpcUpdateItemStack(itemRef);
+                return itemRef;
             }
-            // If there is leftover, create new stacks as needed
-            while (toAdd > 0)
-            {
-                int thisStack = Math.Min(inst.def.MaxStack, toAdd);
-                ItemInstance newStack = new ItemInstance(inst.def, thisStack);
-                items.Add(newStack);
-                toAdd -= thisStack;
-            }
-            return true;
         }
         items.Add(inst);
-        return false;
+        return inst;
+    }
+
+    [TargetRpc]
+    private void RpcUpdateItemStack(ItemInstance replacement)
+    {
+        ItemInstance itemRef = items.First(i => i.def.Id == replacement.def.Id);
+        itemRef.GetState<StackState>().currentAmount = replacement.GetState<StackState>().currentAmount;
+    }
+
+    [Server]
+    public ItemInstance ServerUpdateBaitDurability(ItemInstance ghost)
+    {
+        TargetUpdateBaitDurability(ghost);
+        return UpdateBaitDurability(ghost);
+    }
+
+    // Changes in items in a synclist are not updated, we need to trigger an update manually
+    [TargetRpc]
+    private void TargetUpdateBaitDurability(ItemInstance ghost)
+    {
+
+        UpdateBaitDurability(ghost);
+    }
+
+    private ItemInstance UpdateBaitDurability(ItemInstance ghost)
+    {
+        ItemInstance item = items.First(i => i.def.Id == ghost.def.Id);
+        if (item == null)
+        {
+            Debug.Log("Not found");
+            return ghost;
+        }
+
+        DurabilityState state = item.GetState<DurabilityState>();
+        DurabilityState updatedState = ghost.GetState<DurabilityState>();
+
+        if (state != null)
+        {
+            state.remaining += updatedState.remaining;
+        }
+        Debug.Log($"Updating state done: {GetItem(item.uuid).GetState<DurabilityState>().remaining}");
+        return item;
     }
 }
 
