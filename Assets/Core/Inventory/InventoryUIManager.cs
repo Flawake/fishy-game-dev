@@ -9,7 +9,6 @@ using NewItemSystem;
 
 public class InventoryUIManager : MonoBehaviour
 {
-    PlayerController controller;
     ItemInstance selectedItem;
     PlayerData playerData;
 
@@ -79,7 +78,6 @@ public class InventoryUIManager : MonoBehaviour
     private void Start()
     {
         playerData = GetComponentInParent<PlayerData>();
-        controller = GetComponentInParent<PlayerController>();
     }
 
     //called by a button in the game
@@ -101,18 +99,15 @@ public class InventoryUIManager : MonoBehaviour
             //0 is show all
             ChangeBackPackMenu(filter);
             inventoryUI.SetActive(true);
-            EnsurePlayerController();
         }
         else
         {
             inventoryUI.SetActive(false);
-            EnsurePlayerController();
         }
     }
 
     public void CloseBackPack()
     {
-        EnsurePlayerController();
         inventoryUI.SetActive(false);
     }
 
@@ -162,7 +157,7 @@ public class InventoryUIManager : MonoBehaviour
             InventoryItemData data = go.GetComponent<InventoryItemData>();
             data.SetInventoryItemData(
                 inst,
-                inst.uuid == playerData.GetSelectedRod().uuid
+                inst.uuid == playerData.GetSelectedRod().uuid || inst.uuid == playerData.GetSelectedBait().uuid
             );
         }
         Debug.Log(itemHolder.transform.childCount);
@@ -236,14 +231,6 @@ public class InventoryUIManager : MonoBehaviour
             playerData.CmdSelectNewBait(selectedItem);
         }
         CloseBackPack();
-    }
-
-    void EnsurePlayerController()
-    {
-        if (controller == null)
-        {
-            controller = GetComponentInParent<PlayerController>();
-        }
     }
 }
 

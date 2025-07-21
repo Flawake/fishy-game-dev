@@ -103,7 +103,7 @@ public class FishingManager : NetworkBehaviour
         {
             InventoryUIManager inventoryManager = GetComponentInChildren<InventoryUIManager>();
             inventoryManager.ToggleBackPack(InventoryUIManager.ItemFiler.Rods);
-            Debug.LogWarning("Open inventory rods page...");
+            Debug.Log("Open inventory rods page...");
             return true;
         }
         
@@ -111,7 +111,7 @@ public class FishingManager : NetworkBehaviour
         {
             InventoryUIManager inventoryManager = GetComponentInChildren<InventoryUIManager>();
             inventoryManager.ToggleBackPack(InventoryUIManager.ItemFiler.Baits);
-            Debug.LogWarning("Open inventory baits page...");
+            Debug.Log("Open inventory baits page...");
             return true;
         }
 
