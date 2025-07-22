@@ -15,8 +15,9 @@ MonoBehaviour:
   id: 50000
   displayName: Rare luck potion
   description: 
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 33163aa5997d5bc0c82fe1be40dce7b2, type: 3}
   maxStack: 2147483647
+  canStack: 0
   isStatic: 0
   behaviours:
   - rid: 3081823821378879575
