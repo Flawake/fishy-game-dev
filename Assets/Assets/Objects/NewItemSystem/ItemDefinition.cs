@@ -13,6 +13,7 @@ namespace NewItemSystem {
         [SerializeField] private string description;
         [SerializeField] private Sprite icon;
         [SerializeField] private int maxStack = 1;
+        [SerializeField] private bool canStack = false;
         [SerializeField] private bool isStatic = false;
 
         [Header("Behaviours")]
@@ -24,6 +25,7 @@ namespace NewItemSystem {
         public string Description => description;
         public Sprite Icon => icon;
         public int MaxStack => maxStack;
+        public bool CanStack => canStack;
         public IItemBehaviour[] Behaviours => behaviours ?? Array.Empty<IItemBehaviour>();
         // isStatic tells if the object CAN be removed from the inventory
         public bool IsStatic => isStatic;

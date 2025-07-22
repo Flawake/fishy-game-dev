@@ -124,72 +124,81 @@ public class PlayerInventory : NetworkBehaviour
     /// </returns>
     ItemInstance TryMergeOrAdd(ItemInstance inst)
     {
-        // Exception for bait behaviour, work on durability instead of the stack
-        if (inst.def.GetBehaviour<BaitBehaviour>() != null)
+        if (inst.def.CanStack)
         {
-            ItemInstance ret = ServerUpdateBaitDurability(inst);
-            if (ret == inst)
+            ItemInstance itemRef = items.FirstOrDefault(i => i.def.Id == inst.def.Id);
+            if (itemRef == null)
             {
                 items.Add(inst);
+                return inst;
             }
-            return ret;
-        }
-        StackState stack = inst.GetState<StackState>();
-        if (stack != null && inst.def.MaxStack > 1)
-        {
-            // Just overstack for now if there is at least one object available to insert. To keep game and database in sync
-            ItemInstance itemRef = items.First(i => i.def.Id == inst.def.Id && i.GetState<StackState>()?.currentAmount < i.def.MaxStack);
-            if (itemRef != null)
+
+            if (ServerMergeItem(itemRef, inst))
             {
-                itemRef.GetState<StackState>().currentAmount += inst.GetState<StackState>().currentAmount;
-                RpcUpdateItemStack(itemRef);
                 return itemRef;
             }
+
+            return inst;
         }
         items.Add(inst);
         return inst;
     }
 
-    [TargetRpc]
-    private void RpcUpdateItemStack(ItemInstance replacement)
+    [Server]
+    private bool ServerMergeItem(ItemInstance original, ItemInstance ghost)
     {
-        ItemInstance itemRef = items.First(i => i.def.Id == replacement.def.Id);
-        itemRef.GetState<StackState>().currentAmount = replacement.GetState<StackState>().currentAmount;
+        TargetMergeItem(original, ghost);
+        return MergeItem(original, ghost);
+    }
+
+    [TargetRpc]
+    private void TargetMergeItem(ItemInstance original, ItemInstance ghost)
+    {
+        // Original was send over the server. It is a new at this point, not a ref anymore
+        ItemInstance itemRef = items.FirstOrDefault(i => i.def.Id == original.def.Id);
+        if (itemRef == null)
+        {
+            Debug.LogWarning("Could not merge items");
+            return;
+        }
+
+        MergeItem(itemRef, ghost);
+    }
+
+    private bool MergeItem(ItemInstance itemRef, ItemInstance ghost)
+    {
+        StackState stackState = itemRef.GetState<StackState>();
+        if (stackState == null)
+        {
+            return false;
+        }
+        stackState.currentAmount += ghost.GetState<StackState>().currentAmount;
+        itemRef.SetState(stackState);
+        return true;
     }
 
     [Server]
-    public ItemInstance ServerUpdateBaitDurability(ItemInstance ghost)
+    public void ServerReduceItemAmount(Guid itemUUID, int amount)
     {
-        TargetUpdateBaitDurability(ghost);
-        return UpdateBaitDurability(ghost);
+        TargetReduceItemAmount(itemUUID, amount);
+        ReduceItemAmount(itemUUID, amount);
     }
 
-    // Changes in items in a synclist are not updated, we need to trigger an update manually
     [TargetRpc]
-    private void TargetUpdateBaitDurability(ItemInstance ghost)
+    void TargetReduceItemAmount(Guid itemUUID, int amount)
     {
-
-        UpdateBaitDurability(ghost);
+        ReduceItemAmount(itemUUID, amount);
     }
-
-    private ItemInstance UpdateBaitDurability(ItemInstance ghost)
+    void ReduceItemAmount(Guid itemID, int amount)
     {
-        ItemInstance item = items.First(i => i.def.Id == ghost.def.Id);
+        ItemInstance item = GetItem(itemID);
         if (item == null)
         {
-            Debug.Log("Not found");
-            return ghost;
+            Debug.LogWarning("Could not find a object that needs a amount deduced");
+            return;
         }
 
-        DurabilityState state = item.GetState<DurabilityState>();
-        DurabilityState updatedState = ghost.GetState<DurabilityState>();
-
-        if (state != null)
-        {
-            state.remaining += updatedState.remaining;
-        }
-        Debug.Log($"Updating state done: {GetItem(item.uuid).GetState<DurabilityState>().remaining}");
-        return item;
+        item.GetState<StackState>().currentAmount -= amount;
     }
 }
 

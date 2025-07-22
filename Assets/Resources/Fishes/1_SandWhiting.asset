@@ -25,6 +25,7 @@ MonoBehaviour:
     and sunlit ripples."
   icon: {fileID: 21300000, guid: 81fe6dfbd8f9955b3b89c9c75af84fbf, type: 3}
   maxStack: 2147483647
+  canStack: 1
   isStatic: 0
   behaviours:
   - rid: 7137400945896849509
