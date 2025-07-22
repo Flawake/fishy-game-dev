@@ -1,8 +1,6 @@
-using Mirror;
 using System;
 using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using NewItemSystem;
@@ -50,7 +48,8 @@ public class InventoryUIManager : MonoBehaviour
         All = 0,
         Rods = 1,
         Baits = 2,
-        Fishes = 3
+        Fishes = 3,
+        Misc = 4,
     }
 
     [Serializable]
@@ -179,7 +178,8 @@ public class InventoryUIManager : MonoBehaviour
 
         return (filter == ItemFiler.Rods && isRod) ||
                (filter == ItemFiler.Baits && isBait) ||
-               (filter == ItemFiler.Fishes && isFish);
+               (filter == ItemFiler.Fishes && isFish) ||
+               (filter == ItemFiler.Misc && !isRod && !isBait && !isFish);
     }
 
     public void ShowItemInfo(ItemInstance inst)
