@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: a921b496dd9a0e9ecbcee00e4b15c8c2
+guid: 084c6420305e8611ba03dce89aac5fe6
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -6726128354008573269
-    second: Steel_rod_0
+      213: -5782676228753458424
+    second: EpicPotionLuck_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -37,7 +37,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 0
+    filterMode: 1
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Steel_rod_0
+      name: EpicPotionLuck_0
       rect:
         serializedVersion: 2
-        x: 250
-        y: 90
-        width: 765
-        height: 1101
+        x: 156
+        y: 82
+        width: 715
+        height: 894
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: baad2a906edf7a2a0800000000000000
-      internalID: -6726128354008573269
+      spriteID: 80bfd0e9b9ecfbfa0800000000000000
+      internalID: -5782676228753458424
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Steel_rod_0: -6726128354008573269
+      EpicPotionLuck_0: -5782676228753458424
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
