@@ -72,8 +72,15 @@ public class StoreUIManager : MonoBehaviour
     //Called from button in game
     public void ShowExtrasPage()
     {
-        Debug.LogWarning("NotImplementedException");
-        //BuildStorePage(ItemsInGame.storeItemMisc);
+        List<ItemDefinition> miscInStore = new();
+        foreach (ItemDefinition item in ItemRegistry.GetFullItemsList())
+        {
+            if (item.GetBehaviour<RodBehaviour>() == null && item.GetBehaviour<BaitBehaviour>() == null && item.GetBehaviour<FishBehaviour>() == null && item.GetBehaviour<ShopBehaviour>() != null)
+            {
+                miscInStore.Add(item);
+            }
+        }
+        BuildStorePage(miscInStore.ToArray());
     }
 
     private void BuildStorePage(ItemDefinition[] itemObjects)

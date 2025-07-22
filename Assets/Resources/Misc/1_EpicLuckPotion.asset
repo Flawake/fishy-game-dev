@@ -15,8 +15,9 @@ MonoBehaviour:
   id: 50001
   displayName: Epic luck potion
   description: 
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 084c6420305e8611ba03dce89aac5fe6, type: 3}
   maxStack: 2147483647
+  canStack: 0
   isStatic: 0
   behaviours:
   - rid: 3081823821378879575

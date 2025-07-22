@@ -15,8 +15,9 @@ MonoBehaviour:
   id: 50002
   displayName: Rare magic watch
   description: 
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: c6ea7d8cc331801ccb3767bb166aa7a3, type: 3}
   maxStack: 2147483647
+  canStack: 0
   isStatic: 0
   behaviours:
   - rid: 3081823821378879581
