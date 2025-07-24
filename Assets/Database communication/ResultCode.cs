@@ -1,8 +1,27 @@
-public class ResultCode
+using System.Collections.Generic;
+
+public static class HttpResultTranslator
 {
-    //TODO: might use these in the future and change their names, maybe http status codes?
-    public static readonly string CodeM1 = "Unknown error. Try again later";
-    public static readonly string Code0 = "Success";
-    public static readonly string Code1 = "Invalid credentials";
-    public static readonly string Code2 = "Username is already taken";
+    private static Dictionary<int, string> codeToInt = new Dictionary<int, string>();
+
+    static HttpResultTranslator()
+    {
+        codeToInt.Add(200, "OK");
+        codeToInt.Add(401, "Could not find username password combination");
+        codeToInt.Add(409, "Username or password was already taken");
+        codeToInt.Add(500, "Internal server error");
+        codeToInt.Add(502, "Bad gateway");
+        codeToInt.Add(503, "Service unavailable");
+        codeToInt.Add(504, "Gateway timeout");
+    }
+
+    public static string GetResponseAsString(int code)
+    {
+        codeToInt.TryGetValue(code, out var result);
+        if (result == null)
+        {
+            return "Unknown error, please try again later";
+        }
+        return result;
+    }
 }
