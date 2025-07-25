@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using NewItemSystem;
+using Mirror;
 
 public class InventoryUIManager : MonoBehaviour
 {
@@ -59,8 +60,10 @@ public class InventoryUIManager : MonoBehaviour
         public GameObject button;
     }
 
-    ItemFiler StringToFilter(string filter) {
-        if (Enum.TryParse<ItemFiler>(filter, true, out var result)) {
+    ItemFiler StringToFilter(string filter)
+    {
+        if (Enum.TryParse<ItemFiler>(filter, true, out var result))
+        {
             return result;
         }
         throw new ArgumentException($"Invalid filter value: {filter}", nameof(filter));
@@ -68,7 +71,7 @@ public class InventoryUIManager : MonoBehaviour
 
     private void Awake()
     {
-        foreach(MenuButtonStruct menuButton in menuButtons)
+        foreach (MenuButtonStruct menuButton in menuButtons)
         {
             selectMenuButtons.Add(menuButton.itemFilterName, menuButton.button);
         }
@@ -231,7 +234,7 @@ public class InventoryUIManager : MonoBehaviour
         }
         else if (selectedItem.def.GetBehaviour<EffectBehaviour>() != null)
         {
-            playerData.add
+            playerData.ClientRequestUseEffect(selectedItem);
         }
         else
         {

@@ -1,8 +1,6 @@
 using System;
-using System.Collections.Generic;
 using Mirror;
 using System.Linq;
-using UnityEditor;
 using UnityEngine;
 using NewItemSystem;
 
@@ -115,90 +113,105 @@ public class PlayerInventory : NetworkBehaviour
         return items.FirstOrDefault(i => i.def.Id == id && i.HasBehaviour<BaitBehaviour>());
     }
 
-    /// <summary>
-    /// Adds an item to the players inventory
-    /// </summary>
-    /// <param name="inst"></param>
-    /// <returns>
-    /// The item that needs to be written int the db
-    /// </returns>
-    ItemInstance TryMergeOrAdd(ItemInstance inst)
+    ItemInstance TryMergeOrAdd(ItemInstance danglingItem)
     {
-        if (inst.def.CanStack)
+        if (danglingItem.def.GetBehaviour<DurabilityBehaviour>() == null)
         {
-            ItemInstance itemRef = items.FirstOrDefault(i => i.def.Id == inst.def.Id);
+            ItemInstance itemRef = GetItem(danglingItem.uuid);
             if (itemRef == null)
             {
-                items.Add(inst);
-                return inst;
+                items.Add(danglingItem);
+                return danglingItem;
             }
 
-            if (ServerMergeItem(itemRef, inst))
+            if (ServerMergeItem(itemRef, danglingItem))
             {
                 return itemRef;
             }
-
-            return inst;
         }
-        items.Add(inst);
-        return inst;
+        items.Add(danglingItem);
+        return danglingItem;
     }
 
     [Server]
-    private bool ServerMergeItem(ItemInstance original, ItemInstance ghost)
+    private bool ServerMergeItem(ItemInstance itemReference, ItemInstance danglingItem)
     {
-        TargetMergeItem(original, ghost);
-        return MergeItem(original, ghost);
-    }
-
-    [TargetRpc]
-    private void TargetMergeItem(ItemInstance original, ItemInstance ghost)
-    {
-        // Original was send over the server. It is a new at this point, not a ref anymore
-        ItemInstance itemRef = items.FirstOrDefault(i => i.def.Id == original.def.Id);
-        if (itemRef == null)
+        if (itemReference.def.Id != danglingItem.def.Id)
         {
-            Debug.LogWarning("Could not merge items");
-            return;
+            Debug.LogWarning("Items are not compatibel with each other");
+            return false;
         }
-
-        MergeItem(itemRef, ghost);
-    }
-
-    private bool MergeItem(ItemInstance itemRef, ItemInstance ghost)
-    {
-        StackState stackState = itemRef.GetState<StackState>();
-        if (stackState == null)
+        StackState stackStateReference = itemReference.GetState<StackState>();
+        StackState stackStateDangling = danglingItem.GetState<StackState>();
+        if (stackStateReference == null || stackStateDangling == null)
         {
             return false;
         }
-        stackState.currentAmount += ghost.GetState<StackState>().currentAmount;
-        itemRef.SetState(stackState);
+        if (stackStateReference.currentAmount + stackStateDangling.currentAmount <= itemReference.def.MaxStack)
+        {
+            stackStateReference.currentAmount += stackStateDangling.currentAmount;
+            itemReference.SetState(stackStateReference);
+        }
+        TargetUpdateItem(itemReference);
         return true;
     }
 
     [Server]
-    public void ServerReduceItemAmount(Guid itemUUID, int amount)
+    public bool ServerTryUseItem(ItemInstance itemReference)
     {
-        TargetReduceItemAmount(itemUUID, amount);
-        ReduceItemAmount(itemUUID, amount);
+        if (itemReference.def.InfiniteUse || itemReference.def.IsStatic)
+        {
+            return true;
+        }
+        DurabilityState durabilityState = itemReference.GetState<DurabilityState>();
+        if (durabilityState == null)
+        {
+            Debug.LogWarning($"Could not use item with id {itemReference.def.Id} since it's durabilityState was null");
+        }
+        durabilityState.remaining -= 1;
+        itemReference.SetState(durabilityState);
+        TargetUpdateItem(itemReference);
+        return true;
+    }
+
+    [Server]
+    public bool ServerConsumeFromStack(ItemInstance itemReference)
+    {
+        if (itemReference.def.InfiniteUse || itemReference.def.IsStatic)
+        {
+            return true;
+        }
+        StackState stackState = itemReference.GetState<StackState>();
+        if (stackState == null)
+        {
+            Debug.LogWarning($"Could not use item with id {itemReference.def.Id} since it's durabilityState was null");
+        }
+        stackState.currentAmount -= 1;
+        itemReference.SetState(stackState);
+        TargetUpdateItem(itemReference);
+        return true;
     }
 
     [TargetRpc]
-    void TargetReduceItemAmount(Guid itemUUID, int amount)
+    private void TargetUpdateItem(ItemInstance danglingItem)
     {
-        ReduceItemAmount(itemUUID, amount);
+        ItemInstance itemReference = GetItem(danglingItem.uuid);
+        CopyState<StackState>(danglingItem, itemReference, (src, dst) => dst.currentAmount = src.currentAmount);
+        CopyState<DurabilityState>(danglingItem, itemReference, (src, dst) => dst.remaining = src.remaining);
     }
-    void ReduceItemAmount(Guid itemID, int amount)
-    {
-        ItemInstance item = GetItem(itemID);
-        if (item == null)
-        {
-            Debug.LogWarning("Could not find a object that needs a amount deduced");
-            return;
-        }
 
-        item.GetState<StackState>().currentAmount -= amount;
+    private void CopyState<T>(ItemInstance from, ItemInstance to, Action<T, T> copyAction)
+    where T : class, IRuntimeBehaviourState
+    {
+        T source = from.GetState<T>();
+        T target = to.GetState<T>();
+
+        if (source != null && target != null)
+        {
+            copyAction(source, target);
+        }
+        from.SetState(source);
     }
+
 }
 

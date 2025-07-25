@@ -26,7 +26,7 @@ public class PlayerData : NetworkBehaviour
     // bool to indicate wether the reqeust was a sent or a receiver request.
     private Dictionary<Guid, bool> pendingFriendRequests = new Dictionary<Guid, bool>();
     
-    private Dictionary<ItemInstance, DateTime> activeEffects = new Dictionary<ItemInstance, DateTime>();
+    private readonly Dictionary<EffectBehaviour, DateTime> activeEffects = new Dictionary<EffectBehaviour, DateTime>();
 
     //Variables that are synced between ALL players
     [SyncVar, SerializeField]
@@ -134,18 +134,24 @@ public class PlayerData : NetworkBehaviour
     [Server]
     private void ServerAddNewEffect(ItemInstance itemReference) 
     {
-        inventory.ServerReduceItemAmount(itemReference.uuid, 1);
-        activeEffects.Add(itemReference, DateTime.UtcNow);
-        TargetAddNewEffect(itemReference);
+        EffectBehaviour effect = itemReference.def.GetBehaviour<EffectBehaviour>();
+        if (effect == null)
+        {
+            Debug.LogWarning($"Item with ID {itemReference.def.Id} has no known special effect");
+            return;
+        }
+        inventory.ServerConsumeFromStack(itemReference);
+        activeEffects.Add(effect, DateTime.UtcNow);
+        TargetAddNewEffect(effect);
     }
 
     [TargetRpc]
-    private void TargetAddNewEffect(ItemInstance itemReference)
+    private void TargetAddNewEffect(EffectBehaviour effect)
     {
-        activeEffects.Add(itemReference, DateTime.Now);
+        activeEffects.Add(effect, DateTime.Now);
     }
 
-    public Dictionary<ItemInstance, DateTime> GetActiveEffects()
+    public Dictionary<EffectBehaviour, DateTime> GetActiveEffects()
     {
         RemoveExpiredEffects();
         return activeEffects;
@@ -156,22 +162,17 @@ public class PlayerData : NetworkBehaviour
         for (int effectIndex = activeEffects.Count; effectIndex > 0; effectIndex--)
         {
             var effect = activeEffects.ElementAt(effectIndex);
-            DateTime endTime = DateTime.MaxValue;
-            LuckPotionBehaviour potionBehaviour = effect.Key.def.GetBehaviour<LuckPotionBehaviour>();
-            MagicWatchBehaviour watchBehaviour = effect.Key.def.GetBehaviour<MagicWatchBehaviour>();
-            if (potionBehaviour != null)
+            DateTime endTime;
+            if (effect.Key != null)
             {
-                TimeSpan timeToAdd = TimeSpan.FromSeconds(potionBehaviour.EffectTime * 60);
-                endTime = effect.Value.Add(timeToAdd);
-            }
-            else if (watchBehaviour != null)
-            {
-                TimeSpan timeToAdd = TimeSpan.FromSeconds(watchBehaviour.EffectTime * 60);
+                TimeSpan timeToAdd = TimeSpan.FromSeconds(effect.Key.EffectTime * 60);
                 endTime = effect.Value.Add(timeToAdd);
             }
             else
             {
-                Debug.LogWarning($"Item ID {effect.Key.def.Id} was in active effects, but no effect could be found on the component");
+                activeEffects.Remove(effect.Key);
+                Debug.LogWarning($"An effect in the effect dictionary was null and has been removed");
+                continue;
             }
 
             if (endTime > DateTime.UtcNow)
