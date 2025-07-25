@@ -39,7 +39,7 @@ MonoBehaviour:
         minMartketPrice: 0
         maxMarketPrice: 0
         bitesOn: 10
-        rarity: 4
+        rarity: 1
         locations: 1
         rarityFactor: 1
         timeRanges:
