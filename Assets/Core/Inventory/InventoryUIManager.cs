@@ -193,7 +193,7 @@ public class InventoryUIManager : MonoBehaviour
         itemAmountText.text = amount.ToString();
         itemPreviewImage.sprite = inst.def.Icon;
 
-        bool equippable = inst.def.GetBehaviour<RodBehaviour>() != null || inst.def.GetBehaviour<BaitBehaviour>() != null;
+        bool equippable = inst.def.GetBehaviour<RodBehaviour>() != null || inst.def.GetBehaviour<BaitBehaviour>() != null || inst.def.GetBehaviour<LuckPotionBehaviour>() != null || inst.def.GetBehaviour<MagicWatchBehaviour>() != null;
         if (equippable)
         {
             useItemButton.SetActive(true);
@@ -228,6 +228,14 @@ public class InventoryUIManager : MonoBehaviour
         else if (selectedItem.def.GetBehaviour<BaitBehaviour>() != null)
         {
             playerData.CmdSelectNewBait(selectedItem);
+        }
+        else if (selectedItem.def.GetBehaviour<EffectBehaviour>() != null)
+        {
+            playerData.add
+        }
+        else
+        {
+            Debug.LogWarning("There is no use handler for clicked item");
         }
         CloseBackPack();
     }

@@ -2,6 +2,7 @@ using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using NewItemSystem;
 using UnityEngine;
 
@@ -24,6 +25,8 @@ public class PlayerData : NetworkBehaviour
     private HashSet<Guid> friendlist = new HashSet<Guid>();
     // bool to indicate wether the reqeust was a sent or a receiver request.
     private Dictionary<Guid, bool> pendingFriendRequests = new Dictionary<Guid, bool>();
+    
+    private Dictionary<ItemInstance, DateTime> activeEffects = new Dictionary<ItemInstance, DateTime>();
 
     //Variables that are synced between ALL players
     [SyncVar, SerializeField]
@@ -97,6 +100,85 @@ public class PlayerData : NetworkBehaviour
     public string GetUuidAsString()
     {
         return GetUuid().ToString();
+    }
+    
+    [Client]
+    public void ClientRequestUseEffect(ItemInstance item) {
+        if (item.def.GetBehaviour<EffectBehaviour>() == null)
+        {
+            Debug.LogWarning($"Item with ID {item.def.Id} has no known special effect");
+            return;
+        }
+        CmdRequestUseEffect(item);
+    }
+
+    [Command]
+    private void CmdRequestUseEffect(ItemInstance danglingItem)
+    {
+        ItemInstance itemReference = inventory.GetItem(danglingItem.uuid);
+        
+        if (itemReference == null)
+        {
+            Debug.LogWarning("Item was not present in the inventory");
+            return;
+        }
+        
+        if (itemReference.def.GetBehaviour<EffectBehaviour>() == null)
+        {
+            Debug.LogWarning($"Item with ID {danglingItem.def.Id} has no known special effect");
+            return;
+        }
+        ServerAddNewEffect(itemReference);
+    }
+    
+    [Server]
+    private void ServerAddNewEffect(ItemInstance itemReference) 
+    {
+        inventory.ServerReduceItemAmount(itemReference.uuid, 1);
+        activeEffects.Add(itemReference, DateTime.UtcNow);
+        TargetAddNewEffect(itemReference);
+    }
+
+    [TargetRpc]
+    private void TargetAddNewEffect(ItemInstance itemReference)
+    {
+        activeEffects.Add(itemReference, DateTime.Now);
+    }
+
+    public Dictionary<ItemInstance, DateTime> GetActiveEffects()
+    {
+        RemoveExpiredEffects();
+        return activeEffects;
+    }
+
+    private void RemoveExpiredEffects()
+    {
+        for (int effectIndex = activeEffects.Count; effectIndex > 0; effectIndex--)
+        {
+            var effect = activeEffects.ElementAt(effectIndex);
+            DateTime endTime = DateTime.MaxValue;
+            LuckPotionBehaviour potionBehaviour = effect.Key.def.GetBehaviour<LuckPotionBehaviour>();
+            MagicWatchBehaviour watchBehaviour = effect.Key.def.GetBehaviour<MagicWatchBehaviour>();
+            if (potionBehaviour != null)
+            {
+                TimeSpan timeToAdd = TimeSpan.FromSeconds(potionBehaviour.EffectTime * 60);
+                endTime = effect.Value.Add(timeToAdd);
+            }
+            else if (watchBehaviour != null)
+            {
+                TimeSpan timeToAdd = TimeSpan.FromSeconds(watchBehaviour.EffectTime * 60);
+                endTime = effect.Value.Add(timeToAdd);
+            }
+            else
+            {
+                Debug.LogWarning($"Item ID {effect.Key.def.Id} was in active effects, but no effect could be found on the component");
+            }
+
+            if (endTime > DateTime.UtcNow)
+            {
+                activeEffects.Remove(effect.Key);
+            }
+        }
     }
 
     [Server]
