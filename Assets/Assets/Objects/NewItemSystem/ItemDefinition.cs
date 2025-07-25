@@ -13,8 +13,8 @@ namespace NewItemSystem {
         [SerializeField] private string description;
         [SerializeField] private Sprite icon;
         [SerializeField] private int maxStack = 1;
-        [SerializeField] private bool canStack = false;
         [SerializeField] private bool isStatic = false;
+        [SerializeField] private bool infiniteUse;
 
         [Header("Behaviours")]
         [SerializeReference] private IItemBehaviour[] behaviours;
@@ -25,12 +25,14 @@ namespace NewItemSystem {
         public string Description => description;
         public Sprite Icon => icon;
         public int MaxStack => maxStack;
-        public bool CanStack => canStack;
         public IItemBehaviour[] Behaviours => behaviours ?? Array.Empty<IItemBehaviour>();
         // isStatic tells if the object CAN be removed from the inventory
         public bool IsStatic => isStatic;
 
-        public T GetBehaviour<T>() where T : class, IItemBehaviour {
+        public bool InfiniteUse => infiniteUse;
+
+        public T GetBehaviour<T>() where T : class, IItemBehaviour
+        {
             return Behaviours.OfType<T>().FirstOrDefault();
         }
 

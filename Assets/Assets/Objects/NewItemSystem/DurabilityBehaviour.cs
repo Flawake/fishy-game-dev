@@ -13,7 +13,6 @@ namespace NewItemSystem {
     [Serializable]
     public class DurabilityBehaviour : IItemBehaviour {
         [SerializeField] private int maxDurability = 1;
-        [SerializeField] private bool infinite;
 
         public int MaxDurability => maxDurability;
 
@@ -26,7 +25,6 @@ namespace NewItemSystem {
         public static int GetRemaining(ItemInstance inst) => DurabilityLeft(inst);
 
         public void InitialiseState(Dictionary<Type, IRuntimeBehaviourState> bag) {
-            if (infinite) return;
             bag[typeof(DurabilityState)] = new DurabilityState { remaining = maxDurability };
         }
     }

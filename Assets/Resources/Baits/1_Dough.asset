@@ -21,7 +21,6 @@ MonoBehaviour:
   isStatic: 0
   behaviours:
   - rid: 7137401008670638162
-  - rid: 7137401008670638163
   references:
     version: 2
     RefIds:
@@ -29,8 +28,3 @@ MonoBehaviour:
       type: {class: BaitBehaviour, ns: NewItemSystem, asm: Assembly-CSharp}
       data:
         baitType: 2
-    - rid: 7137401008670638163
-      type: {class: DurabilityBehaviour, ns: NewItemSystem, asm: Assembly-CSharp}
-      data:
-        maxDurability: 50
-        infinite: 0
