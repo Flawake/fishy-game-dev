@@ -2,7 +2,7 @@
 using Mirror;
 using System;
 
-namespace NewItemSystem {
+namespace ItemSystem {
     public static class ItemInstanceReaderWriter {
         // Mirror uses the method name pattern WriteX to auto-register.
         public static void WriteItemInstance(this NetworkWriter writer, ItemInstance item) {

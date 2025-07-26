@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace NewItemSystem {
+namespace ItemSystem {
     public enum SpecialEffectType
     {
         LuckBoost,

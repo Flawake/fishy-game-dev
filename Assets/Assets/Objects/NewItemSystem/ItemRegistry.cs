@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace NewItemSystem {
+namespace ItemSystem {
     public static class ItemRegistry {
         private static readonly Dictionary<int, ItemDefinition> byId = new();
         private static ItemDefinition[] defs;

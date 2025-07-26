@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace NewItemSystem {
+namespace ItemSystem {
     [Serializable]
     public class ItemInstance
     {

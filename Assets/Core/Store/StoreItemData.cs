@@ -1,4 +1,4 @@
-using NewItemSystem;
+using ItemSystem;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;

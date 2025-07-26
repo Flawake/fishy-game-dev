@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
 
-namespace NewItemSystem {
+namespace ItemSystem {
     [Serializable]
     public class DurabilityState : IRuntimeBehaviourState {
         public int remaining;

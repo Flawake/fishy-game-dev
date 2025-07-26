@@ -2,7 +2,7 @@ using System;
 using Mirror;
 using System.Linq;
 using UnityEngine;
-using NewItemSystem;
+using ItemSystem;
 
 public class PlayerInventory : NetworkBehaviour
 {
@@ -113,11 +113,19 @@ public class PlayerInventory : NetworkBehaviour
         return items.FirstOrDefault(i => i.def.Id == id && i.HasBehaviour<BaitBehaviour>());
     }
 
+    private ItemInstance GetFirstNonFullStack(int definitionId)
+    {
+        return items.FirstOrDefault(item => 
+            item.def.Id == definitionId && 
+            item.GetState<StackState>()?.currentAmount < item.def.MaxStack);
+    }
+
     ItemInstance TryMergeOrAdd(ItemInstance danglingItem)
     {
         if (danglingItem.def.GetBehaviour<DurabilityBehaviour>() == null)
         {
-            ItemInstance itemRef = GetItem(danglingItem.uuid);
+            // Look for the first non-full stack with the same definition ID
+            ItemInstance itemRef = GetFirstNonFullStack(danglingItem.def.Id);
             if (itemRef == null)
             {
                 items.Add(danglingItem);

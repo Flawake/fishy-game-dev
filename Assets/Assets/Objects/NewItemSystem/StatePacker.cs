@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using Mirror;
 
-namespace NewItemSystem {
+namespace ItemSystem {
     public static class StatePacker {
         public static byte[] Pack(Dictionary<Type, IRuntimeBehaviourState> bag) {
             var writer = NetworkWriterPool.Get();

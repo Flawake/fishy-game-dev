@@ -17,14 +17,14 @@ MonoBehaviour:
   description: 
   icon: {fileID: 21300000, guid: 8cd292a0c7499ea44912b82f8651766c, type: 3}
   maxStack: 2147483647
-  canStack: 1
   isStatic: 1
+  infiniteUse: 0
   behaviours:
   - rid: 7137401008670638160
   references:
     version: 2
     RefIds:
     - rid: 7137401008670638160
-      type: {class: BaitBehaviour, ns: NewItemSystem, asm: Assembly-CSharp}
+      type: {class: BaitBehaviour, ns: ItemSystem, asm: Assembly-CSharp}
       data:
         baitType: 1

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace NewItemSystem {
+namespace ItemSystem {
     [System.Serializable]
     public class BaitBehaviour : IItemBehaviour {
         [SerializeField] private ItemBaitType baitType = ItemBaitType.hook;

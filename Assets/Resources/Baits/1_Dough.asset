@@ -20,11 +20,11 @@ MonoBehaviour:
   isStatic: 0
   infiniteUse: 0
   behaviours:
-  - rid: 7137401008670638162
+  - rid: 7137401008670638160
   references:
     version: 2
     RefIds:
-    - rid: 7137401008670638162
-      type: {class: BaitBehaviour, ns: NewItemSystem, asm: Assembly-CSharp}
+    - rid: 7137401008670638160
+      type: {class: BaitBehaviour, ns: ItemSystem, asm: Assembly-CSharp}
       data:
         baitType: 2

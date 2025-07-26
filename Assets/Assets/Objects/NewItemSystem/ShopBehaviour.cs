@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace NewItemSystem {
+namespace ItemSystem {
     [System.Serializable]
     public class ShopBehaviour : IItemBehaviour {
         [SerializeField] private int priceCoins = -1;

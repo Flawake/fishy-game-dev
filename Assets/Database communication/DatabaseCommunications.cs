@@ -2,7 +2,7 @@ using System;
 using System.Text;
 using UnityEngine;
 using Mirror;
-using NewItemSystem;
+using ItemSystem;
 using System.Linq;
 
 // Extension helpers for ItemInstance behaviour checks

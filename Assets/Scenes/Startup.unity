@@ -1567,8 +1567,6 @@ MonoBehaviour:
   subScenes:
   - Assets/Scenes/WorldMap.unity
   - Assets/Scenes/Beach.unity
-  - 
-  - 
   - Assets/Scenes/Laketown.unity
   - Assets/Scenes/RioTropical.unity
 --- !u!114 &302649097

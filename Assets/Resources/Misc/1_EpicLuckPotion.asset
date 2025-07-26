@@ -17,21 +17,23 @@ MonoBehaviour:
   description: 
   icon: {fileID: 21300000, guid: 084c6420305e8611ba03dce89aac5fe6, type: 3}
   maxStack: 2147483647
-  canStack: 0
   isStatic: 0
+  infiniteUse: 0
   behaviours:
-  - rid: 3081823821378879575
-  - rid: 3081823821378879578
+  - rid: 3081823945427517448
+  - rid: 3081823945427517450
   references:
     version: 2
     RefIds:
-    - rid: 3081823821378879575
-      type: {class: LuckPotionBehaviour, ns: NewItemSystem, asm: Assembly-CSharp}
-      data:
-        luckType: 1
-        effectTime: 15
-    - rid: 3081823821378879578
-      type: {class: ShopBehaviour, ns: NewItemSystem, asm: Assembly-CSharp}
+    - rid: 3081823945427517448
+      type: {class: ShopBehaviour, ns: ItemSystem, asm: Assembly-CSharp}
       data:
         priceCoins: 5
         priceBucks: -1
+        amount: 1
+    - rid: 3081823945427517450
+      type: {class: SpecialBehaviour, ns: ItemSystem, asm: Assembly-CSharp}
+      data:
+        effectType: 0
+        effectValue: 2
+        durationSeconds: 900

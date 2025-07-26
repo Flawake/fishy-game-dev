@@ -1,4 +1,4 @@
-using NewItemSystem;
+using ItemSystem;
 using UnityEngine;
 
 public class FishdexUIManager : MonoBehaviour

@@ -1,7 +1,7 @@
 // IItemBehaviour.cs
 using System.Collections.Generic;
 
-namespace NewItemSystem {
+namespace ItemSystem {
     public interface IItemBehaviour {
         /// <summary>
         /// Gives the behaviour a chance to inject its runtime state when an item instance is created.
