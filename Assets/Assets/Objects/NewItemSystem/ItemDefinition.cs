@@ -3,7 +3,7 @@ using System;
 using System.Linq;
 using UnityEngine;
 
-namespace NewItemSystem {
+namespace ItemSystem {
     [CreateAssetMenu(menuName = "Items/Definition", fileName = "NewItemDefinition")]
     public class ItemDefinition : ScriptableObject {
         [Header("Core")]

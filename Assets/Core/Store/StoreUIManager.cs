@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using NewItemSystem;
+using ItemSystem;
 using UnityEngine;
 
 public class StoreUIManager : MonoBehaviour

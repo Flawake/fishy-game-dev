@@ -7,7 +7,7 @@ using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
-namespace NewItemSystem.Editor {
+namespace ItemSystem.Editor {
     [CanEditMultipleObjects]
     [CustomEditor(typeof(ItemDefinition), true)]
     public class ItemDefinitionEditor : UnityEditor.Editor {

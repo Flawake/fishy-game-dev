@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 using Random = UnityEngine.Random;
-using NewItemSystem;
+using ItemSystem;
 using System.Linq;
 
 public class SpawnManager : NetworkBehaviour

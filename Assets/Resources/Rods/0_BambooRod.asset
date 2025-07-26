@@ -19,12 +19,12 @@ MonoBehaviour:
   maxStack: 1
   isStatic: 1
   behaviours:
-  - rid: 7137401008670638156
+  - rid: 3081823945427517446
   references:
     version: 2
     RefIds:
-    - rid: 7137401008670638156
-      type: {class: RodBehaviour, ns: NewItemSystem, asm: Assembly-CSharp}
+    - rid: 3081823945427517446
+      type: {class: RodBehaviour, ns: ItemSystem, asm: Assembly-CSharp}
       data:
         strength: 50
         throwDistance: 0

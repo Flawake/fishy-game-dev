@@ -1,6 +1,6 @@
 using UnityEngine.UI;
 using UnityEngine;
-using NewItemSystem;
+using ItemSystem;
 
 public class InventoryItemData : MonoBehaviour
 {

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 using System;
-using NewItemSystem;
+using ItemSystem;
 
 public class SpawnableFishes : NetworkBehaviour
 {
@@ -41,9 +41,9 @@ public class SpawnableFishes : NetworkBehaviour
 
     //returns a new fish if succesfull, second argument tells if generating was succesfull.
     [Server]
-    public (CurrentFish, bool) GenerateFish(ItemBaitType bait) {
+    public (CurrentFish, bool) GenerateFish(ItemBaitType bait, float luckMultiplier = 1.0f) {
         // a fish is being generated and returned
-        ItemDefinition generatedFish = SpawnManager.instance.GenerateFish(fishes, bait);
+        ItemDefinition generatedFish = SpawnManager.instance.GenerateFish(fishes, bait, luckMultiplier);
         FishBehaviour generatedFishBehaviour = generatedFish.GetBehaviour<FishBehaviour>();
         CurrentFish fishToCatch = new CurrentFish();
         if (generatedFish == null)

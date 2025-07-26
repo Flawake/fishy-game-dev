@@ -4,7 +4,7 @@ using UnityEngine;
 using Mirror;
 using Random = UnityEngine.Random;
 using UnityEngine.LowLevelPhysics;
-using NewItemSystem;
+using ItemSystem;
 
 public class FishingManager : NetworkBehaviour
 {

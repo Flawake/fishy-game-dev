@@ -1,7 +1,7 @@
 using Mirror;
 using System;
 
-namespace NewItemSystem {
+namespace ItemSystem {
     [Serializable]
     public class FishCatchState : IRuntimeBehaviourState
     {

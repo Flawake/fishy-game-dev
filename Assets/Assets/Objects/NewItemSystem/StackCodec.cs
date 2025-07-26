@@ -2,7 +2,7 @@
 using System;
 using Mirror;
 
-namespace NewItemSystem {
+namespace ItemSystem {
     public sealed class StackCodec : IStateCodec {
         public Type StateType => typeof(StackState);
 

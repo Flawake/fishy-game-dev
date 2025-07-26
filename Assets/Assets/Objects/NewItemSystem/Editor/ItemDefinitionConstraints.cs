@@ -6,7 +6,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
-namespace NewItemSystem.Editor {
+namespace ItemSystem.Editor {
     /// <summary>
     /// Central place to declare behaviour constraints.  Add entries to 'ForbiddenPairs'
     /// to prevent an ItemDefinition from containing both behaviours at the same time.

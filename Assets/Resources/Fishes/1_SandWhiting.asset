@@ -28,12 +28,12 @@ MonoBehaviour:
   canStack: 1
   isStatic: 0
   behaviours:
-  - rid: 7137400945896849509
+  - rid: 3081823945427517442
   references:
     version: 2
     RefIds:
-    - rid: 7137400945896849509
-      type: {class: FishBehaviour, ns: NewItemSystem, asm: Assembly-CSharp}
+    - rid: 3081823945427517442
+      type: {class: FishBehaviour, ns: ItemSystem, asm: Assembly-CSharp}
       data:
         minimumLength: 10
         maximumLength: 40

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using NewItemSystem;
+using ItemSystem;
 using Mirror;
 
 public class InventoryUIManager : MonoBehaviour

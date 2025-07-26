@@ -1,13 +1,11 @@
 using Mirror;
-using NewItemSystem;
+using ItemSystem;
 using UnityEngine;
 
 public class StoreManager : NetworkBehaviour
 {
     [SerializeField]
     PlayerData playerData;
-    [SerializeField]
-    PlayerInventory inventory;
     [SerializeField]
     PlayerDataSyncManager playerDataManager;
 

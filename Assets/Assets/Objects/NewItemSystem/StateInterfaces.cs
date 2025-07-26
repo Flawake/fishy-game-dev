@@ -3,7 +3,7 @@
 using Mirror;
 using System;
 
-namespace NewItemSystem {
+namespace ItemSystem {
     /// <summary>
     /// Marker interface – any struct/class implementing this is considered part of the
     /// mutable runtime state of an item instance and will be packed into the state blob.

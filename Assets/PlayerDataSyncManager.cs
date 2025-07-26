@@ -1,6 +1,6 @@
 using System;
 using UnityEngine;
-using NewItemSystem;
+using ItemSystem;
 using Mirror;
 
 //Item manager should manage the syncronisation of items between the server and client.

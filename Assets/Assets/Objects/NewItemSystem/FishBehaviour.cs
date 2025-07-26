@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Utils;
 
-namespace NewItemSystem {
+namespace ItemSystem {
     [Serializable]
     public class FishBehaviour : IItemBehaviour {
         [Header("Fish Data")]

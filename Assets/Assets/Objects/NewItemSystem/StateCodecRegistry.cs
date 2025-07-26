@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace NewItemSystem {
+namespace ItemSystem {
     /// <summary>
     /// Global registry that maps a runtime state type to its codec and a compact ushort id.
     /// A codec must register itself *once* in its static constructor.

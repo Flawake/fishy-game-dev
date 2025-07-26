@@ -24,15 +24,17 @@ MonoBehaviour:
     own right they are a vital thread weaving sea and sand together."
   icon: {fileID: 21300000, guid: 4e18281f44f08a48687b5682243c7e4b, type: 3}
   maxStack: 2147483647
-  canStack: 1
   isStatic: 0
+  infiniteUse: 0
   behaviours:
-  - rid: 7137400945896849509
+  - rid: 3081823945427517442
   references:
     version: 2
     RefIds:
-    - rid: 7137400945896849509
-      type: {class: FishBehaviour, ns: NewItemSystem, asm: Assembly-CSharp}
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 3081823945427517442
+      type: {class: FishBehaviour, ns: ItemSystem, asm: Assembly-CSharp}
       data:
         minimumLength: 7
         maximumLength: 23
