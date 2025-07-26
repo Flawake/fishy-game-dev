@@ -323,9 +323,9 @@ public class FishingManager : NetworkBehaviour
             Debug.LogError("The fishing place is somehow not valid");
             return;
         }
-
+        
         playerData.ChangeRodQuality(playerData.GetSelectedRod(), -1);
-        playerData.ChangeBaitQuality(playerData.GetSelectedBait(), -1);
+        playerData.UseBait(playerData.GetSelectedBait());
 
         SyncedFishingPos pos;
         pos.stardedFishing = true;

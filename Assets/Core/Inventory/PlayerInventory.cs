@@ -167,6 +167,7 @@ public class PlayerInventory : NetworkBehaviour
         if (durabilityState == null)
         {
             Debug.LogWarning($"Could not use item with id {itemReference.def.Id} since it's durabilityState was null");
+            return false;
         }
         durabilityState.remaining -= 1;
         itemReference.SetState(durabilityState);
@@ -185,6 +186,7 @@ public class PlayerInventory : NetworkBehaviour
         if (stackState == null)
         {
             Debug.LogWarning($"Could not use item with id {itemReference.def.Id} since it's durabilityState was null");
+            return false;
         }
         stackState.currentAmount -= 1;
         itemReference.SetState(stackState);

@@ -51,7 +51,7 @@ public class StoreManager : NetworkBehaviour
             }
             ItemInstance instance = new ItemInstance(
                 item,
-                item.GetBehaviour<DurabilityBehaviour>()?.MaxDurability ?? -10
+                item.GetBehaviour<ShopBehaviour>()?.Amount ?? 1
             );
             playerDataManager.AddItem(instance);
             playerDataManager.ChangeFishCoinsAmount(-shopBehaviour.PriceCoins);

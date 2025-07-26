@@ -140,7 +140,7 @@ public class PlayerData : NetworkBehaviour
             Debug.LogWarning($"Item with ID {itemReference.def.Id} has no known special effect");
             return;
         }
-        inventory.ServerConsumeFromStack(itemReference);
+        playerDataManager.ServerConsumeFromStack(itemReference);
         activeEffects.Add(effect, DateTime.UtcNow);
         TargetAddNewEffect(effect);
     }
@@ -345,55 +345,46 @@ public class PlayerData : NetworkBehaviour
         return selectedBait;
     }
 
-    [TargetRpc]
-    private void RpcChangeRodStats(ItemInstance rod, int amount) {
-        //rodObject here is a nely created rod, we need to get the rod reference from the player inventory.
-        ItemInstance inventoryRod = inventory.GetRodByUuid(rod.uuid);
-        inventoryRod.GetState<DurabilityState>().remaining += amount;
-    }
-
     //TODO: make a function for in the syncManager, this should do the DB calls.
     [Server]
-    public void ChangeRodQuality(ItemInstance rod, int amount)
+    public void ChangeRodQuality(ItemInstance rodReference, int amount)
     {
-        RodBehaviour rodBehaviour = rod.def.GetBehaviour<RodBehaviour>();
-        DurabilityBehaviour durabilityBehaviour = rod.def.GetBehaviour<DurabilityBehaviour>();
-        if (rodBehaviour == null)
+        if (rodReference.def.GetBehaviour<RodBehaviour>() == null)
         {
-            Debug.Log("rod has no rodBehaviour");
+            Debug.LogWarning("Rod reference doesn't have a RodBehaviour attached");
             return;
         }
-        // Bait has infinite durability or can't be removed from inventory
-        if (durabilityBehaviour == null || rod.def.IsStatic)
+        if (rodReference.def.IsStatic)
         {
             return;
         }
-        rod.GetState<DurabilityState>().remaining += amount;
-        RpcChangeRodStats(rod, amount);
+        
+        // Use the sync manager to handle durability and database updates
+        bool success = playerDataManager.ServerTryUseItem(rodReference);
 
-        if (rod.GetState<DurabilityState>().remaining <= 0)
+        // Check if the rod broke (durability reached 0)
+        if (success)
         {
-            //Remove item from database and select new one
-            //Item with id -1, this should be the standard beginners rod
-            ItemInstance rodItem = inventory.GetRodByDefinitionId(0);
-            if (rodItem == null)
+            DurabilityState durabilityState = rodReference.GetState<DurabilityState>();
+            if (durabilityState != null && durabilityState.remaining <= 0)
             {
-                Debug.LogWarning("rodItem returned was null, TODO: disconnect player");
-                return;
-            }
-            //TODO: only change to the new rod when the rod goes out of the water.
-            SelectNewRod(rodItem, false);
-            playerDataManager.DestroyItem(rod);
-        }
-        else
-        {
-            if (amount < 0)
-            {
-                DatabaseCommunications.AddOrUpdateItem(rod, GetUuid());
-            }
-            else
-            {
-                Debug.LogWarning("There's no function avalable to add extra quality to the rod");
+                // Automatically replace with default rod (Bamboo Rod with ID 1000)
+                ItemInstance defaultRod = inventory.GetRodByDefinitionId(1000);
+                if (defaultRod == null)
+                {
+                    Debug.LogWarning("Default rod (Bamboo Rod) not found in inventory, cannot replace broken rod");
+                    return;
+                }
+                
+                // Check if the broken rod is currently selected
+                bool isCurrentlySelected = (selectedRod != null && selectedRod.uuid == rodReference.uuid);
+                
+                // If the broken rod was selected, automatically select the default rod
+                if (isCurrentlySelected)
+                {
+                    SelectNewRod(defaultRod, false);
+                    Debug.Log($"Rod broke! Automatically replaced with {defaultRod.def.DisplayName}");
+                }
             }
         }
     }
@@ -406,49 +397,75 @@ public class PlayerData : NetworkBehaviour
         inventoryBait.GetState<DurabilityState>().remaining += amount;
     }
 
+    /// <summary>
+    /// Uses bait by consuming one from the stack (for stackable baits)
+    /// </summary>
+    /// <param name="baitReference">The bait to use</param>
     [Server]
-    public void ChangeBaitQuality(ItemInstance bait, int amount)
+    public void UseBait(ItemInstance baitReference)
     {
-        BaitBehaviour baitBehaviour = bait.def.GetBehaviour<BaitBehaviour>();
-        DurabilityBehaviour durabilityBehaviour = bait.def.GetBehaviour<DurabilityBehaviour>();
-        if (baitBehaviour == null)
+        if (baitReference.def.GetBehaviour<BaitBehaviour>() == null)
         {
-            Debug.Log("bait has no baitBehaviour");
+            Debug.LogWarning("Bait reference doesn't have a BaitBehaviour attached");
             return;
         }
-        // Bait has infinite durability or can't be removed from inventory
-        if (durabilityBehaviour == null || bait.def.IsStatic)
+        if (baitReference.def.IsStatic)
         {
             return;
         }
-        bait.GetState<DurabilityState>().remaining += amount;
-        RpcChangeBaitStats(bait, amount);
+        
+        // Use the sync manager to handle stack consumption and database updates
+        bool success = playerDataManager.ServerConsumeFromStack(baitReference);
 
-        if (bait.GetState<DurabilityState>().remaining <= 0)
+        // Check if the bait stack is now empty
+        if (success)
         {
-            //Remove item from database and select new one
-            //Item with id 1000, this should be the standard beginners rod
-            ItemInstance baitItem = inventory.GetBaitByDefinitionId(1000);
-            if (baitItem == null)
+            StackState stackState = baitReference.GetState<StackState>();
+            if (stackState != null && stackState.currentAmount <= 0)
             {
-                Debug.LogWarning("newBait returned was null, TODO: disconnect player");
-                return;
+                // Automatically replace with default bait (Hook with ID 0)
+                ItemInstance defaultBait = inventory.GetBaitByDefinitionId(0);
+                if (defaultBait == null)
+                {
+                    Debug.LogWarning("Default bait (Hook) not found in inventory, cannot replace empty bait stack");
+                    return;
+                }
+                
+                // Check if the empty bait is currently selected
+                bool isCurrentlySelected = (selectedBait != null && selectedBait.def.Id == baitReference.def.Id);
+                
+                // If the empty bait was selected, automatically select the default bait
+                if (isCurrentlySelected)
+                {
+                    SelectNewBait(defaultBait, false);
+                    Debug.Log($"Bait stack empty! Automatically replaced with {defaultBait.def.DisplayName}");
+                }
             }
-            //TODO: only change to the new rod when the rod goes out of the water.
-            SelectNewBait(baitItem, false);
-            playerDataManager.DestroyItem(bait);
         }
-        else
+    }
+
+    /// <summary>
+    /// Command to request using bait from client
+    /// </summary>
+    /// <param name="baitReference">The bait to use</param>
+    [Command]
+    public void CmdUseBait(ItemInstance baitReference)
+    {
+        if (baitReference == null)
         {
-            if (amount < 0)
-            {
-                DatabaseCommunications.AddOrUpdateItem(bait, GetUuid());
-            }
-            else
-            {
-                Debug.LogWarning("There's no function avalable to add extra quality to the rod");
-            }
+            Debug.LogWarning("Cannot use null bait reference");
+            return;
         }
+
+        // Get the bait reference from inventory to ensure we're working with the correct instance
+        ItemInstance inventoryBait = inventory.GetBaitByDefinitionId(baitReference.def.Id);
+        if (inventoryBait == null)
+        {
+            Debug.LogWarning("Bait not found in inventory");
+            return;
+        }
+
+        UseBait(inventoryBait);
     }
 
     //The show inventory on profile setting, this is not yet implemented
@@ -481,12 +498,70 @@ public class PlayerData : NetworkBehaviour
             ServerSetFriendList(playerData.friends);
             ServerSetFriendRequests(playerData.friend_requests);
             SetShowInventory(false);
+            
+            // Ensure player has default rod and bait
+            EnsureDefaultItems();
+            
+            // If no rod is selected, automatically select the default rod
+            if (selectedRod == null)
+            {
+                ItemInstance defaultRod = inventory.GetRodByDefinitionId(1000);
+                if (defaultRod != null)
+                {
+                    SelectNewRod(defaultRod, false);
+                }
+            }
+            
+            // If no bait is selected, automatically select the default bait
+            if (selectedBait == null)
+            {
+                ItemInstance defaultBait = inventory.GetBaitByDefinitionId(0);
+                if (defaultBait != null)
+                {
+                    SelectNewBait(defaultBait, false);
+                }
+            }
         } catch (Exception e)
         {
             Debug.LogWarning(e);
             return false;
         }
         return true;
+    }
+    
+    /// <summary>
+    /// Ensures the player always has the default rod (Bamboo Rod) and default bait (Hook) in their inventory
+    /// </summary>
+    [Server]
+    private void EnsureDefaultItems()
+    {
+        // Check if player has default rod (Bamboo Rod - ID 1000)
+        ItemInstance defaultRod = inventory.GetRodByDefinitionId(1000);
+        if (defaultRod == null)
+        {
+            // Create and add default rod
+            ItemDefinition rodDef = ItemRegistry.Get(1000);
+            if (rodDef != null)
+            {
+                ItemInstance newRod = new ItemInstance { def = rodDef, uuid = Guid.NewGuid() };
+                playerDataManager.AddItem(newRod);
+                Debug.Log("Added default Bamboo Rod to player inventory");
+            }
+        }
+        
+        // Check if player has default bait (Hook - ID 0)
+        ItemInstance defaultBait = inventory.GetBaitByDefinitionId(0);
+        if (defaultBait == null)
+        {
+            // Create and add default bait
+            ItemDefinition baitDef = ItemRegistry.Get(0);
+            if (baitDef != null)
+            {
+                ItemInstance newBait = new ItemInstance { def = baitDef, uuid = Guid.NewGuid() };
+                playerDataManager.AddItem(newBait);
+                Debug.Log("Added default Hook to player inventory");
+            }
+        }
     }
 
     Guid GuidFromBytes(byte[] scrambled_uuid_bytes)
