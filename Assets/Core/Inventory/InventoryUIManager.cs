@@ -18,6 +18,8 @@ public class InventoryUIManager : MonoBehaviour
     [SerializeField]
     TMP_Text itemInfoText;
     [SerializeField]
+    GameObject itemAmountHolder;
+    [SerializeField]
     TMP_Text itemAmountText;
     [SerializeField]
     Image itemPreviewImage;
@@ -188,13 +190,15 @@ public class InventoryUIManager : MonoBehaviour
     public void ShowItemInfo(ItemInstance inst)
     {
         selectedItem = inst;
-        string name = inst.def.DisplayName;
-        int amount = inst.GetState<StackState>()?.currentAmount ?? -10;
+        string itemName = inst.def.DisplayName;
+        int amount = inst.GetState<DurabilityState>()?.remaining ?? inst.GetState<StackState>()?.currentAmount ?? 1;
         itemPreviewSelectedItemMark.SetActive(false);
         itemInfoText.text = inst.def.DisplayName;
-        itemNameText.text = name;
+        itemNameText.text = itemName;
         itemAmountText.text = amount.ToString();
         itemPreviewImage.sprite = inst.def.Icon;
+
+        itemAmountHolder.SetActive(!(inst.def.IsStatic || inst.def.InfiniteUse));
 
         bool equippable = inst.def.GetBehaviour<RodBehaviour>() != null || inst.def.GetBehaviour<BaitBehaviour>() != null || inst.def.GetBehaviour<LuckPotionBehaviour>() != null || inst.def.GetBehaviour<MagicWatchBehaviour>() != null;
         if (equippable)

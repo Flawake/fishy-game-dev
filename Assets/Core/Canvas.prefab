@@ -9184,6 +9184,7 @@ MonoBehaviour:
   useItemButton: {fileID: 4503627991740387826}
   itemNameText: {fileID: 2164732897693087736}
   itemInfoText: {fileID: 5069778129400546396}
+  itemAmountHolder: {fileID: 4974400652800872816}
   itemAmountText: {fileID: 445373322663225472}
   itemPreviewImage: {fileID: 8195802737319251973}
   inventoryUI: {fileID: 850329360033313509}

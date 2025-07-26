@@ -18,6 +18,7 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: c0aee3a91067f5b4bb455ec4ebe6b587, type: 3}
   maxStack: 1
   isStatic: 0
+  infiniteUse: 0
   behaviours:
   - rid: 7137401008670638156
   - rid: 7137401008670638157
@@ -35,8 +36,8 @@ MonoBehaviour:
       data:
         priceCoins: 40
         priceBucks: -1
+        amount: 1
     - rid: 7137401008670638159
       type: {class: DurabilityBehaviour, ns: NewItemSystem, asm: Assembly-CSharp}
       data:
         maxDurability: 250
-        infinite: 0
