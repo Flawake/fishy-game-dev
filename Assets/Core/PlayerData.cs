@@ -26,7 +26,7 @@ public class PlayerData : NetworkBehaviour
     // bool to indicate wether the reqeust was a sent or a receiver request.
     private Dictionary<Guid, bool> pendingFriendRequests = new Dictionary<Guid, bool>();
     
-    private readonly Dictionary<EffectBehaviour, DateTime> activeEffects = new Dictionary<EffectBehaviour, DateTime>();
+    private readonly Dictionary<SpecialEffectType, (float value, DateTime expiry)> activeSpecialEffects = new Dictionary<SpecialEffectType, (float value, DateTime expiry)>();
 
     //Variables that are synced between ALL players
     [SyncVar, SerializeField]
@@ -104,7 +104,7 @@ public class PlayerData : NetworkBehaviour
     
     [Client]
     public void ClientRequestUseEffect(ItemInstance item) {
-        if (item.def.GetBehaviour<EffectBehaviour>() == null)
+        if (item.def.GetBehaviour<SpecialBehaviour>() == null)
         {
             Debug.LogWarning($"Item with ID {item.def.Id} has no known special effect");
             return;
@@ -123,63 +123,106 @@ public class PlayerData : NetworkBehaviour
             return;
         }
         
-        if (itemReference.def.GetBehaviour<EffectBehaviour>() == null)
+        if (itemReference.def.GetBehaviour<SpecialBehaviour>() != null)
+        {
+            ServerAddNewSpecialEffect(itemReference);
+        }
+        else
         {
             Debug.LogWarning($"Item with ID {danglingItem.def.Id} has no known special effect");
-            return;
         }
-        ServerAddNewEffect(itemReference);
     }
     
     [Server]
-    private void ServerAddNewEffect(ItemInstance itemReference) 
+    private void ServerAddNewSpecialEffect(ItemInstance itemReference) 
     {
-        EffectBehaviour effect = itemReference.def.GetBehaviour<EffectBehaviour>();
-        if (effect == null)
+        SpecialBehaviour specialEffect = itemReference.def.GetBehaviour<SpecialBehaviour>();
+        if (specialEffect == null)
         {
             Debug.LogWarning($"Item with ID {itemReference.def.Id} has no known special effect");
             return;
         }
+        
+        // Consume the item from stack
         playerDataManager.ServerConsumeFromStack(itemReference);
-        activeEffects.Add(effect, DateTime.UtcNow);
-        TargetAddNewEffect(effect);
+        
+        // Apply the special effect
+        ApplySpecialEffect(specialEffect.EffectType, specialEffect.EffectValue, specialEffect.DurationSeconds);
+        
+        // Notify client
+        TargetAddNewSpecialEffect(specialEffect);
     }
 
     [TargetRpc]
-    private void TargetAddNewEffect(EffectBehaviour effect)
+    private void TargetAddNewSpecialEffect(SpecialBehaviour specialEffect)
     {
-        activeEffects.Add(effect, DateTime.Now);
+        ApplySpecialEffect(specialEffect.EffectType, specialEffect.EffectValue, specialEffect.DurationSeconds);
     }
 
-    public Dictionary<EffectBehaviour, DateTime> GetActiveEffects()
+
+
+    [Server]
+    private void ApplySpecialEffect(SpecialEffectType effectType, float value, float durationSeconds)
     {
-        RemoveExpiredEffects();
-        return activeEffects;
+        DateTime expiry = DateTime.UtcNow.AddSeconds(durationSeconds);
+        activeSpecialEffects[effectType] = (value, expiry);
     }
 
-    private void RemoveExpiredEffects()
+    public Dictionary<SpecialEffectType, (float value, DateTime expiry)> GetActiveSpecialEffects()
     {
-        for (int effectIndex = activeEffects.Count; effectIndex > 0; effectIndex--)
+        RemoveExpiredSpecialEffects();
+        return activeSpecialEffects;
+    }
+
+    private void RemoveExpiredSpecialEffects()
+    {
+        var expiredEffects = new List<SpecialEffectType>();
+        
+        foreach (var effect in activeSpecialEffects)
         {
-            var effect = activeEffects.ElementAt(effectIndex);
-            DateTime endTime;
-            if (effect.Key != null)
+            if (effect.Value.expiry <= DateTime.UtcNow)
             {
-                TimeSpan timeToAdd = TimeSpan.FromSeconds(effect.Key.EffectTime * 60);
-                endTime = effect.Value.Add(timeToAdd);
-            }
-            else
-            {
-                activeEffects.Remove(effect.Key);
-                Debug.LogWarning($"An effect in the effect dictionary was null and has been removed");
-                continue;
-            }
-
-            if (endTime > DateTime.UtcNow)
-            {
-                activeEffects.Remove(effect.Key);
+                expiredEffects.Add(effect.Key);
             }
         }
+        
+        foreach (var expiredEffect in expiredEffects)
+        {
+            activeSpecialEffects.Remove(expiredEffect);
+            Debug.Log($"Special effect {expiredEffect} has expired");
+        }
+    }
+
+    /// <summary>
+    /// Gets the current luck multiplier from active special effects
+    /// </summary>
+    /// <returns>The luck multiplier (1.0 = no bonus)</returns>
+    public float GetLuckMultiplier()
+    {
+        RemoveExpiredSpecialEffects();
+        
+        if (activeSpecialEffects.TryGetValue(SpecialEffectType.LuckBoost, out var luckEffect))
+        {
+            return luckEffect.value;
+        }
+        
+        return 1.0f; // No luck boost
+    }
+
+    /// <summary>
+    /// Gets the current wait time reduction from active special effects
+    /// </summary>
+    /// <returns>The wait time reduction in seconds</returns>
+    public float GetWaitTimeReduction()
+    {
+        RemoveExpiredSpecialEffects();
+        
+        if (activeSpecialEffects.TryGetValue(SpecialEffectType.WaitTimeReduction, out var waitEffect))
+        {
+            return waitEffect.value;
+        }
+        
+        return 0f; // No wait time reduction
     }
 
     [Server]

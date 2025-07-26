@@ -349,10 +349,16 @@ public class FishingManager : NetworkBehaviour
             
             if (fishSpots.ShouldGeneratefish(placeToThrow))
             {
-                (currentFish, fishGenerated) = spawnable.GenerateFish(playerData.GetSelectedBait().def.GetBehaviour<BaitBehaviour>().BaitType);
+                // Get luck multiplier from player data
+                float luckMultiplier = playerData.GetLuckMultiplier();
+                
+                (currentFish, fishGenerated) = spawnable.GenerateFish(playerData.GetSelectedBait().def.GetBehaviour<BaitBehaviour>().BaitType, luckMultiplier);
             }
 
-            timeTillResultsSeconds = Random.Range(5, 11);
+            // Apply wait time multiplier from special effects
+            float baseWaitTime = Random.Range(5, 11);
+            float waitTimeMultiplier = playerData.GetWaitTimeReduction();
+            timeTillResultsSeconds = Mathf.Max(1f, baseWaitTime * waitTimeMultiplier); // Minimum 1 second wait time
 
             elapsedFishingTime = 0;
         }
