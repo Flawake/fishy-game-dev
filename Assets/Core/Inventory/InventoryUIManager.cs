@@ -180,11 +180,12 @@ public class InventoryUIManager : MonoBehaviour
         bool isRod = inst.def.GetBehaviour<RodBehaviour>() != null;
         bool isBait = inst.def.GetBehaviour<BaitBehaviour>() != null;
         bool isFish = inst.def.GetBehaviour<FishBehaviour>() != null;
+        bool isSpecial = inst.def.GetBehaviour<SpecialBehaviour>() != null;
 
         return (filter == ItemFiler.Rods && isRod) ||
                (filter == ItemFiler.Baits && isBait) ||
                (filter == ItemFiler.Fishes && isFish) ||
-               (filter == ItemFiler.Misc && !isRod && !isBait && !isFish);
+               (filter == ItemFiler.Misc && !isRod && !isBait && !isFish && (isSpecial));
     }
 
     public void ShowItemInfo(ItemInstance inst)
@@ -200,7 +201,7 @@ public class InventoryUIManager : MonoBehaviour
 
         itemAmountHolder.SetActive(!(inst.def.IsStatic || inst.def.InfiniteUse));
 
-        bool equippable = inst.def.GetBehaviour<RodBehaviour>() != null || inst.def.GetBehaviour<BaitBehaviour>() != null || inst.def.GetBehaviour<LuckPotionBehaviour>() != null || inst.def.GetBehaviour<MagicWatchBehaviour>() != null;
+        bool equippable = inst.def.GetBehaviour<RodBehaviour>() != null || inst.def.GetBehaviour<BaitBehaviour>() != null || inst.def.GetBehaviour<SpecialBehaviour>() != null;
         if (equippable)
         {
             useItemButton.SetActive(true);
@@ -236,7 +237,7 @@ public class InventoryUIManager : MonoBehaviour
         {
             playerData.CmdSelectNewBait(selectedItem);
         }
-        else if (selectedItem.def.GetBehaviour<EffectBehaviour>() != null)
+        else if (selectedItem.def.GetBehaviour<SpecialBehaviour>() != null)
         {
             playerData.ClientRequestUseEffect(selectedItem);
         }

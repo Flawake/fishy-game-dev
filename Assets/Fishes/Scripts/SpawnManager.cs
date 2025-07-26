@@ -10,13 +10,14 @@ using System.Linq;
 public class SpawnManager : NetworkBehaviour
 {
     public static SpawnManager instance;
+    
     private void Awake()
     {
         instance = this;
     }
 
     [Server]
-    public ItemDefinition GenerateFish(List<ItemDefinition> fishes, ItemBaitType bait) {
+    public ItemDefinition GenerateFish(List<ItemDefinition> fishes, ItemBaitType bait, float luckMultiplier = 1.0f) {
         //we generate 2 lists first the list of the rarity we're going to catch.
         //After that we generate a second list that takes the rarity factor in account.
         
@@ -24,7 +25,11 @@ public class SpawnManager : NetworkBehaviour
             Debug.LogError("The water is empty");
             return null;
         }
-        int spawnNumber = Random.Range(1, 1000);
+        
+        // Adjust spawn number based on luck multiplier (inverted for correct rarity logic)
+        int baseSpawnNumber = Random.Range(1, 1000);
+        int spawnNumber = Mathf.RoundToInt(baseSpawnNumber / luckMultiplier);
+        spawnNumber = Mathf.Clamp(spawnNumber, 1, 1000); // Keep within valid range
 
         List<ItemDefinition> possibleFishes = new List<ItemDefinition>();
 
