@@ -57,12 +57,12 @@ public class StoreManager : NetworkBehaviour
             return false;
         }
         
-        //if ((currencyType == CurrencyType.bucks && shopBehaviour.PriceBucks <= 0) ||
-        //    (currencyType == CurrencyType.coins && shopBehaviour.PriceCoins <= 0))
-        //{
-        //    Debug.LogWarning("Player tried to buy an item with a currency that the item does not support");
-        //    return false;
-        //}
+        if ((currencyType == CurrencyType.bucks && shopBehaviour.PriceBucks <= 0) ||
+            (currencyType == CurrencyType.coins && shopBehaviour.PriceCoins <= 0))
+        {
+            Debug.LogWarning("Player tried to buy an item with a currency that the item does not support");
+            return false;
+        }
 
         int price = currencyType == CurrencyType.coins ? shopBehaviour.PriceCoins : shopBehaviour.PriceBucks;
         int currentAmount = currencyType == CurrencyType.coins ? playerData.GetFishCoins() : playerData.GetFishBucks();
@@ -110,14 +110,14 @@ public class StoreManager : NetworkBehaviour
         
         if (shopBehaviour == null)
         {
-            KickPlayerForCheating(connectionToClient, "This item could be bought");
+            GameNetworkManager.KickPlayerForCheating(connectionToClient, "This item could be bought");
             return;
         }
 
         if ((currencyType == CurrencyType.bucks && shopBehaviour.PriceBucks <= 0) ||
             (currencyType == CurrencyType.coins && shopBehaviour.PriceCoins <= 0))
         {
-            KickPlayerForCheating(connectionToClient, "Attempted to buy item with unsupported currency");
+            GameNetworkManager.KickPlayerForCheating(connectionToClient, "Attempted to buy item with unsupported currency");
             return;
         }
 
@@ -126,7 +126,7 @@ public class StoreManager : NetworkBehaviour
 
         if (currentAmount < price)
         {
-            KickPlayerForCheating(connectionToClient, "Attempted to buy item with insufficient funds");
+            GameNetworkManager.KickPlayerForCheating(connectionToClient, "Attempted to buy item with insufficient funds");
             return;
         }
 
@@ -146,24 +146,6 @@ public class StoreManager : NetworkBehaviour
         playerDataManager.AddItemFromStore(instance);
 
         TargetPurchaseConfirmed(connectionToClient, instance.uuid);
-    }
-
-    [Server]
-    private void KickPlayerForCheating(NetworkConnectionToClient conn, string reason)
-    {
-        conn.Send(new DisconnectMessage
-        {
-            reason = ClientDisconnectReason.Cheating,
-            reasonText = $"You have been kicked for cheating: {reason}",
-        });
-        StartCoroutine(DelayedKick(conn, 3f));
-    }
-
-    [Server]
-    private System.Collections.IEnumerator DelayedKick(NetworkConnectionToClient conn, float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        conn.Disconnect();
     }
 
     [TargetRpc]

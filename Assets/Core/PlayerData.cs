@@ -26,7 +26,7 @@ public class PlayerData : NetworkBehaviour
     // bool to indicate wether the reqeust was a sent or a receiver request.
     private Dictionary<Guid, bool> pendingFriendRequests = new Dictionary<Guid, bool>();
     
-    private readonly Dictionary<SpecialEffectType, (float value, DateTime expiry)> activeSpecialEffects = new Dictionary<SpecialEffectType, (float value, DateTime expiry)>();
+    private readonly Dictionary<SpecialEffectType, (int itemId, DateTime expiry)> activeSpecialEffects = new Dictionary<SpecialEffectType, (int itemId, DateTime expiry)>();
 
     //Variables that are synced between ALL players
     [SyncVar, SerializeField]
@@ -109,6 +109,15 @@ public class PlayerData : NetworkBehaviour
             Debug.LogWarning($"Item with ID {item.def.Id} has no known special effect");
             return;
         }
+        
+        // Apply effect immediately on client for responsiveness
+        SpecialBehaviour specialEffect = item.def.GetBehaviour<SpecialBehaviour>();
+        if (!activeSpecialEffects.ContainsKey(specialEffect.EffectType))
+        {
+            DateTime clientExpiry = DateTime.UtcNow.AddSeconds(specialEffect.DurationSeconds);
+            activeSpecialEffects[specialEffect.EffectType] = (item.def.Id, clientExpiry);
+        }
+        
         CmdRequestUseEffect(item);
     }
 
@@ -119,7 +128,7 @@ public class PlayerData : NetworkBehaviour
         
         if (itemReference == null)
         {
-            Debug.LogWarning("Item was not present in the inventory");
+            GameNetworkManager.KickPlayerForCheating(connectionToClient, "Item was not present in the inventory");
             return;
         }
         
@@ -129,7 +138,7 @@ public class PlayerData : NetworkBehaviour
         }
         else
         {
-            Debug.LogWarning($"Item with ID {danglingItem.def.Id} has no known special effect");
+            GameNetworkManager.KickPlayerForCheating(connectionToClient, "Tried to use item with no special effect");
         }
     }
     
@@ -139,33 +148,42 @@ public class PlayerData : NetworkBehaviour
         SpecialBehaviour specialEffect = itemReference.def.GetBehaviour<SpecialBehaviour>();
         if (specialEffect == null)
         {
-            Debug.LogWarning($"Item with ID {itemReference.def.Id} has no known special effect");
+            GameNetworkManager.KickPlayerForCheating(connectionToClient, "Tried to use item with no special effect");
+            return;
+        }
+        
+        // Check if the same effect is already active
+        if (activeSpecialEffects.ContainsKey(specialEffect.EffectType))
+        {
+            GameNetworkManager.KickPlayerForCheating(connectionToClient, "Tried to use item of which another one is already active");
             return;
         }
         
         // Consume the item from stack
         playerDataManager.ServerConsumeFromStack(itemReference);
         
-        // Apply the special effect
-        ApplySpecialEffect(specialEffect.EffectType, specialEffect.EffectValue, specialEffect.DurationSeconds);
+        // Apply the special effect on server
+        DateTime serverExpiry = DateTime.UtcNow.AddSeconds(specialEffect.DurationSeconds);
+        activeSpecialEffects[specialEffect.EffectType] = (itemReference.def.Id, serverExpiry);
         
-        // Notify client
-        TargetAddNewSpecialEffect(specialEffect);
+        TargetAddNewSpecialEffect(itemReference.def.Id, serverExpiry);
     }
 
     [TargetRpc]
-    private void TargetAddNewSpecialEffect(SpecialBehaviour specialEffect)
+    private void TargetAddNewSpecialEffect(int itemId, DateTime serverExpiry)
     {
-        ApplySpecialEffect(specialEffect.EffectType, specialEffect.EffectValue, specialEffect.DurationSeconds);
+        var itemDef = ItemRegistry.Get(itemId);
+        if (itemDef == null) {
+            return;
+        }
+        var specialEffect = itemDef.GetBehaviour<SpecialBehaviour>();
+        if (specialEffect == null) {
+            return;
+        }
+        activeSpecialEffects[specialEffect.EffectType] = (itemId, serverExpiry);
     }
 
-    private void ApplySpecialEffect(SpecialEffectType effectType, float value, float durationSeconds)
-    {
-        DateTime expiry = DateTime.UtcNow.AddSeconds(durationSeconds);
-        activeSpecialEffects[effectType] = (value, expiry);
-    }
-
-    public Dictionary<SpecialEffectType, (float value, DateTime expiry)> GetActiveSpecialEffects()
+    public Dictionary<SpecialEffectType, (int itemId, DateTime expiry)> GetActiveSpecialEffects()
     {
         RemoveExpiredSpecialEffects();
         return activeSpecialEffects;
@@ -189,21 +207,22 @@ public class PlayerData : NetworkBehaviour
             Debug.Log($"Special effect {expiredEffect} has expired");
         }
     }
-
-    /// <summary>
-    /// Gets the current luck multiplier from active special effects
-    /// </summary>
-    /// <returns>The luck multiplier (1.0 = no bonus)</returns>
     public float GetLuckMultiplier()
     {
         RemoveExpiredSpecialEffects();
         
         if (activeSpecialEffects.TryGetValue(SpecialEffectType.LuckBoost, out var luckEffect))
         {
-            return luckEffect.value;
+            // Get the effect value from the item definition
+            ItemDefinition itemDef = ItemRegistry.Get(luckEffect.itemId);
+            if (itemDef != null)
+            {
+                SpecialBehaviour specialEffect = itemDef.GetBehaviour<SpecialBehaviour>();
+                return specialEffect?.EffectValue ?? 1.0f;
+            }
         }
         
-        return 1.0f; // No luck boost
+        return 1.0f;
     }
     
     public float GetWaitTimeReduction()
@@ -212,10 +231,16 @@ public class PlayerData : NetworkBehaviour
         
         if (activeSpecialEffects.TryGetValue(SpecialEffectType.WaitTimeReduction, out var waitEffect))
         {
-            return waitEffect.value;
+            // Get the effect value from the item definition
+            ItemDefinition itemDef = ItemRegistry.Get(waitEffect.itemId);
+            if (itemDef != null)
+            {
+                SpecialBehaviour specialEffect = itemDef.GetBehaviour<SpecialBehaviour>();
+                return specialEffect?.EffectValue ?? 1.0f;
+            }
         }
         
-        return 1f;
+        return 1.0f;
     }
 
     [Server]
@@ -984,5 +1009,23 @@ public class PlayerData : NetworkBehaviour
             CmdGetFriendList();
             CmdGetFriendRequestList();
         }
+    }
+
+    [Server]
+    private void KickPlayerForCheating(NetworkConnectionToClient conn, string reason)
+    {
+        conn.Send(new DisconnectMessage
+        {
+            reason = ClientDisconnectReason.Cheating,
+            reasonText = $"You have been kicked for cheating: {reason}",
+        });
+        StartCoroutine(DelayedKick(conn, 3f));
+    }
+
+    [Server]
+    private System.Collections.IEnumerator DelayedKick(NetworkConnectionToClient conn, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        conn.Disconnect();
     }
 }

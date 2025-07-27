@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using ItemSystem;
 using System;
+using System.Collections.Generic;
 
 public class PlayerStatsOverlayUIManager : MonoBehaviour
 {
@@ -16,6 +17,9 @@ public class PlayerStatsOverlayUIManager : MonoBehaviour
     TMP_Text magicwatchTimeLeft;
 
     private PlayerData playerData;
+
+    // Store original sprites for each effect slot
+    private Dictionary<Image, Sprite> originalEffectSprites = new Dictionary<Image, Sprite>();
 
     private void Start()
     {
@@ -44,61 +48,48 @@ public class PlayerStatsOverlayUIManager : MonoBehaviour
         
         // Update luck potion UI
         bool hasLuckBoost = activeEffects.TryGetValue(SpecialEffectType.LuckBoost, out var luckEffect);
-        UpdateEffectUI(luckpotionImage, luckpotionTimeLeft, hasLuckBoost, luckEffect.expiry);
+        UpdateEffectUI(luckpotionImage, luckpotionTimeLeft, hasLuckBoost, luckEffect.itemId, luckEffect.expiry);
 
         // Update magic watch UI
         bool hasWaitTimeReduction = activeEffects.TryGetValue(SpecialEffectType.WaitTimeReduction, out var waitEffect);
-        UpdateEffectUI(magicwatchImage, magicwatchTimeLeft, hasWaitTimeReduction, waitEffect.expiry);
+        UpdateEffectUI(magicwatchImage, magicwatchTimeLeft, hasWaitTimeReduction, waitEffect.itemId, waitEffect.expiry);
     }
 
-    private void UpdateEffectUI(Image effectImage, TMP_Text timeText, bool hasEffect, DateTime expiry)
+    private void UpdateEffectUI(Image effectImage, TMP_Text timeText, bool hasEffect, int itemId, DateTime expiry)
     {
         if (hasEffect)
         {
-            // Show the effect UI
+            // Store the original sprite if not already stored
+            if (!originalEffectSprites.ContainsKey(effectImage))
+                originalEffectSprites[effectImage] = effectImage.sprite;
+
+            // Set the effect image to the sprite corresponding to the itemId
+            var itemDef = ItemRegistry.Get(itemId);
+            if (itemDef != null && itemDef.Icon != null)
+                effectImage.sprite = itemDef.Icon;
+
             effectImage.gameObject.SetActive(true);
-            
-            // Calculate remaining time
             TimeSpan remainingTime = expiry - DateTime.UtcNow;
-            
             if (remainingTime.TotalSeconds > 0)
             {
-                // Format time display
-                string timeDisplay = FormatTimeRemaining(remainingTime);
-                timeText.text = timeDisplay;
-                
-                // Set image color to white when active
+                timeText.text = FormatTimeRemaining(remainingTime);
                 effectImage.color = Color.white;
-                
-                // Optional: Change color based on remaining time
-                if (remainingTime.TotalMinutes < 1)
-                {
-                    timeText.color = Color.red; // Less than 1 minute remaining
-                }
-                else if (remainingTime.TotalMinutes < 5)
-                {
-                    timeText.color = Color.yellow; // Less than 5 minutes remaining
-                }
-                else
-                {
-                    timeText.color = Color.white; // Normal time remaining
-                }
             }
             else
             {
-                // Effect has expired, show "xx:xx" and set image to gray
                 timeText.text = "xx:xx";
-                effectImage.color = new Color(40f/255f, 40f/255f, 40f/255f, 1f); // RGB(40, 40, 40)
-                timeText.color = Color.white;
+                effectImage.color = new Color(40f/255f, 40f/255f, 40f/255f, 1f);
             }
         }
         else
         {
-            // No active effect, show "xx:xx" and set image to gray
+            // Restore the original sprite if it was changed
+            if (originalEffectSprites.TryGetValue(effectImage, out var originalSprite))
+                effectImage.sprite = originalSprite;
+
             effectImage.gameObject.SetActive(true);
             timeText.text = "xx:xx";
-            effectImage.color = new Color(40f/255f, 40f/255f, 40f/255f, 1f); // RGB(40, 40, 40)
-            timeText.color = Color.white;
+            effectImage.color = new Color(40f/255f, 40f/255f, 40f/255f, 1f);
         }
     }
 
