@@ -294,6 +294,27 @@ public class GameNetworkManager : NetworkManager
         yield return new WaitForSeconds(delay);
         conn.Disconnect();
     }
+
+    [Server]
+    public static void KickPlayerForCheating(NetworkConnectionToClient conn, string reason)
+    {
+        conn.Send(new DisconnectMessage
+        {
+            reason = ClientDisconnectReason.Cheating,
+            reasonText = $"You have been kicked for cheating: {reason}",
+        });
+        if (NetworkManager.singleton is GameNetworkManager manager)
+        {
+            manager.StartCoroutine(DelayedKick(conn, 3f));
+        }
+    }
+
+    [Server]
+    private static IEnumerator DelayedKick(NetworkConnectionToClient conn, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        conn.Disconnect();
+    }
 }
 
 //Data of the player used when authenticating

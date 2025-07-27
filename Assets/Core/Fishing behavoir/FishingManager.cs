@@ -358,7 +358,7 @@ public class FishingManager : NetworkBehaviour
             // Apply wait time multiplier from special effects
             float baseWaitTime = Random.Range(5, 11);
             float waitTimeMultiplier = playerData.GetWaitTimeReduction();
-            timeTillResultsSeconds = Mathf.Max(1f, baseWaitTime * waitTimeMultiplier); // Minimum 1 second wait time
+            timeTillResultsSeconds = Mathf.Max(1f, baseWaitTime / waitTimeMultiplier);
 
             elapsedFishingTime = 0;
         }
