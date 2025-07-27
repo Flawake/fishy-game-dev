@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Mirror;
 using System.Linq;
 using UnityEngine;
@@ -7,7 +8,7 @@ using ItemSystem;
 public class PlayerInventory : NetworkBehaviour
 {
     // Unified container with the new runtime representation.
-    public readonly SyncList<ItemInstance> items = new();
+    private readonly List<ItemInstance> items = new();
 
     [SerializeField]
     PlayerData playerData;
@@ -60,21 +61,56 @@ public class PlayerInventory : NetworkBehaviour
                 playerData.SelectNewBait(inst, true);
             }
         }
+
+        // Sync the initial inventory to the client
+        TargetSyncInitialInventory(items.ToArray());
+    }
+
+    [TargetRpc]
+    private void TargetSyncInitialInventory(ItemInstance[] inventoryItems)
+    {
+        items.Clear();
+        items.AddRange(inventoryItems);
+    }
+
+    [TargetRpc]
+    private void TargetTryMergeOrAdd(ItemInstance item)
+    {
+        TryMergeOrAdd(item);
+    }
+
+    [TargetRpc]
+    private void TargetRemoveItem(Guid uuid)
+    {
+        items.RemoveAll(item => item.uuid == uuid);
     }
 
     // ------------------------------------------------------------------
     // CRUD helpers ------------------------------------------------------
     // ------------------------------------------------------------------
 
-    /// <summary>
-    /// Interface to add item to player's inventory
-    /// </summary>
-    /// <param name="inst"></param>
-    /// <returns>
-    /// bool, stacked on existing item or not
-    /// </returns>
     [Server]
     public ItemInstance AddItem(ItemInstance inst)
+    {
+        if (inst == null) return null;
+        ItemInstance result = TryMergeOrAdd(inst);
+        
+        // Sync the specific item change to the client
+        TargetTryMergeOrAdd(inst);
+        
+        return result;
+    }
+
+    // Server-side method for confirming optimistic purchases (no RPC needed
+    [Server]
+    public ItemInstance AddItemConfirmPurchase(ItemInstance inst)
+    {
+        if (inst == null) return null;
+        return TryMergeOrAdd(inst);
+    }
+
+    [Client]
+    public ItemInstance ClientAddItem(ItemInstance inst)
     {
         if (inst == null) return null;
         return TryMergeOrAdd(inst);
@@ -91,11 +127,25 @@ public class PlayerInventory : NetworkBehaviour
                 break;
             }
         }
+        
+        // Sync the specific item removal to the client
+        TargetRemoveItem(uuid);
     }
 
     public ItemInstance GetItem(Guid uuid)
     {
         return items.FirstOrDefault(i => i.uuid == uuid);
+    }
+
+    public List<ItemInstance> GetItems()
+    {
+        return items;
+    }
+
+    [Command]
+    public void CmdGetInventory()
+    {
+        TargetSyncInitialInventory(items.ToArray());
     }
 
     public ItemInstance GetRodByUuid(Guid uuid)
@@ -141,7 +191,6 @@ public class PlayerInventory : NetworkBehaviour
         return danglingItem;
     }
 
-    [Server]
     private bool ServerMergeItem(ItemInstance itemReference, ItemInstance danglingItem)
     {
         if (itemReference.def.Id != danglingItem.def.Id)
@@ -160,7 +209,13 @@ public class PlayerInventory : NetworkBehaviour
             stackStateReference.currentAmount += stackStateDangling.currentAmount;
             itemReference.SetState(stackStateReference);
         }
-        TargetUpdateItem(itemReference);
+        
+        // Only call TargetRPC from server
+        if (isServer)
+        {
+            TargetUpdateItem(itemReference);
+        }
+        
         return true;
     }
 

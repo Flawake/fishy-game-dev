@@ -154,7 +154,7 @@ public class InventoryUIManager : MonoBehaviour
         InventoryItemData firstItem = null;
 
         PlayerInventory inventory = GetComponentInParent<PlayerInventory>();
-        foreach (ItemInstance inst in inventory.items)
+        foreach (ItemInstance inst in inventory.GetItems())
         {
             if (!MatchesFilter(inst, filter)) continue;
 

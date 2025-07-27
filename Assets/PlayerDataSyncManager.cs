@@ -40,6 +40,13 @@ public class PlayerDataSyncManager : MonoBehaviour
         AddItem(item, null, false);
     }
 
+    // Client-side version for optimistic updates
+    [Client]
+    public void ClientAddItem(ItemInstance item)
+    {
+        inventory.ClientAddItem(item);
+    }
+
     [Server]
     public void AddItem(ItemInstance item, CurrentFish fish, bool fromCaught)
     {
@@ -50,6 +57,14 @@ public class PlayerDataSyncManager : MonoBehaviour
         }
 
         ItemInstance toUpdate = inventory.AddItem(item);
+        DatabaseCommunications.AddOrUpdateItem(toUpdate, playerData.GetUuid());
+    }
+
+    // Server-side method for store purchases (no RPC needed since client has optimistic item)
+    [Server]
+    public void AddItemFromStore(ItemInstance item)
+    {
+        ItemInstance toUpdate = inventory.AddItemConfirmPurchase(item);
         DatabaseCommunications.AddOrUpdateItem(toUpdate, playerData.GetUuid());
     }
 

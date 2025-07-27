@@ -159,9 +159,6 @@ public class PlayerData : NetworkBehaviour
         ApplySpecialEffect(specialEffect.EffectType, specialEffect.EffectValue, specialEffect.DurationSeconds);
     }
 
-
-
-    [Server]
     private void ApplySpecialEffect(SpecialEffectType effectType, float value, float durationSeconds)
     {
         DateTime expiry = DateTime.UtcNow.AddSeconds(durationSeconds);
@@ -208,11 +205,7 @@ public class PlayerData : NetworkBehaviour
         
         return 1.0f; // No luck boost
     }
-
-    /// <summary>
-    /// Gets the current wait time reduction from active special effects
-    /// </summary>
-    /// <returns>The wait time reduction in seconds</returns>
+    
     public float GetWaitTimeReduction()
     {
         RemoveExpiredSpecialEffects();
@@ -222,7 +215,7 @@ public class PlayerData : NetworkBehaviour
             return waitEffect.value;
         }
         
-        return 0f; // No wait time reduction
+        return 1f;
     }
 
     [Server]
@@ -863,6 +856,14 @@ public class PlayerData : NetworkBehaviour
         SetFishCoins(GetFishCoins() + Amount);
     }
 
+    // Client-side version for optimistic updates
+    [Client]
+    public void ClientChangeFishCoinsAmount(int Amount)
+    {
+        availableFishCoins += Amount;
+        CoinsAmountChanged?.Invoke();
+    }
+
     [Server]
     private void SetFishCoins(int newAmount)
     {
@@ -896,6 +897,14 @@ public class PlayerData : NetworkBehaviour
     public void ChangeFishBucksAmount(int Amount)
     {
         SetFishBucks(GetFishBucks() + Amount);
+    }
+
+    // Client-side version for optimistic updates
+    [Client]
+    public void ClientChangeFishBucksAmount(int Amount)
+    {
+        availableFishBucks += Amount;
+        BucksAmountChanged?.Invoke();
     }
 
     [Server]
@@ -971,6 +980,7 @@ public class PlayerData : NetworkBehaviour
         {
             CmdGetFishCoins();
             CmdGetFishBucks();
+            inventory.CmdGetInventory();
             CmdGetFriendList();
             CmdGetFriendRequestList();
         }

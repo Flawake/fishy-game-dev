@@ -44,12 +44,20 @@ public class SpawnableFishes : NetworkBehaviour
     public (CurrentFish, bool) GenerateFish(ItemBaitType bait, float luckMultiplier = 1.0f) {
         // a fish is being generated and returned
         ItemDefinition generatedFish = SpawnManager.instance.GenerateFish(fishes, bait, luckMultiplier);
-        FishBehaviour generatedFishBehaviour = generatedFish.GetBehaviour<FishBehaviour>();
         CurrentFish fishToCatch = new CurrentFish();
+        
         if (generatedFish == null)
         {
             return (fishToCatch, false);
         }
+        
+        FishBehaviour generatedFishBehaviour = generatedFish.GetBehaviour<FishBehaviour>();
+        if (generatedFishBehaviour == null)
+        {
+            Debug.LogError($"Generated fish {generatedFish.Id} does not have a FishBehaviour");
+            return (fishToCatch, false);
+        }
+        
         fishToCatch.id = generatedFish.Id;
         fishToCatch.maxLength = generatedFishBehaviour.MaximumLength;
         fishToCatch.minLength = generatedFishBehaviour.MinimumLength;
