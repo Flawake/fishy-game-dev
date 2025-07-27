@@ -8,6 +8,7 @@ public enum ClientDisconnectReason
     Timeout,
     InvalidLoginCredentials,
     InvalidPlayerData,
+    Cheating,
 };
 
 public struct DisconnectMessage : NetworkMessage

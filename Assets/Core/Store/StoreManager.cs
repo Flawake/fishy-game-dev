@@ -56,6 +56,13 @@ public class StoreManager : NetworkBehaviour
             Debug.LogWarning("Item cannot be bought");
             return false;
         }
+        
+        //if ((currencyType == CurrencyType.bucks && shopBehaviour.PriceBucks <= 0) ||
+        //    (currencyType == CurrencyType.coins && shopBehaviour.PriceCoins <= 0))
+        //{
+        //    Debug.LogWarning("Player tried to buy an item with a currency that the item does not support");
+        //    return false;
+        //}
 
         int price = currencyType == CurrencyType.coins ? shopBehaviour.PriceCoins : shopBehaviour.PriceBucks;
         int currentAmount = currencyType == CurrencyType.coins ? playerData.GetFishCoins() : playerData.GetFishBucks();
@@ -103,16 +110,14 @@ public class StoreManager : NetworkBehaviour
         
         if (shopBehaviour == null)
         {
-            Debug.LogWarning("Player tried to buy an item which could not be bought");
-            TargetPurchaseFailed(connectionToClient, "Item cannot be bought");
+            KickPlayerForCheating(connectionToClient, "This item could be bought");
             return;
         }
 
-        if ((currencyType == CurrencyType.bucks && shopBehaviour.PriceBucks == -1) ||
-            (currencyType == CurrencyType.coins && shopBehaviour.PriceCoins == -1))
+        if ((currencyType == CurrencyType.bucks && shopBehaviour.PriceBucks <= 0) ||
+            (currencyType == CurrencyType.coins && shopBehaviour.PriceCoins <= 0))
         {
-            Debug.LogWarning("Player tried to buy an item with a currency that the item does not support");
-            TargetPurchaseFailed(connectionToClient, "Currency not supported");
+            KickPlayerForCheating(connectionToClient, "Attempted to buy item with unsupported currency");
             return;
         }
 
@@ -121,8 +126,7 @@ public class StoreManager : NetworkBehaviour
 
         if (currentAmount < price)
         {
-            Debug.LogWarning("Player tried to buy item with insufficient funds");
-            TargetPurchaseFailed(connectionToClient, "Insufficient funds");
+            KickPlayerForCheating(connectionToClient, "Attempted to buy item with insufficient funds");
             return;
         }
 
@@ -144,6 +148,24 @@ public class StoreManager : NetworkBehaviour
         TargetPurchaseConfirmed(connectionToClient, instance.uuid);
     }
 
+    [Server]
+    private void KickPlayerForCheating(NetworkConnectionToClient conn, string reason)
+    {
+        conn.Send(new DisconnectMessage
+        {
+            reason = ClientDisconnectReason.Cheating,
+            reasonText = $"You have been kicked for cheating: {reason}",
+        });
+        StartCoroutine(DelayedKick(conn, 3f));
+    }
+
+    [Server]
+    private System.Collections.IEnumerator DelayedKick(NetworkConnectionToClient conn, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        conn.Disconnect();
+    }
+
     [TargetRpc]
     private void TargetPurchaseConfirmed(NetworkConnectionToClient target, Guid realUuid)
     {
@@ -158,36 +180,5 @@ public class StoreManager : NetworkBehaviour
         }
 
         pendingPurchase = null;
-    }
-
-    [TargetRpc]
-    private void TargetPurchaseFailed(NetworkConnectionToClient target, string reason)
-    {
-        if (pendingPurchase.HasValue)
-        {
-            RollbackOptimisticUpdate(pendingPurchase.Value);
-            pendingPurchase = null;
-        }
-        Debug.LogWarning($"Purchase failed: {reason}");
-    }
-
-    [Client]
-    private void RollbackOptimisticUpdate(PendingPurchase purchase)
-    {
-        // Restore currency optimistically
-        if (purchase.currencyType == CurrencyType.coins)
-        {
-            playerData.ClientChangeFishCoinsAmount(purchase.amount);
-        }
-        else
-        {
-            playerData.ClientChangeFishBucksAmount(purchase.amount);
-        }
-
-        // Remove the optimistic item
-        var inventory = playerData.GetComponent<PlayerInventory>();
-        inventory.RemoveItem(purchase.tempUuid);
-
-        Debug.Log("Optimistic update rolled back");
     }
 }
