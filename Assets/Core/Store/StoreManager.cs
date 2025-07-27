@@ -1,6 +1,7 @@
 using Mirror;
 using ItemSystem;
 using UnityEngine;
+using System;
 
 public class StoreManager : NetworkBehaviour
 {
@@ -15,57 +16,178 @@ public class StoreManager : NetworkBehaviour
         bucks
     }
 
+    // Optimistic update tracking
+    private struct PendingPurchase
+    {
+        public int itemId;
+        public CurrencyType currencyType;
+        public int amount;
+        public DateTime timestamp;
+        public Guid tempUuid;
+    }
+
+    private PendingPurchase? pendingPurchase = null;
 
     [Client]
     public void BuyItem(ItemDefinition item, CurrencyType currencyType)
     {
-        CmdBuyItem(item.Id, currencyType);
+        if (TryOptimisticPurchase(item, currencyType))
+        {
+            CmdBuyItem(item.Id, currencyType);
+        }
+        else
+        {
+            Debug.LogWarning($"Optimistic purchase failed for {item.DisplayName}");
+        }
+    }
+
+    [Client]
+    private bool TryOptimisticPurchase(ItemDefinition item, CurrencyType currencyType)
+    {
+        if (pendingPurchase.HasValue)
+        {
+            Debug.LogWarning("Cannot make purchase while another purchase is pending verification");
+            return false;
+        }
+
+        ShopBehaviour shopBehaviour = item.GetBehaviour<ShopBehaviour>();
+        if (shopBehaviour == null)
+        {
+            Debug.LogWarning("Item cannot be bought");
+            return false;
+        }
+
+        int price = currencyType == CurrencyType.coins ? shopBehaviour.PriceCoins : shopBehaviour.PriceBucks;
+        int currentAmount = currencyType == CurrencyType.coins ? playerData.GetFishCoins() : playerData.GetFishBucks();
+
+        if (currentAmount < price)
+        {
+            return false;
+        }
+
+        if (currencyType == CurrencyType.coins)
+        {
+            playerData.ClientChangeFishCoinsAmount(-price);
+        }
+        else
+        {
+            playerData.ClientChangeFishBucksAmount(-price);
+        }
+
+        ItemInstance instance = new ItemInstance(
+            item,
+            shopBehaviour.Amount
+        );
+        Guid tempUuid = instance.uuid;
+        playerDataManager.ClientAddItem(instance);
+
+        // Track pending purchase for potential rollback
+        pendingPurchase = new PendingPurchase
+        {
+            itemId = item.Id,
+            currencyType = currencyType,
+            amount = price,
+            timestamp = DateTime.UtcNow,
+            tempUuid = tempUuid
+        };
+
+        return true;
     }
 
     [Command]
     void CmdBuyItem(int itemID, CurrencyType currencyType)
     {
-        //Don't trust the player on giving the whole item, only use the itemID of the item that the player wants to buy.
+        // Server-side validation
         ItemDefinition item = ItemRegistry.Get(itemID);
         ShopBehaviour shopBehaviour = item.GetBehaviour<ShopBehaviour>();
+        
         if (shopBehaviour == null)
         {
             Debug.LogWarning("Player tried to buy an item which could not be bought");
+            TargetPurchaseFailed(connectionToClient, "Item cannot be bought");
             return;
         }
 
         if ((currencyType == CurrencyType.bucks && shopBehaviour.PriceBucks == -1) ||
             (currencyType == CurrencyType.coins && shopBehaviour.PriceCoins == -1))
         {
-            Debug.LogWarning("Player tied to buy an item with a currency that the item does not support");
+            Debug.LogWarning("Player tried to buy an item with a currency that the item does not support");
+            TargetPurchaseFailed(connectionToClient, "Currency not supported");
             return;
         }
 
-        if(currencyType == CurrencyType.coins && shopBehaviour.PriceCoins != -1)
+        int price = currencyType == CurrencyType.coins ? shopBehaviour.PriceCoins : shopBehaviour.PriceBucks;
+        int currentAmount = currencyType == CurrencyType.coins ? playerData.GetFishCoins() : playerData.GetFishBucks();
+
+        if (currentAmount < price)
         {
-            if(playerData.GetFishCoins() < shopBehaviour.PriceCoins)
-            {
-                return;
-            }
-            ItemInstance instance = new ItemInstance(
-                item,
-                item.GetBehaviour<ShopBehaviour>()?.Amount ?? 1
-            );
-            playerDataManager.AddItem(instance);
-            playerDataManager.ChangeFishCoinsAmount(-shopBehaviour.PriceCoins);
+            Debug.LogWarning("Player tried to buy item with insufficient funds");
+            TargetPurchaseFailed(connectionToClient, "Insufficient funds");
+            return;
         }
-        else if(currencyType == CurrencyType.bucks && shopBehaviour.PriceBucks != -1)
+
+        if (currencyType == CurrencyType.coins)
         {
-            if (playerData.GetFishBucks() < shopBehaviour.PriceBucks)
-            {
-                return;
-            }
-            ItemInstance instance = new ItemInstance(
-                item,
-                item.GetBehaviour<DurabilityBehaviour>()?.MaxDurability ?? -10
-            );
-            playerDataManager.AddItem(instance);
-            playerDataManager.ChangeFishBucksAmount(-shopBehaviour.PriceBucks);
+            playerDataManager.ChangeFishCoinsAmount(-price);
         }
+        else
+        {
+            playerDataManager.ChangeFishBucksAmount(-price);
+        }
+
+        ItemInstance instance = new ItemInstance(
+            item,
+            shopBehaviour.Amount
+        );
+        playerDataManager.AddItemFromStore(instance);
+
+        TargetPurchaseConfirmed(connectionToClient, instance.uuid);
+    }
+
+    [TargetRpc]
+    private void TargetPurchaseConfirmed(NetworkConnectionToClient target, Guid realUuid)
+    {
+        if (pendingPurchase.HasValue)
+        {
+            PlayerInventory inventory = playerData.GetComponent<PlayerInventory>();
+            var optimisticItem = inventory.GetItem(pendingPurchase.Value.tempUuid);
+            if (optimisticItem != null)
+            {
+                optimisticItem.uuid = realUuid;
+            }
+        }
+
+        pendingPurchase = null;
+    }
+
+    [TargetRpc]
+    private void TargetPurchaseFailed(NetworkConnectionToClient target, string reason)
+    {
+        if (pendingPurchase.HasValue)
+        {
+            RollbackOptimisticUpdate(pendingPurchase.Value);
+            pendingPurchase = null;
+        }
+        Debug.LogWarning($"Purchase failed: {reason}");
+    }
+
+    [Client]
+    private void RollbackOptimisticUpdate(PendingPurchase purchase)
+    {
+        // Restore currency optimistically
+        if (purchase.currencyType == CurrencyType.coins)
+        {
+            playerData.ClientChangeFishCoinsAmount(purchase.amount);
+        }
+        else
+        {
+            playerData.ClientChangeFishBucksAmount(purchase.amount);
+        }
+
+        // Remove the optimistic item
+        var inventory = playerData.GetComponent<PlayerInventory>();
+        inventory.RemoveItem(purchase.tempUuid);
+
+        Debug.Log("Optimistic update rolled back");
     }
 }
