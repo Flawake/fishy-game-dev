@@ -298,6 +298,7 @@ public class GameNetworkManager : NetworkManager
     [Server]
     public static void KickPlayerForCheating(NetworkConnectionToClient conn, string reason)
     {
+        Debug.Log($"Kickreason: {reason}");
         conn.Send(new DisconnectMessage
         {
             reason = ClientDisconnectReason.Cheating,

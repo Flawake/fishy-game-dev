@@ -14,17 +14,17 @@ public class PlayerDataSyncManager : MonoBehaviour
     PlayerFishdexFishes fishdexFishes;
 
     [Server]
-    public void ChangeFishCoinsAmount(int amount)
+    public void ChangeFishCoinsAmount(int amount, bool needsTargetSync)
     {
         DatabaseCommunications.ChangeFishCoinsAmount(amount, playerData.GetUuid());
-        playerData.ChangeFishCoinsAmount(amount);
+        playerData.ChangeFishCoinsAmount(amount, needsTargetSync);
     }
 
     [Server]
-    public void ChangeFishBucksAmount(int amount)
+    public void ChangeFishBucksAmount(int amount, bool needsTargetSync)
     {
         DatabaseCommunications.ChangeFishBucksAmount(amount, playerData.GetUuid());
-        playerData.ChangeFishBucksAmount(amount);
+        playerData.ChangeFishBucksAmount(amount, needsTargetSync);
     }
 
     [Server]
@@ -42,9 +42,9 @@ public class PlayerDataSyncManager : MonoBehaviour
 
     // Client-side version for optimistic updates
     [Client]
-    public void ClientAddItem(ItemInstance item)
+    public ItemInstance ClientAddItem(ItemInstance item)
     {
-        inventory.ClientAddItem(item);
+        return inventory.ClientAddItem(item);
     }
 
     [Server]
@@ -62,10 +62,11 @@ public class PlayerDataSyncManager : MonoBehaviour
 
     // Server-side method for store purchases (no RPC needed since client has optimistic item)
     [Server]
-    public void AddItemFromStore(ItemInstance item)
+    public ItemInstance AddItemFromStore(ItemInstance item)
     {
         ItemInstance toUpdate = inventory.AddItemConfirmPurchase(item);
         DatabaseCommunications.AddOrUpdateItem(toUpdate, playerData.GetUuid());
+        return toUpdate;
     }
 
     [Server]
@@ -219,15 +220,5 @@ public class PlayerDataSyncManager : MonoBehaviour
 
         StackState stackState = itemReference.GetState<StackState>();
         return stackState?.currentAmount ?? -1;
-    }
-
-    internal void ChangeFishCoinsAmount(int? v)
-    {
-        throw new NotImplementedException();
-    }
-
-    internal void ChangeFishBucksAmount(int? v)
-    {
-        throw new NotImplementedException();
     }
 }

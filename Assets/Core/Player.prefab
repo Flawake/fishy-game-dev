@@ -1982,8 +1982,11 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   playerData: {fileID: 3625476836490181}
-  inventory: {fileID: 1831225255022429458}
+  playerInventory: {fileID: 1831225255022429458}
   playerDataManager: {fileID: 2600673011262952092}
+  purchaseTimeoutSeconds: 10
+  maxConcurrentPurchases: 1
+  enablePurchaseLogging: 1
 --- !u!114 &2600673011262952092
 MonoBehaviour:
   m_ObjectHideFlags: 0

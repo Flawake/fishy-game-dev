@@ -551,8 +551,8 @@ public class PlayerData : NetworkBehaviour
             fishdexFishes.SaveFishStats(playerData);
 
             SetUuid(userID);
-            SetFishCoins(playerData.coins);
-            SetFishBucks(playerData.bucks);
+            SetFishCoins(playerData.coins, true);
+            SetFishBucks(playerData.bucks, true);
             SetXp(playerData.xp);
             SetStartPlayTime();
             SetTotalPlayTimeAtStart(playerData.total_playtime);
@@ -876,9 +876,9 @@ public class PlayerData : NetworkBehaviour
     }
 
     [Server]
-    public void ChangeFishCoinsAmount(int Amount)
+    public void ChangeFishCoinsAmount(int Amount, bool needsTargetSync)
     {
-        SetFishCoins(GetFishCoins() + Amount);
+        SetFishCoins(GetFishCoins() + Amount, needsTargetSync);
     }
 
     // Client-side version for optimistic updates
@@ -890,11 +890,11 @@ public class PlayerData : NetworkBehaviour
     }
 
     [Server]
-    private void SetFishCoins(int newAmount)
+    private void SetFishCoins(int newAmount, bool needsTargetSync)
     {
         availableFishCoins = newAmount;
         //isServer does check if this object has also been spawned on clients
-        if (isServer)
+        if (isServer && needsTargetSync)
         {
             TargetSetFishCoins(newAmount);
         }
@@ -919,9 +919,9 @@ public class PlayerData : NetworkBehaviour
     }
 
     [Server]
-    public void ChangeFishBucksAmount(int Amount)
+    public void ChangeFishBucksAmount(int Amount, bool needsTargetSync)
     {
-        SetFishBucks(GetFishBucks() + Amount);
+        SetFishBucks(GetFishBucks() + Amount, needsTargetSync);
     }
 
     // Client-side version for optimistic updates
@@ -933,11 +933,11 @@ public class PlayerData : NetworkBehaviour
     }
 
     [Server]
-    private void SetFishBucks(int newAmount)
+    private void SetFishBucks(int newAmount, bool needsTargetSync)
     {
         availableFishBucks = newAmount;
         //isServer does also check if this object has been spawned on clients
-        if (isServer)
+        if (isServer && needsTargetSync)
         {
             TargetSetFishBucks(newAmount);
         }

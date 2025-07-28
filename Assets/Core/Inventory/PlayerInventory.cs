@@ -182,7 +182,7 @@ public class PlayerInventory : NetworkBehaviour
                 return danglingItem;
             }
 
-            if (ServerMergeItem(itemRef, danglingItem))
+            if (MergeItem(itemRef, danglingItem))
             {
                 return itemRef;
             }
@@ -191,11 +191,11 @@ public class PlayerInventory : NetworkBehaviour
         return danglingItem;
     }
 
-    private bool ServerMergeItem(ItemInstance itemReference, ItemInstance danglingItem)
+    private bool MergeItem(ItemInstance itemReference, ItemInstance danglingItem)
     {
         if (itemReference.def.Id != danglingItem.def.Id)
         {
-            Debug.LogWarning("Items are not compatibel with each other");
+            Debug.LogWarning("Items are not compatible with each other");
             return false;
         }
         StackState stackStateReference = itemReference.GetState<StackState>();
