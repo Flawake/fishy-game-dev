@@ -48,11 +48,11 @@ public class PlayerStatsOverlayUIManager : MonoBehaviour
         
         // Update luck potion UI
         bool hasLuckBoost = activeEffects.TryGetValue(SpecialEffectType.LuckBoost, out var luckEffect);
-        UpdateEffectUI(luckpotionImage, luckpotionTimeLeft, hasLuckBoost, luckEffect.itemId, luckEffect.expiry);
+        UpdateEffectUI(luckpotionImage, luckpotionTimeLeft, hasLuckBoost, luckEffect.ItemId, luckEffect.Expiry);
 
         // Update magic watch UI
         bool hasWaitTimeReduction = activeEffects.TryGetValue(SpecialEffectType.WaitTimeReduction, out var waitEffect);
-        UpdateEffectUI(magicwatchImage, magicwatchTimeLeft, hasWaitTimeReduction, waitEffect.itemId, waitEffect.expiry);
+        UpdateEffectUI(magicwatchImage, magicwatchTimeLeft, hasWaitTimeReduction, waitEffect.ItemId, waitEffect.Expiry);
     }
 
     private void UpdateEffectUI(Image effectImage, TMP_Text timeText, bool hasEffect, int itemId, DateTime expiry)
@@ -70,7 +70,7 @@ public class PlayerStatsOverlayUIManager : MonoBehaviour
 
             effectImage.gameObject.SetActive(true);
             TimeSpan remainingTime = expiry - DateTime.UtcNow;
-            if (remainingTime.TotalSeconds > 0)
+            if (DateTime.UtcNow < expiry)
             {
                 timeText.text = FormatTimeRemaining(remainingTime);
                 effectImage.color = Color.white;

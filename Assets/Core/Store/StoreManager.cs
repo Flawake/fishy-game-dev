@@ -48,6 +48,10 @@ public class StoreManager : NetworkBehaviour
 
     private void Update()
     {
+        if (isServer)
+        {
+            return;
+        }
         CleanupExpiredPurchases();
     }
 
@@ -263,9 +267,9 @@ public class StoreManager : NetworkBehaviour
     [Command]
     private void CmdReportTimeout(Guid tempUuid, int itemId)
     {
+        throw new NotImplementedException();
         var item = ItemRegistry.Get(itemId);
         string itemName = item?.DisplayName ?? "Unknown Item";
-        GameNetworkManager.KickPlayerForCheating(connectionToClient, $"Purchase timeout for {itemName} (UUID: {tempUuid})");
     }
 
     [Server]

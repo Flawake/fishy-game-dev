@@ -26,7 +26,7 @@ public class PlayerData : NetworkBehaviour
     // bool to indicate wether the reqeust was a sent or a receiver request.
     private Dictionary<Guid, bool> pendingFriendRequests = new Dictionary<Guid, bool>();
     
-    private readonly Dictionary<SpecialEffectType, (int itemId, DateTime expiry)> activeSpecialEffects = new Dictionary<SpecialEffectType, (int itemId, DateTime expiry)>();
+    private readonly Dictionary<SpecialEffectType, ActiveEffect> activeSpecialEffects = new Dictionary<SpecialEffectType, ActiveEffect>();
 
     //Variables that are synced between ALL players
     [SyncVar, SerializeField]
@@ -115,7 +115,12 @@ public class PlayerData : NetworkBehaviour
         if (!activeSpecialEffects.ContainsKey(specialEffect.EffectType))
         {
             DateTime clientExpiry = DateTime.UtcNow.AddSeconds(specialEffect.DurationSeconds);
-            activeSpecialEffects[specialEffect.EffectType] = (item.def.Id, clientExpiry);
+            activeSpecialEffects[specialEffect.EffectType] = new ActiveEffect(item.def.Id, clientExpiry);
+        }
+        else
+        {
+            Debug.Log("special effect selected was already in use");
+            return;
         }
         
         CmdRequestUseEffect(item);
@@ -132,14 +137,12 @@ public class PlayerData : NetworkBehaviour
             return;
         }
         
-        if (itemReference.def.GetBehaviour<SpecialBehaviour>() != null)
-        {
-            ServerAddNewSpecialEffect(itemReference);
-        }
-        else
+        if (itemReference.def.GetBehaviour<SpecialBehaviour>() == null)
         {
             GameNetworkManager.KickPlayerForCheating(connectionToClient, "Tried to use item with no special effect");
+            return;
         }
+        ServerAddNewSpecialEffect(itemReference);
     }
     
     [Server]
@@ -159,31 +162,38 @@ public class PlayerData : NetworkBehaviour
             return;
         }
         
-        // Consume the item from stack
         playerDataManager.ServerConsumeFromStack(itemReference);
         
-        // Apply the special effect on server
         DateTime serverExpiry = DateTime.UtcNow.AddSeconds(specialEffect.DurationSeconds);
-        activeSpecialEffects[specialEffect.EffectType] = (itemReference.def.Id, serverExpiry);
+        activeSpecialEffects[specialEffect.EffectType] = new ActiveEffect(itemReference.def.Id, serverExpiry);
         
-        TargetAddNewSpecialEffect(itemReference.def.Id, serverExpiry);
+        DatabaseCommunications.AddActiveEffect(GetUuid(), itemReference.def.Id, serverExpiry);
+        
+        TargetAddSpecialEffect(itemReference.def.Id, serverExpiry);
     }
 
     [TargetRpc]
-    private void TargetAddNewSpecialEffect(int itemId, DateTime serverExpiry)
+    private void TargetAddSpecialEffect(int itemId, DateTime serverExpiry)
     {
-        var itemDef = ItemRegistry.Get(itemId);
+        ItemDefinition itemDef = ItemRegistry.Get(itemId);
         if (itemDef == null) {
             return;
         }
-        var specialEffect = itemDef.GetBehaviour<SpecialBehaviour>();
+        SpecialBehaviour specialEffect = itemDef.GetBehaviour<SpecialBehaviour>();
         if (specialEffect == null) {
             return;
         }
-        activeSpecialEffects[specialEffect.EffectType] = (itemId, serverExpiry);
+        activeSpecialEffects[specialEffect.EffectType] = new ActiveEffect(itemId, serverExpiry);
     }
 
-    public Dictionary<SpecialEffectType, (int itemId, DateTime expiry)> GetActiveSpecialEffects()
+    [TargetRpc]
+    private void TargetRemoveSpecialEffect(int itemId)
+    {
+        SpecialEffectType special = ItemRegistry.Get(itemId).GetBehaviour<SpecialBehaviour>().EffectType;
+        activeSpecialEffects.Remove(special);
+    }
+
+    public Dictionary<SpecialEffectType, ActiveEffect> GetActiveSpecialEffects()
     {
         RemoveExpiredSpecialEffects();
         return activeSpecialEffects;
@@ -191,20 +201,28 @@ public class PlayerData : NetworkBehaviour
 
     private void RemoveExpiredSpecialEffects()
     {
-        var expiredEffects = new List<SpecialEffectType>();
+        List<SpecialEffectType> expiredEffects = new List<SpecialEffectType>();
         
+        // We can't do a for loop from end to start since this is a dictionary which can't be safely indexed and modified in the same loop
         foreach (var effect in activeSpecialEffects)
         {
-            if (effect.Value.expiry <= DateTime.UtcNow)
+            if (effect.Value.Expiry <= DateTime.UtcNow)
             {
                 expiredEffects.Add(effect.Key);
             }
         }
         
-        foreach (var expiredEffect in expiredEffects)
+        foreach (SpecialEffectType expiredEffect in expiredEffects)
         {
+            int itemId = activeSpecialEffects[expiredEffect].ItemId;
             activeSpecialEffects.Remove(expiredEffect);
-            Debug.Log($"Special effect {expiredEffect} has expired");
+            
+            
+            if (isServer)
+            {
+                DatabaseCommunications.RemoveExpiredEffect(GetUuid(), itemId);
+                TargetRemoveSpecialEffect(itemId);
+            }
         }
     }
     public float GetLuckMultiplier()
@@ -214,7 +232,7 @@ public class PlayerData : NetworkBehaviour
         if (activeSpecialEffects.TryGetValue(SpecialEffectType.LuckBoost, out var luckEffect))
         {
             // Get the effect value from the item definition
-            ItemDefinition itemDef = ItemRegistry.Get(luckEffect.itemId);
+            ItemDefinition itemDef = ItemRegistry.Get(luckEffect.ItemId);
             if (itemDef != null)
             {
                 SpecialBehaviour specialEffect = itemDef.GetBehaviour<SpecialBehaviour>();
@@ -232,7 +250,7 @@ public class PlayerData : NetworkBehaviour
         if (activeSpecialEffects.TryGetValue(SpecialEffectType.WaitTimeReduction, out var waitEffect))
         {
             // Get the effect value from the item definition
-            ItemDefinition itemDef = ItemRegistry.Get(waitEffect.itemId);
+            ItemDefinition itemDef = ItemRegistry.Get(waitEffect.ItemId);
             if (itemDef != null)
             {
                 SpecialBehaviour specialEffect = itemDef.GetBehaviour<SpecialBehaviour>();
@@ -558,6 +576,7 @@ public class PlayerData : NetworkBehaviour
             SetTotalPlayTimeAtStart(playerData.total_playtime);
             ServerSetFriendList(playerData.friends);
             ServerSetFriendRequests(playerData.friend_requests);
+            ServerLoadActiveEffects(playerData.active_effects);
             SetShowInventory(false);
             
             // Ensure player has default rod and bait
@@ -787,6 +806,65 @@ public class PlayerData : NetworkBehaviour
         }
     }
 
+    [Server]
+    private void ServerLoadActiveEffects(UserData.ActiveEffect[] effects)
+    {
+        activeSpecialEffects.Clear();
+        
+        foreach (UserData.ActiveEffect effect in effects)
+        {
+            if (effect.ExpiryTime > DateTime.UtcNow)
+            {
+                ItemDefinition itemDef = ItemRegistry.Get(effect.item_id);
+                if (itemDef != null)
+                {
+                    SpecialBehaviour specialBehaviour = itemDef.GetBehaviour<SpecialBehaviour>();
+                    if (specialBehaviour != null)
+                    {
+                        activeSpecialEffects[specialBehaviour.EffectType] = new ActiveEffect(effect.item_id, effect.ExpiryTime);
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"Item {effect.item_id} has no SpecialBehaviour, skipping effect");
+                    }
+                }
+                else
+                {
+                    Debug.LogWarning($"Could not find ItemDefinition for item_id {effect.item_id}, skipping effect");
+                }
+            }
+            else
+            {
+                DatabaseCommunications.RemoveExpiredEffect(GetUuid(), effect.item_id);
+                Debug.Log($"Removed expired effect for item_id {effect.item_id} from database during load");
+            }
+        }
+    }
+
+    [Command]
+    private void CmdGetActiveEffects()
+    {
+        ClientSetActiveEffects(activeSpecialEffects.Values.ToList());
+    }
+
+    [TargetRpc]
+    private void ClientSetActiveEffects(List<ActiveEffect> serverEffects)
+    {
+        activeSpecialEffects.Clear();
+        foreach (ActiveEffect effect in serverEffects)
+        {
+            ItemDefinition itemDef = ItemRegistry.Get(effect.ItemId);
+            if (itemDef == null)
+            {
+                Debug.Log($"Item  with ID {effect.ItemId} had no special effect");
+            }
+
+            SpecialEffectType effectType = itemDef.GetBehaviour<SpecialBehaviour>().EffectType;
+            activeSpecialEffects[effectType] = new ActiveEffect(effect.ItemId, effect.Expiry);
+            Debug.Log("Updated special effect on the client from the server");
+        }
+    }
+
     [Command]
     private void CmdGetFriendRequestList() {
         ClientSetFriendRequestList(pendingFriendRequests);
@@ -1000,7 +1078,6 @@ public class PlayerData : NetworkBehaviour
 
     private void Start()
     {
-        //Retrieve coins and bucks amount from server when spawned
         if(isLocalPlayer)
         {
             CmdGetFishCoins();
@@ -1008,24 +1085,25 @@ public class PlayerData : NetworkBehaviour
             inventory.CmdGetInventory();
             CmdGetFriendList();
             CmdGetFriendRequestList();
+            CmdGetActiveEffects();
         }
     }
 
-    [Server]
-    private void KickPlayerForCheating(NetworkConnectionToClient conn, string reason)
+    public override void OnStartServer()
     {
-        conn.Send(new DisconnectMessage
-        {
-            reason = ClientDisconnectReason.Cheating,
-            reasonText = $"You have been kicked for cheating: {reason}",
-        });
-        StartCoroutine(DelayedKick(conn, 3f));
+        base.OnStartServer();
+        StartCoroutine(PeriodicEffectCleanup());
     }
 
     [Server]
-    private System.Collections.IEnumerator DelayedKick(NetworkConnectionToClient conn, float delay)
+    private IEnumerator PeriodicEffectCleanup()
     {
-        yield return new WaitForSeconds(delay);
-        conn.Disconnect();
+        while (true)
+        {
+            yield return new WaitForSeconds(2f);
+            
+            // Clean up expired effects (this will also update the database)
+            RemoveExpiredSpecialEffects();
+        }
     }
 }

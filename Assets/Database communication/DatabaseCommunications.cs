@@ -263,4 +263,33 @@ public static class DatabaseCommunications
         byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
         WebRequestHandler.SendWebRequest(DatabaseEndpoints.readMailEndpoint, bodyRaw);
     }
+
+    [Server]
+    public static void AddActiveEffect(Guid userID, int itemId, DateTime expiryTime)
+    {
+        AddActiveEffectRequest requestData = new AddActiveEffectRequest
+        {
+            user_id = userID.ToString(),
+            item_id = itemId,
+            expiry_time = expiryTime.ToString("O"), // ISO 8601 format
+        };
+        
+        string json = JsonUtility.ToJson(requestData);
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
+        WebRequestHandler.SendWebRequest(DatabaseEndpoints.addActiveEffectEndpoint, bodyRaw);
+    }
+
+    [Server]
+    public static void RemoveExpiredEffect(Guid userID, int itemId)
+    {
+        RemoveExpiredEffectsRequest requestData = new RemoveExpiredEffectsRequest
+        {
+            user_id = userID.ToString(),
+            item_id = itemId,
+        };
+        
+        string json = JsonUtility.ToJson(requestData);
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
+        WebRequestHandler.SendWebRequest(DatabaseEndpoints.removeExpiredEffectEndpoint, bodyRaw);
+    }
 }
