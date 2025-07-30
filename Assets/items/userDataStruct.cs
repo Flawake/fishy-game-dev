@@ -17,6 +17,7 @@ public struct UserData
     public MailEntry[] mailbox;
     public Friend[] friends;
     public FriendRequest[] friend_requests;
+    public ActiveEffect[] active_effects;
     
     public readonly Guid? SelectedRod
     {
@@ -26,6 +27,15 @@ public struct UserData
         }
     }
     public readonly Guid? SelectedBait => string.IsNullOrEmpty(selected_bait) ? null : Guid.Parse(selected_bait);
+    
+    [Serializable]
+    public struct ActiveEffect
+    {
+        public int item_id;          // ItemDefinition ID that created this effect
+        public string expiry_time;   // DateTime as ISO 8601 string
+        
+        public readonly DateTime ExpiryTime => DateTimeOffset.Parse(expiry_time).UtcDateTime;
+    }
     
     [Serializable]
     public struct FishData
@@ -64,21 +74,8 @@ public struct UserData
         public string user_one;
         public string user_two;
         
-        public Guid UserOne
-        {
-            get
-            {
-                return Guid.Parse(user_one);
-            }
-        }
-        
-        public Guid UserTwo
-        {
-            get
-            {
-                return Guid.Parse(user_two);
-            }
-        }
+        public Guid UserOne => Guid.Parse(user_one);
+        public Guid UserTwo => Guid.Parse(user_two);
     }
 
     [Serializable]
@@ -88,29 +85,9 @@ public struct UserData
         public string user_two;
         public string request_sender_id;
         
-        public Guid UserOne
-        {
-            get
-            {
-                return Guid.Parse(user_one);
-            }
-        }
-        
-        public Guid UserTwo
-        {
-            get
-            {
-                return Guid.Parse(user_two);
-            }
-        }
-        
-        public Guid RequestSenderId
-        {
-            get
-            {
-                return Guid.Parse(request_sender_id);
-            }
-        }
+        public Guid UserOne => Guid.Parse(user_one);
+        public Guid UserTwo => Guid.Parse(user_two);
+        public Guid RequestSenderId => Guid.Parse(request_sender_id);
     }
 }
 #nullable disable

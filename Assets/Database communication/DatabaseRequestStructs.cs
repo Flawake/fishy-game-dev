@@ -1,4 +1,5 @@
 using System;
+using ItemSystem;
 using UnityEngine;
 
 #nullable enable
@@ -171,4 +172,28 @@ public class CreateUserRequest
     public string username;
     public string password;
 }
+
+// Active Effects requests
+[Serializable]
+public class AddActiveEffectRequest
+{
+    public string user_id;
+    public int item_id;          // ItemDefinition ID that created this effect
+    public string expiry_time;   // DateTime as ISO 8601 string
+}
+
+[Serializable]
+public class RemoveActiveEffectRequest
+{
+    public string user_id;
+    public int item_id;          // ItemDefinition ID to identify which effect to remove
+}
+
+[Serializable]
+public class RemoveExpiredEffectsRequest
+{
+    public string user_id;
+    public int item_id;
+}
+
 #nullable disable

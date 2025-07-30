@@ -111,11 +111,10 @@ public class FishSpots : NetworkBehaviour
     }
 
     private float lastGeneratedTime = float.MinValue;
-    // * 60 to go from sec to min
-    float timeBetweenGenerations = 10 * 60;
+    float secondsBetweenGenerations = 10 * 60;
     private void Update()
     {
-        if (lastGeneratedTime + timeBetweenGenerations < Time.time)
+        if (lastGeneratedTime + secondsBetweenGenerations < Time.time && isServer)
         {
             lastGeneratedTime = Time.time;
             generateFishSpots();       
