@@ -3,11 +3,8 @@ using UnityEngine.InputSystem;
 using Mirror;
 using System;
 using System.Collections.Generic;
-using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using Unity.Collections;
-using System.Linq;
 
 public class PlayerController : NetworkBehaviour
 {
@@ -222,7 +219,7 @@ public class PlayerController : NetworkBehaviour
 
     System.Diagnostics.Stopwatch stopwatch;
 
-    public void PathFindRequestCallback(List<Vector2> path)
+    private void PathFindRequestCallback(List<Vector2> path)
     {
         nextMoves = path;
         stopwatch.Stop();
@@ -230,8 +227,40 @@ public class PlayerController : NetworkBehaviour
         Debug.Log($"Finding path took {stopwatch.Elapsed.TotalMilliseconds} ms");
     }
 
+    [Client]
+    private bool CheckNpcClicked(Vector2 clickedPos)
+    {
+        GameObject clickedNpc = null;
+        RaycastHit2D[] hits =  Physics2D.RaycastAll(clickedPos, Vector2.zero, 100);
+        foreach (RaycastHit2D hit in hits)
+        {
+            if (hit.transform.gameObject.CompareTag("NPC"))
+            {
+                clickedNpc = hit.transform.gameObject;
+                break;
+            }
+        }
+
+        if (clickedNpc == null)
+        {
+            return false;
+        }
+
+        NpcDialog npcDialog = clickedNpc.GetComponent<NpcDialog>();
+        if (npcDialog == null)
+        {
+            Debug.Log("Could not find the npcController on the clicked NPC");
+            return false;
+        }
+
+        npcDialog.StartDialog(playerCamera);
+        return true;
+    }
+    
+    public static event Action OnMouseClickedAction;
+
     //This function is being called from the PlayerController input system. It triggers when the left mouse button in clicked.
-    public void ProcessMouseClick(InputAction.CallbackContext context)
+    private void ProcessMouseClick(InputAction.CallbackContext context)
     {
         if (!isLocalPlayer || !gameOnForeground || !context.performed)
         {
@@ -240,6 +269,12 @@ public class PlayerController : NetworkBehaviour
 
         Vector2 mousePos = Mouse.current.position.ReadValue();
 
+        if (NpcDialog.DialogActive && OnMouseClickedAction != null)
+        {
+            OnMouseClickedAction.Invoke();
+            return;
+        }
+        
         // This helps, but we still need to check for objectsPreventingFishing since this does not account for clicks outside a canvas.
         if (IsPointerOverUI(mousePos))
         {
@@ -248,6 +283,10 @@ public class PlayerController : NetworkBehaviour
 
         Vector2 clickedPos = playerCamera.ScreenToWorldPoint(mousePos);
         //Check for mouse click starting at objects with most priority, return if the click has been handled.
+        if (CheckNpcClicked(clickedPos))
+        {
+            return;
+        }
         if (viewPlayerStats.ProcesPlayerCheck(clickedPos))
         {
             return;
@@ -260,7 +299,7 @@ public class PlayerController : NetworkBehaviour
         // Click was not on the water or another player and the mouse was not over a ui element. Walk to the clicked position
         stopwatch = System.Diagnostics.Stopwatch.StartNew();
         PathFinding pathFinder = SceneObjectCache.GetPathFinding(gameObject.scene);
-        pathFinder.queueNewPath(transform.position, clickedPos, gameObject, PathFindRequestCallback);
+        pathFinder.QueueNewPath(transform.position, clickedPos, gameObject, PathFindRequestCallback);
     }
     float lastTimeMovedDiagonally = 0;
     Vector2 lastTimeMovedDiagonallyVector = new Vector2();

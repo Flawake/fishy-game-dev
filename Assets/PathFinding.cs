@@ -6,6 +6,7 @@ using System;
 using Unity.Collections;
 using Unity.Jobs;
 using System.Linq;
+using Mirror;
 
 class Node
 {
@@ -45,7 +46,7 @@ class NodeMap
     public Node EndNode;
     public Vector2 MapOrigin;
 
-    public Vector2 NodeToWorldPoint(Vector2 point)
+    private Vector2 NodeToWorldPoint(Vector2 point)
     {
         return new Vector2(
             MapOrigin.x + ((point.x + 0.5f) - Nodes.GetLength(0) / 2f) * NodeSize,
@@ -60,7 +61,7 @@ class NodeMap
         return new Vector2Int(x, y);
     }
 
-    public void AddNodeToMap(Node n, Vector2Int pointInArray, CompositeCollider2D worldCollider)
+    private void AddNodeToMap(Node n, Vector2Int pointInArray, CompositeCollider2D worldCollider)
     {
         n.WorldPoint = NodeToWorldPoint(new Vector2(pointInArray.x, pointInArray.y));
         Collider2D[] hits = Physics2D.OverlapAreaAll(
@@ -119,7 +120,7 @@ public class PathFinding : MonoBehaviour
     private void Awake()
     {
         map.PrebuildMap(SceneObjectCache.GetWorldCollider(gameObject.scene));
-        StartCoroutine(updatePathRequests());
+        StartCoroutine(UpdatePathRequests());
     }
     
     float EndDistance(Vector2 a, Vector2 b)
@@ -185,22 +186,19 @@ public class PathFinding : MonoBehaviour
         }
         return FilterPath(path);
     }
-
-     public void queueNewPath(Vector2 StartPoint, Vector2 EndPoint, GameObject caller, Action<List<Vector2>> callback) {
+    
+     [Client]
+     public void QueueNewPath(Vector2 StartPoint, Vector2 EndPoint, GameObject caller, Action<List<Vector2>> callback) {
         if(!pathfinderRunning) {
             FindPath(StartPoint, EndPoint, callback);
         }
-        else {
-            if(pathsToDo.ContainsKey(caller)) {
-                pathsToDo[caller] = (StartPoint, EndPoint, callback);
-            }
-            else {
-                pathsToDo.Add(caller, (StartPoint, EndPoint, callback));
-            }
+        else
+        {
+            pathsToDo[caller] = (StartPoint, EndPoint, callback);
         }
     }
 
-    IEnumerator updatePathRequests() {
+    IEnumerator UpdatePathRequests() {
         while(true) {
             if(pathfinderRunning == false && pathsToDo.Count > 0) {
                 var first = pathsToDo.First();
