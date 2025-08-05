@@ -259,16 +259,21 @@ public class GameNetworkManager : NetworkManager
     [Server]
     void OnPlayerMoveMessage(NetworkConnectionToClient conn, MovePlayerMessage data)
     {
-        SceneManager.MoveGameObjectToScene(conn.identity.gameObject, SceneManager.GetSceneByName(data.requestedScene));
-        if (data.requestedScene != null && data.requestedScene != "WorldMap" && conn.identity != null)
+        if (!AreaUnlockManager.IsAreaUnlocked(data.requestedArea, conn.identity.GetComponent<PlayerData>()))
+        {
+            KickPlayerForCheating(conn, "Tried to enter an area which was not unlocked yet");
+            return;
+        }
+        SceneManager.MoveGameObjectToScene(conn.identity.gameObject, SceneManager.GetSceneByName(data.requestedArea.ToString()));
+        if (data.requestedArea.ToString() != null && data.requestedArea != Area.WorldMap && conn.identity != null)
         {
             conn.identity.gameObject.GetComponentInChildren<PlayerController>().ServerTeleportPlayer(
-                spawnPoint.GetRandomSpawnPoint(data.requestedScene)
+                spawnPoint.GetRandomSpawnPoint(data.requestedArea.ToString())
                 );
         }
         conn.Send(new SceneMessage()
         {
-            sceneName = data.requestedScene,
+            sceneName = data.requestedArea.ToString(),
             sceneOperation = SceneOperation.LoadAdditive
         });
     }
@@ -343,5 +348,5 @@ public struct CreateCharacterMessage : NetworkMessage
 
 public struct MovePlayerMessage : NetworkMessage
 {
-    public string requestedScene;
+    public Area requestedArea;
 }
