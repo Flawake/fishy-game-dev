@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Mirror;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class NpcMovement : NetworkBehaviour
 {
@@ -11,10 +13,16 @@ public class NpcMovement : NetworkBehaviour
     [SerializeField] private float moveSpeed = 1.7f;
     [SerializeField] private Collider2D customWalkArea;
     [SerializeField] private Rigidbody2D npcRigidBody;
+    [SerializeField] private Animator npcAnimator;
 
     private List<Vector2> _nextMoves = new List<Vector2>();
     private float _prevMoveTime = float.MinValue;
     private float _timeBetweenMoves;
+    
+    private static readonly int AnimatorSpeedHash = Animator.StringToHash("Speed");
+    private static readonly int AnimatorHorizontalHash = Animator.StringToHash("Horizontal");
+    private static readonly int AnimatorVerticalHash = Animator.StringToHash("Vertical");
+
     private void Update()
     {
         ManageNpcMove();
@@ -95,6 +103,16 @@ public class NpcMovement : NetworkBehaviour
             moveDir = CalculateMovementVector();
         }
         npcRigidBody.linearVelocity = moveDir.normalized * moveSpeed;
+
+        if (moveDir == Vector2.zero)
+        {
+            npcAnimator.SetFloat(AnimatorSpeedHash, 0);
+            return;
+        }
+        
+        npcAnimator.SetFloat(AnimatorHorizontalHash, moveDir.normalized.x);
+        npcAnimator.SetFloat(AnimatorVerticalHash, moveDir.normalized.y);
+        npcAnimator.SetFloat(AnimatorSpeedHash, 1);
     }
     
     private Vector2 CalculateMovementVector()

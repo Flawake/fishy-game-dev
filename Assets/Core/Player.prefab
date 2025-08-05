@@ -1065,6 +1065,8 @@ GameObject:
   - component: {fileID: 8507517466599858346}
   - component: {fileID: 3951641916827187384}
   - component: {fileID: 6555370708680011737}
+  - component: {fileID: 8468929726696966975}
+  - component: {fileID: 3601778431259597439}
   m_Layer: 3
   m_Name: Player base
   m_TagString: Untagged
@@ -1131,7 +1133,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 50
-  m_Sprite: {fileID: 312173884, guid: 57ba1cdfbf354c14ba93aa218e3a755f, type: 3}
+  m_Sprite: {fileID: 2134401263, guid: 57ba1cdfbf354c14ba93aa218e3a755f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -1180,7 +1182,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0}
-    oldSize: {x: 0.8125, y: 1.0625}
+    oldSize: {x: 0.75, y: 1.0625}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -1210,6 +1212,36 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &8468929726696966975
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4849207662072823242}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c29cff538c195c249b69c6f2236de67b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Library: []
+  m_SpriteLibraryAsset: {fileID: 7108339969198208228, guid: 89c50a5e5686101cfad3193ca46f802a, type: 3}
+--- !u!114 &3601778431259597439
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4849207662072823242}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed8b1ae4e4e52b34ea557c1c11e076fc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_CategoryHash: 0.009161512
+  m_labelHash: 0.025054464
+  m_SpriteKey: 0
+  m_SpriteHash: 287002553
 --- !u!1 &5109097856594139905
 GameObject:
   m_ObjectHideFlags: 0

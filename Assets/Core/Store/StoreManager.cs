@@ -79,7 +79,7 @@ public class StoreManager : NetworkBehaviour
             CmdBuyItem(item.Id, currencyType, tempUuid);
             return true;
         }
-
+        OnPurchaseFailed?.Invoke(item, currencyType, "");
         return false;
     }
 
