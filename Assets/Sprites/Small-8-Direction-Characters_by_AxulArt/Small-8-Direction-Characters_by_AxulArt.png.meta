@@ -651,13 +651,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Small-8-Direction-Characters_by_AxulArt_0
+      name: woman walk1 up
       rect:
         serializedVersion: 2
         x: 1
-        y: 145
+        y: 146
         width: 13
-        height: 17
+        height: 16
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -673,7 +673,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Small-8-Direction-Characters_by_AxulArt_1
+      name: woman walk1 up right
       rect:
         serializedVersion: 2
         x: 16
@@ -695,7 +695,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Small-8-Direction-Characters_by_AxulArt_2
+      name: woman walk1 right
       rect:
         serializedVersion: 2
         x: 32
@@ -717,7 +717,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Small-8-Direction-Characters_by_AxulArt_3
+      name: woman walk1 right down
       rect:
         serializedVersion: 2
         x: 49
@@ -739,7 +739,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Small-8-Direction-Characters_by_AxulArt_4
+      name: woman walk1 down
       rect:
         serializedVersion: 2
         x: 65
@@ -761,7 +761,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Small-8-Direction-Characters_by_AxulArt_5
+      name: woman walk1 down left
       rect:
         serializedVersion: 2
         x: 81
@@ -783,7 +783,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Small-8-Direction-Characters_by_AxulArt_6
+      name: woman walk1 left
       rect:
         serializedVersion: 2
         x: 96
@@ -805,7 +805,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Small-8-Direction-Characters_by_AxulArt_7
+      name: woman walk1 left up
       rect:
         serializedVersion: 2
         x: 113
@@ -827,7 +827,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Small-8-Direction-Characters_by_AxulArt_8
+      name: woman idle left up
       rect:
         serializedVersion: 2
         x: 113
@@ -849,7 +849,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Small-8-Direction-Characters_by_AxulArt_9
+      name: woman idle left
       rect:
         serializedVersion: 2
         x: 96
@@ -871,7 +871,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Small-8-Direction-Characters_by_AxulArt_10
+      name: woman idle down left
       rect:
         serializedVersion: 2
         x: 81
@@ -893,7 +893,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Small-8-Direction-Characters_by_AxulArt_11
+      name: woman idle down
       rect:
         serializedVersion: 2
         x: 65
@@ -915,7 +915,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Small-8-Direction-Characters_by_AxulArt_12
+      name: woman idle right down
       rect:
         serializedVersion: 2
         x: 49
@@ -937,7 +937,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Small-8-Direction-Characters_by_AxulArt_13
+      name: woman idle right
       rect:
         serializedVersion: 2
         x: 32
@@ -959,7 +959,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Small-8-Direction-Characters_by_AxulArt_14
+      name: woman idle up right
       rect:
         serializedVersion: 2
         x: 16
@@ -981,7 +981,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Small-8-Direction-Characters_by_AxulArt_15
+      name: woman idle up
       rect:
         serializedVersion: 2
         x: 1
@@ -1003,7 +1003,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Small-8-Direction-Characters_by_AxulArt_16
+      name: woman walk2 up
       rect:
         serializedVersion: 2
         x: 1
@@ -1025,7 +1025,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Small-8-Direction-Characters_by_AxulArt_17
+      name: woman walk2 up right
       rect:
         serializedVersion: 2
         x: 16
@@ -1047,7 +1047,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Small-8-Direction-Characters_by_AxulArt_18
+      name: woman walk2 right
       rect:
         serializedVersion: 2
         x: 32
@@ -1069,7 +1069,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Small-8-Direction-Characters_by_AxulArt_19
+      name: woman walk2 right down
       rect:
         serializedVersion: 2
         x: 49
@@ -1091,7 +1091,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Small-8-Direction-Characters_by_AxulArt_20
+      name: woman walk2 down
       rect:
         serializedVersion: 2
         x: 65
@@ -1113,7 +1113,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Small-8-Direction-Characters_by_AxulArt_21
+      name: woman walk2 down left
       rect:
         serializedVersion: 2
         x: 81
@@ -1135,7 +1135,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Small-8-Direction-Characters_by_AxulArt_22
+      name: woman walk2 left
       rect:
         serializedVersion: 2
         x: 96
@@ -1157,7 +1157,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Small-8-Direction-Characters_by_AxulArt_23
+      name: woman walk2 left up
       rect:
         serializedVersion: 2
         x: 113
@@ -1192,30 +1192,12 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Small-8-Direction-Characters_by_AxulArt_0: 2126478830
-      Small-8-Direction-Characters_by_AxulArt_1: -687545411
-      Small-8-Direction-Characters_by_AxulArt_10: 1235516959
-      Small-8-Direction-Characters_by_AxulArt_11: 1367600572
-      Small-8-Direction-Characters_by_AxulArt_12: -885596237
-      Small-8-Direction-Characters_by_AxulArt_13: -1149847019
-      Small-8-Direction-Characters_by_AxulArt_14: 42230189
-      Small-8-Direction-Characters_by_AxulArt_15: 1718162334
-      Small-8-Direction-Characters_by_AxulArt_16: 952872014
-      Small-8-Direction-Characters_by_AxulArt_17: 1939221071
-      Small-8-Direction-Characters_by_AxulArt_18: -451035782
-      Small-8-Direction-Characters_by_AxulArt_19: -1534251845
-      Small-8-Direction-Characters_by_AxulArt_2: -1383104164
-      Small-8-Direction-Characters_by_AxulArt_20: -2029577748
-      Small-8-Direction-Characters_by_AxulArt_21: 715382716
-      Small-8-Direction-Characters_by_AxulArt_22: -238674110
-      Small-8-Direction-Characters_by_AxulArt_23: 824440220
       Small-8-Direction-Characters_by_AxulArt_24: 1580001579
       Small-8-Direction-Characters_by_AxulArt_25: 1452349695
       Small-8-Direction-Characters_by_AxulArt_26: 1118205995
       Small-8-Direction-Characters_by_AxulArt_27: -512548534
       Small-8-Direction-Characters_by_AxulArt_28: 851192001
       Small-8-Direction-Characters_by_AxulArt_29: -745867616
-      Small-8-Direction-Characters_by_AxulArt_3: 1526637888
       Small-8-Direction-Characters_by_AxulArt_30: -1637435335
       Small-8-Direction-Characters_by_AxulArt_31: -936533576
       Small-8-Direction-Characters_by_AxulArt_32: 1591426147
@@ -1226,7 +1208,6 @@ TextureImporter:
       Small-8-Direction-Characters_by_AxulArt_37: -860049558
       Small-8-Direction-Characters_by_AxulArt_38: -1751389912
       Small-8-Direction-Characters_by_AxulArt_39: -2128281374
-      Small-8-Direction-Characters_by_AxulArt_4: 1235996089
       Small-8-Direction-Characters_by_AxulArt_40: 1891569597
       Small-8-Direction-Characters_by_AxulArt_41: 1578434681
       Small-8-Direction-Characters_by_AxulArt_42: -1420499441
@@ -1237,7 +1218,6 @@ TextureImporter:
       Small-8-Direction-Characters_by_AxulArt_47: -1256663617
       Small-8-Direction-Characters_by_AxulArt_48: -1647186294
       Small-8-Direction-Characters_by_AxulArt_49: 12357712
-      Small-8-Direction-Characters_by_AxulArt_5: -1177514390
       Small-8-Direction-Characters_by_AxulArt_50: -748517077
       Small-8-Direction-Characters_by_AxulArt_51: 1161749916
       Small-8-Direction-Characters_by_AxulArt_52: 1753488512
@@ -1248,7 +1228,6 @@ TextureImporter:
       Small-8-Direction-Characters_by_AxulArt_57: 1796319690
       Small-8-Direction-Characters_by_AxulArt_58: -406630530
       Small-8-Direction-Characters_by_AxulArt_59: 1953274373
-      Small-8-Direction-Characters_by_AxulArt_6: 146960653
       Small-8-Direction-Characters_by_AxulArt_60: 596067130
       Small-8-Direction-Characters_by_AxulArt_61: 1742456526
       Small-8-Direction-Characters_by_AxulArt_62: -1777860525
@@ -1259,11 +1238,8 @@ TextureImporter:
       Small-8-Direction-Characters_by_AxulArt_67: -931378817
       Small-8-Direction-Characters_by_AxulArt_68: -1589808626
       Small-8-Direction-Characters_by_AxulArt_69: -1662187790
-      Small-8-Direction-Characters_by_AxulArt_7: -245541568
       Small-8-Direction-Characters_by_AxulArt_70: -205144639
       Small-8-Direction-Characters_by_AxulArt_71: 362774302
-      Small-8-Direction-Characters_by_AxulArt_8: -909803893
-      Small-8-Direction-Characters_by_AxulArt_9: 1533954575
       idle down: 312173884
       idle down left: -665899617
       idle left: 308848264
@@ -1288,6 +1264,30 @@ TextureImporter:
       walk2 right down: -738808012
       walk2 up: 182411456
       walk2 up right: -1246072351
+      woman idle down: 1367600572
+      woman idle down left: 1235516959
+      woman idle left: 1533954575
+      woman idle left up: -909803893
+      woman idle right: -1149847019
+      woman idle right down: -885596237
+      woman idle up: 1718162334
+      woman idle up right: 42230189
+      woman walk1 down: 1235996089
+      woman walk1 down left: -1177514390
+      woman walk1 left: 146960653
+      woman walk1 left up: -245541568
+      woman walk1 right: -1383104164
+      woman walk1 right down: 1526637888
+      woman walk1 up: 2126478830
+      woman walk1 up right: -687545411
+      woman walk2 down: -2029577748
+      woman walk2 down left: 715382716
+      woman walk2 left: -238674110
+      woman walk2 left up: 824440220
+      woman walk2 right: -451035782
+      woman walk2 right down: -1534251845
+      woman walk2 up: 952872014
+      woman walk2 up right: 1939221071
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

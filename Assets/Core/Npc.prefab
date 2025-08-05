@@ -453,6 +453,9 @@ GameObject:
   - component: {fileID: 9049896073061987267}
   - component: {fileID: 2118396779209132397}
   - component: {fileID: 5569614862645113819}
+  - component: {fileID: 8396974173626231783}
+  - component: {fileID: 1404208127289015675}
+  - component: {fileID: 2553724498805624317}
   m_Layer: 0
   m_Name: body
   m_TagString: NPC
@@ -576,6 +579,58 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.8152747, y: 1.0636268}
   m_EdgeRadius: 0
+--- !u!114 &8396974173626231783
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4283740084869985922}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c29cff538c195c249b69c6f2236de67b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Library: []
+  m_SpriteLibraryAsset: {fileID: 7108339969198208228, guid: d3f57080481680b08a985098f78c8142, type: 3}
+--- !u!114 &1404208127289015675
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4283740084869985922}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed8b1ae4e4e52b34ea557c1c11e076fc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_CategoryHash: 0
+  m_labelHash: 0
+  m_SpriteKey: 0
+  m_SpriteHash: 0
+--- !u!95 &2553724498805624317
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4283740084869985922}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 6efce10db7e810a45bd731e4d7e4b619, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &4328120829538916709
 GameObject:
   m_ObjectHideFlags: 0
@@ -651,6 +706,7 @@ MonoBehaviour:
   moveSpeed: 1.7
   customWalkArea: {fileID: 0}
   npcRigidBody: {fileID: 669959895183475887}
+  npcAnimator: {fileID: 2553724498805624317}
 --- !u!50 &669959895183475887
 Rigidbody2D:
   serializedVersion: 5
