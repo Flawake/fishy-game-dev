@@ -82,6 +82,15 @@ public class StoreManager : NetworkBehaviour
         OnPurchaseFailed?.Invoke(item, currencyType, "");
         return false;
     }
+    
+    public int GetRequiredBuyLevel(ItemDefinition item) 
+    {
+        if (item?.GetBehaviour<ShopBehaviour>() is ShopBehaviour shopBehaviour)
+        {
+            return shopBehaviour.UnlockLevel;
+        }
+        return int.MaxValue;
+    }
 
     public int GetItemPrice(ItemDefinition item, CurrencyType currencyType)
     {
@@ -141,6 +150,13 @@ public class StoreManager : NetworkBehaviour
         if (shopBehaviour == null)
         {
             LogWarning($"Optimistic purchase failed: Item {item.DisplayName} has no ShopBehaviour");
+            return false;
+        }
+
+        int playerLevel = LevelMath.XpToLevel(playerData.GetXp()).level;
+        if (GetRequiredBuyLevel(item) < playerLevel)
+        {
+            LogWarning($"Optimistic purchase failed: Playerlevel too low");
             return false;
         }
 
@@ -279,6 +295,13 @@ public class StoreManager : NetworkBehaviour
         if (item == null)
         {
             GameNetworkManager.KickPlayerForCheating(connectionToClient, "Attempted to buy non-existent item");
+            return false;
+        }
+
+        int playerLevel = LevelMath.XpToLevel(playerData.GetXp()).level;
+        if (GetRequiredBuyLevel(item) < playerLevel)
+        {
+            GameNetworkManager.KickPlayerForCheating(connectionToClient, "Attempted to buy an item with a lower than required level");
             return false;
         }
 
