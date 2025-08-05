@@ -2518,6 +2518,7 @@ GameObject:
   - component: {fileID: 1188351955}
   - component: {fileID: 1188351954}
   - component: {fileID: 1188351956}
+  - component: {fileID: 1188351959}
   - component: {fileID: 1188351958}
   - component: {fileID: 1188351957}
   m_Layer: 5
@@ -2631,10 +2632,10 @@ MonoBehaviour:
       - m_Target: {fileID: 642394484}
         m_TargetAssemblyTypeName: WorldTravel, Assembly-CSharp
         m_MethodName: TravelTo
-        m_Mode: 5
+        m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_ObjectArgument: {fileID: 1188351959}
+          m_ObjectArgumentAssemblyTypeName: AreaComponent, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: Laketown
@@ -2794,6 +2795,19 @@ MonoBehaviour:
   col: {fileID: 1188351957}
   rectTransform: {fileID: 1188351953}
   areaNameBoxObject: {fileID: 0}
+--- !u!114 &1188351959
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1188351952}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3a8db77427b1abadb42ab8065e76762, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  area: 3
 --- !u!1 &1220758230
 GameObject:
   m_ObjectHideFlags: 0
@@ -3250,6 +3264,7 @@ GameObject:
   - component: {fileID: 1657429746}
   - component: {fileID: 1657429747}
   - component: {fileID: 1657429748}
+  - component: {fileID: 1657429751}
   - component: {fileID: 1657429750}
   - component: {fileID: 1657429749}
   m_Layer: 5
@@ -3364,10 +3379,10 @@ MonoBehaviour:
       - m_Target: {fileID: 642394484}
         m_TargetAssemblyTypeName: WorldTravel, Assembly-CSharp
         m_MethodName: TravelTo
-        m_Mode: 5
+        m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_ObjectArgument: {fileID: 1657429751}
+          m_ObjectArgumentAssemblyTypeName: AreaComponent, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: RioTropical
@@ -3510,6 +3525,19 @@ MonoBehaviour:
   col: {fileID: 1657429749}
   rectTransform: {fileID: 1657429744}
   areaNameBoxObject: {fileID: 0}
+--- !u!114 &1657429751
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1657429743}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3a8db77427b1abadb42ab8065e76762, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  area: 2
 --- !u!1 &1660881747
 GameObject:
   m_ObjectHideFlags: 0
@@ -3809,6 +3837,7 @@ GameObject:
   - component: {fileID: 1729306129}
   - component: {fileID: 1729306128}
   - component: {fileID: 1729306130}
+  - component: {fileID: 1729306133}
   - component: {fileID: 1729306131}
   - component: {fileID: 1729306132}
   m_Layer: 5
@@ -3922,10 +3951,10 @@ MonoBehaviour:
       - m_Target: {fileID: 642394484}
         m_TargetAssemblyTypeName: WorldTravel, Assembly-CSharp
         m_MethodName: TravelTo
-        m_Mode: 5
+        m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_ObjectArgument: {fileID: 1729306133}
+          m_ObjectArgumentAssemblyTypeName: AreaComponent, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: Beach
@@ -4027,6 +4056,19 @@ MonoBehaviour:
   col: {fileID: 1729306131}
   rectTransform: {fileID: 1729306127}
   areaNameBoxObject: {fileID: 0}
+--- !u!114 &1729306133
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1729306126}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3a8db77427b1abadb42ab8065e76762, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  area: 1
 --- !u!1 &1768179080
 GameObject:
   m_ObjectHideFlags: 0

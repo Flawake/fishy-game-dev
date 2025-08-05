@@ -1566,9 +1566,9 @@ MonoBehaviour:
   timeInterpolationGui: 0
   subScenes:
   - Assets/Scenes/WorldMap.unity
-  - Assets/Scenes/Beach.unity
-  - Assets/Scenes/Laketown.unity
-  - Assets/Scenes/RioTropical.unity
+  - Assets/Scenes/FusetaBeach.unity
+  - Assets/Scenes/SelvaBandeira.unity
+  - Assets/Scenes/GreenfieldPonds.unity
 --- !u!114 &302649097
 MonoBehaviour:
   m_ObjectHideFlags: 0
