@@ -32,12 +32,6 @@ namespace ItemSystem {
             idToCodec[id] = codec;
         }
 
-        // Deprecated: do not use auto-incrementing registration anymore
-        [Obsolete("Use Register(codec, id) with a hardcoded ID instead.")]
-        public static void Register(IStateCodec codec) {
-            throw new NotSupportedException("Use Register(codec, id) with a hardcoded ID instead.");
-        }
-
         public static ushort GetId(Type t) {
             if (!typeToId.TryGetValue(t, out ushort id)) {
                 throw new InvalidOperationException($"State type {t} has not been registered with a codec.");
