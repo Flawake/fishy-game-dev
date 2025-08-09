@@ -1,9 +1,8 @@
-using System;
 using System.Collections;
+using GlobalCompetitionSystem;
 using UnityEngine;
 using Mirror;
 using Random = UnityEngine.Random;
-using UnityEngine.LowLevelPhysics;
 using ItemSystem;
 
 public class FishingManager : NetworkBehaviour
@@ -302,11 +301,11 @@ public class FishingManager : NetworkBehaviour
         if (Time.time - fightStartTime < minFishingTimeSeconds)
         {
             Debug.LogWarning("The fishing period was too short. Should be " + minFishingTimeSeconds + " s, but was " + (Time.time - fightStartTime));
-            return;
         }
         else
         {
             TargetShowCaughtDialog();
+            CompetitionManager.AddToRunningCompetition(currentFish, playerData);
             ItemDefinition fishDef = ItemRegistry.Get(currentFish.id);
             ItemInstance fishInstance = new ItemInstance(fishDef);
             playerDataManager.AddItem(fishInstance, currentFish, true);
