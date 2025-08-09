@@ -260,11 +260,11 @@ namespace GlobalCompetitionSystem
          throw new NotImplementedException();   
         }
 
-        public static bool AddToRunningCompetition<T>(T data, Guid playerId)
+        public static bool AddToRunningCompetition<T>(T data, PlayerData playerData)
         {
             if (_currentCompetition is CurrentCompetition<T> competition)
             {
-                return competition.AddToCompetition(data, playerId);
+                return competition.AddToCompetition(data, playerData);
             }
 
             return false;
@@ -281,6 +281,6 @@ namespace GlobalCompetitionSystem
     public abstract class CurrentCompetition<T> : CurrentCompetition
     {
         ICompetitionState State { get; set; }
-        public abstract bool AddToCompetition(T data, Guid playerId);
+        public abstract bool AddToCompetition(T data, PlayerData playerData);
     }
 }
