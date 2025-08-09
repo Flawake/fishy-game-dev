@@ -2,6 +2,7 @@ using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using GlobalCompetitionSystem;
 using Mirror.SimpleWeb;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -46,8 +47,10 @@ public class GameNetworkManager : NetworkManager
         {
             Debug.LogWarning("Environment variables port could not be set");
         }
-
+        
         base.Awake();
+        
+        StartCoroutine(CompetitionManager.UpdateCompetitions());
     }
 
     public override void Update()

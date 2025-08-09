@@ -22,9 +22,23 @@ namespace GlobalCompetitionSystem
         }
 
         [Server]
-        public override bool AddToCompetition(CurrentFish competition)
+        public override bool AddToCompetition(CurrentFish currentFish, Guid playerId)
         {
-            return false;
+            MostFishCompetitonState state = (MostFishCompetitonState)State;
+            if (state.specificFish && state.fishIDToCatch != currentFish.id)
+            {
+                return false;
+            }
+            PlayerResult result = CompetitionData.GetPlayerResult(playerId);
+            int newScore = 0;
+            if (result != null)
+            {
+                newScore = result.Result;
+            }
+
+            newScore += 1;
+            CompetitionData.AddOrUpdateResult(playerId, "", newScore);
+            return true;
         }
     }
 
