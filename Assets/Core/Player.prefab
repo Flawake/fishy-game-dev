@@ -1069,7 +1069,7 @@ GameObject:
   - component: {fileID: 3601778431259597439}
   m_Layer: 3
   m_Name: Player base
-  m_TagString: Untagged
+  m_TagString: PlayerSprite
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

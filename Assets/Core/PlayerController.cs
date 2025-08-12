@@ -489,14 +489,19 @@ public class PlayerController : NetworkBehaviour
     [Command]
     void CmdSendMoveToServer(Vector2 position)
     {
+        ServerHandleMovement(position);
+    }
 
+    [Server]
+    public bool ServerHandleMovement(Vector2 position)
+    {
         if (!lastVerifiedPosition.HasValue)
         {
             //preserve the z position
             transform.position = new Vector3(position.x, position.y, transform.position.z);
             lastVerifiedPosition = transform.position;
             lastVerifiedtime = Time.time;
-            return;
+            return true;
         }
 
         Vector2 prevPos = lastVerifiedPosition.Value;
@@ -509,7 +514,7 @@ public class PlayerController : NetworkBehaviour
             lastVerifiedPosition = transform.position;
             lastVerifiedtime = Time.time;
             TargetSetPosition(transform.position);
-            return;
+            return false;
         }
 
         bool posValid = CheckNewPosValid(position);
@@ -521,7 +526,7 @@ public class PlayerController : NetworkBehaviour
             lastVerifiedPosition = transform.position;
             lastVerifiedtime = Time.time;
             TargetSetPosition(transform.position);
-            return;
+            return false;
         }
 
         if (speedRes == 0 && posValid) {
@@ -529,6 +534,7 @@ public class PlayerController : NetworkBehaviour
         }
 
         transform.position = new Vector3(position.x, position.y, transform.position.z);
+        return true;
     }
 
     System.Diagnostics.Stopwatch speedCheckTimer = new System.Diagnostics.Stopwatch();

@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 466ab68691b39318784f667dc1da5678, type: 3}
+  m_Name: 3_shell
+  m_EditorClassIdentifier: 
+  id: 50003
+  displayName: Shell
+  description: Some organic matter, doesn't seem alive anymore.
+  icon: {fileID: -2050491256, guid: b18a584f84e7a90488af5d70c1373090, type: 3}
+  maxStack: 2147483647
+  isStatic: 0
+  infiniteUse: 0
+  behaviours:
+  - rid: 2620052077978058835
+  references:
+    version: 2
+    RefIds:
+    - rid: 2620052077978058835
+      type: {class: ShellBehaviour, ns: ItemSystem, asm: Assembly-CSharp}
+      data: 
