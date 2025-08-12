@@ -1,5 +1,7 @@
 using System;
+using ItemSystem;
 using Mirror;
+using UnityEngine;
 
 namespace GlobalCompetitionSystem
 {
@@ -7,6 +9,26 @@ namespace GlobalCompetitionSystem
     {
         public bool specificFish;
         public int fishIDToCatch;
+        
+        [Client]
+        public string AsString()
+        {
+            if (!specificFish)
+            {
+                return "Catch the most fishes";
+            }
+            return $"Catch the most {ItemRegistry.Get(fishIDToCatch).DisplayName}";
+        }
+
+        [Client]
+        public Sprite Icon()
+        {
+            if (!specificFish)
+            {
+                throw new NotImplementedException();
+            }
+            return ItemRegistry.Get(fishIDToCatch).Icon;
+        }
     }
     public class MostFishCompetition : CurrentCompetition<CurrentFish>
     {
@@ -31,9 +53,9 @@ namespace GlobalCompetitionSystem
             }
             Guid playerId = playerData.GetUuid();
             string playerName = playerData.GetUsername();
-            PlayerResult result = CompetitionData.GetPlayerResult(playerId);
+            (int _, PlayerResult result) = CompetitionData.GetPlayerResult(playerId);
             int newScore = 0;
-            if (result != null)
+            if (result.PlayerID != playerId)
             {
                 newScore = result.Result;
             }
@@ -49,7 +71,7 @@ namespace GlobalCompetitionSystem
         public Type StateType => typeof(MostFishCompetitonState);
 
         static MostFishCompetitionCodec() {
-            CompetitionCodecRegistry.Register(new MostFishCompetitionCodec(), 2);
+            CompetitionCodecRegistry.Register(new MostFishCompetitionCodec(), 1);
         }
 
         public void Write(NetworkWriter writer, ICompetitionState genericState) {

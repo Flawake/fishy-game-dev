@@ -301,6 +301,7 @@ public class PlayerController : NetworkBehaviour
         PathFinding pathFinder = SceneObjectCache.GetPathFinding(gameObject.scene);
         pathFinder.QueueNewPath(transform.position, clickedPos, gameObject, PathFindRequestCallback);
     }
+    
     float lastTimeMovedDiagonally = 0;
     Vector2 lastTimeMovedDiagonallyVector = new Vector2();
 
