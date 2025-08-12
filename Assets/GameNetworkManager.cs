@@ -49,8 +49,6 @@ public class GameNetworkManager : NetworkManager
         }
         
         base.Awake();
-        
-        StartCoroutine(CompetitionManager.UpdateCompetitions());
     }
 
     public override void Update()
@@ -116,6 +114,8 @@ public class GameNetworkManager : NetworkManager
 
         NetworkServer.RegisterHandler<CreateCharacterMessage>(OnBeginCreateCharacter);
         NetworkServer.RegisterHandler<MovePlayerMessage>(OnPlayerMoveMessage);
+        
+        StartCoroutine(CompetitionManager.UpdateCompetitions());
     }
 
     [Client]

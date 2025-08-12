@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using GlobalCompetitionSystem;
 using ItemSystem;
 using UnityEngine;
 
@@ -1074,6 +1075,33 @@ public class PlayerData : NetworkBehaviour
     ulong GetPlayTimeSinceStart()
     {
         return (ulong)(NetworkTime.time - playerStartPlayingTime);
+    }
+    
+    [Command]
+    public void CmdGetTopPerformers(NetworkConnectionToClient sender = null)
+    {
+        CurrentCompetition currentCompetition = CompetitionManager.GetCurrentCompetition();
+        if (currentCompetition == null)
+        {
+            RPCLoadCurrentCompetition(null, null);
+        }
+        SortedList<int, PlayerResult> topPlayers = CompetitionManager.GetCurrentCompetition().CompetitionData.GetTopPerformers(100);
+        Guid playerID = sender.identity.GetComponent<PlayerData>().GetUuid();
+        // Just add the local player to the list, and let the client check if he was already in the top 100.
+        // This is done to avoid looping over the list 100 times to check if the player was already in the top.
+        (int rank, PlayerResult playerResult) = CompetitionManager.GetCurrentCompetition().CompetitionData.GetPlayerResult(playerID);
+        if (playerResult != null)
+        {
+            topPlayers.Add(rank, playerResult);
+        }
+            
+        RPCLoadCurrentCompetition(topPlayers, CompetitionManager.GetCurrentCompetition().CompetitionData.RunningCompetition.Prizepool);
+    }
+    
+    [TargetRpc]
+    private void RPCLoadCurrentCompetition(SortedList<int, PlayerResult> rankedPlayerResults, List<int> prizes)
+    {
+        GetComponentInChildren<CompetitionUIManager>().LoadCurrentCompetition(rankedPlayerResults, prizes);
     }
 
     private void Start()

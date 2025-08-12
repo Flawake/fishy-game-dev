@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace GlobalCompetitionSystem
 {
@@ -11,6 +10,7 @@ namespace GlobalCompetitionSystem
         static CompetitionStateRegistry()
         {
             Register(new MostFishCompetitonState(), new MostFishCompetition());
+            Register(new MostItemsCompetitonState(), new MostItemsCompetition());
         }
 
         public static void Register(ICompetitionState competitionState, CurrentCompetition competitionImplementation)
@@ -42,6 +42,8 @@ namespace GlobalCompetitionSystem
         static CompetitionCodecRegistry()
         {
             Register(new MostFishCompetitionCodec(), 1);
+            Register(new MostItemsCompetitionCodec(), 2);
+            Register(new LargestFishCompetitionCodec(), 2);
         }
         
         // Register a codec with a hardcoded ID
