@@ -72,8 +72,7 @@ public class StoreItemData : MonoBehaviour
     {
         SetStoreItemData(item, item.GetBehaviour<ShopBehaviour>().PriceCoins, item.GetBehaviour<ShopBehaviour>().PriceBucks);
     }
-
-    //Add a interface open where we can set the price manually, maybe for discount for some reason.
+    
     public void SetStoreItemData(ItemDefinition item, int priceCoins, int priceBucks)
     {
         storeItem = item;

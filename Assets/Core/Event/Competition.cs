@@ -2,7 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using GlobalCompetitionSystem;
 using Mirror;
+using NUnit.Framework;
 using UnityEngine;
 
 namespace GlobalCompetitionSystem
@@ -34,6 +36,9 @@ namespace GlobalCompetitionSystem
     public struct CurrentCompetitionData
     {
         public Competition RunningCompetition { get; }
+        // Updated once in a while, might take quite a bit of server load when the rankings contain a lot of players, so this is most of the time not up to date
+        private readonly Dictionary<Guid, int> _playerRanking;
+        // int -> score, List<PlayerResult> -> all players with that score
         private readonly SortedDictionary<int, List<PlayerResult>> _results;
         private readonly Dictionary<Guid, int> _playerScoreLookup;
 
@@ -41,8 +46,23 @@ namespace GlobalCompetitionSystem
         public CurrentCompetitionData(Competition runningCompetition)
         {
             RunningCompetition = runningCompetition;
+            _playerRanking = new Dictionary<Guid, int>(100);
             _results = new SortedDictionary<int, List<PlayerResult>>();
-            _playerScoreLookup = new Dictionary<Guid, int>();
+            _playerScoreLookup = new Dictionary<Guid, int>(100);
+        }
+
+        public void UpdatePlayerRankings()
+        {
+            _playerRanking.Clear();
+            int currentRank = 1;
+            foreach (var scoreGroup in _results.Reverse())
+            {
+                foreach (var result in scoreGroup.Value)
+                {
+                    _playerRanking[result.PlayerID] = currentRank;
+                    currentRank++;
+                }
+            }
         }
 
         public void AddOrUpdateResult(Guid playerId, string playerName, int newResult)
@@ -86,31 +106,33 @@ namespace GlobalCompetitionSystem
             }
         }
 
-        public List<PlayerResult> GetTopPerformers(int amount)
+        public SortedList<int, PlayerResult> GetTopPerformers(int amount)
         {
-            List<PlayerResult> topPlayers = new List<PlayerResult>(amount);
+            var topPlayers = new SortedList<int, PlayerResult>(amount);
 
-            foreach (var kvp in _results.Reverse())
+            foreach (var (player, index) in _results
+                         .Reverse()
+                         .SelectMany(kvp => kvp.Value)
+                         .Take(amount)
+                         .Select((player, index) => (player, index)))
             {
-                foreach (var player in kvp.Value)
-                {
-                    topPlayers.Add(player);
-                    if (topPlayers.Count >= amount)
-                    {
-                        return topPlayers;
-                    }
-                }
+                topPlayers.Add(index + 1, player);
             }
+
             return topPlayers;
         }
 
-        public PlayerResult GetPlayerResult(Guid playerID)
+
+        public (int, PlayerResult) GetPlayerResult(Guid playerID)
         {
             if (_playerScoreLookup.TryGetValue(playerID, out int score))
             {
-                return _results[score].First(r => r.PlayerID == playerID);
+                if (_playerRanking.TryGetValue(playerID, out int rank))
+                {
+                    return (rank, _results[score].First(r => r.PlayerID == playerID));
+                }
             }
-            return null;
+            return (0, null);
         }
     }
     
@@ -159,6 +181,9 @@ namespace GlobalCompetitionSystem
         [Server]
         public static IEnumerator UpdateCompetitions()
         {
+            DateTime lastRankingRefresh = DateTime.MinValue;
+            // hours, minute, seconds
+            TimeSpan timeBetweenRankingRebuilds = new TimeSpan(0, 1, 0);
             while (true)
             {
                 if (_currentCompetition == null)
@@ -173,10 +198,17 @@ namespace GlobalCompetitionSystem
                         }
                     }
                 }
+                
                 if (_currentCompetition != null && _currentCompetition.CompetitionData.RunningCompetition.EndDateTime < DateTime.UtcNow)
                 {
                     EndCurrentCompetition();
                     _currentCompetition = null;
+                }
+
+                if (_currentCompetition != null && DateTime.Now - lastRankingRefresh > timeBetweenRankingRebuilds)
+                {
+                    _currentCompetition.CompetitionData.UpdatePlayerRankings();
+                    lastRankingRefresh = DateTime.Now;
                 }
                 yield return new WaitForSeconds(1);
             }
@@ -211,7 +243,7 @@ namespace GlobalCompetitionSystem
         private static void DistributePrizes()
         {
             List<int> prizes = _currentCompetition.CompetitionData.RunningCompetition.Prizepool;
-            List<PlayerResult> winners = _currentCompetition.CompetitionData.GetTopPerformers(prizes.Count);
+            SortedList<int, PlayerResult> winners = _currentCompetition.CompetitionData.GetTopPerformers(prizes.Count);
             for (int i = 0; i < winners.Count; i++)
             {
                 PlayerResult winner = winners[i];
@@ -282,5 +314,24 @@ namespace GlobalCompetitionSystem
     {
         ICompetitionState State { get; set; }
         public abstract bool AddToCompetition(T data, PlayerData playerData);
+    }
+}
+
+public static class PlayerResultReaderWriter
+{
+    public static void WritePlayerResult(this NetworkWriter writer, PlayerResult result)
+    {
+        writer.WriteGuid(result.PlayerID);
+        writer.WriteString(result.PlayerName);
+        writer.WriteInt(result.Result);
+    }
+
+    public static PlayerResult ReadPlayerResult(this NetworkReader reader)
+    {
+        return new PlayerResult(
+            reader.ReadGuid(),
+            reader.ReadString(),
+            reader.ReadInt()
+            );
     }
 }

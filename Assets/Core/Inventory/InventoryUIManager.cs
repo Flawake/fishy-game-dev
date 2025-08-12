@@ -180,7 +180,7 @@ public class InventoryUIManager : MonoBehaviour
         bool isRod = inst.def.GetBehaviour<RodBehaviour>() != null;
         bool isBait = inst.def.GetBehaviour<BaitBehaviour>() != null;
         bool isFish = inst.def.GetBehaviour<FishBehaviour>() != null;
-        bool isSpecial = inst.def.GetBehaviour<SpecialBehaviour>() != null;
+        bool isSpecial = inst.def.GetBehaviour<SpecialBehaviour>() != null || inst.def.GetBehaviour<ShellBehaviour>() != null;
 
         return (filter == ItemFiler.Rods && isRod) ||
                (filter == ItemFiler.Baits && isBait) ||
