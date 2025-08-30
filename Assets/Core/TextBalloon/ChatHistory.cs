@@ -45,7 +45,6 @@ public class ChatHistory : MonoBehaviour
 
     public void AddChatHistory(string text, string playerName, string playerColor)
     {
-        //TODO: Does this even work???
         textUI.text = textUI.text + $"<color={playerColor}>" + ChatBalloon.SanitizeTMPString(playerName) + ": " + "</color>" + "<color=black>" + ChatBalloon.SanitizeTMPString(text) + "</color>" + "\n\r";
     }
 
@@ -58,6 +57,14 @@ public class ChatHistory : MonoBehaviour
 
         playerControls.Player.SendChat.performed += SendChat;
         playerControls.Player.SendChat.Enable();
+        chatInput.onSelect.AddListener(_ =>
+        {
+            NetworkClient.connection.identity.GetComponent<PlayerController>().IncreaseObjectsPreventingMovement();
+        });
+        chatInput.onDeselect.AddListener(_ =>
+        {
+            NetworkClient.connection.identity.GetComponent<PlayerController>().DecreaseObjectsPreventingMovement();
+        });
     }
 
     private void OnDisable()
