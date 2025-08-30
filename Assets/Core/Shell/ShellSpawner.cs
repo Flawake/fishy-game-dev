@@ -103,7 +103,7 @@ public class ShellSpawner : NetworkBehaviour
                 spawnedShellPositions.Add(new ComparableVector3(randomPos));
                 ShellSpawned(new ComparableVector3(randomPos));
             }
-            yield return new WaitForSeconds(Random.Range(8, 12));
+            yield return new WaitForSeconds(Random.Range(8, 18));
         }
     }
 
@@ -122,8 +122,10 @@ public class ShellSpawner : NetworkBehaviour
         // This function checks if the player could have moved to this position, and moves the player on the server if the location is valid
         if (controller.ServerHandleMovement(shellPosition))
         {
-            if (spawnedShellPositions.Remove(new ComparableVector3(shellPosition)))
+            ComparableVector3 shellPos = new ComparableVector3(shellPosition);
+            if (spawnedShellPositions.Remove(shellPos))
             {
+                ShellRemoved(shellPos);
                 ItemInstance shell = new ItemInstance(shellDefinition);
                 syncManager.AddItem(shell);
             }
