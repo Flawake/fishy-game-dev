@@ -145,11 +145,6 @@ public class PlayerController : NetworkBehaviour
                 return movementVector;
             }
         }
-        if (objectsPreventingMovement > 0 || fishingManager.isFishing)
-        {
-            movementVector = Vector2.zero;
-            return movementVector;
-        }
         float playerWidth = 0.5f;
         float playerHeight = 0.5f;
 
@@ -318,6 +313,7 @@ public class PlayerController : NetworkBehaviour
 
         if (fishingManager.isFishing || objectsPreventingMovement > 0)
         {
+            MovePlayer(Vector2.zero, 0);
             ApplyAnimation(false);
             return;
         }
