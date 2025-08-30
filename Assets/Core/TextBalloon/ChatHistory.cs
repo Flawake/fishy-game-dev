@@ -26,7 +26,6 @@ public class ChatHistory : MonoBehaviour
         }
         chatInput.ActivateInputField();
         chatInput.Select();
-        Debug.Log(context);
     }
 
     public void SendChat(InputAction.CallbackContext context)
