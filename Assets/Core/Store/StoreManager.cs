@@ -48,11 +48,10 @@ public class StoreManager : NetworkBehaviour
 
     private void Update()
     {
-        if (isServer)
+        if (isClient)
         {
-            return;
+            CleanupExpiredPurchases();
         }
-        CleanupExpiredPurchases();
     }
 
     private void OnDestroy()
@@ -154,7 +153,7 @@ public class StoreManager : NetworkBehaviour
         }
 
         int playerLevel = LevelMath.XpToLevel(playerData.GetXp()).level;
-        if (GetRequiredBuyLevel(item) < playerLevel)
+        if (playerLevel < GetRequiredBuyLevel(item))
         {
             LogWarning($"Optimistic purchase failed: Playerlevel too low");
             return false;
@@ -299,7 +298,7 @@ public class StoreManager : NetworkBehaviour
         }
 
         int playerLevel = LevelMath.XpToLevel(playerData.GetXp()).level;
-        if (GetRequiredBuyLevel(item) < playerLevel)
+        if (playerLevel < GetRequiredBuyLevel(item))
         {
             GameNetworkManager.KickPlayerForCheating(connectionToClient, "Attempted to buy an item with a lower than required level");
             return false;

@@ -1478,7 +1478,7 @@ MonoBehaviour:
   clientUseWss: 1
   clientWebsocketSettings:
     ClientPortOption: 2
-    CustomClientPort: 24469
+    CustomClientPort: 443
   minimumLogLevel: 3
 --- !u!4 &302649093
 Transform:
@@ -1540,7 +1540,7 @@ MonoBehaviour:
   onlineScene: Assets/Scenes/WorldMap.unity
   offlineSceneLoadDelay: 0
   transport: {fileID: 302649091}
-  networkAddress: heckvision.com
+  networkAddress: lurebound.nl
   maxConnections: 100
   disconnectInactiveConnections: 0
   disconnectInactiveTimeout: 60
