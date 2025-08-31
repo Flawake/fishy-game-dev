@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: c1e987d546f5c854987037e1a40ffb5b
+guid: 4bcd5e3618003cc25814a27be33cffdd
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -5043978975928556915
-    second: BeachShadow_0
+      213: -2818365475117505745
+    second: BeachShadowBlurred_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -109,30 +109,17 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: WindowsStoreApps
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: BeachShadow_0
+      name: BeachShadowBlurred_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 880
-        height: 1470
+        width: 888
+        height: 1484
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -141,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: d826d3578df200ab0800000000000000
-      internalID: -5043978975928556915
+      spriteID: f236560688723e8d0800000000000000
+      internalID: -2818365475117505745
       vertices: []
       indices: 
       edges: []
@@ -161,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      BeachShadow_0: -5043978975928556915
+      BeachShadowBlurred_0: -2818365475117505745
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
