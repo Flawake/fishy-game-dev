@@ -75,7 +75,6 @@ public class ShellSpawner : NetworkBehaviour
         Shell shellScript = newShell.GetComponent<Shell>();
         shellScript.SpawnShell(position.V3);
         spawnedShells.Add(position, newShell);
-        var x = new ComparableVector3(position.V3);
     }
 
     public void ShellRemoved(ComparableVector3 position)
