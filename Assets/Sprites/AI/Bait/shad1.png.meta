@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 5f8644690f2a9ec60a0df523831b10ee
+guid: 97843f07e029a95cfa72b6b8c6f0a26c
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -1379284931105554088
-    second: worm_0
+      213: -7858646997652419219
+    second: Gemini_Generated_Image_he7uhfhe7uhfhe7u-Photoroom_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: worm_0
+      name: Gemini_Generated_Image_he7uhfhe7uhfhe7u-Photoroom_0
       rect:
         serializedVersion: 2
-        x: 25
-        y: 207
-        width: 868
-        height: 667
+        x: 30
+        y: 341
+        width: 1220
+        height: 597
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 8518765b9abcbdce0800000000000000
-      internalID: -1379284931105554088
+      spriteID: d6dccb9413a70f290800000000000000
+      internalID: -7858646997652419219
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      worm_0: -1379284931105554088
+      Gemini_Generated_Image_he7uhfhe7uhfhe7u-Photoroom_0: -7858646997652419219
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

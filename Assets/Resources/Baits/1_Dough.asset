@@ -15,7 +15,7 @@ MonoBehaviour:
   id: 1
   displayName: Dough
   description: 
-  icon: {fileID: 21300000, guid: 08e00fcf172a78b44bed5f5d695080ad, type: 3}
+  icon: {fileID: 21300000, guid: 6ae481348de041f16b3ad2b93b28ff96, type: 3}
   maxStack: 2147483647
   isStatic: 0
   infiniteUse: 0
