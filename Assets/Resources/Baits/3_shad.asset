@@ -15,7 +15,7 @@ MonoBehaviour:
   id: 3
   displayName: Shad
   description: 
-  icon: {fileID: 21300000, guid: 08e00fcf172a78b44bed5f5d695080ad, type: 3}
+  icon: {fileID: 21300000, guid: 97843f07e029a95cfa72b6b8c6f0a26c, type: 3}
   maxStack: 2147483647
   isStatic: 0
   infiniteUse: 0
@@ -31,6 +31,7 @@ MonoBehaviour:
         priceCoins: 3
         priceBucks: -1
         amount: 50
+        unlockLevel: 0
     - rid: 7137401008670638160
       type: {class: BaitBehaviour, ns: ItemSystem, asm: Assembly-CSharp}
       data:
