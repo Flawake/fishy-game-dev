@@ -1,6 +1,4 @@
-// ShellBehaviour.cs
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace ItemSystem {
     
