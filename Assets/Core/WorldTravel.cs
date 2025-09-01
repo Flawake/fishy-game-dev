@@ -19,11 +19,17 @@ public class WorldTravel : MonoBehaviour
         audioListener.enabled = true;
         GameNetworkManager.SetEventSystemActive("WorldMap", true);
     }
-    
+
     [Client]
     public static void TravelTo(AreaComponent destination)
     {
-        if (!AreaUnlockManager.IsAreaUnlocked(destination.area, NetworkClient.connection.identity.GetComponent<PlayerData>()))
+        TravelTo(destination.area);
+    }
+    
+    [Client]
+    public static void TravelTo(Area destination)
+    {
+        if (!AreaUnlockManager.IsAreaUnlocked(destination, NetworkClient.connection.identity.GetComponent<PlayerData>()))
         {
             Debug.LogWarning("Area was not yet unlocked");
             return;
@@ -31,9 +37,9 @@ public class WorldTravel : MonoBehaviour
         //Disable the event system before unloading async and loading a new map
         GameNetworkManager.SetEventSystemActive("WorldMap", false);
 
-        if (SceneManager.GetSceneByName(destination.area.ToString()).isLoaded)
+        if (SceneManager.GetSceneByName(destination.ToString()).isLoaded)
         {
-            GameNetworkManager.SetEventSystemActive(destination.area.ToString(), true);
+            GameNetworkManager.SetEventSystemActive(destination.ToString(), true);
             AsyncOperation unloadOperation = SceneManager.UnloadSceneAsync("WorldMap");
             GameNetworkManager.scenesUnloading.Add(unloadOperation);
             return;
@@ -41,7 +47,7 @@ public class WorldTravel : MonoBehaviour
 
         MovePlayerMessage msg = new MovePlayerMessage()
         {
-            requestedArea = destination.area,
+            requestedArea = destination,
         };
         NetworkClient.Send(msg);
     }

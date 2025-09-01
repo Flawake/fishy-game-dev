@@ -8,7 +8,8 @@ public enum Area
     WorldMap,
     FusetaBeach,
     SelvaBandeira,
-    GreenfieldPonds,
+    Greenfields,
+    Baker,
 }
 
 public class AreaComponent : MonoBehaviour
@@ -59,7 +60,8 @@ public static class AreaUnlockManager
     {
         { Area.FusetaBeach, new LevelUnlockCriteria(0) },
         { Area.SelvaBandeira, new LevelUnlockCriteria(0) },
-        { Area.GreenfieldPonds, new LevelUnlockCriteria(0) }
+        { Area.Greenfields, new LevelUnlockCriteria(0) },
+        { Area.Baker, new LevelUnlockCriteria(0) },
     };
 
     public static bool IsAreaUnlocked(Area area, PlayerData playerData)

@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using Mirror;
-using Unity.VisualScripting;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -23,7 +21,7 @@ public class Shell : MonoBehaviour
         {
             GetComponentInParent<ShellSpawner>().NpcCollectShell(new ComparableVector3(transform.position));
         }
-        else if(other.CompareTag("PlayerSprite") && other.gameObject.GetComponentInParent<NetworkIdentity>().isOwned)
+        else if(NetworkClient.active && other.CompareTag("PlayerSprite") && other.gameObject.GetComponentInParent<NetworkIdentity>().isOwned)
         {
             ShellSpawner shellSpawner = GetComponentInParent<ShellSpawner>();
             shellSpawner.CmdCollectShell(transform.position);
