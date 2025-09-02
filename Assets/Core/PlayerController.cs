@@ -13,6 +13,16 @@ public class PlayerController : NetworkBehaviour
 
     private List<Vector2> nextMoves = null;
 
+    public void SetScriptedPath(List<Vector2> path)
+    {
+        nextMoves = path;
+    }
+
+    public bool HasPendingScriptedPath()
+    {
+        return nextMoves != null && nextMoves.Count > 0;
+    }
+
     [SerializeField] Rigidbody2D playerRigidbody;
     [SerializeField] Transform playerTransform;
     [SerializeField] Camera playerCamera;
