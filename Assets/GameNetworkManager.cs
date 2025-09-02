@@ -22,6 +22,9 @@ public class GameNetworkManager : NetworkManager
     //netID and start time (time.time);
     internal static readonly Dictionary<int, PlayerConnectionInfo> connectedPlayersInfo = new Dictionary<int, PlayerConnectionInfo>();
 
+    // Tracks the current area of each connected player (by connectionId) on the server for validation & anti-cheat
+    internal static readonly Dictionary<int, Area> connectionCurrentArea = new Dictionary<int, Area>();
+
     [Scene]
     [Tooltip("Add all sub-scenes to this list")]
     public string[] subScenes;
@@ -85,6 +88,7 @@ public class GameNetworkManager : NetworkManager
         connNames.Remove(conn);
         connUUID.Remove(conn);
         connectedPlayersInfo.Remove(conn.connectionId);
+        connectionCurrentArea.Remove(conn.connectionId);
 
         conn.identity.GetComponent<PlayerData>();
 
@@ -127,6 +131,13 @@ public class GameNetworkManager : NetworkManager
         CreateCharacterMessage characterMessage = new CreateCharacterMessage();
 
         NetworkClient.Send(characterMessage);
+    }
+
+    [Client]
+    public override void OnStartClient()
+    {
+        base.OnStartClient();
+        NetworkClient.RegisterHandler<ArrivalInstructionMessage>(OnArrivalInstructionMessage);
     }
 
     public static void SetEventSystemActive(string sceneName, bool active)
@@ -247,6 +258,8 @@ public class GameNetworkManager : NetworkManager
                     playerConnectionTime = NetworkTime.time,
                 };
                 connectedPlayersInfo.Add(conn.connectionId, playerConnection);
+                // Set initial area server-side; if you have a persisted area in player data, use that here instead of WorldMap
+                connectionCurrentArea[conn.connectionId] = Area.WorldMap;
             }
             else
             {
@@ -267,18 +280,76 @@ public class GameNetworkManager : NetworkManager
             KickPlayerForCheating(conn, "Tried to enter an area which was not unlocked yet");
             return;
         }
+
+        // Validate requested spawn instruction against previous area and target
+        Area previousArea = connectionCurrentArea.TryGetValue(conn.connectionId, out Area current) ? current : Area.WorldMap;
+        WorldTravel.CustomSpawnInstruction approvedInstruction = ValidateSpawnInstruction(previousArea, data.requestedArea, data.requestedSpawnPoint);
+
+        // Move the player object to the new scene
         SceneManager.MoveGameObjectToScene(conn.identity.gameObject, SceneManager.GetSceneByName(data.requestedArea.ToString()));
+
+        // Teleport to a specific spawn point if provided/known; else fall back to existing random spawn point
         if (data.requestedArea.ToString() != null && data.requestedArea != Area.WorldMap && conn.identity != null)
         {
-            conn.identity.gameObject.GetComponentInChildren<PlayerController>().ServerTeleportPlayer(
-                spawnPoint.GetRandomSpawnPoint(data.requestedArea.ToString())
+            Vector3? customSpawn = SpawnPointProvider.TryGetCustomSpawnPoint(data.requestedArea, approvedInstruction);
+            if (customSpawn.HasValue)
+            {
+                conn.identity.gameObject.GetComponentInChildren<PlayerController>().ServerTeleportPlayer(customSpawn.Value);
+            }
+            else
+            {
+                conn.identity.gameObject.GetComponentInChildren<PlayerController>().ServerTeleportPlayer(
+                    spawnPoint.GetRandomSpawnPoint(data.requestedArea.ToString())
                 );
+            }
         }
+
+        // Send scene load message to client
         conn.Send(new SceneMessage()
         {
             sceneName = data.requestedArea.ToString(),
             sceneOperation = SceneOperation.LoadAdditive
         });
+
+        // Also send arrival instruction for client-side cosmetic animation
+        conn.Send(new ArrivalInstructionMessage
+        {
+            area = data.requestedArea,
+            instruction = approvedInstruction,
+        });
+
+        // Update current area after successful move
+        connectionCurrentArea[conn.connectionId] = data.requestedArea;
+    }
+
+    [Server]
+    private static WorldTravel.CustomSpawnInstruction ValidateSpawnInstruction(Area previousArea, Area requestedArea, WorldTravel.CustomSpawnInstruction requestedInstruction)
+    {
+        switch (requestedInstruction)
+        {
+            case WorldTravel.CustomSpawnInstruction.WalkOusideBakery:
+                // Only allow when walking out of the Baker into Greenfields
+                if (previousArea == Area.Baker && requestedArea == Area.Greenfields)
+                {
+                    return WorldTravel.CustomSpawnInstruction.WalkOusideBakery;
+                }
+                return WorldTravel.CustomSpawnInstruction.None;
+            case WorldTravel.CustomSpawnInstruction.None:
+            default:
+                return WorldTravel.CustomSpawnInstruction.None;
+        }
+    }
+
+    [Client]
+    void OnArrivalInstructionMessage(ArrivalInstructionMessage msg)
+    {
+        if (NetworkClient.connection == null || NetworkClient.connection.identity == null)
+        {
+            return;
+        }
+        GameObject player = NetworkClient.connection.identity.gameObject;
+        ArrivalAnimationRunner runner = player.GetComponent<ArrivalAnimationRunner>();
+        runner.StartArrivalAnimation(msg.instruction, msg.area);
     }
 
     [Server]
@@ -353,4 +424,10 @@ public struct MovePlayerMessage : NetworkMessage
 {
     public Area requestedArea;
     public WorldTravel.CustomSpawnInstruction requestedSpawnPoint;
+}
+
+public struct ArrivalInstructionMessage : NetworkMessage
+{
+    public Area area;
+    public WorldTravel.CustomSpawnInstruction instruction;
 }
