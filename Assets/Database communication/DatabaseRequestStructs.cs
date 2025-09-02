@@ -1,6 +1,4 @@
 using System;
-using ItemSystem;
-using UnityEngine;
 
 #nullable enable
 // Authenticate requests
