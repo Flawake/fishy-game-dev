@@ -1087,7 +1087,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8655981325809703780}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 5493110953388718892}
+        m_TargetAssemblyTypeName: NpcDialog, Assembly-CSharp
+        m_MethodName: NoClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &8623522840080815180
 GameObject:
   m_ObjectHideFlags: 0
@@ -1208,7 +1220,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1424770037318609552}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 5493110953388718892}
+        m_TargetAssemblyTypeName: NpcDialog, Assembly-CSharp
+        m_MethodName: YesClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &9127996146778299112
 GameObject:
   m_ObjectHideFlags: 0
