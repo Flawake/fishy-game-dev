@@ -130,6 +130,17 @@ public class PlayerController : NetworkBehaviour
                 return;
             }
         }
+        
+        float camHeight = 2f * playerCamera.orthographicSize;
+        float camWidth = camHeight * playerCamera.aspect;
+        Bounds bounds = worldBounds.GetComponent<Renderer>().bounds;
+        float borderWidth = bounds.size.x;
+        float borderHeight = bounds.size.y;
+        
+        if (camWidth > borderWidth || camHeight > borderHeight)
+        {
+            return;
+        }
 
         float cameraHeight = playerCamera.orthographicSize;
         float cameraWidth = cameraHeight * playerCamera.aspect;
