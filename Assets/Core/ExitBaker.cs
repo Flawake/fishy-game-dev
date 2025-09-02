@@ -11,7 +11,7 @@ public class ExitBaker : NetworkBehaviour
         }
         if (other.gameObject.GetComponentInParent<NetworkIdentity>().isLocalPlayer)
         {
-            WorldTravel.TravelTo(Area.Greenfields);
+            WorldTravel.TravelTo(Area.Greenfields, WorldTravel.CustomSpawnInstruction.WalkOusideBakery);
         }
     }
 }

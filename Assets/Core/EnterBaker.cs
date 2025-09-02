@@ -9,7 +9,7 @@ public class EnterBaker : NetworkBehaviour
         {
             return;
         }
-        if (other.gameObject.GetComponentInParent<NetworkIdentity>().isLocalPlayer)
+        if (other.CompareTag("PlayerSprite") && other.gameObject.GetComponentInParent<NetworkIdentity>().isLocalPlayer)
         {
             WorldTravel.TravelTo(Area.Baker);
         }
