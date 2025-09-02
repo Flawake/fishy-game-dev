@@ -45,12 +45,14 @@ public class FishEnumConfig
     }
 
     public static Color RarityToColor(FishRarity rarity) {
-        return rarity switch {
+        return rarity switch
+        {
             FishRarity.COMMON => Color.white,
             FishRarity.UNCOMMON => Color.green,
             FishRarity.RARE => Color.blue,
             FishRarity.EPIC => new Color(130, 0, 255, 255),
             FishRarity.LEGENDARY => Color.yellow,
+            _ => throw new System.NotImplementedException(),
         };
     }
 }

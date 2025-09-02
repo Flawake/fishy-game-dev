@@ -53,7 +53,7 @@ public class ShellSpawner : NetworkBehaviour
     [SerializeField] private ItemDefinition shellDefinition;
     [SerializeField] GameObject shellPrefab;
     [SerializeField] List<Transform> spawnPoints = new List<Transform>();
-    SyncSortedSet<ComparableVector3> spawnedShellPositions = new SyncSortedSet<ComparableVector3>();
+    readonly SyncSortedSet<ComparableVector3> spawnedShellPositions = new SyncSortedSet<ComparableVector3>();
     
     [SerializeField] Transform shellsParent;
     Dictionary<ComparableVector3, GameObject> spawnedShells = new Dictionary<ComparableVector3, GameObject>();

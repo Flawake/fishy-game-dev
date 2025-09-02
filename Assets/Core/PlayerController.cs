@@ -130,17 +130,6 @@ public class PlayerController : NetworkBehaviour
                 return;
             }
         }
-        
-        float camHeight = 2f * playerCamera.orthographicSize;
-        float camWidth = camHeight * playerCamera.aspect;
-        Bounds bounds = worldBounds.GetComponent<Renderer>().bounds;
-        float borderWidth = bounds.size.x;
-        float borderHeight = bounds.size.y;
-        
-        if (camWidth > borderWidth || camHeight > borderHeight)
-        {
-            return;
-        }
 
         float cameraHeight = playerCamera.orthographicSize;
         float cameraWidth = cameraHeight * playerCamera.aspect;
@@ -152,8 +141,20 @@ public class PlayerController : NetworkBehaviour
         float maxYCamera = worldBounds.transform.position.y - (worldBounds.transform.lossyScale.y / 2) + worldBounds.transform.lossyScale.y - cameraHeight;
 
         //First set the camera position to the player position, then make sure it does not get out of the world bounds.
-        //The camera resetting is a trick to make the player get back into the middle of the screen when the players moves away from the world bounds.
+        //The camera resetting is a trick to make the player get back into the middle of the screen when the players moves away from the world bounds when the bounds are bigger then the camera viewport.
         playerCamera.transform.position = new Vector3(this.transform.position.x, this.transform.position.y, playerCamera.transform.position.z);
+
+        float camHeight = 2f * playerCamera.orthographicSize;
+        float camWidth = camHeight * playerCamera.aspect;
+        Bounds bounds = worldBounds.GetComponent<Renderer>().bounds;
+        float borderWidth = bounds.size.x;
+        float borderHeight = bounds.size.y;
+        
+        if (camWidth > borderWidth || camHeight > borderHeight)
+        {
+            return;
+        }
+
         playerCamera.transform.position = new Vector3(Mathf.Clamp(playerCamera.transform.position.x, minXCamera, maxXCamera), Mathf.Clamp(playerCamera.transform.position.y, minYCamera, maxYCamera), playerCamera.transform.position.z);
     }
 
@@ -166,8 +167,8 @@ public class PlayerController : NetworkBehaviour
                 return movementVector;
             }
         }
-        float playerWidth = 0.5f;
-        float playerHeight = 0.5f;
+        float playerWidth = GetComponentInChildren<Renderer>().bounds.size.x / 2f;
+        float playerHeight = GetComponentInChildren<Renderer>().bounds.size.y / 2f;
 
         //Calculate max world bounds
         float minXPlayer = worldBounds.transform.position.x - (worldBounds.transform.lossyScale.x / 2) + playerWidth;
@@ -315,7 +316,10 @@ public class PlayerController : NetworkBehaviour
         // Click was not on the water or another player and the mouse was not over a ui element. Walk to the clicked position
         stopwatch = System.Diagnostics.Stopwatch.StartNew();
         PathFinding pathFinder = SceneObjectCache.GetPathFinding(gameObject.scene);
-        pathFinder.QueueNewPath(transform.position, clickedPos, gameObject, PathFindRequestCallback);
+        if (pathFinder != null)
+        {
+            pathFinder.QueueNewPath(transform.position, clickedPos, gameObject, PathFindRequestCallback);
+        }
     }
     
     float lastTimeMovedDiagonally = 0;

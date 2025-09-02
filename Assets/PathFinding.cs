@@ -58,6 +58,8 @@ class NodeMap
     {
         int x = Mathf.FloorToInt((point.x - MapOrigin.x) / NodeSize + Nodes.GetLength(0) / 2f);
         int y = Mathf.FloorToInt((point.y - MapOrigin.y) / NodeSize + Nodes.GetLength(1) / 2f);
+        x = Mathf.Clamp(x, 0, Nodes.GetLength(0) - 1);
+        y = Mathf.Clamp(y, 0, Nodes.GetLength(1) - 1);
         return new Vector2Int(x, y);
     }
 
