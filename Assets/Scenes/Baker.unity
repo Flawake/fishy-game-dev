@@ -219,6 +219,10 @@ PrefabInstance:
       value: 3824425120
       objectReference: {fileID: 0}
     - target: {fileID: 4223937493391861998, guid: f70a0e88ef1f475408c483c51412b7d0, type: 3}
+      propertyPath: customWalkArea
+      value: 
+      objectReference: {fileID: 510241815}
+    - target: {fileID: 4223937493391861998, guid: f70a0e88ef1f475408c483c51412b7d0, type: 3}
       propertyPath: enableMovement
       value: 0
       objectReference: {fileID: 0}
@@ -272,12 +276,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9049896073061987267, guid: f70a0e88ef1f475408c483c51412b7d0, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.05
+      value: -0.27
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4328120829538916709, guid: f70a0e88ef1f475408c483c51412b7d0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1339658008}
   m_SourcePrefab: {fileID: 100100000, guid: f70a0e88ef1f475408c483c51412b7d0, type: 3}
 --- !u!4 &240837650 stripped
 Transform:
@@ -708,7 +715,7 @@ Transform:
   m_GameObject: {fileID: 356757988}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -92.725, y: -21.169, z: 0}
+  m_LocalPosition: {x: -0.092, y: -1.729, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1450,6 +1457,39 @@ MonoBehaviour:
   serverOnly: 0
   visibility: 0
   hasSpawned: 0
+--- !u!1 &1339658003 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4328120829538916709, guid: f70a0e88ef1f475408c483c51412b7d0, type: 3}
+  m_PrefabInstance: {fileID: 240837649}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1339658004 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5493110953388718892, guid: f70a0e88ef1f475408c483c51412b7d0, type: 3}
+  m_PrefabInstance: {fileID: 240837649}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1339658003}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6053f0115b63f87a89551a815410d1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1339658008
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1339658003}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0379f3a63640279a6b7e5d564d876ada, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  doughDefinition: {fileID: 11400000, guid: 93ed461979dbf7ce8b9521c4019d0729, type: 2}
+  npcDialog: {fileID: 1339658004}
 --- !u!1 &1623867016
 GameObject:
   m_ObjectHideFlags: 0

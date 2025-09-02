@@ -1,5 +1,5 @@
-using System;
 using System.Collections.Generic;
+using Mirror;
 using UnityEngine;
 
 public class DialogNakoa : MonoBehaviour
@@ -20,6 +20,10 @@ public class DialogNakoa : MonoBehaviour
 
     private void Awake()
     {
+        if (NetworkServer.active)
+        {
+            return;
+        }
         Dictionary<int, Dialog> dialogs = new Dictionary<int, Dialog>();
         dialogs.Add(_startDialog.DialogID, _startDialog);
         npcDialog.SetDialogs(dialogs);

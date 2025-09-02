@@ -85,9 +85,10 @@ public class NpcDialog : MonoBehaviour
     {
         canvasObject.SetActive(false);
         DialogActive = false;
+        PlayerController.OnMouseClickedAction -= OnMouseClicked;
     }
 
-    private void ShowNextDialog(Dialog nextDialog)
+    public void ShowNextDialog(Dialog nextDialog)
     {
         SetAppropiateAnswers(nextDialog.ResponseType);
         dialogText.text = nextDialog.Text;
@@ -104,42 +105,48 @@ public class NpcDialog : MonoBehaviour
         }
         if (_currentDialog.ResponseType == DialogResponse.Click)
         {
-            _currentDialog.OnClick?.Invoke();
             if (_currentDialog.NextClickDialog.HasValue && _dialogs.TryGetValue(_currentDialog.NextClickDialog.Value, out Dialog dialog))
             {
+                Action toExecute = _currentDialog.OnClick;
                 ShowNextDialog(dialog);
+                toExecute?.Invoke();
             }
             else
             {
+                Debug.LogWarning("Could not load the next npc dialog");
                 EndDialog();
             }
         }
     }
     
     //Called from button ingame
-    public void YesClicked(Dialog nextDialog)
+    public void YesClicked()
     {
-        _currentDialog.OnYes?.Invoke();
         if (_currentDialog.NextYesDialog.HasValue && _dialogs.TryGetValue(_currentDialog.NextYesDialog.Value, out Dialog dialog))
         {
+            Action toExecute = _currentDialog.OnYes;
             ShowNextDialog(dialog);
+            toExecute?.Invoke();
         }
         else
         {
+            Debug.LogWarning("Could not load the next npc dialog");
             EndDialog();
         }
     }
     
     //Called from button ingame
-    public void NoClicked(Dialog nextDialog)
+    public void NoClicked()
     {
-        _currentDialog.OnNo?.Invoke();
         if (_currentDialog.NextNoDialog.HasValue && _dialogs.TryGetValue(_currentDialog.NextNoDialog.Value, out Dialog dialog))
         {
+            Action toExecute = _currentDialog.OnNo;
             ShowNextDialog(dialog);
+            toExecute?.Invoke();
         }
         else
         {
+            Debug.LogWarning("Could not load the next npc dialog");
             EndDialog();
         }
     }
@@ -167,6 +174,11 @@ public class NpcDialog : MonoBehaviour
                 yesButton.SetActive(true);
                 noButton.SetActive(true);
                 clickIcon.SetActive(false);
+                break;
+            case DialogResponse.End:
+                yesButton.SetActive(false);
+                noButton.SetActive(false);
+                clickIcon.SetActive(true);
                 break;
         }
     }
