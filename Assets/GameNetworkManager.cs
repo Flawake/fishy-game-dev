@@ -352,4 +352,5 @@ public struct CreateCharacterMessage : NetworkMessage
 public struct MovePlayerMessage : NetworkMessage
 {
     public Area requestedArea;
+    public WorldTravel.CustomSpawnInstruction requestedSpawnPoint;
 }
