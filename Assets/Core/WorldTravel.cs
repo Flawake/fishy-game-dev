@@ -29,7 +29,7 @@ public class WorldTravel : MonoBehaviour
     [Client]
     public static void TravelTo(AreaComponent destination)
     {
-        TravelTo(destination.area);
+        TravelTo(destination.area, CustomSpawnInstruction.None);
     }
     
     [Client]
@@ -70,6 +70,14 @@ public class WorldTravel : MonoBehaviour
             return;
         }
         
+        // Lock local movement during travel to avoid being outside of any world for a frame
+        var pc = NetworkClient.connection.identity.GetComponent<PlayerController>();
+        pc?.BeginTravelLock();
+        if (requestInstruction != CustomSpawnInstruction.None)
+        {
+            pc?.MarkArrivalExpected();
+        }
+
         MovePlayerMessage msg = new MovePlayerMessage()
         {
             requestedArea = destination,
