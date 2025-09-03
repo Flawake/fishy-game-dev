@@ -47,6 +47,35 @@ public class PlayerController : NetworkBehaviour
 
     List<Collider2D> objectsCollidingPlayer = new List<Collider2D>();
 
+    bool travelLockActive = false;
+    bool arrivalAnimationExpected = false;
+
+    public void BeginTravelLock()
+    {
+        if (travelLockActive)
+        {
+            return;
+        }
+        travelLockActive = true;
+        IncreaseObjectsPreventingMovement();
+    }
+
+    public void EndTravelLock()
+    {
+        if (!travelLockActive)
+        {
+            return;
+        }
+        travelLockActive = false;
+        arrivalAnimationExpected = false;
+        DecreaseObjectsPreventingMovement();
+    }
+
+    public void MarkArrivalExpected()
+    {
+        arrivalAnimationExpected = true;
+    }
+
     public void IncreaseObjectsPreventingMovement()
     {
         objectsPreventingMovement++;
@@ -336,13 +365,30 @@ public class PlayerController : NetworkBehaviour
             return;
         }
 
-        if (fishingManager.isFishing || objectsPreventingMovement > 0)
+        if (fishingManager.isFishing)
         {
             MovePlayer(Vector2.zero, 0);
             ApplyAnimation(false);
             return;
         }
-        Vector2 dir = inputHandler.MoveAction.ReadValue<Vector2>();
+        
+        // Allow scripted paths even when travel lock is active, but block manual input
+        Vector2 dir = Vector2.zero;
+        if (objectsPreventingMovement == 0)
+        {
+            dir = inputHandler.MoveAction.ReadValue<Vector2>();
+        }
+        else if (nextMoves != null)
+        {
+            // Travel lock is active but we have a scripted path - allow it to execute
+            dir = Vector2.zero;
+        }
+        else
+        {
+            MovePlayer(Vector2.zero, 0);
+            ApplyAnimation(false);
+            return;
+        }
 
         if (HasVelocity(dir))
         {

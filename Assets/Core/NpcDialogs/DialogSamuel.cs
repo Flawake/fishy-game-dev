@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using ItemSystem;
 using Mirror;
 using UnityEngine;
+using System;
 
 public class DialogSamuel : NetworkBehaviour
 {
@@ -106,6 +107,7 @@ public class DialogSamuel : NetworkBehaviour
         }
         ItemInstance dough = new ItemInstance(doughDefinition, 40);
         inv.ClientAddItem(dough);
+        
         CmdRequestDough();
     }
 
@@ -118,9 +120,37 @@ public class DialogSamuel : NetworkBehaviour
         {
             GameNetworkManager.KickPlayerForCheating(sender, "Tried claiming too much dough");
         }
-        ItemInstance dough = new ItemInstance(doughDefinition, 40);
+
+        ItemInstance newDough = new ItemInstance(doughDefinition, 40);
+
+
+        // Use AddItemFromStore to avoid sending the item back to client (client already has optimistic version)
         PlayerDataSyncManager syncManager = sender.identity.GetComponent<PlayerDataSyncManager>();
-        syncManager.AddItem(dough);
+        syncManager.AddItemFromStore(newDough);
+
+
+        // Get the dough back from the inventory to match the right uuid
+        ItemInstance existingDough = inv.GetBaitByDefinitionId(doughDefinition.Id);
+        
+        // Server confirms the request - client can now make new requests
+        TargetDoughRequestConfirmed(sender, existingDough.uuid);
+    }
+
+    [TargetRpc]
+    void TargetDoughRequestConfirmed(NetworkConnectionToClient target, Guid serverUuid)
+    {
+        
+        // Replace the client's temporary dough UUID with the server's authoritative one
+        PlayerInventory inv = NetworkClient.connection.identity.GetComponent<PlayerInventory>();
+        ItemInstance clientDough = inv.GetBaitByDefinitionId(doughDefinition.Id);
+        if (clientDough != null)
+        {
+            clientDough.uuid = serverUuid;
+        }
+        else
+        {
+            Debug.LogWarning($"TargetDoughRequestConfirmed: No dough found with definition ID {doughDefinition.Id}");
+        }
     }
 
     void HasEnoughDoughDialogSetter()
@@ -135,7 +165,7 @@ public class DialogSamuel : NetworkBehaviour
     bool HasEnoughDough(PlayerInventory inventory)
     {
         ItemInstance currentDoughReference = inventory.GetBaitByDefinitionId(doughDefinition.Id);
-        if (currentDoughReference != null && currentDoughReference.GetState<StackState>().currentAmount > 70)
+        if (currentDoughReference != null && currentDoughReference.GetState<StackState>().currentAmount >= 70)
         {
             return true;
         }

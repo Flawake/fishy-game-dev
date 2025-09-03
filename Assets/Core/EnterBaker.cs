@@ -11,6 +11,11 @@ public class EnterBaker : NetworkBehaviour
         }
         if (other.CompareTag("PlayerSprite") && other.gameObject.GetComponentInParent<NetworkIdentity>().isLocalPlayer)
         {
+            ArrivalAnimationRunner runner = other.gameObject.GetComponentInParent<ArrivalAnimationRunner>();
+            if (runner != null && runner.IsRunning)
+            {
+                return;
+            }
             WorldTravel.TravelTo(Area.Baker);
         }
     }

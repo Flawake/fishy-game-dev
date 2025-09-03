@@ -2,10 +2,9 @@ using UnityEngine;
 
 public static class SpawnPointProvider
 {
-    /// Returns a custom spawn position if the combination of area and instruction is supported; otherwise null.
+    /// Returns a custom spawn position from the per-scene registry if configured; otherwise null.
     public static Vector3? TryGetCustomSpawnPoint(Area targetArea, WorldTravel.CustomSpawnInstruction instruction)
     {
-        // Prefer registry object in the active target scene
         var activeScene = UnityEngine.SceneManagement.SceneManager.GetSceneByName(targetArea.ToString());
         var registry = SceneObjectCache.GetSpawnPointRegistry(activeScene);
         if (registry != null && registry.TryGet(instruction, out var spawn, out _))
@@ -15,21 +14,10 @@ public static class SpawnPointProvider
                 return spawn.position;
             }
         }
-
-        // Fallback: code defaults
-        switch (instruction)
-        {
-            case WorldTravel.CustomSpawnInstruction.WalkOusideBakery:
-                if (targetArea == Area.Greenfields)
-                {
-                    return new Vector3(10.5f, 3.0f, 0f);
-                }
-                break;
-        }
         return null;
     }
 
-    /// Optional: provide an arrival target to path to from the spawn, enables natural walk-outs.
+    /// Returns an arrival target from the per-scene registry if configured; otherwise null.
     public static Vector3? TryGetArrivalTarget(Area targetArea, WorldTravel.CustomSpawnInstruction instruction)
     {
         var activeScene = UnityEngine.SceneManagement.SceneManager.GetSceneByName(targetArea.ToString());
@@ -40,17 +28,6 @@ public static class SpawnPointProvider
             {
                 return target.position;
             }
-        }
-
-        // Fallback: code defaults
-        switch (instruction)
-        {
-            case WorldTravel.CustomSpawnInstruction.WalkOusideBakery:
-                if (targetArea == Area.Greenfields)
-                {
-                    return new Vector3(10.5f, 0.5f, 0f);
-                }
-                break;
         }
         return null;
     }

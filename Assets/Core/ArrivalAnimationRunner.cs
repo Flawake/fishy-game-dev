@@ -5,11 +5,11 @@ using UnityEngine;
 
 public class ArrivalAnimationRunner : MonoBehaviour
 {
-    bool isRunning;
+    public bool IsRunning { get; private set; }
 
     public void StartArrivalAnimation(WorldTravel.CustomSpawnInstruction instruction, Area area)
     {
-        if (!NetworkClient.active || isRunning)
+        if (!NetworkClient.active || IsRunning)
         {
             return;
         }
@@ -28,10 +28,11 @@ public class ArrivalAnimationRunner : MonoBehaviour
 
     IEnumerator PlayWalkOutsideBakery(Area area)
     {
-        isRunning = true;
+        IsRunning = true;
         PlayerController controller = GetComponent<PlayerController>();
         if (controller == null)
         {
+            IsRunning = false;
             yield break;
         }
 
@@ -73,7 +74,8 @@ public class ArrivalAnimationRunner : MonoBehaviour
         {
             yield return fade;
         }
-        isRunning = false;
+        IsRunning = false;
+        controller.EndTravelLock();
     }
 
     IEnumerator FadeInOnly()

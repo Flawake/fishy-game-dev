@@ -350,6 +350,12 @@ public class GameNetworkManager : NetworkManager
         GameObject player = NetworkClient.connection.identity.gameObject;
         ArrivalAnimationRunner runner = player.GetComponent<ArrivalAnimationRunner>();
         runner.StartArrivalAnimation(msg.instruction, msg.area);
+
+        if (msg.instruction == WorldTravel.CustomSpawnInstruction.None)
+        {
+            var pc = player.GetComponent<PlayerController>();
+            pc?.EndTravelLock();
+        }
     }
 
     [Server]
