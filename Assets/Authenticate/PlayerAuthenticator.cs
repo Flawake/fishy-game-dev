@@ -260,11 +260,7 @@ public class PlayerAuthenticator : NetworkAuthenticator
     public override void OnClientAuthenticate()
     {
         if(authBeginScript.loggingIn) {
-            string username = usernameField.text;
-            string password = passwordField.text;
 
-            //https://mirror-networking.gitbook.io/docs/manual/transports/websockets-transport/reverse-proxy
-            //https://mirror-networking.gitbook.io/docs/manual/transports/encryption-transport
             LoginRequestMessage authRequestMessage = new LoginRequestMessage
             {
                 authUsername = usernameField.text,
@@ -281,17 +277,12 @@ public class PlayerAuthenticator : NetworkAuthenticator
             string password = registerPasswordField.text;
             string email = registerEmailField.text;
 
-            //https://mirror-networking.gitbook.io/docs/manual/transports/websockets-transport/reverse-proxy
-            //https://mirror-networking.gitbook.io/docs/manual/transports/encryption-transport
-            Debug.LogWarning("Username and password are being send in plain text. This should be encrypted.");
             RegisterRequestMessage authRequestMessage = new RegisterRequestMessage
             {
                 registerUsername = username,
                 registerPassword = password,
                 registerEmail = email, 
             };
-
-            //TODO: let Ronald look at this when I implemented security
 
             NetworkClient.Send(authRequestMessage);
         }
