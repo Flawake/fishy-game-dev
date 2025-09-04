@@ -143,6 +143,10 @@ public class ChatBalloon : NetworkBehaviour
             {
                 messageValid = true;
             }
+            if(s < 32 || s > 126) {
+                messageValid = false;
+                break;
+            }
         }
         if (!messageValid)
         {
