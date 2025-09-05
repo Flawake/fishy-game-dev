@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 2bcbd944d5d53578cb4cebd2ab369ed3
+guid: 758a28289f16658d6a61977437f07b9f
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -7439166795348323219
-    second: Fishbucks_0
+      213: -198938125430884413
+    second: Menu_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Fishbucks_0
+      name: Menu_0
       rect:
         serializedVersion: 2
-        x: 29
-        y: 83
-        width: 969
-        height: 835
+        x: 79
+        y: 76
+        width: 1757
+        height: 348
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: d64d16ac635c2c890800000000000000
-      internalID: -7439166795348323219
+      spriteID: 3c7f86534da3d3df0800000000000000
+      internalID: -198938125430884413
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Fishbucks_0: -7439166795348323219
+      Menu_0: -198938125430884413
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
