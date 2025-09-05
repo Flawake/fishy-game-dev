@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 97843f07e029a95cfa72b6b8c6f0a26c
+guid: fe744d35bbc00b4a5a8648458ff084f6
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -7858646997652419219
-    second: Gemini_Generated_Image_he7uhfhe7uhfhe7u-Photoroom_0
+      213: 8144148485923985912
+    second: ShoppingCart_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -72,7 +72,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 256
+    maxTextureSize: 128
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 1
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Gemini_Generated_Image_he7uhfhe7uhfhe7u-Photoroom_0
+      name: ShoppingCart_0
       rect:
         serializedVersion: 2
-        x: 30
-        y: 341
-        width: 1220
-        height: 597
+        x: 108
+        y: 156
+        width: 807
+        height: 711
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: d6dccb9413a70f290800000000000000
-      internalID: -7858646997652419219
+      spriteID: 8f9d88df5e3d50170800000000000000
+      internalID: 8144148485923985912
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Gemini_Generated_Image_he7uhfhe7uhfhe7u-Photoroom_0: -7858646997652419219
+      ShoppingCart_0: 8144148485923985912
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
