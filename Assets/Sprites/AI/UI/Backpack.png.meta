@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 97843f07e029a95cfa72b6b8c6f0a26c
+guid: 65054e5eec5ee952d8f2645b388a4e6d
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -7858646997652419219
-    second: Gemini_Generated_Image_he7uhfhe7uhfhe7u-Photoroom_0
+      213: 1428892310142603471
+    second: Backpack_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -72,7 +72,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 256
+    maxTextureSize: 128
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 1
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Gemini_Generated_Image_he7uhfhe7uhfhe7u-Photoroom_0
+      name: Backpack_0
       rect:
         serializedVersion: 2
-        x: 30
-        y: 341
-        width: 1220
-        height: 597
+        x: 0
+        y: 0
+        width: 1024
+        height: 1024
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: d6dccb9413a70f290800000000000000
-      internalID: -7858646997652419219
+      spriteID: fc056584cf174d310800000000000000
+      internalID: 1428892310142603471
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Gemini_Generated_Image_he7uhfhe7uhfhe7u-Photoroom_0: -7858646997652419219
+      Backpack_0: 1428892310142603471
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

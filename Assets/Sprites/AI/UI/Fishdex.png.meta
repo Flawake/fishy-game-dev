@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 97843f07e029a95cfa72b6b8c6f0a26c
+guid: 121e620b3bd30aa1aa2406fce4bdd9bb
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -7858646997652419219
-    second: Gemini_Generated_Image_he7uhfhe7uhfhe7u-Photoroom_0
+      213: 2023490072556276410
+    second: Fishdex_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -72,7 +72,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 256
+    maxTextureSize: 128
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 1
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Gemini_Generated_Image_he7uhfhe7uhfhe7u-Photoroom_0
+      name: Fishdex_0
       rect:
         serializedVersion: 2
-        x: 30
-        y: 341
-        width: 1220
-        height: 597
+        x: 275
+        y: 143
+        width: 486
+        height: 734
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: d6dccb9413a70f290800000000000000
-      internalID: -7858646997652419219
+      spriteID: aba0f350081e41c10800000000000000
+      internalID: 2023490072556276410
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Gemini_Generated_Image_he7uhfhe7uhfhe7u-Photoroom_0: -7858646997652419219
+      Fishdex_0: 2023490072556276410
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -12,6 +12,8 @@ public class ChatHistory : MonoBehaviour
     [SerializeField]
     TMP_Text textUI;
     [SerializeField]
+    ScrollRect scrollRect;
+    [SerializeField]
     TMP_InputField chatInput;
     [SerializeField]
     PlayerInfoUIManager UIManager;
