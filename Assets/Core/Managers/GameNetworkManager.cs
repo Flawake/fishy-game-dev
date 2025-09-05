@@ -283,7 +283,7 @@ public class GameNetworkManager : NetworkManager
 
         // Validate requested spawn instruction against previous area and target
         Area previousArea = connectionCurrentArea.TryGetValue(conn.connectionId, out Area current) ? current : Area.WorldMap;
-        WorldTravel.CustomSpawnInstruction approvedInstruction = ValidateSpawnInstruction(previousArea, data.requestedArea, data.requestedSpawnPoint);
+        WorldTravel.CustomSpawnInstruction approvedInstruction = ValidateSpawnInstruction(previousArea, data.requestedArea, data.requestedSpawnInstruction);
 
         // Move the player object to the new scene
         SceneManager.MoveGameObjectToScene(conn.identity.gameObject, SceneManager.GetSceneByName(data.requestedArea.ToString()));
@@ -334,7 +334,6 @@ public class GameNetworkManager : NetworkManager
                     return WorldTravel.CustomSpawnInstruction.WalkOusideBakery;
                 }
                 return WorldTravel.CustomSpawnInstruction.None;
-            case WorldTravel.CustomSpawnInstruction.None:
             default:
                 return WorldTravel.CustomSpawnInstruction.None;
         }
@@ -429,7 +428,7 @@ public struct CreateCharacterMessage : NetworkMessage
 public struct MovePlayerMessage : NetworkMessage
 {
     public Area requestedArea;
-    public WorldTravel.CustomSpawnInstruction requestedSpawnPoint;
+    public WorldTravel.CustomSpawnInstruction requestedSpawnInstruction;
 }
 
 public struct ArrivalInstructionMessage : NetworkMessage

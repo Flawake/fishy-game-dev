@@ -47,18 +47,6 @@ public class WorldTravel : MonoBehaviour
             return;
         }
         
-        switch (requestInstruction)
-        {
-            case CustomSpawnInstruction.None:
-                break;
-            case CustomSpawnInstruction.WalkOusideBakery:
-                
-                break;
-            default:
-                Debug.LogWarning("No custom SpawnInstruction was handled");
-                break;
-        }
-        
         //Disable the event system before unloading async and loading a new map
         GameNetworkManager.SetEventSystemActive("WorldMap", false);
 
@@ -71,17 +59,13 @@ public class WorldTravel : MonoBehaviour
         }
         
         // Lock local movement during travel to avoid being outside of any world for a frame
-        var pc = NetworkClient.connection.identity.GetComponent<PlayerController>();
-        pc?.BeginTravelLock();
-        if (requestInstruction != CustomSpawnInstruction.None)
-        {
-            pc?.MarkArrivalExpected();
-        }
+        var playerController = NetworkClient.connection.identity.GetComponent<PlayerController>();
+        playerController?.BeginTravelLock();
 
         MovePlayerMessage msg = new MovePlayerMessage()
         {
             requestedArea = destination,
-            requestedSpawnPoint = requestInstruction,
+            requestedSpawnInstruction = requestInstruction,
         };
         NetworkClient.Send(msg);
     }
