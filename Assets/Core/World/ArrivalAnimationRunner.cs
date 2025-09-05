@@ -19,7 +19,6 @@ public class ArrivalAnimationRunner : MonoBehaviour
             case WorldTravel.CustomSpawnInstruction.WalkOusideBakery:
                 StartCoroutine(PlayWalkOutsideBakery(area));
                 break;
-            case WorldTravel.CustomSpawnInstruction.None:
             default:
                 StartCoroutine(FadeInOnly());
                 break;

@@ -48,7 +48,6 @@ public class PlayerController : NetworkBehaviour
     List<Collider2D> objectsCollidingPlayer = new List<Collider2D>();
 
     bool travelLockActive = false;
-    bool arrivalAnimationExpected = false;
 
     public void BeginTravelLock()
     {
@@ -67,13 +66,7 @@ public class PlayerController : NetworkBehaviour
             return;
         }
         travelLockActive = false;
-        arrivalAnimationExpected = false;
         DecreaseObjectsPreventingMovement();
-    }
-
-    public void MarkArrivalExpected()
-    {
-        arrivalAnimationExpected = true;
     }
 
     public void IncreaseObjectsPreventingMovement()
