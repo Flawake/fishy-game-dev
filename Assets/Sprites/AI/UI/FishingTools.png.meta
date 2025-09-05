@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 2bcbd944d5d53578cb4cebd2ab369ed3
+guid: 61d5d1329af1372c984901b1bd9bebb4
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -7439166795348323219
-    second: Fishbucks_0
+      213: 4363799624392840663
+    second: FishingTools_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Fishbucks_0
+      name: FishingTools_0
       rect:
         serializedVersion: 2
-        x: 29
-        y: 83
-        width: 969
-        height: 835
+        x: 194
+        y: 269
+        width: 692
+        height: 812
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: d64d16ac635c2c890800000000000000
-      internalID: -7439166795348323219
+      spriteID: 7d51be253a45f8c30800000000000000
+      internalID: 4363799624392840663
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Fishbucks_0: -7439166795348323219
+      FishingTools_0: 4363799624392840663
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
