@@ -60,6 +60,7 @@ public class WorldTravel : MonoBehaviour
         
         // Lock local movement during travel to avoid being outside of any world for a frame
         var playerController = NetworkClient.connection.identity.GetComponent<PlayerController>();
+        playerController.ChangeCameraZoom(AreaCameraZoomManager.GetCameraZoomPercentage(destination));
         playerController?.BeginTravelLock();
 
         MovePlayerMessage msg = new MovePlayerMessage()

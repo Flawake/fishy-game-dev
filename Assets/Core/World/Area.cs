@@ -54,6 +54,25 @@ public class FishCaughtAmountUnlockCriteria : IUnlockCriteria
     }
 }
 
+public static class AreaCameraZoomManager
+{
+    private static Dictionary<Area, int> _zoomPercentage = new Dictionary<Area, int>
+    {
+        { Area.FusetaBeach, 100 },
+        { Area.SelvaBandeira, 100 },
+        { Area.Greenfields, 100 },
+        { Area.Baker, 160 },
+    };
+
+    public static int GetCameraZoomPercentage(Area area)
+    {
+        if (_zoomPercentage.TryGetValue(area, out int percentage)) {
+            return percentage;
+        }
+        return 100;
+    }
+}
+
 public static class AreaUnlockManager
 {
     private static Dictionary<Area, IUnlockCriteria> _unlockCriteria = new Dictionary<Area, IUnlockCriteria>

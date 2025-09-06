@@ -4,7 +4,7 @@ using UnityEngine;
 public class EnterBaker : NetworkBehaviour
 {
     void OnTriggerEnter2D(Collider2D other)
-    {        
+    {
         if (!NetworkClient.active)
         {
             return;
