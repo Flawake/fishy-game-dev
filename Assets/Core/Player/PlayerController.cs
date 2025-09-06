@@ -49,6 +49,8 @@ public class PlayerController : NetworkBehaviour
 
     bool travelLockActive = false;
 
+    private float defaultCameraZoom = 0f;
+
     public void BeginTravelLock()
     {
         if (travelLockActive)
@@ -113,6 +115,7 @@ public class PlayerController : NetworkBehaviour
         }
         Instantiate(playerCanvasPrefab, playerTransform);
         EnableGameObjects();
+        defaultCameraZoom = playerCamera.orthographicSize;
     }
 
     private void Update()
@@ -127,7 +130,7 @@ public class PlayerController : NetworkBehaviour
             objectsPreventingMovement = 0;
             Debug.LogError("objectsPreventingMovement was less then 0, this should not have happened");
         }
-        if (!isServer && isLocalPlayer)
+        if (isLocalPlayer)
         {
             ClampCamera();
         }
@@ -141,6 +144,11 @@ public class PlayerController : NetworkBehaviour
             return false;
         }
         return true;
+    }
+
+    public void ChangeCameraZoom(int _zoomPercentage)
+    {
+        playerCamera.orthographicSize = defaultCameraZoom / _zoomPercentage * 100;
     }
 
     void ClampCamera()
@@ -171,13 +179,12 @@ public class PlayerController : NetworkBehaviour
         Bounds bounds = worldBounds.GetComponent<Renderer>().bounds;
         float borderWidth = bounds.size.x;
         float borderHeight = bounds.size.y;
-        
-        if (camWidth > borderWidth || camHeight > borderHeight)
-        {
-            return;
-        }
 
-        playerCamera.transform.position = new Vector3(Mathf.Clamp(playerCamera.transform.position.x, minXCamera, maxXCamera), Mathf.Clamp(playerCamera.transform.position.y, minYCamera, maxYCamera), playerCamera.transform.position.z);
+        playerCamera.transform.position = new Vector3(
+            camWidth > borderWidth ? bounds.center.x : Mathf.Clamp(playerCamera.transform.position.x, minXCamera, maxXCamera),
+            camHeight > borderHeight ? bounds.center.y : Mathf.Clamp(playerCamera.transform.position.y, minYCamera, maxYCamera),
+            playerCamera.transform.position.z
+        );
     }
 
     Vector2 ClampPlayerMovement(Vector2 movementVector)
