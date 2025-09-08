@@ -25,10 +25,11 @@ MonoBehaviour:
     and sunlit ripples."
   icon: {fileID: 21300000, guid: 81fe6dfbd8f9955b3b89c9c75af84fbf, type: 3}
   maxStack: 2147483647
-  canStack: 1
   isStatic: 0
+  infiniteUse: 0
   behaviours:
   - rid: 3081823945427517442
+  - rid: 8240417638669615180
   references:
     version: 2
     RefIds:
@@ -46,3 +47,7 @@ MonoBehaviour:
         rarityFactor: 1
         timeRanges: []
         dateRanges: []
+    - rid: 8240417638669615180
+      type: {class: FishPriceBehaviour, ns: ItemSystem, asm: Assembly-CSharp}
+      data:
+        valueMultiplier: 0.86
