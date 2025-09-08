@@ -28,11 +28,10 @@ MonoBehaviour:
   infiniteUse: 0
   behaviours:
   - rid: 3081823945427517442
+  - rid: 8240417638669615181
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
     - rid: 3081823945427517442
       type: {class: FishBehaviour, ns: ItemSystem, asm: Assembly-CSharp}
       data:
@@ -47,3 +46,7 @@ MonoBehaviour:
         rarityFactor: 1
         timeRanges: []
         dateRanges: []
+    - rid: 8240417638669615181
+      type: {class: FishPriceBehaviour, ns: ItemSystem, asm: Assembly-CSharp}
+      data:
+        valueMultiplier: 1.03

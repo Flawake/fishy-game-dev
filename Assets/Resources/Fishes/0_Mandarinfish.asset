@@ -23,10 +23,11 @@ MonoBehaviour:
     secretive behavior have made it both a scientific marvel and a reef legend."
   icon: {fileID: 21300000, guid: 01262f3b3021d879db1811400413dc0e, type: 3}
   maxStack: 2147483647
-  canStack: 1
   isStatic: 0
+  infiniteUse: 0
   behaviours:
   - rid: 3081823945427517442
+  - rid: 8240417638669615179
   references:
     version: 2
     RefIds:
@@ -56,3 +57,7 @@ MonoBehaviour:
           EndDate:
             month: 9
             day: 31
+    - rid: 8240417638669615179
+      type: {class: FishPriceBehaviour, ns: ItemSystem, asm: Assembly-CSharp}
+      data:
+        valueMultiplier: 0.88
