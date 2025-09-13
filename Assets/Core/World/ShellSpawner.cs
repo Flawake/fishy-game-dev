@@ -5,6 +5,7 @@ using ItemSystem;
 using Mirror;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using Grants;
 
 public class ComparableVector3 : IComparable<ComparableVector3>
 {
@@ -57,6 +58,11 @@ public class ShellSpawner : NetworkBehaviour
     
     [SerializeField] Transform shellsParent;
     Dictionary<ComparableVector3, GameObject> spawnedShells = new Dictionary<ComparableVector3, GameObject>();
+
+    public ItemDefinition GetShellDefinition()
+    {
+        return shellDefinition;
+    }
 
     public override void OnStartClient()
     {
@@ -114,20 +120,50 @@ public class ShellSpawner : NetworkBehaviour
     }
     
     [Command(requiresAuthority = false)]
-    public void CmdCollectShell(Vector3 shellPosition, NetworkConnectionToClient sender = null)
+    public void CmdCollectShell(Vector3 shellPosition, Guid operationId, NetworkConnectionToClient sender = null)
     {
         PlayerController controller = sender.identity.GetComponent<PlayerController>();
         PlayerDataSyncManager syncManager = sender.identity.GetComponent<PlayerDataSyncManager>();
+        ItemGrantService grantService = sender.identity.GetComponent<ItemGrantService>();
         // This function checks if the player could have moved to this position, and moves the player on the server if the location is valid
-        if (controller.ServerHandleMovement(shellPosition))
+        if (!controller.ServerHandleMovement(shellPosition))
         {
-            ComparableVector3 shellPos = new ComparableVector3(shellPosition);
-            if (spawnedShellPositions.Remove(shellPos))
+            if (grantService != null && operationId != Guid.Empty)
             {
-                ShellRemoved(shellPos);
-                ItemInstance shell = new ItemInstance(shellDefinition);
-                syncManager.AddItem(shell);
+                grantService.ServerDeny(operationId, 1);
+                TargetRespawnShell(sender, shellPosition);
             }
+            return;
+        }
+
+        ComparableVector3 shellPos = new ComparableVector3(shellPosition);
+        if (spawnedShellPositions.Remove(shellPos))
+        {
+            ShellRemoved(shellPos);
+            ItemInstance shell = new ItemInstance(shellDefinition);
+            syncManager.AddItemFromStore(shell);
+            if (grantService != null && operationId != Guid.Empty)
+            {
+                grantService.ServerConfirm(operationId, shell.uuid);
+            }
+        }
+        else
+        {
+            if (grantService != null && operationId != Guid.Empty)
+            {
+                grantService.ServerDeny(operationId, 1);
+                TargetRespawnShell(sender, shellPosition);
+            }
+        }
+    }
+
+    [TargetRpc]
+    private void TargetRespawnShell(NetworkConnectionToClient target, Vector3 position)
+    {
+        ComparableVector3 cv = new ComparableVector3(position);
+        if (!spawnedShells.ContainsKey(cv))
+        {
+            ShellSpawned(cv);
         }
     }
 }

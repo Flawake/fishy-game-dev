@@ -1764,6 +1764,7 @@ GameObject:
   - component: {fileID: 871487665807593460}
   - component: {fileID: 3391836200202609913}
   - component: {fileID: 1605114713381361352}
+  - component: {fileID: 8911015421716876512}
   - component: {fileID: 3633833880793104609}
   m_Layer: 3
   m_Name: Player
@@ -2017,6 +2018,7 @@ MonoBehaviour:
   playerData: {fileID: 3625476836490181}
   playerInventory: {fileID: 1831225255022429458}
   playerDataManager: {fileID: 2600673011262952092}
+  itemGrantService: {fileID: 8911015421716876512}
   purchaseTimeoutSeconds: 10
   maxConcurrentPurchases: 1
   enablePurchaseLogging: 1
@@ -2035,6 +2037,7 @@ MonoBehaviour:
   playerData: {fileID: 3625476836490181}
   inventory: {fileID: 1831225255022429458}
   fishdexFishes: {fileID: 1917053837910666563}
+  grantService: {fileID: 8911015421716876512}
 --- !u!114 &1917053837910666563
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2094,6 +2097,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b3eed204534e09cf84642c03fcfef69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &8911015421716876512
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7976679866149745988}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 016669a019e771299a65d2613b15c9fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  playerInventory: {fileID: 1831225255022429458}
+  playerDataSync: {fileID: 2600673011262952092}
+  playerData: {fileID: 3625476836490181}
 --- !u!210 &3633833880793104609
 SortingGroup:
   m_ObjectHideFlags: 0

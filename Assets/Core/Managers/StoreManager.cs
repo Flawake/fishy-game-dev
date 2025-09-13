@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Grants;
 
 public class StoreManager : NetworkBehaviour
 {
@@ -11,6 +12,7 @@ public class StoreManager : NetworkBehaviour
     [SerializeField] private PlayerData playerData;
     [SerializeField] private PlayerInventory playerInventory;
     [SerializeField] private PlayerDataSyncManager playerDataManager;
+    [SerializeField] private ItemGrantService itemGrantService;
     
     [Header("Store Configuration")]
     [SerializeField] private float purchaseTimeoutSeconds = 10f;
@@ -23,17 +25,8 @@ public class StoreManager : NetworkBehaviour
         bucks
     }
 
-    [Serializable]
-    private struct PendingPurchase
-    {
-        public int itemId;
-        public CurrencyType currencyType;
-        public int amount;
-        public DateTime timestamp;
-        public Guid tempUuid;
-    }
-
-    private readonly Dictionary<Guid, PendingPurchase> pendingPurchases = new Dictionary<Guid, PendingPurchase>();
+    private readonly HashSet<Guid> processedOperationIds = new HashSet<Guid>();
+    private readonly Dictionary<Guid, Guid> operationToRealUuid = new Dictionary<Guid, Guid>();
     
     // Events for UI and analytics
     public static event Action<ItemDefinition, CurrencyType, int> OnPurchaseAttempted;
@@ -46,13 +39,6 @@ public class StoreManager : NetworkBehaviour
         ValidateDependencies();
     }
 
-    private void Update()
-    {
-        if (isClient)
-        {
-            CleanupExpiredPurchases();
-        }
-    }
 
     private void OnDestroy()
     {
@@ -72,10 +58,10 @@ public class StoreManager : NetworkBehaviour
             return false;
         }
 
-        if (TryOptimisticPurchase(item, currencyType, out Guid tempUuid))
+        if (TryOptimisticPurchase(item, currencyType, out Guid operationId))
         {
             OnPurchaseAttempted?.Invoke(item, currencyType, GetItemPrice(item, currencyType));
-            CmdBuyItem(item.Id, currencyType, tempUuid);
+            CmdBuyItem(item.Id, currencyType, operationId);
             return true;
         }
         OnPurchaseFailed?.Invoke(item, currencyType, "");
@@ -132,9 +118,9 @@ public class StoreManager : NetworkBehaviour
             return false;
         }
 
-        if (pendingPurchases.Count >= maxConcurrentPurchases)
+        if (processedOperationIds.Count >= maxConcurrentPurchases)
         {
-            LogWarning($"Purchase request failed: Too many pending purchases ({pendingPurchases.Count})");
+            LogWarning($"Purchase request failed: Too many pending purchases ({processedOperationIds.Count})");
             return false;
         }
 
@@ -186,33 +172,15 @@ public class StoreManager : NetworkBehaviour
             playerData.ClientChangeFishBucksAmount(-price);
         }
 
-        // Create optimistic item instance
-        ItemInstance instance = new ItemInstance(item, shopBehaviour.Amount);
-
-        // Add to inventory (may merge) and obtain resulting reference via sync manager
-        ItemInstance storedItem = playerDataManager.ClientAddItem(instance);
-
-        if (storedItem == null)
+        // Centralized optimistic item grant via service
+        Guid operationId = itemGrantService.ClientRegisterOptimistic(item, shopBehaviour.Amount);
+        if (operationId == Guid.Empty)
         {
-            // Rollback currency if item addition fails
             RollbackCurrencyChange(currencyType, price);
             LogWarning($"Optimistic purchase failed: Could not add item {item.DisplayName} to inventory");
             return false;
         }
-
-        tempUuid = storedItem.uuid; // use the resulting item's uuid (merged or new)
-
-        var pendingPurchase = new PendingPurchase
-        {
-            itemId = item.Id,
-            currencyType = currencyType,
-            amount = price,
-            timestamp = DateTime.UtcNow,
-            tempUuid = tempUuid
-        };
-
-        // TODO: this can cause collisions if buying the same item twice which will get merged in the same uuid while the previous item was still in this dict
-        pendingPurchases[tempUuid] = pendingPurchase;
+        tempUuid = operationId;
 
         LogInfo($"Optimistic purchase successful: {item.DisplayName} for {price} {currencyType}");
         return true;
@@ -231,35 +199,36 @@ public class StoreManager : NetworkBehaviour
         }
     }
     
-    [Client]
-    private void CleanupExpiredPurchases()
-    {
-        var expiredPurchases = pendingPurchases
-            .Where(kvp => (DateTime.UtcNow - kvp.Value.timestamp).TotalSeconds > purchaseTimeoutSeconds)
-            .ToList();
-
-        foreach (var kvp in expiredPurchases)
-        {
-            var item = ItemRegistry.Get(kvp.Value.itemId);
-            string itemName = item?.DisplayName ?? "Unknown Item";
-            CmdReportTimeout(kvp.Value.tempUuid, kvp.Value.itemId);
-            pendingPurchases.Remove(kvp.Key);
-        }
-    }
-
     [Command]
     private void CmdBuyItem(int itemID, CurrencyType currencyType, Guid tempUuid)
     {
-        if (!ValidateServerPurchase(itemID, currencyType))
+        ItemDefinition item = ItemRegistry.Get(itemID);
+        ShopBehaviour shopBehaviour = item?.GetBehaviour<ShopBehaviour>();
+        int addedAmountForRollback = shopBehaviour != null ? shopBehaviour.Amount : 0;
+        int priceForRollback = GetItemPrice(item, currencyType);
+
+        // Idempotency: if we've processed this operation already, re-send confirmation
+        if (processedOperationIds.Contains(tempUuid))
         {
+            if (operationToRealUuid.TryGetValue(tempUuid, out var realUuid))
+            {
+                int priceEcho = GetItemPrice(item, currencyType);
+                TargetPurchaseConfirmed(connectionToClient, realUuid, tempUuid, itemID, currencyType, priceEcho);
+            }
             return;
         }
 
-        ItemDefinition item = ItemRegistry.Get(itemID);
-        ShopBehaviour shopBehaviour = item.GetBehaviour<ShopBehaviour>();
+        if (!ValidateServerPurchase(itemID, currencyType))
+        {
+            // deny item grant centrally
+            itemGrantService.ServerDeny(tempUuid, addedAmountForRollback);
+            TargetPurchaseFailed(connectionToClient, tempUuid, itemID, currencyType, addedAmountForRollback, priceForRollback, "Validation failed");
+            return;
+        }
+
         int price = GetItemPrice(item, currencyType);
 
-        // Deduct currency
+        // Deduct currency on server
         if (currencyType == CurrencyType.coins)
         {
             playerDataManager.ChangeFishCoinsAmount(-price, false);
@@ -269,14 +238,42 @@ public class StoreManager : NetworkBehaviour
             playerDataManager.ChangeFishBucksAmount(-price, false);
         }
 
-        // Create and add item
+        // Create and add item on server (authoritative)
         ItemInstance instance = new ItemInstance(item, shopBehaviour.Amount);
         instance = playerDataManager.AddItemFromStore(instance);
 
-        // Notify client with tempUuid so client can update mapping
+        // Persist to DB (best-effort)
+        DatabaseCommunications.AddOrUpdateItem(instance, playerData.GetUuid());
+
+        // Record idempotency
+        processedOperationIds.Add(tempUuid);
+        operationToRealUuid[tempUuid] = instance.uuid;
+
+        // Confirm centrally (updates client item mapping)
+        itemGrantService.ServerConfirm(tempUuid, instance.uuid);
+
+        // Notify client with operationId for currency/UI
         TargetPurchaseConfirmed(connectionToClient, instance.uuid, tempUuid, itemID, currencyType, price);
         
         LogServerPurchase(item, currencyType, price, connectionToClient);
+    }
+
+    [TargetRpc]
+    private void TargetPurchaseConfirmed(NetworkConnectionToClient target, Guid realUuid, Guid tempUuid, int itemId, CurrencyType currencyType, int price)
+    {
+        var item = ItemRegistry.Get(itemId);
+        OnPurchaseConfirmed?.Invoke(item, currencyType, price);
+        LogInfo($"Purchase confirmed: {item?.DisplayName} for {price} {currencyType}");
+    }
+
+    [TargetRpc]
+    private void TargetPurchaseFailed(NetworkConnectionToClient target, Guid tempUuid, int itemId, CurrencyType currencyType, int addedAmount, int price, string reason)
+    {
+        var item = ItemRegistry.Get(itemId);
+        // Rollback optimistic currency only (item rollback handled by ItemGrantService)
+        RollbackCurrencyChange(currencyType, price);
+        OnPurchaseFailed?.Invoke(item, currencyType, reason);
+        LogWarning($"Purchase failed: {item?.DisplayName} - {reason}");
     }
 
     [Command]
@@ -331,27 +328,6 @@ public class StoreManager : NetworkBehaviour
         return true;
     }
 
-    [TargetRpc]
-    private void TargetPurchaseConfirmed(NetworkConnectionToClient target, Guid realUuid, Guid tempUuid, int itemId, CurrencyType currencyType, int price)
-    {
-        var item = ItemRegistry.Get(itemId);
-        
-        // Lookup by tempUuid to ensure mapping
-        if (pendingPurchases.TryGetValue(tempUuid, out var pendingPurchase))
-        {
-            ItemInstance optimisticItem = playerInventory.GetItem(tempUuid);
-            if (optimisticItem != null)
-            {
-                optimisticItem.uuid = realUuid;
-            }
-
-            pendingPurchases.Remove(tempUuid);
-        }
-
-        OnPurchaseConfirmed?.Invoke(item, currencyType, price);
-        LogInfo($"Purchase confirmed: {item?.DisplayName} for {price} {currencyType}");
-    }
-
     private void ValidateDependencies()
     {
         if (playerData == null)
@@ -367,6 +343,10 @@ public class StoreManager : NetworkBehaviour
         if (playerDataManager == null)
         {
             LogError("StoreManager: PlayerDataSyncManager dependency is missing!");
+        }
+        if (itemGrantService == null)
+        {
+            LogError("StoreManager: ItemGrantService dependency is missing!");
         }
     }
 

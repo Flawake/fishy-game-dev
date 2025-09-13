@@ -89,47 +89,120 @@ public class PlayerInventory : NetworkBehaviour
     // CRUD helpers ------------------------------------------------------
     // ------------------------------------------------------------------
 
-    [Server]
-    public ItemInstance AddItem(ItemInstance inst)
-    {
-        if (inst == null) return null;
-        ItemInstance result = TryMergeOrAdd(inst);
-        
-        // Sync the specific item change to the client
-        TargetTryMergeOrAdd(inst);
-        
-        return result;
-    }
+	[Server]
+	public ItemInstance ServerMergeOrAddAndSync(ItemInstance inst)
+	{
+		if (inst == null) return null;
+		ItemInstance result = TryMergeOrAdd(inst);
+		TargetTryMergeOrAdd(inst);
+		return result;
+	}
 
-    // Server-side method for confirming optimistic purchases (no RPC needed
-    [Server]
-    public ItemInstance AddItemConfirmPurchase(ItemInstance inst)
-    {
-        if (inst == null) return null;
-        return TryMergeOrAdd(inst);
-    }
+	[Server]
+	public ItemInstance ServerMergeOrAddNoSync(ItemInstance inst)
+	{
+		if (inst == null) return null;
+		return TryMergeOrAdd(inst);
+	}
 
-    [Client]
-    public ItemInstance ClientAddItem(ItemInstance inst)
-    {
-        if (inst == null) return null;
-        return TryMergeOrAdd(inst);
-    }
+	[Client]
+	public ItemInstance ClientMergeOrAdd(ItemInstance inst)
+	{
+		if (inst == null) return null;
+		return TryMergeOrAdd(inst);
+	}
 
+	[Server]
+	public void RemoveItem(Guid uuid)
+	{
+		for (int i = 0; i < items.Count; i++)
+		{
+			if (items[i].uuid == uuid)
+			{
+				items.RemoveAt(i);
+				break;
+			}
+		}
+		
+		// Sync the specific item removal to the client
+		TargetRemoveItem(uuid);
+	}
+
+    // Rollback helpers ----------------------------------------------------
     [Server]
-    public void RemoveItem(Guid uuid)
+    public void RollbackAddItem(Guid uuid)
     {
         for (int i = 0; i < items.Count; i++)
         {
             if (items[i].uuid == uuid)
             {
                 items.RemoveAt(i);
-                break;
+                TargetRemoveItem(uuid);
+                Debug.Log($"Rolled back item addition for UUID: {uuid}");
+                return;
             }
         }
-        
-        // Sync the specific item removal to the client
-        TargetRemoveItem(uuid);
+        Debug.LogWarning($"Could not rollback item addition - item with UUID {uuid} not found");
+    }
+
+    [Server]
+    public void RollbackItemUpdate(ItemInstance originalItem)
+    {
+        if (originalItem == null)
+        {
+            Debug.LogWarning("Cannot rollback item update - original item is null");
+            return;
+        }
+
+        ItemInstance currentItem = GetItem(originalItem.uuid);
+        if (currentItem != null)
+        {
+            // restore known states
+            CopyState<StackState>(originalItem, currentItem, (src, dst) => dst.currentAmount = src.currentAmount);
+            CopyState<DurabilityState>(originalItem, currentItem, (src, dst) => dst.remaining = src.remaining);
+            TargetUpdateItem(currentItem);
+            Debug.Log($"Rolled back item update for UUID: {originalItem.uuid}");
+        }
+        else
+        {
+            Debug.LogWarning($"Could not rollback item update - item with UUID {originalItem.uuid} not found");
+        }
+    }
+
+    [Client]
+    public void ClientRemoveItem(Guid uuid)
+    {
+        items.RemoveAll(item => item.uuid == uuid);
+    }
+
+    [Server]
+    public void SyncItemUpdateToClient(ItemInstance item)
+    {
+        TargetUpdateItem(item);
+    }
+
+    [Client]
+    public void ClientRollbackOptimisticAdd(Guid tempUuid, int addedAmount)
+    {
+        ItemInstance local = GetItem(tempUuid);
+        if (local == null)
+        {
+            return;
+        }
+        StackState stack = local.GetState<StackState>();
+        if (stack != null)
+        {
+            stack.currentAmount -= addedAmount;
+            local.SetState(stack);
+            if (stack.currentAmount <= 0)
+            {
+                ClientRemoveItem(tempUuid);
+            }
+        }
+        else
+        {
+            ClientRemoveItem(tempUuid);
+        }
     }
 
     public ItemInstance GetItem(Guid uuid)

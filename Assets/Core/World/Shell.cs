@@ -1,7 +1,9 @@
 using System.Collections.Generic;
+using ItemSystem;
 using Mirror;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using Grants;
 
 public class Shell : MonoBehaviour
 {
@@ -24,7 +26,15 @@ public class Shell : MonoBehaviour
         else if(NetworkClient.active && other.CompareTag("PlayerSprite") && other.gameObject.GetComponentInParent<NetworkIdentity>().isOwned)
         {
             ShellSpawner shellSpawner = GetComponentInParent<ShellSpawner>();
-            shellSpawner.CmdCollectShell(transform.position);
+            ItemGrantService grantService = other.gameObject.GetComponentInParent<ItemGrantService>();
+            ItemDefinition shellDef = shellSpawner.GetShellDefinition();
+            // Register optimistic shell pickup (1 item)
+            System.Guid operationId = System.Guid.Empty;
+            if (grantService != null && shellDef != null)
+            {
+                operationId = grantService.ClientRegisterOptimistic(shellDef, 1);
+            }
+            shellSpawner.CmdCollectShell(transform.position, operationId);
             // Directly remove the shell locally, don't wait on the server for this.
             shellSpawner.ShellRemoved(new ComparableVector3(transform.position));
         }
