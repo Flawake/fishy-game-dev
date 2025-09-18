@@ -21,13 +21,29 @@ namespace Grants
 		// Client-side map from operationId -> optimistic grant context
 		private readonly Dictionary<Guid, OptimisticGrant> optimisticGrants = new Dictionary<Guid, OptimisticGrant>();
 
+
+
+		//Max = 10
+
+		// Server has 9
+		// Client has 8
+
+		// Client adds 1
+		// Client adds 1
+
+		// Client has 10
+
+		// Server adds 1
+		// Server adds 1
+
+		// Server has 10 and 1
 		// ------------------ Client wrappers ------------------
 		[Client]
 		public Guid ClientRegisterOptimistic(ItemDefinition item, int amount)
 		{
 			if (item == null) return Guid.Empty;
 			ItemInstance instance = new ItemInstance(item, amount);
-			ItemInstance stored = playerInventory.ClientMergeOrAdd(instance);
+			ItemInstance stored = playerInventory.TryMergeOrAdd(instance);
 			if (stored == null) return Guid.Empty;
 
 			Guid operationId = Guid.NewGuid();
@@ -40,19 +56,14 @@ namespace Grants
 		}
 
 		// ------------------ Server wrappers ------------------
-		[Server]
-		public ItemInstance ServerAddAndSync(ItemInstance inst)
-		{
-			ItemInstance toUpdate = playerInventory.ServerMergeOrAddAndSync(inst);
-			DatabaseCommunications.AddOrUpdateItem(toUpdate, playerData.GetUuid());
-			return toUpdate;
+		public ItemInstance ServerAddItem(ItemDefinition def, int amount, bool needsTargetSync) {
+			ItemInstance item = new ItemInstance(def, amount);
+			return ServerAddItem(item, needsTargetSync);
 		}
 
 		[Server]
-		public ItemInstance ServerAddAuthoritative(ItemDefinition item, int amount)
-		{
-			var inst = new ItemInstance(item, amount);
-			ItemInstance toUpdate = playerInventory.ServerMergeOrAddNoSync(inst);
+		public ItemInstance ServerAddItem(ItemInstance inst, bool needsTargetSync) {
+			ItemInstance toUpdate = playerInventory.ServerMergeOrAdd(inst, needsTargetSync);
 			DatabaseCommunications.AddOrUpdateItem(toUpdate, playerData.GetUuid());
 			return toUpdate;
 		}
@@ -129,10 +140,19 @@ namespace Grants
 		{
 			if (optimisticGrants.TryGetValue(operationId, out var grant))
 			{
-				ItemInstance optimisticItem = playerInventory.GetItem(grant.optimisticUuid);
-				if (optimisticItem != null)
+				Debug.LogWarning("confirm add to inventory");
+				if (grant.optimisticUuid != realUuid)
 				{
-					optimisticItem.uuid = realUuid;
+					Debug.LogWarning("Uuid's were not the same");
+					ItemInstance item = playerInventory.ClientRollbackOptimisticAdd(grant.optimisticUuid, grant.addedAmount);
+					if (item != null)
+					{
+						item.uuid = realUuid;
+						StackState stack = item.GetState<StackState>();
+						stack.currentAmount = grant.addedAmount;
+						item.SetState(stack);
+						playerInventory.TryMergeOrAdd(item);
+					}
 				}
 				optimisticGrants.Remove(operationId);
 			}
@@ -143,8 +163,7 @@ namespace Grants
 		{
 			if (optimisticGrants.TryGetValue(operationId, out var grant))
 			{
-				int amount = addedAmount > 0 ? addedAmount : grant.addedAmount;
-				playerInventory.ClientRollbackOptimisticAdd(grant.optimisticUuid, amount);
+				playerInventory.ClientRollbackOptimisticAdd(grant.optimisticUuid, addedAmount);
 				optimisticGrants.Remove(operationId);
 			}
 		}

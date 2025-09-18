@@ -625,7 +625,7 @@ public class PlayerData : NetworkBehaviour
             if (rodDef != null)
             {
                 ItemInstance newRod = new ItemInstance { def = rodDef, uuid = Guid.NewGuid() };
-                playerDataManager.AddItem(newRod);
+                playerDataManager.ServerAddItem(newRod, true);
                 Debug.Log("Added default Bamboo Rod to player inventory");
             }
         }
@@ -639,7 +639,7 @@ public class PlayerData : NetworkBehaviour
             if (baitDef != null)
             {
                 ItemInstance newBait = new ItemInstance { def = baitDef, uuid = Guid.NewGuid() };
-                playerDataManager.AddItem(newBait);
+                playerDataManager.ServerAddItem(newBait, true);
                 Debug.Log("Added default Hook to player inventory");
             }
         }

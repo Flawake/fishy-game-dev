@@ -38,35 +38,28 @@ public class PlayerDataSyncManager : MonoBehaviour
 	}
 
 	[Server]
-	public void AddItem(ItemInstance item)
+	public void ServerAddItem(ItemInstance item, bool needsTargetSync)
 	{
-		AddItem(item, null, false);
+		ServerAddItem(item, null, false, needsTargetSync);
 	}
 
 	// Client-side version for optimistic updates
 	[Client]
 	public ItemInstance ClientAddItem(ItemInstance item)
 	{
-		return inventory.ClientMergeOrAdd(item);
+		return inventory.TryMergeOrAdd(item);
 	}
 
 	[Server]
-	public void AddItem(ItemInstance item, CurrentFish fish, bool fromCaught)
+	public ItemInstance ServerAddItem(ItemInstance item, CurrentFish fish, bool fromCaught, bool needsTargetSync)
 	{
 		if (fish != null && fromCaught)
 		{
 			fishdexFishes.AddStatFish(fish);
 			DatabaseCommunications.AddStatFish(fish, playerData.GetUuid());
 		}
-
-		grantService.ServerAddAndSync(item);
-	}
-
-	// Server-side method for store purchases (no RPC needed since client has optimistic item)
-	[Server]
-	public ItemInstance AddItemFromStore(ItemInstance item)
-	{
-		return grantService.ServerAddAuthoritative(item.def, item.GetState<StackState>()?.currentAmount ?? 1);
+		return grantService.ServerAddItem(item, needsTargetSync);
+		//grantService.ServerAddAndSync(item);
 	}
 
 	[Server]

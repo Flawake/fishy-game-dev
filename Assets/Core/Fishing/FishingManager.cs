@@ -308,7 +308,7 @@ public class FishingManager : NetworkBehaviour
             CompetitionManager.AddToRunningCompetition(currentFish, playerData);
             ItemDefinition fishDef = ItemRegistry.Get(currentFish.id);
             ItemInstance fishInstance = new ItemInstance(fishDef);
-            playerDataManager.AddItem(fishInstance, currentFish, true);
+            playerDataManager.ServerAddItem(fishInstance, currentFish, true, true);
             playerDataManager.AddXP(currentFish.xp);
         }
     }

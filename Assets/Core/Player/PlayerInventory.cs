@@ -90,26 +90,15 @@ public class PlayerInventory : NetworkBehaviour
     // ------------------------------------------------------------------
 
 	[Server]
-	public ItemInstance ServerMergeOrAddAndSync(ItemInstance inst)
+	public ItemInstance ServerMergeOrAdd(ItemInstance inst, bool needsTargetSync)
 	{
 		if (inst == null) return null;
 		ItemInstance result = TryMergeOrAdd(inst);
-		TargetTryMergeOrAdd(inst);
+        if (needsTargetSync)
+        {
+		    TargetTryMergeOrAdd(inst);
+        }
 		return result;
-	}
-
-	[Server]
-	public ItemInstance ServerMergeOrAddNoSync(ItemInstance inst)
-	{
-		if (inst == null) return null;
-		return TryMergeOrAdd(inst);
-	}
-
-	[Client]
-	public ItemInstance ClientMergeOrAdd(ItemInstance inst)
-	{
-		if (inst == null) return null;
-		return TryMergeOrAdd(inst);
 	}
 
 	[Server]
@@ -129,45 +118,6 @@ public class PlayerInventory : NetworkBehaviour
 	}
 
     // Rollback helpers ----------------------------------------------------
-    [Server]
-    public void RollbackAddItem(Guid uuid)
-    {
-        for (int i = 0; i < items.Count; i++)
-        {
-            if (items[i].uuid == uuid)
-            {
-                items.RemoveAt(i);
-                TargetRemoveItem(uuid);
-                Debug.Log($"Rolled back item addition for UUID: {uuid}");
-                return;
-            }
-        }
-        Debug.LogWarning($"Could not rollback item addition - item with UUID {uuid} not found");
-    }
-
-    [Server]
-    public void RollbackItemUpdate(ItemInstance originalItem)
-    {
-        if (originalItem == null)
-        {
-            Debug.LogWarning("Cannot rollback item update - original item is null");
-            return;
-        }
-
-        ItemInstance currentItem = GetItem(originalItem.uuid);
-        if (currentItem != null)
-        {
-            // restore known states
-            CopyState<StackState>(originalItem, currentItem, (src, dst) => dst.currentAmount = src.currentAmount);
-            CopyState<DurabilityState>(originalItem, currentItem, (src, dst) => dst.remaining = src.remaining);
-            TargetUpdateItem(currentItem);
-            Debug.Log($"Rolled back item update for UUID: {originalItem.uuid}");
-        }
-        else
-        {
-            Debug.LogWarning($"Could not rollback item update - item with UUID {originalItem.uuid} not found");
-        }
-    }
 
     [Client]
     public void ClientRemoveItem(Guid uuid)
@@ -175,19 +125,13 @@ public class PlayerInventory : NetworkBehaviour
         items.RemoveAll(item => item.uuid == uuid);
     }
 
-    [Server]
-    public void SyncItemUpdateToClient(ItemInstance item)
-    {
-        TargetUpdateItem(item);
-    }
-
     [Client]
-    public void ClientRollbackOptimisticAdd(Guid tempUuid, int addedAmount)
+    public ItemInstance ClientRollbackOptimisticAdd(Guid tempUuid, int addedAmount)
     {
         ItemInstance local = GetItem(tempUuid);
         if (local == null)
         {
-            return;
+            return null;
         }
         StackState stack = local.GetState<StackState>();
         if (stack != null)
@@ -203,6 +147,7 @@ public class PlayerInventory : NetworkBehaviour
         {
             ClientRemoveItem(tempUuid);
         }
+        return local;
     }
 
     public ItemInstance GetItem(Guid uuid)
@@ -243,8 +188,9 @@ public class PlayerInventory : NetworkBehaviour
             item.GetState<StackState>()?.currentAmount < item.def.MaxStack);
     }
 
-    ItemInstance TryMergeOrAdd(ItemInstance danglingItem)
+    public ItemInstance TryMergeOrAdd(ItemInstance danglingItem)
     {
+        if (danglingItem == null) return null;
         if (danglingItem.def.GetBehaviour<DurabilityBehaviour>() == null)
         {
             // Look for the first non-full stack with the same definition ID
@@ -282,13 +228,11 @@ public class PlayerInventory : NetworkBehaviour
             stackStateReference.currentAmount += stackStateDangling.currentAmount;
             itemReference.SetState(stackStateReference);
         }
-        
-        // Only call TargetRPC from server
-        if (isServer)
+        else
         {
-            TargetUpdateItem(itemReference);
+            Debug.LogWarning("Stack overflow... Haha, you get it?");
+            return false;
         }
-        
         return true;
     }
 

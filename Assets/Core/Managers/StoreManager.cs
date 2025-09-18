@@ -240,7 +240,7 @@ public class StoreManager : NetworkBehaviour
 
         // Create and add item on server (authoritative)
         ItemInstance instance = new ItemInstance(item, shopBehaviour.Amount);
-        instance = playerDataManager.AddItemFromStore(instance);
+        instance = playerDataManager.ServerAddItem(instance, null, false, false);
 
         // Persist to DB (best-effort)
         DatabaseCommunications.AddOrUpdateItem(instance, playerData.GetUuid());

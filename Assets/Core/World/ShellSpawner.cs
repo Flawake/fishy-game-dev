@@ -141,7 +141,7 @@ public class ShellSpawner : NetworkBehaviour
         {
             ShellRemoved(shellPos);
             ItemInstance shell = new ItemInstance(shellDefinition);
-            syncManager.AddItemFromStore(shell);
+            shell = syncManager.ServerAddItem(shell, null, false, false);
             if (grantService != null && operationId != Guid.Empty)
             {
                 grantService.ServerConfirm(operationId, shell.uuid);
