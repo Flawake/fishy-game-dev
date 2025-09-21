@@ -18,7 +18,7 @@ public enum Locations : int
 
 public class FishEnumConfig
 {
-    public static int RatityToInt(FishRarity rarity)
+    public static int RarityToInt(FishRarity rarity)
     {
         return rarity switch
         {
