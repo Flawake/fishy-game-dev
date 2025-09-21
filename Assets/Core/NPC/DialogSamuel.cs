@@ -134,8 +134,10 @@ public class DialogSamuel : NetworkBehaviour
         // Authoritative add (no extra RPCs; client already holds optimistic item)
         if (grantService != null && operationId != Guid.Empty)
         {
-            ItemInstance added = grantService.ServerAddItem(doughDefinition, 40, false);
-            grantService.ServerConfirm(operationId, added.uuid);
+            PlayerDataSyncManager syncManager = sender.identity.GetComponent<PlayerDataSyncManager>();
+            ItemInstance dough = new ItemInstance(doughDefinition, 40);
+            dough = syncManager.ServerAddItem(dough, false);
+            grantService.ServerConfirm(operationId, dough.uuid);
         }
     }
 

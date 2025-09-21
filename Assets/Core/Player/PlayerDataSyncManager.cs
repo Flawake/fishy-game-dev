@@ -38,9 +38,9 @@ public class PlayerDataSyncManager : MonoBehaviour
 	}
 
 	[Server]
-	public void ServerAddItem(ItemInstance item, bool needsTargetSync)
+	public ItemInstance ServerAddItem(ItemInstance item, bool needsTargetSync)
 	{
-		ServerAddItem(item, null, false, needsTargetSync);
+		return ServerAddItem(item, null, false, needsTargetSync);
 	}
 
 	// Client-side version for optimistic updates
@@ -58,14 +58,16 @@ public class PlayerDataSyncManager : MonoBehaviour
 			fishdexFishes.AddStatFish(fish);
 			DatabaseCommunications.AddStatFish(fish, playerData.GetUuid());
 		}
-		return grantService.ServerAddItem(item, needsTargetSync);
-		//grantService.ServerAddAndSync(item);
+		ItemInstance toUpdate = inventory.ServerMergeOrAdd(item, needsTargetSync);
+		DatabaseCommunications.AddOrUpdateItem(toUpdate, playerData.GetUuid());
+		return toUpdate;
 	}
 
 	[Server]
 	public void DestroyItem(ItemInstance item)
 	{
-		grantService.ServerRemove(item);
+		inventory.RemoveItem(item.uuid);
+		DatabaseCommunications.DestroyItem(item, playerData.GetUuid());
 	}
 
 	/// <summary>
@@ -76,7 +78,23 @@ public class PlayerDataSyncManager : MonoBehaviour
 	[Server]
 	public bool ServerTryUseItem(ItemInstance itemReference)
 	{
-		return grantService.ServerUseItem(itemReference);
+		if (itemReference == null)
+			{
+				Debug.LogWarning("Cannot use null item reference");
+				return false;
+			}
+			bool success = inventory.ServerTryUseItem(itemReference);
+			if (success)
+			{
+				DatabaseCommunications.AddOrUpdateItem(itemReference, playerData.GetUuid());
+				DurabilityState durabilityState = itemReference.GetState<DurabilityState>();
+				if (durabilityState != null && durabilityState.remaining <= 0)
+				{
+					inventory.RemoveItem(itemReference.uuid);
+					DatabaseCommunications.DestroyItem(itemReference, playerData.GetUuid());
+				}
+			}
+			return success;
 	}
 
 	/// <summary>
@@ -87,7 +105,27 @@ public class PlayerDataSyncManager : MonoBehaviour
 	[Server]
 	public bool ServerConsumeFromStack(ItemInstance itemReference)
 	{
-		return grantService.ServerConsume(itemReference);
+		if (itemReference == null)
+			{
+				Debug.LogWarning("Cannot consume from null item reference");
+				return false;
+			}
+			bool success = inventory.ServerConsumeFromStack(itemReference);
+			if (success)
+			{
+				StackState stackState = itemReference.GetState<StackState>();
+				if (stackState != null && stackState.currentAmount <= 0)
+				{
+					inventory.RemoveItem(itemReference.uuid);
+					DatabaseCommunications.DestroyItem(itemReference, playerData.GetUuid());
+					Debug.Log($"Stack of {itemReference.def.DisplayName} is now empty and has been removed");
+				}
+				else
+				{
+					DatabaseCommunications.AddOrUpdateItem(itemReference, playerData.GetUuid());
+				}
+			}
+			return success;
 	}
 
 	/// <summary>

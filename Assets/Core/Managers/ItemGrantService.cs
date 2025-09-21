@@ -37,7 +37,7 @@ namespace Grants
 		// Server adds 1
 
 		// Server has 10 and 1
-		// ------------------ Client wrappers ------------------
+		// ------------------ Client ------------------
 		[Client]
 		public Guid ClientRegisterOptimistic(ItemDefinition item, int amount)
 		{
@@ -55,95 +55,14 @@ namespace Grants
 			return operationId;
 		}
 
-		// ------------------ Server wrappers ------------------
-		public ItemInstance ServerAddItem(ItemDefinition def, int amount, bool needsTargetSync) {
-			ItemInstance item = new ItemInstance(def, amount);
-			return ServerAddItem(item, needsTargetSync);
-		}
-
-		[Server]
-		public ItemInstance ServerAddItem(ItemInstance inst, bool needsTargetSync) {
-			ItemInstance toUpdate = playerInventory.ServerMergeOrAdd(inst, needsTargetSync);
-			DatabaseCommunications.AddOrUpdateItem(toUpdate, playerData.GetUuid());
-			return toUpdate;
-		}
-
-		[Server]
-		public void ServerRemove(ItemInstance item)
-		{
-			playerInventory.RemoveItem(item.uuid);
-			DatabaseCommunications.DestroyItem(item, playerData.GetUuid());
-		}
-
-		[Server]
-		public bool ServerUseItem(ItemInstance itemReference)
-		{
-			if (itemReference == null)
-			{
-				Debug.LogWarning("Cannot use null item reference");
-				return false;
-			}
-			bool success = playerInventory.ServerTryUseItem(itemReference);
-			if (success)
-			{
-				DatabaseCommunications.AddOrUpdateItem(itemReference, playerData.GetUuid());
-				DurabilityState durabilityState = itemReference.GetState<DurabilityState>();
-				if (durabilityState != null && durabilityState.remaining <= 0)
-				{
-					playerInventory.RemoveItem(itemReference.uuid);
-					DatabaseCommunications.DestroyItem(itemReference, playerData.GetUuid());
-				}
-			}
-			return success;
-		}
-
-		[Server]
-		public bool ServerConsume(ItemInstance itemReference)
-		{
-			if (itemReference == null)
-			{
-				Debug.LogWarning("Cannot consume from null item reference");
-				return false;
-			}
-			bool success = playerInventory.ServerConsumeFromStack(itemReference);
-			if (success)
-			{
-				StackState stackState = itemReference.GetState<StackState>();
-				if (stackState != null && stackState.currentAmount <= 0)
-				{
-					playerInventory.RemoveItem(itemReference.uuid);
-					DatabaseCommunications.DestroyItem(itemReference, playerData.GetUuid());
-					Debug.Log($"Stack of {itemReference.def.DisplayName} is now empty and has been removed");
-				}
-				else
-				{
-					DatabaseCommunications.AddOrUpdateItem(itemReference, playerData.GetUuid());
-				}
-			}
-			return success;
-		}
-
-		[Server]
-		public void ServerConfirm(Guid operationId, Guid realItemUuid)
-		{
-			TargetConfirm(connectionToClient, operationId, realItemUuid);
-		}
-
-		[Server]
-		public void ServerDeny(Guid operationId, int addedAmount)
-		{
-			TargetDeny(connectionToClient, operationId, addedAmount);
-		}
-
+		// ------------------ TargetRPC ------------------
 		[TargetRpc]
 		private void TargetConfirm(NetworkConnectionToClient target, Guid operationId, Guid realUuid)
 		{
 			if (optimisticGrants.TryGetValue(operationId, out var grant))
 			{
-				Debug.LogWarning("confirm add to inventory");
 				if (grant.optimisticUuid != realUuid)
 				{
-					Debug.LogWarning("Uuid's were not the same");
 					ItemInstance item = playerInventory.ClientRollbackOptimisticAdd(grant.optimisticUuid, grant.addedAmount);
 					if (item != null)
 					{
@@ -166,6 +85,19 @@ namespace Grants
 				playerInventory.ClientRollbackOptimisticAdd(grant.optimisticUuid, addedAmount);
 				optimisticGrants.Remove(operationId);
 			}
+		}
+
+		// ------------------ Server ------------------
+		[Server]
+		public void ServerConfirm(Guid operationId, Guid realItemUuid)
+		{
+			TargetConfirm(connectionToClient, operationId, realItemUuid);
+		}
+
+		[Server]
+		public void ServerDeny(Guid operationId, int addedAmount)
+		{
+			TargetDeny(connectionToClient, operationId, addedAmount);
 		}
 	}
 }

@@ -131,7 +131,6 @@ public class ShellSpawner : NetworkBehaviour
             if (grantService != null && operationId != Guid.Empty)
             {
                 grantService.ServerDeny(operationId, 1);
-                TargetRespawnShell(sender, shellPosition);
             }
             return;
         }
@@ -152,18 +151,7 @@ public class ShellSpawner : NetworkBehaviour
             if (grantService != null && operationId != Guid.Empty)
             {
                 grantService.ServerDeny(operationId, 1);
-                TargetRespawnShell(sender, shellPosition);
             }
-        }
-    }
-
-    [TargetRpc]
-    private void TargetRespawnShell(NetworkConnectionToClient target, Vector3 position)
-    {
-        ComparableVector3 cv = new ComparableVector3(position);
-        if (!spawnedShells.ContainsKey(cv))
-        {
-            ShellSpawned(cv);
         }
     }
 }
