@@ -26,6 +26,8 @@ public class FishFight : MonoBehaviour
     [SerializeField] RectTransform redLeft;
     [SerializeField] RectTransform fishFightArea;
     [SerializeField] Material fishFightMaterial;
+    [SerializeField] Button leftButton;
+    [SerializeField] Button rightButton;
 
     FishingManager fishingManager;
     PlayerData playerData;
@@ -131,11 +133,15 @@ public class FishFight : MonoBehaviour
 
         if (rightKey.started)
         {
+            var pointer = new UnityEngine.EventSystems.PointerEventData(UnityEngine.EventSystems.EventSystem.current);
             right_pressed = true;
+            rightButton.OnPointerDown(pointer);
         }
         else if (rightKey.canceled)
         {
+            var pointer = new UnityEngine.EventSystems.PointerEventData(UnityEngine.EventSystems.EventSystem.current);
             right_pressed = false;
+            rightButton.OnPointerUp(pointer);
         }
     }
 
@@ -148,11 +154,15 @@ public class FishFight : MonoBehaviour
 
         if (leftKey.started)
         {
+            var pointer = new UnityEngine.EventSystems.PointerEventData(UnityEngine.EventSystems.EventSystem.current);
             left_pressed = true;
+            leftButton.OnPointerDown(pointer);
         }
         else if (leftKey.canceled)
         {
+            var pointer = new UnityEngine.EventSystems.PointerEventData(UnityEngine.EventSystems.EventSystem.current);
             left_pressed = false;
+            leftButton.OnPointerUp(pointer);
         }
     }
 
@@ -318,7 +328,7 @@ public class FishFight : MonoBehaviour
         }
         
         // Finally, update the minigame position
-        relativePos += totalFishPull * 4;
+        relativePos += totalFishPull * 5.5f;
     }
 
     private void Start()

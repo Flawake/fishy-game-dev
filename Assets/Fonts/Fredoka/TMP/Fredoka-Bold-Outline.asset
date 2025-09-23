@@ -93,11 +93,11 @@ Material:
     m_Ints: []
     m_Floats:
     - _Ambient: 1
-    - _Bevel: 0.625
-    - _BevelClamp: 0
-    - _BevelOffset: -0.229
+    - _Bevel: 0.508
+    - _BevelClamp: 0.226
+    - _BevelOffset: -0.408
     - _BevelRoundness: 1
-    - _BevelWidth: -0.396
+    - _BevelWidth: -0.122
     - _BumpFace: 0
     - _BumpOutline: 0
     - _ColorMask: 15

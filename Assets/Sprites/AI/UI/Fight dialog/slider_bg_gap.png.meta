@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: e8ac08e1263d785e6920596b4a2f33e4
+guid: ff067e6a351c7396588c07439f875c8b
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 6234176133674011997
-    second: Base_0
+      213: -4898800738492540699
+    second: slider_bg_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -72,7 +72,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 2048
+    maxTextureSize: 512
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 1
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Base_0
+      name: slider_bg_0
       rect:
         serializedVersion: 2
-        x: 142
+        x: 0
         y: 0
-        width: 989
-        height: 720
+        width: 758
+        height: 138
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: d5d8bdad92e348650800000000000000
-      internalID: 6234176133674011997
+      spriteID: 5e81bbceea6f30cb0800000000000000
+      internalID: -4898800738492540699
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Base_0: 6234176133674011997
+      slider_bg_0: -4898800738492540699
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
