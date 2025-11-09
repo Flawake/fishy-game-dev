@@ -27,19 +27,19 @@ public class WorldTravel : MonoBehaviour
     }
 
     [Client]
-    public static void TravelTo(AreaComponent destination)
+    public static void ClientInstantiateTravelTo(AreaComponent destination)
     {
-        TravelTo(destination.area, CustomSpawnInstruction.None);
+        ClientInstantiateTravelTo(destination.area, CustomSpawnInstruction.None);
     }
     
     [Client]
-    public static void TravelTo(Area destination)
+    public static void ClientInstantiateTravelTo(Area destination)
     {
-        TravelTo(destination, CustomSpawnInstruction.None);
+        ClientInstantiateTravelTo(destination, CustomSpawnInstruction.None);
     }
     
     [Client]
-    public static void TravelTo(Area destination, CustomSpawnInstruction requestInstruction)
+    public static void ClientInstantiateTravelTo(Area destination, CustomSpawnInstruction requestInstruction)
     {
         if (!AreaUnlockManager.IsAreaUnlocked(destination, NetworkClient.connection.identity.GetComponent<PlayerData>()))
         {
@@ -47,9 +47,10 @@ public class WorldTravel : MonoBehaviour
             return;
         }
         
-        //Disable the event system before unloading async and loading a new map
+        // Disable the event system before unloading async and loading a new map
         GameNetworkManager.SetEventSystemActive("WorldMap", false);
 
+        // Unload worldmap if player decides to stay in current area
         if (SceneManager.GetSceneByName(destination.ToString()).isLoaded)
         {
             GameNetworkManager.SetEventSystemActive(destination.ToString(), true);
@@ -60,7 +61,6 @@ public class WorldTravel : MonoBehaviour
         
         // Lock local movement during travel to avoid being outside of any world for a frame
         var playerController = NetworkClient.connection.identity.GetComponent<PlayerController>();
-        playerController.ChangeCameraZoom(AreaCameraZoomManager.GetCameraZoomPercentage(destination));
         playerController?.BeginTravelLock();
 
         MovePlayerMessage msg = new MovePlayerMessage()

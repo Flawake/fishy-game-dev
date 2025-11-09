@@ -16,7 +16,7 @@ public class EnterBaker : NetworkBehaviour
             {
                 return;
             }
-            WorldTravel.TravelTo(Area.Baker);
+            WorldTravel.ClientInstantiateTravelTo(Area.Baker);
         }
     }
 }

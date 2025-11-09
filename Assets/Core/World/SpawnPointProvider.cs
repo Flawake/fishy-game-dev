@@ -7,6 +7,10 @@ public static class SpawnPointProvider
     {
         var activeScene = UnityEngine.SceneManagement.SceneManager.GetSceneByName(targetArea.ToString());
         var registry = SceneObjectCache.GetSpawnPointRegistry(activeScene);
+        if (registry != null)
+        {
+            Debug.Log("Registry is not NULL :)");
+        }
         if (registry != null && registry.TryGet(instruction, out var spawn, out _))
         {
             if (spawn != null)

@@ -2631,7 +2631,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 642394484}
         m_TargetAssemblyTypeName: WorldTravel, Assembly-CSharp
-        m_MethodName: TravelTo
+        m_MethodName: ClientInstantiateTravelTo
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 1188351959}
@@ -3378,7 +3378,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 642394484}
         m_TargetAssemblyTypeName: WorldTravel, Assembly-CSharp
-        m_MethodName: TravelTo
+        m_MethodName: ClientInstantiateTravelTo
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 1657429751}
@@ -3950,7 +3950,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 642394484}
         m_TargetAssemblyTypeName: WorldTravel, Assembly-CSharp
-        m_MethodName: TravelTo
+        m_MethodName: ClientInstantiateTravelTo
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 1729306133}

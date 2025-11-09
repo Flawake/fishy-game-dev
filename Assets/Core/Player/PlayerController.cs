@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using Mirror;
 using System;
 using System.Collections.Generic;
@@ -108,7 +109,8 @@ public class PlayerController : NetworkBehaviour
 
     void Start()
     {
-        worldBounds = GameObject.Find("World bounds");
+        // Find world bounds in the current scene
+        FindWorldBoundsObject();
         if (!isLocalPlayer)
         {
             return;
@@ -138,17 +140,40 @@ public class PlayerController : NetworkBehaviour
 
     bool FindWorldBoundsObject()
     {
-        worldBounds = GameObject.Find("WorldBounds");
-        if (worldBounds == null)
+        // Find world bounds in the current scene where the player is located
+        Scene currentScene = gameObject.scene;
+        if (!currentScene.IsValid())
         {
             return false;
         }
-        return true;
+
+        // Search for WorldBounds in the current scene only
+        GameObject[] rootObjects = currentScene.GetRootGameObjects();
+        foreach (GameObject obj in rootObjects)
+        {
+            if (obj.name == "WorldBounds")
+            {
+                worldBounds = obj;
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public void ChangeCameraZoom(int _zoomPercentage)
     {
         playerCamera.orthographicSize = defaultCameraZoom / _zoomPercentage * 100;
+    }
+
+    /// <summary>
+    /// Forces an immediate camera clamp update. Useful after teleporting to a new scene.
+    /// </summary>
+    public void ForceClampCamera()
+    {
+        // Reset world bounds reference to find the new scene's bounds
+        worldBounds = null;
+        ClampCamera();
     }
 
     void ClampCamera()
@@ -157,6 +182,7 @@ public class PlayerController : NetworkBehaviour
         {
             if (!FindWorldBoundsObject())
             {
+                Debug.Log("Could not find world bounds");
                 return;
             }
         }
@@ -536,21 +562,31 @@ public class PlayerController : NetworkBehaviour
     }
 
     [Server]
-    public void ServerTeleportPlayer(Vector2 pos)
+    public void ServerTeleportPlayer(Vector2 pos, bool needTargetSync)
     {
         nextMoves = null;
         transform.position = pos;
         lastVerifiedPosition = transform.position;
         lastVerifiedtime = Time.time;
-        TargetSetPosition(pos);
+        if (needTargetSync)
+        {
+            TargetSetPosition(pos);
+        }
     }
 
     [TargetRpc]
     void TargetSetPosition(Vector2 position)
     {
         Debug.Log("Forced target position");
+        ClientSetPosition(position);
+    }
+
+    [Client]
+    public void ClientSetPosition(Vector2 position)
+    {
         nextMoves = null;
         transform.position = new Vector3(position.x, position.y, transform.position.z);
+        ForceClampCamera();
     }
 
     [Command]

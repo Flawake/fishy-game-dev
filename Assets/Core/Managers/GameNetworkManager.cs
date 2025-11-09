@@ -170,25 +170,21 @@ public class GameNetworkManager : NetworkManager
     {
         base.OnClientSceneChanged();
 
-        //Don't move player to the WorldMap or unload scenes.
+        //Don't move player to the WorldMap
         if (networkSceneName == null || networkSceneName == "WorldMap" || NetworkClient.connection.identity == null)
         {
             return;
         }
-        SceneManager.MoveGameObjectToScene(NetworkClient.connection.identity.gameObject, SceneManager.GetSceneByName(networkSceneName));
-        //Unload all scenes that are not the new scene
-        foreach (string sceneName in subScenes)
+
+        // Delegate to WorldTravelManager for scene change handling
+        WorldTravelManager travelManager = WorldTravelManager.Instance;
+        if (travelManager != null)
         {
-            Scene loadedScene = SceneManager.GetSceneByPath(sceneName);
-            if (loadedScene.name == networkSceneName)
-            {
-                continue;
-            }
-            if (loadedScene.isLoaded)
-            {
-                AsyncOperation unloadingScene = SceneManager.UnloadSceneAsync(loadedScene);
-                scenesUnloading.Add(unloadingScene);
-            }
+            StartCoroutine(travelManager.HandleClientSceneChange(networkSceneName));
+        }
+        else
+        {
+            Debug.LogError("WorldTravelManager not found! Cannot handle client scene change.");
         }
     }
 
@@ -275,6 +271,7 @@ public class GameNetworkManager : NetworkManager
     [Server]
     void OnPlayerMoveMessage(NetworkConnectionToClient conn, MovePlayerMessage data)
     {
+        // Anti-cheat: Validate area unlock
         if (!AreaUnlockManager.IsAreaUnlocked(data.requestedArea, conn.identity.GetComponent<PlayerData>()))
         {
             KickPlayerForCheating(conn, "Tried to enter an area which was not unlocked yet");
@@ -285,40 +282,19 @@ public class GameNetworkManager : NetworkManager
         Area previousArea = connectionCurrentArea.TryGetValue(conn.connectionId, out Area current) ? current : Area.WorldMap;
         WorldTravel.CustomSpawnInstruction approvedInstruction = ValidateSpawnInstruction(previousArea, data.requestedArea, data.requestedSpawnInstruction);
 
-        // Move the player object to the new scene
-        SceneManager.MoveGameObjectToScene(conn.identity.gameObject, SceneManager.GetSceneByName(data.requestedArea.ToString()));
-
-        // Teleport to a specific spawn point if provided/known; else fall back to existing random spawn point
-        if (data.requestedArea.ToString() != null && data.requestedArea != Area.WorldMap && conn.identity != null)
+        // Delegate to WorldTravelManager for actual travel logic
+        WorldTravelManager travelManager = WorldTravelManager.Instance;
+        if (travelManager != null)
         {
-            Vector3? customSpawn = SpawnPointProvider.TryGetCustomSpawnPoint(data.requestedArea, approvedInstruction);
-            if (customSpawn.HasValue)
-            {
-                conn.identity.gameObject.GetComponentInChildren<PlayerController>().ServerTeleportPlayer(customSpawn.Value);
-            }
-            else
-            {
-                conn.identity.gameObject.GetComponentInChildren<PlayerController>().ServerTeleportPlayer(
-                    spawnPoint.GetRandomSpawnPoint(data.requestedArea.ToString())
-                );
-            }
+            travelManager.HandlePlayerMoveRequest(conn, data.requestedArea, approvedInstruction);
+        }
+        else
+        {
+            Debug.LogError("WorldTravelManager not found! Cannot handle player move request.");
+            return;
         }
 
-        // Send scene load message to client
-        conn.Send(new SceneMessage()
-        {
-            sceneName = data.requestedArea.ToString(),
-            sceneOperation = SceneOperation.LoadAdditive
-        });
-
-        // Also send arrival instruction for client-side cosmetic animation
-        conn.Send(new ArrivalInstructionMessage
-        {
-            area = data.requestedArea,
-            instruction = approvedInstruction,
-        });
-
-        // Update current area after successful move
+        // Update current area tracking
         connectionCurrentArea[conn.connectionId] = data.requestedArea;
     }
 
@@ -342,18 +318,15 @@ public class GameNetworkManager : NetworkManager
     [Client]
     void OnArrivalInstructionMessage(ArrivalInstructionMessage msg)
     {
-        if (NetworkClient.connection == null || NetworkClient.connection.identity == null)
+        // Delegate to WorldTravelManager for arrival instruction handling
+        WorldTravelManager travelManager = WorldTravelManager.Instance;
+        if (travelManager != null)
         {
-            return;
+            travelManager.OnArrivalInstructionReceived(msg);
         }
-        GameObject player = NetworkClient.connection.identity.gameObject;
-        ArrivalAnimationRunner runner = player.GetComponent<ArrivalAnimationRunner>();
-        runner.StartArrivalAnimation(msg.instruction, msg.area);
-
-        if (msg.instruction == WorldTravel.CustomSpawnInstruction.None)
+        else
         {
-            var pc = player.GetComponent<PlayerController>();
-            pc?.EndTravelLock();
+            Debug.LogError("WorldTravelManager not found! Cannot handle arrival instruction.");
         }
     }
 
@@ -435,4 +408,6 @@ public struct ArrivalInstructionMessage : NetworkMessage
 {
     public Area area;
     public WorldTravel.CustomSpawnInstruction instruction;
+    public Vector3 spawnPosition;
+    public bool hasSpawnPosition;
 }
