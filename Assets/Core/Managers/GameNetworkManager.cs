@@ -24,6 +24,9 @@ public class GameNetworkManager : NetworkManager
 
     // Tracks the current area of each connected player (by connectionId) on the server for validation & anti-cheat
     internal static readonly Dictionary<int, Area> connectionCurrentArea = new Dictionary<int, Area>();
+    
+    // Scene name of where the client currently is, this variable is meaningless on the server
+    public static Scene ClientsActiveScene { get; protected set; }
 
     [Scene]
     [Tooltip("Add all sub-scenes to this list")]
@@ -73,7 +76,7 @@ public class GameNetworkManager : NetworkManager
         //Only enable camera and eventsystem when everything else has been loaded
         if (scenesUnloading.Count == 0)
         {
-            SetEventSystemActive(networkSceneName, true);
+            SetEventSystemActive(ClientsActiveScene.name, true);
             NetworkClient.connection.identity.transform.GetComponentInChildren<PlayerInfoUIManager>().ShowCanvas();
             NetworkClient.connection.identity.transform.GetComponentInChildren<AudioListener>().enabled = true;
         }
@@ -84,7 +87,7 @@ public class GameNetworkManager : NetworkManager
     {
         
         // load all subscenes on the server only
-        StartCoroutine(LoadSubScenes());
+        LoadSubScenes();
     }
 
     [Server]
@@ -163,10 +166,12 @@ public class GameNetworkManager : NetworkManager
         }
     }
 
+    private string _newSceneName = "";
+
     [Client]
     public override void OnClientChangeScene(string newSceneName, SceneOperation sceneOperation, bool customHandling)
     {
-        networkSceneName = newSceneName;
+        _newSceneName = newSceneName;
         base.OnClientChangeScene(newSceneName, sceneOperation, customHandling);
     }
 
@@ -174,17 +179,14 @@ public class GameNetworkManager : NetworkManager
     public override void OnClientSceneChanged()
     {
         base.OnClientSceneChanged();
-
-        if (networkSceneName == null)
-        {
-            return;
-        }
+        
+        ClientsActiveScene = SceneManager.GetSceneByName(_newSceneName);
 
         WorldTravelManager travelManager = WorldTravelManager.Instance;
         if (travelManager != null)
         {
-            Debug.Log($"New scene: {networkSceneName}");
-            StartCoroutine(travelManager.HandleClientSceneChange(networkSceneName));
+            Debug.Log($"New scene: {ClientsActiveScene.name}");
+            StartCoroutine(travelManager.HandleClientSceneChange(ClientsActiveScene.name));
         }
         else
         {
@@ -335,11 +337,11 @@ public class GameNetworkManager : NetworkManager
     }
 
     [Server]
-    IEnumerator LoadSubScenes()
+    void LoadSubScenes()
     {
         foreach (string sceneName in subScenes)
         {
-            yield return SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
+            SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
         }
     }
 

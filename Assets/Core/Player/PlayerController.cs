@@ -148,7 +148,7 @@ public class PlayerController : NetworkBehaviour
     bool FindWorldBoundsObject()
     {
         // Find world bounds in the current scene where the player is located
-        Scene currentScene = gameObject.scene;
+        Scene currentScene = GameNetworkManager.ClientsActiveScene;
         if (!currentScene.IsValid())
         {
             return false;
