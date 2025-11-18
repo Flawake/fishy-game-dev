@@ -5,7 +5,9 @@ using UnityEngine;
 [Serializable]
 public enum Area
 {
+    // Don't even think about adding an area BEFORE the END of the list, this will fuck up world travel. Really, don't!
     WorldMap,
+    Container,
     FusetaBeach,
     SelvaBandeira,
     Greenfields,

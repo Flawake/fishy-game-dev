@@ -80,6 +80,14 @@ public class GameNetworkManager : NetworkManager
     }
 
     [Server]
+    public override void OnServerSceneChanged(string sceneName)
+    {
+        
+        // load all subscenes on the server only
+        StartCoroutine(LoadSubScenes());
+    }
+
+    [Server]
     public override void OnServerDisconnect(NetworkConnectionToClient conn)
     {
         AddPlaytimeToDatabase(conn);
@@ -113,9 +121,6 @@ public class GameNetworkManager : NetworkManager
     {
         base.OnStartServer();
 
-        // load all subscenes on the server only
-        StartCoroutine(LoadSubScenes());
-
         NetworkServer.RegisterHandler<CreateCharacterMessage>(OnBeginCreateCharacter);
         NetworkServer.RegisterHandler<MovePlayerMessage>(OnPlayerMoveMessage);
         
@@ -143,17 +148,17 @@ public class GameNetworkManager : NetworkManager
     public static void SetEventSystemActive(string sceneName, bool active)
     {
         //Enable the event system in the new scene
-        Scene newScene = SceneManager.GetSceneByName(networkSceneName);
+        Scene newScene = SceneManager.GetSceneByName(sceneName);
         if (!newScene.IsValid())
         {
-            newScene = SceneManager.GetSceneByPath(networkSceneName);
+            newScene = SceneManager.GetSceneByPath(sceneName);
         }
         GameObject[] objects = newScene.GetRootGameObjects();
         foreach (GameObject obj in objects)
         {
             if (obj.name == "EventSystem")
             {
-                obj.SetActive(true);
+                obj.SetActive(active);
             }
         }
     }
@@ -161,8 +166,8 @@ public class GameNetworkManager : NetworkManager
     [Client]
     public override void OnClientChangeScene(string newSceneName, SceneOperation sceneOperation, bool customHandling)
     {
-        base.OnClientChangeScene(newSceneName, sceneOperation, customHandling);
         networkSceneName = newSceneName;
+        base.OnClientChangeScene(newSceneName, sceneOperation, customHandling);
     }
 
     [Client]
@@ -170,16 +175,15 @@ public class GameNetworkManager : NetworkManager
     {
         base.OnClientSceneChanged();
 
-        //Don't move player to the WorldMap
-        if (networkSceneName == null || networkSceneName == "WorldMap" || NetworkClient.connection.identity == null)
+        if (networkSceneName == null)
         {
             return;
         }
 
-        // Delegate to WorldTravelManager for scene change handling
         WorldTravelManager travelManager = WorldTravelManager.Instance;
         if (travelManager != null)
         {
+            Debug.Log($"New scene: {networkSceneName}");
             StartCoroutine(travelManager.HandleClientSceneChange(networkSceneName));
         }
         else
@@ -236,26 +240,26 @@ public class GameNetworkManager : NetworkManager
     }
 
     [Server]
-    ///Spawns player in when all data from the database has been received
+    // Spawns player in when all data from the database has been received
     void OnEndCreateCharacter(NetworkConnectionToClient conn)
     {
         WebRequestHandler.ResponseMessageData playerData = (conn.authenticationData as PlayerAuthData).playerData.Value;
         GameObject playerObject = (conn.authenticationData as PlayerAuthData).playerObject;
         PlayerData dataPlayer = playerObject.GetComponent<PlayerData>();
         
-        if (GameNetworkManager.connUUID.TryGetValue(conn, out Guid uuid) && uuid != Guid.Empty)
+        if (connUUID.TryGetValue(conn, out Guid uuid) && uuid != Guid.Empty)
         {
             if(dataPlayer.ParsePlayerData(playerData.ResponseData, uuid))
             {
                 NetworkServer.AddPlayerForConnection(conn, playerObject);
+                
                 PlayerConnectionInfo playerConnection = new PlayerConnectionInfo
                 {
                     userID = dataPlayer.GetUuid(),
                     playerConnectionTime = NetworkTime.time,
                 };
                 connectedPlayersInfo.Add(conn.connectionId, playerConnection);
-                // Set initial area server-side; if you have a persisted area in player data, use that here instead of WorldMap
-                connectionCurrentArea[conn.connectionId] = Area.WorldMap;
+                connectionCurrentArea[conn.connectionId] = Area.Container;
             }
             else
             {
@@ -333,8 +337,6 @@ public class GameNetworkManager : NetworkManager
     [Server]
     IEnumerator LoadSubScenes()
     {
-        Debug.Log("Loading Scenes");
-
         foreach (string sceneName in subScenes)
         {
             yield return SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);

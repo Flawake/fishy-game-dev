@@ -3,6 +3,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using Mirror;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -107,6 +108,12 @@ public class PlayerController : NetworkBehaviour
         objectsCollidingPlayer.Remove(collision.collider);
     }
 
+    public override void OnStartLocalPlayer()
+    {
+        base.OnStartLocalPlayer();
+        SceneManager.LoadSceneAsync(Area.WorldMap.ToString(), LoadSceneMode.Additive);
+    }
+
     void Start()
     {
         // Find world bounds in the current scene
@@ -182,7 +189,6 @@ public class PlayerController : NetworkBehaviour
         {
             if (!FindWorldBoundsObject())
             {
-                Debug.Log("Could not find world bounds");
                 return;
             }
         }

@@ -1538,7 +1538,7 @@ MonoBehaviour:
   editorAutoStart: 0
   sendRate: 60
   offlineScene: Assets/Scenes/Startup.unity
-  onlineScene: Assets/Scenes/WorldMap.unity
+  onlineScene: Assets/Scenes/Container.unity
   offlineSceneLoadDelay: 0
   transport: {fileID: 302649091}
   networkAddress: lurebound.nl

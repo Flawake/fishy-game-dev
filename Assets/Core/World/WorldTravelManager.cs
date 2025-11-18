@@ -25,7 +25,10 @@ public class WorldTravelManager : MonoBehaviour
 
     // Client-side: Store pending arrival instructions until scene is loaded
     private static Dictionary<string, ArrivalInstructionMessage> pendingArrivals = new Dictionary<string, ArrivalInstructionMessage>();
+    private GameObject _localPlayer;
 
+    private bool _teleportedPlayer = false;
+    
     private void Awake()
     {
         if (instance == null)
@@ -50,35 +53,27 @@ public class WorldTravelManager : MonoBehaviour
         string sceneName = targetArea.ToString();
         Scene targetScene = SceneManager.GetSceneByName(sceneName);
 
-        // Step 1: Load new scene (if not already loaded)
+        // Kick player if the scene was not yet loaded, should load within seconds after server boot
         if (!targetScene.isLoaded)
         {
-            AsyncOperation loadOperation = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
-            yield return loadOperation;
-            targetScene = SceneManager.GetSceneByName(sceneName);
+            NetworkServer.RemovePlayerForConnection(conn);
+            conn.Disconnect();
         }
 
-        // Wait until scene is fully loaded and valid
-        while (!targetScene.isLoaded || !targetScene.IsValid())
-        {
-            yield return null;
-            targetScene = SceneManager.GetSceneByName(sceneName);
-        }
-
-        // Step 2: Move player to new scene
+        // Step 1: Move player to new scene
         SceneManager.MoveGameObjectToScene(conn.identity.gameObject, targetScene);
 
-        // Step 3: Calculate spawn position
+        // Step 2: Calculate spawn position
         Vector3? spawnPosition = CalculateSpawnPosition(targetArea, approvedInstruction, sceneName);
 
-        // Step 4: Send scene load message to client
+        // Step 3: Send scene load message to client
         conn.Send(new SceneMessage()
         {
             sceneName = sceneName,
             sceneOperation = SceneOperation.LoadAdditive
         });
 
-        // Step 5: Send arrival instruction with spawn position
+        // Step 4: Send arrival instruction with spawn position
         conn.Send(new ArrivalInstructionMessage
         {
             area = targetArea,
@@ -87,18 +82,20 @@ public class WorldTravelManager : MonoBehaviour
             hasSpawnPosition = spawnPosition.HasValue
         });
 
-        // Step 6: Teleport player on server (for sync with other players)
+        // Step 5: Teleport player on server (for sync with other players)
         if (spawnPosition.HasValue && conn.identity != null)
         {
             // The local player's sync will be handled by the worldTravelManager
             conn.identity.gameObject.GetComponentInChildren<PlayerController>().ServerTeleportPlayer(spawnPosition.Value, false);
         }
+        
+        yield break;
     }
 
     [Server]
     private Vector3? CalculateSpawnPosition(Area targetArea, WorldTravel.CustomSpawnInstruction approvedInstruction, string sceneName)
     {
-        if (targetArea == Area.WorldMap)
+        if (targetArea == Area.WorldMap || targetArea == Area.Container)
         {
             return null;
         }
@@ -124,10 +121,10 @@ public class WorldTravelManager : MonoBehaviour
 
         // If scene is already loaded, process immediately
         Scene targetScene = SceneManager.GetSceneByName(sceneName);
-        if (targetScene.isLoaded && targetScene.IsValid() && NetworkClient.connection?.identity != null)
+        if (targetScene.isLoaded && targetScene.IsValid() && TryGetLocalPlayer(out GameObject player))
         {
             // Scene is already loaded, process arrival instructions now
-            StartCoroutine(ApplyArrivalInstructions(NetworkClient.connection.identity.gameObject, msg));
+            StartCoroutine(ApplyArrivalInstructions(player, msg));
             pendingArrivals.Remove(sceneName);
         }
     }
@@ -150,8 +147,11 @@ public class WorldTravelManager : MonoBehaviour
         // Step 2: Check for pending arrival instructions and apply them
         if (pendingArrivals.TryGetValue(newSceneName, out ArrivalInstructionMessage arrivalMsg))
         {
-            pendingArrivals.Remove(newSceneName);
-            yield return StartCoroutine(ApplyArrivalInstructions(NetworkClient.connection.identity.gameObject, arrivalMsg));
+            if (TryGetLocalPlayer(out GameObject player))
+            {
+                pendingArrivals.Remove(newSceneName);
+                yield return StartCoroutine(ApplyArrivalInstructions(player, arrivalMsg));
+            }
         }
 
         // Step 3: Unload old scene
@@ -161,15 +161,21 @@ public class WorldTravelManager : MonoBehaviour
     [Client]
     private IEnumerator UnloadOldScenes(string newSceneName)
     {
+        Debug.Log($"Keeping {newSceneName}");
+        if (newSceneName == Area.Container.ToString())
+        {
+            yield break;
+        }
         // Wait until player is actually in the new scene
         if (NetworkClient.connection?.identity != null)
         {
-            Scene targetScene = SceneManager.GetSceneByName(newSceneName);
-            while (NetworkClient.connection.identity.gameObject.scene != targetScene)
+            while (!_teleportedPlayer)
             {
                 yield return null;
             }
         }
+
+        _teleportedPlayer = false;
 
         GameNetworkManager manager = NetworkManager.singleton as GameNetworkManager;
         if (manager == null || manager.subScenes == null) yield break;
@@ -178,12 +184,13 @@ public class WorldTravelManager : MonoBehaviour
         foreach (string sceneName in manager.subScenes)
         {
             Scene loadedScene = SceneManager.GetSceneByPath(sceneName);
-            if (!loadedScene.IsValid() || loadedScene.name == newSceneName)
+            if (!loadedScene.IsValid() || loadedScene.name == newSceneName || loadedScene.name == Area.Container.ToString())
             {
                 continue;
             }
             if (loadedScene.isLoaded)
             {
+                Debug.Log($"Unloading: {sceneName}, new scene: {newSceneName}");
                 AsyncOperation unloadingScene = SceneManager.UnloadSceneAsync(loadedScene);
                 GameNetworkManager.scenesUnloading.Add(unloadingScene);
             }
@@ -200,6 +207,13 @@ public class WorldTravelManager : MonoBehaviour
             yield return null;
         }
 
+        // Move player to the container if that message arrives, don't move the player to a different scene if it was not that message
+        if (targetScene == SceneManager.GetSceneByName(Area.Container.ToString()))
+        {
+            SceneManager.MoveGameObjectToScene(player, targetScene);
+            yield break;
+        }
+
         // Teleport player (scene is loaded, world bounds are available)
         if (msg.hasSpawnPosition && player != null)
         {
@@ -207,7 +221,7 @@ public class WorldTravelManager : MonoBehaviour
             if (playerController != null)
             {
                 // Set position directly on client (server already set it for sync with other players)
-                SceneManager.MoveGameObjectToScene(NetworkClient.connection.identity.gameObject, targetScene);
+                _teleportedPlayer = true;
                 playerController.ClientSetPosition(msg.spawnPosition);
                 
                 // Force camera clamp update to use the new scene's world bounds
@@ -235,6 +249,26 @@ public class WorldTravelManager : MonoBehaviour
                 pc.EndTravelLock();
             }
         }
+    }
+
+    [Client]
+    private bool TryGetLocalPlayer(out GameObject player)
+    {
+        if (_localPlayer != null)
+        {
+            player = _localPlayer;
+            return true;
+        }
+
+        if (NetworkClient.connection?.identity != null)
+        {
+            _localPlayer = NetworkClient.connection.identity.gameObject;
+            player = _localPlayer;
+            return true;
+        }
+
+        player = null;
+        return false;
     }
 }
 
