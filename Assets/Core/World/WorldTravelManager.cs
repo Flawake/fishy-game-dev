@@ -161,7 +161,6 @@ public class WorldTravelManager : MonoBehaviour
     [Client]
     private IEnumerator UnloadOldScenes(string newSceneName)
     {
-        Debug.Log($"Keeping {newSceneName}");
         if (newSceneName == Area.Container.ToString())
         {
             yield break;
@@ -190,7 +189,6 @@ public class WorldTravelManager : MonoBehaviour
             }
             if (loadedScene.isLoaded)
             {
-                Debug.Log($"Unloading: {sceneName}, new scene: {newSceneName}");
                 AsyncOperation unloadingScene = SceneManager.UnloadSceneAsync(loadedScene);
                 GameNetworkManager.scenesUnloading.Add(unloadingScene);
             }

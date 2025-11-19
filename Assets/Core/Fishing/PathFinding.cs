@@ -3,8 +3,6 @@ using System.Collections;
 using UnityEngine;
 using UnityEditor;
 using System;
-using Unity.Collections;
-using Unity.Jobs;
 using System.Linq;
 using Mirror;
 

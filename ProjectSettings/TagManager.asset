@@ -8,6 +8,7 @@ TagManager:
   - PlayerSprite
   - NPCFeet
   - BakerExit
+  - DontBlockRaycast
   layers:
   - Default
   - TransparentFX

@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Mirror;
+using UnityEngine.EventSystems;
 
 public class PlayerInfoUIManager : MonoBehaviour
 {
@@ -143,7 +144,11 @@ public class PlayerInfoUIManager : MonoBehaviour
         HideCanvas();
         FindFirstObjectByType<AudioListener>().enabled = false;
 
-        GameNetworkManager.SetEventSystemActive(SceneManager.GetActiveScene().name, false);
+        var allEventSystems = Object.FindObjectsByType<EventSystem>(FindObjectsSortMode.None);
+        foreach (var es in allEventSystems)
+        {
+            es.enabled = false;
+        }
 
         SceneManager.LoadScene("WorldMap", LoadSceneMode.Additive);
     }

@@ -288,7 +288,15 @@ public class PlayerController : NetworkBehaviour
                 continue;
 
             raycaster.Raycast(pointerData, results);
-            if (results.Count > 0)
+            int hitCount = results.Count;
+            foreach (var res in results)
+            {
+                if (res.gameObject.CompareTag("DontBlockRaycast"))
+                {
+                    hitCount -= 1;
+                }
+            }
+            if (hitCount > 0)
                 return true;
         }
 
@@ -376,7 +384,7 @@ public class PlayerController : NetworkBehaviour
 
         // Click was not on the water or another player and the mouse was not over a ui element. Walk to the clicked position
         stopwatch = System.Diagnostics.Stopwatch.StartNew();
-        PathFinding pathFinder = SceneObjectCache.GetPathFinding(gameObject.scene);
+        PathFinding pathFinder = SceneObjectCache.GetPathFinding(GameNetworkManager.ClientsActiveScene);
         if (pathFinder != null)
         {
             pathFinder.QueueNewPath(transform.position, clickedPos, gameObject, PathFindRequestCallback);

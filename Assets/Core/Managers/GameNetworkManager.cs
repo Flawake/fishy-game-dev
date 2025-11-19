@@ -154,7 +154,7 @@ public class GameNetworkManager : NetworkManager
         Scene newScene = SceneManager.GetSceneByName(sceneName);
         if (!newScene.IsValid())
         {
-            newScene = SceneManager.GetSceneByPath(sceneName);
+            return;
         }
         GameObject[] objects = newScene.GetRootGameObjects();
         foreach (GameObject obj in objects)
