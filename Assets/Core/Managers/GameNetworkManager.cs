@@ -185,7 +185,6 @@ public class GameNetworkManager : NetworkManager
         WorldTravelManager travelManager = WorldTravelManager.Instance;
         if (travelManager != null)
         {
-            Debug.Log($"New scene: {ClientsActiveScene.name}");
             StartCoroutine(travelManager.HandleClientSceneChange(ClientsActiveScene.name));
         }
         else

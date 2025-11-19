@@ -4,6 +4,7 @@ using UnityEngine;
 using Mirror;
 using Random = UnityEngine.Random;
 using ItemSystem;
+using UnityEngine.SceneManagement;
 
 public class FishingManager : NetworkBehaviour
 {
@@ -141,6 +142,16 @@ public class FishingManager : NetworkBehaviour
     //This is first being done on the client and later on the server.
     bool IsFishingSpot(Vector2 clickedPos, out RaycastHit2D water)
     {
+        Scene playerScene;
+        if (isClient)
+        {
+            playerScene = GameNetworkManager.ClientsActiveScene;
+        }
+        else
+        {
+            playerScene = gameObject.scene;
+        }
+        
         water = new RaycastHit2D();
 
         float rodThrowDistance = 2.3f;
@@ -164,7 +175,7 @@ public class FishingManager : NetworkBehaviour
         // also make sure there are no objects between the player and the water.
         int obstacleLayer = ~LayerMask.GetMask("Water", "Player", "Ignore Raycast");
         // add one to make sure there are no float errors, don't know if it is neccessary tough
-        CompositeCollider2D coll = SceneObjectCache.GetWorldCollider(gameObject.scene);
+        CompositeCollider2D coll = SceneObjectCache.GetWorldCollider(playerScene);
         CompositeCollider2D.GeometryType geoType = coll.geometryType;
         coll.geometryType = CompositeCollider2D.GeometryType.Outlines;
         RaycastHit2D[] hits = Physics2D.RaycastAll(clickedPos, new Vector2(transform.position.x - clickedPos.x, transform.position.y - clickedPos.y), Vector2.Distance(clickedPos, transform.position), obstacleLayer);
@@ -191,7 +202,7 @@ public class FishingManager : NetworkBehaviour
             return false;
         }
         // We are sure that the click was inside a water collider, but the click can still be on an object that is inside the water. We also need to check for that.
-        CompositeCollider2D walkable = SceneObjectCache.GetWorldCollider(gameObject.scene);
+        CompositeCollider2D walkable = SceneObjectCache.GetWorldCollider(playerScene);
         // is there a better way then to cycle the GeometryType???
         if(isClient) {
             //walkable.geometryType = CompositeCollider2D.GeometryType.Polygons;
