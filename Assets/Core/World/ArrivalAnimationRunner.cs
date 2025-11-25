@@ -42,7 +42,7 @@ public class ArrivalAnimationRunner : MonoBehaviour
         Vector3? target = SpawnPointProvider.TryGetArrivalTarget(area, WorldTravel.CustomSpawnInstruction.WalkOusideBakery);
         if (target.HasValue)
         {
-            PathFinding pathFinder = SceneObjectCache.GetPathFinding(gameObject.scene);
+            PathFinding pathFinder = SceneObjectCache.GetPathFinding(GameNetworkManager.ClientsActiveScene);
             bool done = false;
             List<Vector2> result = null;
             pathFinder.QueueNewPath(transform.position, target.Value, gameObject, (List<Vector2> path) =>

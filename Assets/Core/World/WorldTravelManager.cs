@@ -121,10 +121,10 @@ public class WorldTravelManager : MonoBehaviour
 
         // If scene is already loaded, process immediately
         Scene targetScene = SceneManager.GetSceneByName(sceneName);
-        if (targetScene.isLoaded && targetScene.IsValid() && TryGetLocalPlayer(out GameObject player))
+        if (targetScene.isLoaded && targetScene.IsValid())
         {
             // Scene is already loaded, process arrival instructions now
-            StartCoroutine(ApplyArrivalInstructions(player, msg));
+            StartCoroutine(ApplyArrivalInstructions(NetworkClient.connection.identity.gameObject, msg));
             pendingArrivals.Remove(sceneName);
         }
     }
@@ -147,14 +147,11 @@ public class WorldTravelManager : MonoBehaviour
         // Step 2: Check for pending arrival instructions and apply them
         if (pendingArrivals.TryGetValue(newSceneName, out ArrivalInstructionMessage arrivalMsg))
         {
-            if (TryGetLocalPlayer(out GameObject player))
-            {
-                pendingArrivals.Remove(newSceneName);
-                yield return StartCoroutine(ApplyArrivalInstructions(player, arrivalMsg));
-            }
+            pendingArrivals.Remove(newSceneName);
+            yield return StartCoroutine(ApplyArrivalInstructions(NetworkClient.connection.identity.gameObject, arrivalMsg));
         }
 
-        // Step 3: Unload old scene
+        // Step 2: Unload old scene
         yield return StartCoroutine(UnloadOldScenes(newSceneName));
     }
 
@@ -247,26 +244,6 @@ public class WorldTravelManager : MonoBehaviour
                 pc.EndTravelLock();
             }
         }
-    }
-
-    [Client]
-    private bool TryGetLocalPlayer(out GameObject player)
-    {
-        if (_localPlayer != null)
-        {
-            player = _localPlayer;
-            return true;
-        }
-
-        if (NetworkClient.connection?.identity != null)
-        {
-            _localPlayer = NetworkClient.connection.identity.gameObject;
-            player = _localPlayer;
-            return true;
-        }
-
-        player = null;
-        return false;
     }
 }
 
