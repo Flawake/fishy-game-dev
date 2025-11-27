@@ -114,6 +114,11 @@ public class NpcDialog : MonoBehaviour
     private Vector2 _originalFacingDirection;
     private bool _hasOriginalFacing = false;
     
+    // Store player's original facing direction
+    private Vector2 _playerOriginalFacingDirection;
+    private bool _hasPlayerOriginalFacing = false;
+    private PlayerController _localPlayerController;
+    
     private static readonly int AnimatorHorizontalHash = Animator.StringToHash("Horizontal");
     private static readonly int AnimatorVerticalHash = Animator.StringToHash("Vertical");
 
@@ -138,6 +143,9 @@ public class NpcDialog : MonoBehaviour
 
         // Make NPC face the player
         FacePlayer();
+        
+        // Make player face the NPC
+        FacePlayerToNpc();
 
         canvasObject.SetActive(true);
         canvas.worldCamera = eventCamera;
@@ -174,79 +182,14 @@ public class NpcDialog : MonoBehaviour
             _hasOriginalFacing = false;
         }
 
+        // Clear player controller reference (don't restore player facing)
+        _localPlayerController = null;
+        _hasPlayerOriginalFacing = false;
+
         canvasObject.SetActive(false);
         DialogActive = false;
         PlayerController.OnMouseClickedAction -= HandleMouseClick;
         _currentNode = null;
-    }
-
-    /// <summary>
-    /// Makes the NPC face the local player
-    /// </summary>
-    private void FacePlayer()
-    {
-        // Try to get animator if not already set
-        if (npcAnimator == null)
-        {
-            // Try direct component first
-            npcAnimator = GetComponent<Animator>();
-            
-            // If not found, try in children (Animator might be on a child GameObject)
-            if (npcAnimator == null)
-            {
-                npcAnimator = GetComponentInChildren<Animator>();
-            }
-            
-            if (npcAnimator == null)
-            {
-                Debug.LogWarning($"[NpcDialog] Could not find Animator on {gameObject.name} or its children. NPC will not face player.");
-                return;
-            }
-        }
-
-        // Get the local player's position
-        Transform playerTransform = GetLocalPlayerTransform();
-        if (playerTransform == null)
-        {
-            return;
-        }
-
-        // Save current facing direction if not already saved
-        if (!_hasOriginalFacing)
-        {
-            _originalFacingDirection = new Vector2(
-                npcAnimator.GetFloat(AnimatorHorizontalHash),
-                npcAnimator.GetFloat(AnimatorVerticalHash)
-            );
-            _hasOriginalFacing = true;
-        }
-
-        // Calculate direction from NPC to player
-        Vector2 direction = ((Vector2)playerTransform.position - (Vector2)transform.position).normalized;
-
-        // Set animator parameters to face the player
-        npcAnimator.SetFloat(AnimatorHorizontalHash, direction.x);
-        npcAnimator.SetFloat(AnimatorVerticalHash, direction.y);
-    }
-
-    /// <summary>
-    /// Gets the local player's transform
-    /// </summary>
-    private Transform GetLocalPlayerTransform()
-    {
-        if (NetworkClient.localPlayer != null)
-        {
-            return NetworkClient.localPlayer.transform;
-        }
-
-        // Fallback: find player by tag or component
-        PlayerController localPlayer = FindFirstObjectByType<PlayerController>();
-        if (localPlayer != null && localPlayer.isLocalPlayer)
-        {
-            return localPlayer.transform;
-        }
-
-        return null;
     }
 
     private void HandleMouseClick()
@@ -356,6 +299,117 @@ public class NpcDialog : MonoBehaviour
         {
             EndDialog();
         }
+    }
+
+    /// <summary>
+    /// Makes the NPC face the local player
+    /// </summary>
+    private void FacePlayer()
+    {
+        // Try to get animator if not already set
+        if (npcAnimator == null)
+        {
+            // Try direct component first
+            npcAnimator = GetComponent<Animator>();
+            
+            // If not found, try in children (Animator might be on a child GameObject)
+            if (npcAnimator == null)
+            {
+                npcAnimator = GetComponentInChildren<Animator>();
+            }
+            
+            if (npcAnimator == null)
+            {
+                Debug.LogWarning($"[NpcDialog] Could not find Animator on {gameObject.name} or its children. NPC will not face player.");
+                return;
+            }
+        }
+
+        // Get the local player's position
+        Transform playerTransform = GetLocalPlayerTransform();
+        if (playerTransform == null)
+        {
+            return;
+        }
+
+        // Save current facing direction if not already saved
+        if (!_hasOriginalFacing)
+        {
+            _originalFacingDirection = new Vector2(
+                npcAnimator.GetFloat(AnimatorHorizontalHash),
+                npcAnimator.GetFloat(AnimatorVerticalHash)
+            );
+            _hasOriginalFacing = true;
+        }
+
+        // Calculate direction from NPC to player
+        Vector2 direction = ((Vector2)playerTransform.position - (Vector2)transform.position).normalized;
+
+        // Set animator parameters to face the player
+        npcAnimator.SetFloat(AnimatorHorizontalHash, direction.x);
+        npcAnimator.SetFloat(AnimatorVerticalHash, direction.y);
+    }
+
+    /// <summary>
+    /// Makes the local player face the NPC
+    /// </summary>
+    private void FacePlayerToNpc()
+    {
+        // Get the local player controller
+        if (NetworkClient.localPlayer != null)
+        {
+            _localPlayerController = NetworkClient.localPlayer.GetComponent<PlayerController>();
+        }
+
+        if (_localPlayerController == null)
+        {
+            // Fallback: find player by component
+            PlayerController[] players = FindObjectsByType<PlayerController>(FindObjectsSortMode.None);
+            foreach (PlayerController player in players)
+            {
+                if (player.isLocalPlayer)
+                {
+                    _localPlayerController = player;
+                    break;
+                }
+            }
+        }
+
+        if (_localPlayerController == null)
+        {
+            Debug.LogWarning("[NpcDialog] Could not find local player controller. Player will not face NPC.");
+            return;
+        }
+
+        // Get current player facing direction from animator
+        Animator playerAnimator = _localPlayerController.GetComponent<Animator>();
+        if (playerAnimator != null && !_hasPlayerOriginalFacing)
+        {
+            _playerOriginalFacingDirection = new Vector2(
+                playerAnimator.GetFloat("Horizontal"),
+                playerAnimator.GetFloat("Vertical")
+            );
+            _hasPlayerOriginalFacing = true;
+        }
+
+        // Calculate direction from player to NPC
+        Vector2 direction = ((Vector2)transform.position - (Vector2)_localPlayerController.transform.position).normalized;
+
+        // Make player face the NPC
+        _localPlayerController.SetPlayerAnimationForDirection(direction);
+    }
+
+    /// <summary>
+    /// Gets the local player's transform
+    /// </summary>
+    private Transform GetLocalPlayerTransform()
+    {
+        if (NetworkClient.localPlayer != null)
+        {
+            return NetworkClient.localPlayer.transform;
+        }
+
+        return null;
     }
 
     private void UpdateUIForOptions(DialogOptions options)
