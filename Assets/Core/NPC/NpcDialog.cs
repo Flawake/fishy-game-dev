@@ -3,51 +3,97 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public enum DialogResponse
+/// <summary>
+/// Represents a single dialog node with text, options, and callbacks.
+/// </summary>
+public class DialogNode
 {
-    Click,
-    Yes,
-    No,
-    YesAndNo,
-    End,
-}
-
-public class Dialog
-{
-    public int DialogID { get; }
     public string Text { get; }
-    public DialogResponse ResponseType { get; }
-    public int? NextClickDialog { get; }
-    public int? NextYesDialog { get; }
-    public int? NextNoDialog { get; }
+    public DialogOptions Options { get; }
+    public DialogNode NextClick { get; set; }
+    public DialogNode NextYes { get; set; }
+    public DialogNode NextNo { get; set; }
+    
+    public Action OnClick { get; set; }
+    public Action OnYes { get; set; }
+    public Action OnNo { get; set; }
 
-    public Action OnClick { get; }
-    public Action OnYes { get; }
-    public Action OnNo { get; }
-
-    public Dialog(
-        int dialogID,
-        string text,
-        DialogResponse responseType,
-        int? nextClickDialog = null,
-        int? nextYesDialog = null,
-        int? nextNoDialog = null,
-        Action onClick = null,
-        Action onYes = null,
-        Action onNo = null)
+    public DialogNode(string text, DialogOptions options = DialogOptions.Click)
     {
-        DialogID = dialogID;
         Text = text;
-        ResponseType = responseType;
-        NextClickDialog = nextClickDialog;
-        NextYesDialog = nextYesDialog;
-        NextNoDialog = nextNoDialog;
+        Options = options;
+    }
+
+    /// <summary>
+    /// Fluent API: Set the next dialog when clicking/continuing
+    /// </summary>
+    public DialogNode SetNextClick(DialogNode next, Action onClick = null)
+    {
+        NextClick = next;
         OnClick = onClick;
+        return this;
+    }
+
+    /// <summary>
+    /// Fluent API: Set the next dialog when clicking Yes
+    /// </summary>
+    public DialogNode SetNextYes(DialogNode next, Action onYes = null)
+    {
+        NextYes = next;
         OnYes = onYes;
+        return this;
+    }
+
+    /// <summary>
+    /// Fluent API: Set the next dialog when clicking No
+    /// </summary>
+    public DialogNode SetNextNo(DialogNode next, Action onNo = null)
+    {
+        NextNo = next;
         OnNo = onNo;
+        return this;
+    }
+
+    /// <summary>
+    /// Fluent API: Set callbacks without changing next dialog
+    /// </summary>
+    public DialogNode OnClickAction(Action action)
+    {
+        OnClick = action;
+        return this;
+    }
+
+    public DialogNode OnYesAction(Action action)
+    {
+        OnYes = action;
+        return this;
+    }
+
+    public DialogNode OnNoAction(Action action)
+    {
+        OnNo = action;
+        return this;
     }
 }
 
+/// <summary>
+/// Defines what interaction options are available for a dialog node
+/// </summary>
+public enum DialogOptions
+{
+    /// <summary>Simple click to continue or end</summary>
+    Click,
+    /// <summary>Yes button only</summary>
+    Yes,
+    /// <summary>No button only</summary>
+    No,
+    /// <summary>Both Yes and No buttons</summary>
+    YesNo
+}
+
+/// <summary>
+/// Manages the dialog UI and flow for NPCs
+/// </summary>
 public class NpcDialog : MonoBehaviour
 {
     [SerializeField] private GameObject canvasObject;
@@ -57,128 +103,198 @@ public class NpcDialog : MonoBehaviour
     [SerializeField] private GameObject yesButton;
     [SerializeField] private GameObject noButton;
     
-    public static bool DialogActive;
-    private Dialog _currentDialog;
+    public static bool DialogActive { get; private set; }
     
-    private Dictionary<int, Dialog> _dialogs;
-    
-    public void SetDialogs(Dictionary<int, Dialog> newDialogs)
+    private DialogNode _currentNode;
+    private DialogNode _rootNode;
+
+    /// <summary>
+    /// Sets the root dialog node to start from
+    /// </summary>
+    public void SetRootDialog(DialogNode rootNode)
     {
-        _dialogs = newDialogs;
+        _rootNode = rootNode;
     }
-    
+
+    /// <summary>
+    /// Starts the dialog system with the root node
+    /// </summary>
     public void StartDialog(Camera eventCamera)
     {
-        canvasObject.SetActive(true);
-        canvas.worldCamera = eventCamera;
-        if (_dialogs == null)
+        if (_rootNode == null)
         {
-            Debug.LogWarning("Dialogs of the npc are not set!");
+            Debug.LogWarning($"[NpcDialog] No root dialog set on {gameObject.name}!");
             return;
         }
+
+        canvasObject.SetActive(true);
+        canvas.worldCamera = eventCamera;
         DialogActive = true;
-        ShowNextDialog(_dialogs[1]);
-        PlayerController.OnMouseClickedAction += OnMouseClicked;
+        
+        ShowDialog(_rootNode);
+        PlayerController.OnMouseClickedAction += HandleMouseClick;
+    }
+
+    /// <summary>
+    /// Shows a specific dialog node (can be called externally for dynamic dialog changes)
+    /// </summary>
+    public void ShowDialog(DialogNode node)
+    {
+        if (node == null)
+        {
+            Debug.LogWarning("[NpcDialog] Attempted to show null dialog node!");
+            EndDialog();
+            return;
+        }
+
+        _currentNode = node;
+        dialogText.text = node.Text;
+        UpdateUIForOptions(node.Options);
     }
 
     private void EndDialog()
     {
         canvasObject.SetActive(false);
         DialogActive = false;
-        PlayerController.OnMouseClickedAction -= OnMouseClicked;
+        PlayerController.OnMouseClickedAction -= HandleMouseClick;
+        _currentNode = null;
     }
 
-    public void ShowNextDialog(Dialog nextDialog)
+    private void HandleMouseClick()
     {
-        SetAppropiateAnswers(nextDialog.ResponseType);
-        dialogText.text = nextDialog.Text;
-        _currentDialog = nextDialog;
-    }
+        if (_currentNode == null) return;
 
-    private void OnMouseClicked()
-    {
-        if (_currentDialog.ResponseType == DialogResponse.End)
+        // Handle click-based navigation
+        if (_currentNode.Options == DialogOptions.Click || _currentNode.Options == DialogOptions.YesNo)
         {
-            _currentDialog.OnClick?.Invoke();
-            EndDialog();
-            return;
-        }
-        if (_currentDialog.ResponseType == DialogResponse.Click)
-        {
-            if (_currentDialog.NextClickDialog.HasValue && _dialogs.TryGetValue(_currentDialog.NextClickDialog.Value, out Dialog dialog))
+            // For YesNo, clicking doesn't advance - must use buttons
+            if (_currentNode.Options == DialogOptions.YesNo)
             {
-                Action toExecute = _currentDialog.OnClick;
-                ShowNextDialog(dialog);
-                toExecute?.Invoke();
+                return;
+            }
+
+            // Store the current node before callback
+            DialogNode nodeBeforeCallback = _currentNode;
+
+            // Execute callback - it may change the dialog
+            _currentNode.OnClick?.Invoke();
+
+            // If callback changed the dialog, don't do automatic navigation
+            if (_currentNode != nodeBeforeCallback)
+            {
+                return;
+            }
+
+            // Otherwise, proceed with automatic navigation
+            if (_currentNode.NextClick != null)
+            {
+                ShowDialog(_currentNode.NextClick);
             }
             else
             {
-                Debug.LogWarning("Could not load the next npc dialog");
                 EndDialog();
             }
         }
     }
-    
-    //Called from button ingame
-    public void YesClicked()
+
+    /// <summary>
+    /// Called by the Yes button in the UI
+    /// </summary>
+    public void OnYesButtonClicked()
     {
-        if (_currentDialog.NextYesDialog.HasValue && _dialogs.TryGetValue(_currentDialog.NextYesDialog.Value, out Dialog dialog))
+        if (_currentNode == null) return;
+
+        if (_currentNode.Options != DialogOptions.Yes && _currentNode.Options != DialogOptions.YesNo)
         {
-            Action toExecute = _currentDialog.OnYes;
-            ShowNextDialog(dialog);
-            toExecute?.Invoke();
+            Debug.LogWarning("[NpcDialog] Yes button clicked but not available for current dialog!");
+            return;
+        }
+
+        // Store the current node before callback
+        DialogNode nodeBeforeCallback = _currentNode;
+
+        // Execute callback - it may change the dialog
+        _currentNode.OnYes?.Invoke();
+
+        // If callback changed the dialog, don't do automatic navigation
+        if (_currentNode != nodeBeforeCallback)
+        {
+            return;
+        }
+
+        // Otherwise, proceed with automatic navigation
+        if (_currentNode.NextYes != null)
+        {
+            ShowDialog(_currentNode.NextYes);
         }
         else
         {
-            Debug.LogWarning("Could not load the next npc dialog");
-            EndDialog();
-        }
-    }
-    
-    //Called from button ingame
-    public void NoClicked()
-    {
-        if (_currentDialog.NextNoDialog.HasValue && _dialogs.TryGetValue(_currentDialog.NextNoDialog.Value, out Dialog dialog))
-        {
-            Action toExecute = _currentDialog.OnNo;
-            ShowNextDialog(dialog);
-            toExecute?.Invoke();
-        }
-        else
-        {
-            Debug.LogWarning("Could not load the next npc dialog");
             EndDialog();
         }
     }
 
-    private void SetAppropiateAnswers(DialogResponse response)
+    /// <summary>
+    /// Called by the No button in the UI
+    /// </summary>
+    public void OnNoButtonClicked()
     {
-        switch (response)
+        if (_currentNode == null) return;
+
+        if (_currentNode.Options != DialogOptions.No && _currentNode.Options != DialogOptions.YesNo)
         {
-            case DialogResponse.Click:
+            Debug.LogWarning("[NpcDialog] No button clicked but not available for current dialog!");
+            return;
+        }
+
+        // Store the current node before callback
+        DialogNode nodeBeforeCallback = _currentNode;
+
+        // Execute callback - it may change the dialog
+        _currentNode.OnNo?.Invoke();
+
+        // If callback changed the dialog, don't do automatic navigation
+        if (_currentNode != nodeBeforeCallback)
+        {
+            return;
+        }
+
+        // Otherwise, proceed with automatic navigation
+        if (_currentNode.NextNo != null)
+        {
+            ShowDialog(_currentNode.NextNo);
+        }
+        else
+        {
+            EndDialog();
+        }
+    }
+
+    private void UpdateUIForOptions(DialogOptions options)
+    {
+        switch (options)
+        {
+            case DialogOptions.Click:
                 yesButton.SetActive(false);
                 noButton.SetActive(false);
                 clickIcon.SetActive(true);
                 break;
-            case DialogResponse.Yes:
+
+            case DialogOptions.Yes:
                 yesButton.SetActive(true);
                 noButton.SetActive(false);
                 clickIcon.SetActive(false);
                 break;
-            case DialogResponse.No:
+
+            case DialogOptions.No:
                 yesButton.SetActive(false);
                 noButton.SetActive(true);
                 clickIcon.SetActive(false);
                 break;
-            case DialogResponse.YesAndNo:
+
+            case DialogOptions.YesNo:
                 yesButton.SetActive(true);
                 noButton.SetActive(true);
                 clickIcon.SetActive(false);
-                break;
-            case DialogResponse.End:
-                yesButton.SetActive(false);
-                noButton.SetActive(false);
-                clickIcon.SetActive(true);
                 break;
         }
     }

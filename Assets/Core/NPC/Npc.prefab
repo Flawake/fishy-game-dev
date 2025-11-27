@@ -1090,7 +1090,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 5493110953388718892}
         m_TargetAssemblyTypeName: NpcDialog, Assembly-CSharp
-        m_MethodName: NoClicked
+        m_MethodName: OnNoButtonClicked
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1223,7 +1223,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 5493110953388718892}
         m_TargetAssemblyTypeName: NpcDialog, Assembly-CSharp
-        m_MethodName: YesClicked
+        m_MethodName: OnYesButtonClicked
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

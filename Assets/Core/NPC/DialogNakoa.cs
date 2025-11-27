@@ -1,22 +1,11 @@
-using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
 
 public class DialogNakoa : MonoBehaviour
 {
-    private Dialog _startDialog = new Dialog(
-        1, 
-        "This beach keeps secrets better than people do.",
-        DialogResponse.End,
-        -1,
-        -1,
-        -1,
-        null,
-        null,
-        null
-        );
-    
     [SerializeField] NpcDialog npcDialog;
+
+    private DialogNode _startDialog;
 
     private void Awake()
     {
@@ -24,8 +13,12 @@ public class DialogNakoa : MonoBehaviour
         {
             return;
         }
-        Dictionary<int, Dialog> dialogs = new Dictionary<int, Dialog>();
-        dialogs.Add(_startDialog.DialogID, _startDialog);
-        npcDialog.SetDialogs(dialogs);
+
+        _startDialog = new DialogNode(
+            "This beach keeps secrets better than people do.",
+            DialogOptions.Click
+        );
+
+        npcDialog.SetRootDialog(_startDialog);
     }
 }

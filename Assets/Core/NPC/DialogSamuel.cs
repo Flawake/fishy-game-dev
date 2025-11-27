@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using ItemSystem;
 using Mirror;
 using UnityEngine;
@@ -8,18 +7,13 @@ using Grants;
 public class DialogSamuel : NetworkBehaviour
 {
     [SerializeField] ItemDefinition doughDefinition;
-
-    private Dialog _startDialog;
-
-    private Dialog dialog2;
-
-    private Dialog dialog3;
-
-    private Dialog dialog4;
-
-    private Dialog dialog5;
-
     [SerializeField] NpcDialog npcDialog;
+
+    private DialogNode _startDialog;
+    private DialogNode _dialog2;
+    private DialogNode _dialog3;
+    private DialogNode _dialog4;
+    private DialogNode _dialog5;
 
     private void Awake()
     {
@@ -27,85 +21,60 @@ public class DialogSamuel : NetworkBehaviour
         {
             return;
         }
-        _startDialog = new Dialog(
-            1,
-            "Hello sir, I expected you. Do you want some dough?",
-            DialogResponse.YesAndNo,
-            -1,
-            2,
-            3,
-            null,
-            CheckAndGiveDough,
-            null
-        );
 
-        dialog2 = new Dialog(
-            2,
-            "No problem at all, is this enough?",
-            DialogResponse.YesAndNo,
-            -1,
-            3,
-            4,
-            null,
-            null,
-            CheckAndGiveDough
-        );
-
-        dialog3 = new Dialog(
-            3,
-            "Okay, looking forward to see you later.",
-            DialogResponse.End,
-            -1,
-            -1,
-            -1,
-            null,
-            null,
-            null
-        );
-
-        dialog4 = new Dialog(
-            4,
-            "So, here you go. You ain't getting more from me for now.",
-            DialogResponse.End,
-            -1,
-            -1,
-            -1,
-            null,
-            null,
-            null
-        );
-
-        dialog5 = new Dialog(
-            5,
-            "You've already got plenty of dough, friend. Don't be greedy now!.",
-            DialogResponse.End,
-            -1,
-            -1,
-            -1,
-            null,
-            null,
-            null
-        );
-
-        Dictionary<int, Dialog> dialogs = new Dictionary<int, Dialog>
-        {
-            { _startDialog.DialogID, _startDialog },
-            { dialog2.DialogID, dialog2 },
-            { dialog3.DialogID, dialog3 },
-            { dialog4.DialogID, dialog4 },
-            { dialog5.DialogID, dialog5 }
-        };
-        npcDialog.SetDialogs(dialogs);
+        BuildDialogTree();
+        npcDialog.SetRootDialog(_startDialog);
     }
 
-    void CheckAndGiveDough()
+    private void BuildDialogTree()
+    {
+        // Create all dialog nodes
+        _startDialog = new DialogNode(
+            "Hello sir, I expected you. Do you want some dough?",
+            DialogOptions.YesNo
+        );
+
+        _dialog2 = new DialogNode(
+            "No problem at all, is this enough?",
+            DialogOptions.YesNo
+        );
+
+        _dialog3 = new DialogNode(
+            "Okay, looking forward to see you later.",
+            DialogOptions.Click
+        );
+
+        _dialog4 = new DialogNode(
+            "So, here you go. You ain't getting more from me for now.",
+            DialogOptions.Click
+        );
+
+        _dialog5 = new DialogNode(
+            "You've already got plenty of dough, friend. Don't be greedy now!.",
+            DialogOptions.Click
+        );
+
+        // Build the dialog tree structure
+        _startDialog
+            .SetNextYes(_dialog2, CheckAndGiveDough)
+            .SetNextNo(_dialog3);
+
+        _dialog2
+            .SetNextYes(_dialog3)
+            .SetNextNo(_dialog4, CheckAndGiveDough);
+
+        // End dialogs don't need next nodes - they just close
+    }
+
+    private void CheckAndGiveDough()
     {
         PlayerInventory inv = NetworkClient.connection.identity.GetComponent<PlayerInventory>();
         if (HasEnoughDough(inv))
         {
-            HasEnoughDoughDialogSetter();
+            ShowEnoughDoughDialog();
             return;
         }
+        
         ItemGrantService grantService = NetworkClient.connection.identity.GetComponent<ItemGrantService>();
         Guid operationId = Guid.Empty;
         if (grantService != null)
@@ -121,6 +90,7 @@ public class DialogSamuel : NetworkBehaviour
         PlayerInventory inv = sender.identity.GetComponent<PlayerInventory>();
         ItemGrantService grantService = sender.identity.GetComponent<ItemGrantService>();
         ItemInstance currentDoughReference = inv.GetBaitByDefinitionId(doughDefinition.Id);
+        
         if (currentDoughReference != null && currentDoughReference.GetState<StackState>().currentAmount > 70)
         {
             if (grantService != null && operationId != Guid.Empty)
@@ -141,16 +111,16 @@ public class DialogSamuel : NetworkBehaviour
         }
     }
 
-    void HasEnoughDoughDialogSetter()
+    private void ShowEnoughDoughDialog()
     {
         PlayerInventory inv = NetworkClient.connection.identity.GetComponent<PlayerInventory>();
         if (HasEnoughDough(inv))
         {
-            npcDialog.ShowNextDialog(dialog5);
+            npcDialog.ShowDialog(_dialog5);
         }
     }
 
-    bool HasEnoughDough(PlayerInventory inventory)
+    private bool HasEnoughDough(PlayerInventory inventory)
     {
         ItemInstance currentDoughReference = inventory.GetBaitByDefinitionId(doughDefinition.Id);
         if (currentDoughReference != null && currentDoughReference.GetState<StackState>().currentAmount >= 70)
