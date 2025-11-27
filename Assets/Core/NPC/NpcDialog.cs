@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using Mirror;
 
 /// <summary>
 /// Represents a single dialog node with text, options, and callbacks.
@@ -102,11 +103,19 @@ public class NpcDialog : MonoBehaviour
     [SerializeField] private GameObject clickIcon;
     [SerializeField] private GameObject yesButton;
     [SerializeField] private GameObject noButton;
+    [SerializeField] private Animator npcAnimator;
     
     public static bool DialogActive { get; private set; }
     
     private DialogNode _currentNode;
     private DialogNode _rootNode;
+    
+    // Store original facing direction to restore when dialog ends
+    private Vector2 _originalFacingDirection;
+    private bool _hasOriginalFacing = false;
+    
+    private static readonly int AnimatorHorizontalHash = Animator.StringToHash("Horizontal");
+    private static readonly int AnimatorVerticalHash = Animator.StringToHash("Vertical");
 
     /// <summary>
     /// Sets the root dialog node to start from
@@ -126,6 +135,9 @@ public class NpcDialog : MonoBehaviour
             Debug.LogWarning($"[NpcDialog] No root dialog set on {gameObject.name}!");
             return;
         }
+
+        // Make NPC face the player
+        FacePlayer();
 
         canvasObject.SetActive(true);
         canvas.worldCamera = eventCamera;
@@ -154,10 +166,87 @@ public class NpcDialog : MonoBehaviour
 
     private void EndDialog()
     {
+        // Restore original facing direction if we saved it
+        if (_hasOriginalFacing && npcAnimator != null)
+        {
+            npcAnimator.SetFloat(AnimatorHorizontalHash, _originalFacingDirection.x);
+            npcAnimator.SetFloat(AnimatorVerticalHash, _originalFacingDirection.y);
+            _hasOriginalFacing = false;
+        }
+
         canvasObject.SetActive(false);
         DialogActive = false;
         PlayerController.OnMouseClickedAction -= HandleMouseClick;
         _currentNode = null;
+    }
+
+    /// <summary>
+    /// Makes the NPC face the local player
+    /// </summary>
+    private void FacePlayer()
+    {
+        // Try to get animator if not already set
+        if (npcAnimator == null)
+        {
+            // Try direct component first
+            npcAnimator = GetComponent<Animator>();
+            
+            // If not found, try in children (Animator might be on a child GameObject)
+            if (npcAnimator == null)
+            {
+                npcAnimator = GetComponentInChildren<Animator>();
+            }
+            
+            if (npcAnimator == null)
+            {
+                Debug.LogWarning($"[NpcDialog] Could not find Animator on {gameObject.name} or its children. NPC will not face player.");
+                return;
+            }
+        }
+
+        // Get the local player's position
+        Transform playerTransform = GetLocalPlayerTransform();
+        if (playerTransform == null)
+        {
+            return;
+        }
+
+        // Save current facing direction if not already saved
+        if (!_hasOriginalFacing)
+        {
+            _originalFacingDirection = new Vector2(
+                npcAnimator.GetFloat(AnimatorHorizontalHash),
+                npcAnimator.GetFloat(AnimatorVerticalHash)
+            );
+            _hasOriginalFacing = true;
+        }
+
+        // Calculate direction from NPC to player
+        Vector2 direction = ((Vector2)playerTransform.position - (Vector2)transform.position).normalized;
+
+        // Set animator parameters to face the player
+        npcAnimator.SetFloat(AnimatorHorizontalHash, direction.x);
+        npcAnimator.SetFloat(AnimatorVerticalHash, direction.y);
+    }
+
+    /// <summary>
+    /// Gets the local player's transform
+    /// </summary>
+    private Transform GetLocalPlayerTransform()
+    {
+        if (NetworkClient.localPlayer != null)
+        {
+            return NetworkClient.localPlayer.transform;
+        }
+
+        // Fallback: find player by tag or component
+        PlayerController localPlayer = FindFirstObjectByType<PlayerController>();
+        if (localPlayer != null && localPlayer.isLocalPlayer)
+        {
+            return localPlayer.transform;
+        }
+
+        return null;
     }
 
     private void HandleMouseClick()
