@@ -214,6 +214,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1942772589}
     m_Modifications:
+    - target: {fileID: 2190392996802445034, guid: f70a0e88ef1f475408c483c51412b7d0, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2190392996802445034, guid: f70a0e88ef1f475408c483c51412b7d0, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2245603488856223365, guid: f70a0e88ef1f475408c483c51412b7d0, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3470684895638509335, guid: f70a0e88ef1f475408c483c51412b7d0, type: 3}
       propertyPath: sceneId
       value: 3824425120
@@ -232,11 +244,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6494716182117350736, guid: f70a0e88ef1f475408c483c51412b7d0, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -0.12
       objectReference: {fileID: 0}
     - target: {fileID: 6494716182117350736, guid: f70a0e88ef1f475408c483c51412b7d0, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.03
+      value: -0.26
       objectReference: {fileID: 0}
     - target: {fileID: 6494716182117350736, guid: f70a0e88ef1f475408c483c51412b7d0, type: 3}
       propertyPath: m_LocalPosition.z
@@ -270,13 +282,9 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 9049896073061987267, guid: f70a0e88ef1f475408c483c51412b7d0, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -0.21
-      objectReference: {fileID: 0}
-    - target: {fileID: 9049896073061987267, guid: f70a0e88ef1f475408c483c51412b7d0, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -0.27
+    - target: {fileID: 8216489393035931733, guid: f70a0e88ef1f475408c483c51412b7d0, type: 3}
+      propertyPath: m_text
+      value: Samuel
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
