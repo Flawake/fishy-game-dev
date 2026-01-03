@@ -1,18 +1,16 @@
 using Mirror;
 using ItemSystem;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class FishdexFishUIBuilder : MonoBehaviour
 {
-    int fishID;
-    [SerializeField]
-    TMP_Text nameField;
+    ItemDefinition thisFish;
+
     [SerializeField]
     Image fishImage;
     [SerializeField]
-    TMP_Text rarity;
+    Image sleeve;
 
     FishInfoUIManager fishInfoUI;
 
@@ -23,33 +21,28 @@ public class FishdexFishUIBuilder : MonoBehaviour
 
     public void BuildFishdexFish(ItemDefinition fish)
     {
+        thisFish = fish;
         FishBehaviour fishBehaviour = fish.GetBehaviour<FishBehaviour>();
+
         if (fishBehaviour == null)
         {
             return;
         }
-        fishID = fish.Id;
-        nameField.text = fish.name;
         fishImage.sprite = fish.Icon;
-        rarity.text = FishEnumConfig.RarityToString(fishBehaviour.Rarity);
+        
+        sleeve.color = FishEnumConfig.RarityToColor(fishBehaviour.Rarity);
 
-        if (NetworkClient.localPlayer.GetComponentInChildren<PlayerFishdexFishes>().ContainsFish(fish.Id))
-        {
-            fishImage.color = Color.white;
-        }
-        else
-        {
-            fishImage.color = Color.black;
-        }
+        fishImage.color = NetworkClient.localPlayer
+                            .GetComponentInChildren<PlayerFishdexFishes>()
+                            .ContainsFish(fish.Id)
+                        ? Color.white
+                        : Color.black;
+
     }
 
+    // Called from button ingame
     public void ShowFishInfo()
     {
-        if (fishInfoUI.CurrentFishinfoFishID() == fishID)
-        {
-            fishInfoUI.CloseFishInfo();
-            return;
-        }
-        fishInfoUI.OpenFishInfo(fishID);
+        GetComponentInParent<FishdexUIManager>().ShowFishInfo(thisFish);
     }
 }

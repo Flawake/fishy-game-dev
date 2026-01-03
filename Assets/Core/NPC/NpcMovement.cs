@@ -95,41 +95,50 @@ public class NpcMovement : NetworkBehaviour
         pathFinder.QueueNewPath(transform.position, newPos, gameObject, PathFindRequestCallback);
     }
 
-    private void MoveNpc()
-    {
-        Vector2 moveDir = Vector2.zero;
-        if (_nextMoves != null && _nextMoves.Count != 0)
-        {
-            moveDir = CalculateMovementVector();
-        }
-        npcRigidBody.linearVelocity = moveDir.normalized * moveSpeed;
-
-        if (moveDir == Vector2.zero)
-        {
-            npcAnimator.SetFloat(AnimatorSpeedHash, 0);
-            return;
-        }
-        
-        npcAnimator.SetFloat(AnimatorHorizontalHash, moveDir.normalized.x);
-        npcAnimator.SetFloat(AnimatorVerticalHash, moveDir.normalized.y);
-        npcAnimator.SetFloat(AnimatorSpeedHash, 1);
-    }
-    
     private Vector2 CalculateMovementVector()
     {
-        Vector2 dir = _nextMoves[0] - (Vector2)transform.position;
-        // Pin the NPC to the target position if the distance between the target and where it is less is then what it could have moved in the last frame. Used to avoid oscillating around the target position
-        if (Vector2.Distance(_nextMoves[0], transform.position) < Time.deltaTime * moveSpeed)
+        if (_nextMoves == null || _nextMoves.Count == 0)
         {
-            transform.position = _nextMoves[0];
-            _nextMoves.RemoveAt(0);
-            if (_nextMoves.Count == 0)
-            {
-                _nextMoves = null;
-            }
+            return Vector2.zero;
         }
-        return dir;
+
+        Vector2 target = _nextMoves[0];
+        Vector2 toTarget = target - (Vector2)transform.position;
+        float distance = toTarget.magnitude;
+
+        float moveThisFrame = moveSpeed * Time.fixedDeltaTime;
+
+        if (distance <= moveThisFrame)
+        {
+            // Snap to target
+            transform.position = target;
+            _nextMoves = null;
+            return Vector2.zero;
+        }
+
+        // Move towards target but never overshoot
+        return toTarget.normalized * moveSpeed;
     }
+
+    private void MoveNpc()
+    {
+        Vector2 move = CalculateMovementVector();
+    
+        npcRigidBody.linearVelocity = move;
+
+        if (move == Vector2.zero)
+        {
+            npcAnimator.SetFloat(AnimatorSpeedHash, 0);
+        }
+        else
+        {
+            Vector2 moveDir = move.normalized;
+            npcAnimator.SetFloat(AnimatorHorizontalHash, moveDir.x);
+            npcAnimator.SetFloat(AnimatorVerticalHash, moveDir.y);
+            npcAnimator.SetFloat(AnimatorSpeedHash, 1);
+        }
+    }
+
     
     [Server]
     private bool CheckNewPosValid(Vector2 position) {

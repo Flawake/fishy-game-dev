@@ -18,17 +18,6 @@ public enum RodThrowDistance
     Far,
 }
 
-public abstract class ItemObject : ScriptableObject
-{
-    public Guid uuid;
-    public ItemType type;
-    public int id;
-    public Sprite sprite;
-    [TextArea(15, 20)]
-    public string description;
-    public bool stackable;
-}
-
 public static class ItemObjectSerializer
 {
     

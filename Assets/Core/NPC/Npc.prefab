@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5629830537458463366}
   - component: {fileID: 3486207138584523206}
   - component: {fileID: 3421535172580416545}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: NPC_Holder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -103,7 +103,7 @@ GameObject:
   - component: {fileID: 7486588249666708851}
   - component: {fileID: 4645623850429557341}
   - component: {fileID: 1072580104153840062}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: DialogText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -241,7 +241,7 @@ GameObject:
   - component: {fileID: 1877446332393660548}
   - component: {fileID: 7096189417632111640}
   - component: {fileID: 8216489393035931733}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Name
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -377,7 +377,7 @@ GameObject:
   - component: {fileID: 7075049090520896769}
   - component: {fileID: 7383596353755166692}
   - component: {fileID: 1746871450416096911}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: TextHolder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -454,7 +454,7 @@ GameObject:
   - component: {fileID: 2086091566239878951}
   - component: {fileID: 2794783115503400114}
   - component: {fileID: 2407952368692605782}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: DialogCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -562,7 +562,7 @@ GameObject:
   - component: {fileID: 6752722579158889388}
   - component: {fileID: 3967030523172088906}
   - component: {fileID: 8394304287396829558}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Next
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -681,7 +681,7 @@ GameObject:
   - component: {fileID: 5689897212241262644}
   - component: {fileID: 702193289548956775}
   - component: {fileID: 6557258761633039032}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Pointer_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -759,7 +759,7 @@ GameObject:
   - component: {fileID: 8396974173626231783}
   - component: {fileID: 1404208127289015675}
   - component: {fileID: 2553724498805624317}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: body
   m_TagString: NPC
   m_Icon: {fileID: 0}
@@ -947,7 +947,7 @@ GameObject:
   - component: {fileID: 4223937493391861998}
   - component: {fileID: 669959895183475887}
   - component: {fileID: 5493110953388718892}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Npc
   m_TagString: NPC
   m_Icon: {fileID: 0}
@@ -1069,7 +1069,7 @@ GameObject:
   - component: {fileID: 8038870958363892197}
   - component: {fileID: 8416999707653557312}
   - component: {fileID: 12300741813073508}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: NPC_Holder_border
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1158,7 +1158,7 @@ GameObject:
   - component: {fileID: 7342638587498702771}
   - component: {fileID: 2895950807242331566}
   - component: {fileID: 2830934806632032592}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1293,7 +1293,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2294287665231113756}
   - component: {fileID: 7985119724720520960}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: NPCFeet
   m_TagString: NPCFeet
   m_Icon: {fileID: 0}
@@ -1372,7 +1372,7 @@ GameObject:
   - component: {fileID: 1517290975344277720}
   - component: {fileID: 1762282925524605107}
   - component: {fileID: 5670975396404144493}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: NPC_Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1447,7 +1447,7 @@ GameObject:
   - component: {fileID: 948154025645455500}
   - component: {fileID: 2287281496539022384}
   - component: {fileID: 5134456468854157512}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Name_background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1524,7 +1524,7 @@ GameObject:
   - component: {fileID: 5337967647788832572}
   - component: {fileID: 8655981325809703780}
   - component: {fileID: 7141417473818870003}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: No
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1657,7 +1657,7 @@ GameObject:
   - component: {fileID: 7001396267406082770}
   - component: {fileID: 1424770037318609552}
   - component: {fileID: 8565831978534650903}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Yes
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1789,7 +1789,7 @@ GameObject:
   - component: {fileID: 2860693933390880676}
   - component: {fileID: 6456774705304014371}
   - component: {fileID: 3358859730088425128}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}

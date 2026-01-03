@@ -7,71 +7,107 @@ using UnityEngine.UI;
 public class FishInfoUIManager : MonoBehaviour
 {
     [SerializeField]
-    GameObject caughtFishInfo;
-    [SerializeField]
-    GameObject uncaughtFishInfo;
-
-    [SerializeField]
-    CaughtFishInfo caughtFishInfoManager;
-    [SerializeField]
-    UncaughtFishInfo uncaughtFishInfoManager;
-
-    [SerializeField]
     TMP_Text fishName;
+    [SerializeField]
+    TMP_Text fishDescription;
     [SerializeField]
     Image fishimage;
     [SerializeField]
-    TMP_Text fishBait;
+    GameObject possibleBaitsContainer;
     [SerializeField]
-    TMP_Text fishAreas;
+    GameObject caughtWithBaitContainer;
+    [SerializeField]
+    GameObject possibleAreasContainer;
+    [SerializeField]
+    GameObject caughtInAreasContainer;
     [SerializeField]
     TMP_Text maxCaughtLength;
     [SerializeField]
     TMP_Text amountCaught;
+    [SerializeField]
+    GameObject[] stars;
+    [SerializeField]
+    GameObject baitImagePrefab;
+    [SerializeField]
+    GameObject areaImagePrefab;
 
     ItemDefinition curFish;
 
-    public void CloseFishInfo()
+    private void showStars(int starCount)
     {
-        caughtFishInfo.SetActive(false);
-        uncaughtFishInfo.SetActive(false);
+        for (int i = 0; i < stars.Length; i++)
+        {
+            if (i < starCount)
+            {
+                stars[i].SetActive(true);
+            }
+            else
+            {
+                stars[i].SetActive(false);
+            }
+        }
     }
 
-    public void OpenFishInfo(int fishID)
+    private void ClearContainers()
+    {
+        foreach (Transform child in caughtWithBaitContainer.transform)
+        {
+            Destroy(child.gameObject);
+        }
+        foreach (Transform child in caughtInAreasContainer.transform)
+        {
+            Destroy(child.gameObject);
+        }
+        foreach (Transform child in possibleBaitsContainer.transform)
+        {
+            Destroy(child.gameObject);
+        }
+        foreach (Transform child in possibleAreasContainer.transform)
+        {
+            Destroy(child.gameObject);
+        }
+    }
+
+    private void FillContainers(StatFish statFish)
+    {
+        for (int i = 0; i < statFish.baitsCaught.Length - 1; i++)
+        {
+            ItemDefinition bait = ItemRegistry.Get(statFish.baitsCaught[i]);
+            GameObject baitObject = Instantiate(baitImagePrefab, caughtWithBaitContainer.transform);
+            baitObject.GetComponent<Image>().sprite = bait.Icon;
+        }
+    }
+
+    public void LoadFishInfo(int fishID)
     {
         curFish = ItemRegistry.Get(fishID);
-        if (curFish == null || curFish.GetBehaviour<FishBehaviour>() == null)
+        FishBehaviour curFishBehaviour = curFish.GetBehaviour<FishBehaviour>();
+        if (curFish == null || curFishBehaviour == null)
         {
             Debug.LogWarning($"Could not show information about a fish that should have had ID: {fishID}");
             return;
         }
+        ClearContainers();
+
         StatFish statFish = NetworkClient.localPlayer.GetComponentInChildren<PlayerFishdexFishes>().GetStatFish(fishID);
         if (statFish == null)
         {
-            uncaughtFishInfo.SetActive(true);
-            uncaughtFishInfoManager.ShowFishInfo(fishID);
             fishimage.color = Color.black;
-            amountCaught.text = "0";
+            maxCaughtLength.text = "-";
+            amountCaught.text = "0 x";
         }
         else
         {
-            caughtFishInfo.SetActive(true);
-            caughtFishInfoManager.ShowFishInfo(fishID);
             fishimage.color = Color.white;
-            maxCaughtLength.text = statFish.maxCaughtLength.ToString();
-            amountCaught.text = statFish.amount.ToString();
-        }
-        fishName.text = curFish.name;
-        fishimage.sprite = curFish.Icon;
-        caughtFishInfo.SetActive(true);
-    }
+            maxCaughtLength.text = statFish.maxCaughtLength.ToString() + "cm";
+            amountCaught.text = statFish.amount.ToString() + " x";
 
-    public int CurrentFishinfoFishID()
-    {
-        if (caughtFishInfo.activeInHierarchy == false)
-        {
-            return -1;
+            FillContainers(statFish);
         }
-        return curFish.Id;
+        fishName.text = curFish.DisplayName;
+        fishDescription.text = curFish.Description;
+        fishimage.sprite = curFish.Icon;
+
+        showStars(FishEnumConfig.RarityToInt(curFishBehaviour.Rarity));
     }
 }
