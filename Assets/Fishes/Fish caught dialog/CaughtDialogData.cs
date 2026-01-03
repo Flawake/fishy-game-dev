@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using System;
 using ItemSystem;
 
 public class CaughtDialogData : MonoBehaviour

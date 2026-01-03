@@ -18,7 +18,7 @@ public enum Locations : int
 
 public class FishEnumConfig
 {
-    public static int RarityToInt(FishRarity rarity)
+    public static byte RarityToInt(FishRarity rarity)
     {
         return rarity switch
         {
@@ -27,7 +27,7 @@ public class FishEnumConfig
             FishRarity.RARE => 3,
             FishRarity.EPIC => 4,
             FishRarity.LEGENDARY => 5,
-            _ => -1,
+            _ => throw new System.NotImplementedException(),  // Should be unreachable
         };
     }
 
@@ -40,19 +40,19 @@ public class FishEnumConfig
             FishRarity.RARE => "Rare",
             FishRarity.EPIC => "Epic",
             FishRarity.LEGENDARY => "Legendary",
-            _ => "Null",
+            _ => throw new System.NotImplementedException(),  // Should be unreachable
         };
     }
 
     public static Color RarityToColor(FishRarity rarity) {
         return rarity switch
         {
-            FishRarity.COMMON => Color.white,
-            FishRarity.UNCOMMON => Color.green,
-            FishRarity.RARE => Color.blue,
-            FishRarity.EPIC => new Color(130, 0, 255, 255),
-            FishRarity.LEGENDARY => Color.yellow,
-            _ => throw new System.NotImplementedException(),
+            FishRarity.COMMON => new Color(0.616f, 0.616f, 0.616f),      // #9D9D9D
+            FishRarity.UNCOMMON => new Color(0.294f, 0.686f, 0.294f),    // #4BAF4B
+            FishRarity.RARE => new Color(0.227f, 0.506f, 1.0f),          // #3A81FF
+            FishRarity.EPIC => new Color(0.482f, 0.090f, 0.737f),       // #7B17BC
+            FishRarity.LEGENDARY => new Color(1.0f, 0.647f, 0.227f),    // #FFA53A
+            _ => throw new System.NotImplementedException(),  // Should be unreachable
         };
     }
 }

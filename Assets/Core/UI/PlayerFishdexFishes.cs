@@ -59,7 +59,8 @@ public class PlayerFishdexFishes : NetworkBehaviour
         }
         else
         {
-            statFishContainer.Add(new StatFish(fish.id, 1, fish.length));
+            Debug.LogWarning("TODO: Add caught area and bait");
+            statFishContainer.Add(new StatFish(fish.id, 1, fish.length, new int[0], new int[0]));
         }
     }
 
