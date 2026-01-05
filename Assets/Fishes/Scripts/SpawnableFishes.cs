@@ -41,39 +41,38 @@ public class SpawnableFishes : NetworkBehaviour
 
     //returns a new fish if succesfull, second argument tells if generating was succesfull.
     [Server]
-    public (CurrentFish, bool) GenerateFish(ItemBaitType bait, float luckMultiplier = 1.0f) {
+    public CurrentFish GenerateFish(ItemDefinition baitDefinition, float luckMultiplier = 1.0f) {
         // a fish is being generated and returned
-        ItemDefinition generatedFish = SpawnManager.instance.GenerateFish(fishes, bait, luckMultiplier);
+        ItemDefinition generatedFish = SpawnManager.instance.GenerateFish(fishes, baitDefinition.GetBehaviour<BaitBehaviour>().BaitType, luckMultiplier);
         CurrentFish fishToCatch = new CurrentFish();
         
         if (generatedFish == null)
         {
-            return (fishToCatch, false);
+            return null;
         }
         
         FishBehaviour generatedFishBehaviour = generatedFish.GetBehaviour<FishBehaviour>();
         if (generatedFishBehaviour == null)
         {
             Debug.LogError($"Generated fish {generatedFish.Id} does not have a FishBehaviour");
-            return (fishToCatch, false);
+            return null;
         }
         
         fishToCatch.id = generatedFish.Id;
-        fishToCatch.maxLength = generatedFishBehaviour.MaximumLength;
-        fishToCatch.minLength = generatedFishBehaviour.MinimumLength;
-        (fishToCatch.length, fishToCatch.weight, fishToCatch.xp) = GenerateLengthWeightAndXp(generatedFishBehaviour);
+        (fishToCatch.length, fishToCatch.xp) = GenerateLengthWeightAndXp(generatedFishBehaviour);
         fishToCatch.rarity = generatedFishBehaviour.Rarity;
+        fishToCatch.usedBait = baitDefinition;
+        fishToCatch.areaFishing = SceneToAreaMapper.GetAreaFromSceneName(gameObject.scene.name);
         
-        return (fishToCatch, true);
+        return fishToCatch;
     }
 
     [Server]
-    (int, float, int) GenerateLengthWeightAndXp(FishBehaviour generatedFishBehaviour)
+    (int, int) GenerateLengthWeightAndXp(FishBehaviour generatedFishBehaviour)
     {
         int length = TriangularDistributionRandomInt(generatedFishBehaviour.MinimumLength, generatedFishBehaviour.MaximumLength, generatedFishBehaviour.AvarageLength);
-        float weight = 0;
         int xp = 2;
-        return (length, weight, xp);
+        return (length, xp);
     }
 
     [Server]

@@ -12,7 +12,7 @@ namespace ItemSystem {
         public static ItemDefinition Get(int id) {
             EnsureLoaded();
             if (!byId.TryGetValue(id, out var def)) {
-                Debug.LogError($"ItemDefinition with id {id} not found in registry");
+                Debug.LogWarning($"ItemDefinition with id {id} not found in registry");
             }
             return def;
         }

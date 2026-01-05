@@ -1,6 +1,4 @@
 using Mirror;
-using UnityEngine;
-using UnityEngine.Rendering;
 
 public class StatFish
 {
@@ -19,14 +17,24 @@ public class StatFish
         baitsCaught = fish.baits;
     }
 
-    public StatFish(int _id, int _amount, int _maxCaughtLength, int[] _areas, int[] _baits)
+    public StatFish(CurrentFish fish, int _amount)
     {
-        id = _id;
+        id = fish.id;
         amount = _amount;
-        maxCaughtLength = _maxCaughtLength;
-        areasCaught = _areas;
-        baitsCaught = _baits;
+        maxCaughtLength = fish.length;
+        areasCaught = new int[(int)fish.areaFishing];
+        baitsCaught = new int[fish.usedBait.Id];
     }
+
+    public StatFish(int id, int amount, int maxCaughtLength, int[] areasCaught, int[] baitsCaught)
+    {
+        this.id = id;
+        this.amount = amount;
+        this.maxCaughtLength = maxCaughtLength;
+        this.areasCaught = areasCaught;
+        this.baitsCaught = baitsCaught;
+    }
+
 }
 
 public static class StatFishReaderWriter
@@ -40,7 +48,7 @@ public static class StatFishReaderWriter
         writer.WriteArray<int>(fish.baitsCaught);
     }
 
-    public static StatFish ReadStatFishm(this NetworkReader reader)
+    public static StatFish ReadStatFish(this NetworkReader reader)
     {
         return new StatFish(reader.ReadInt(), reader.ReadInt(), reader.ReadInt(), reader.ReadArray<int>(), reader.ReadArray<int>());
     }

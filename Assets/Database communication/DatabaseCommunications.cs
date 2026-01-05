@@ -109,8 +109,8 @@ public static class DatabaseCommunications
             user_id = userID.ToString(),
             length = fish.length,
             fish_id = fish.id,
-            area_id = -1,
-            bait_id = -1,
+            area_id = (int)fish.areaFishing,
+            bait_id = fish.usedBait.Id,
         };
         
         string json = JsonUtility.ToJson(requestData);

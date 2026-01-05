@@ -21,8 +21,8 @@ MonoBehaviour:
     and symbolism across various cultures.
   icon: {fileID: 21300000, guid: 3a856f946eb8b6c269fe82dd75df5027, type: 3}
   maxStack: 2147483647
-  canStack: 1
   isStatic: 0
+  infiniteUse: 0
   behaviours:
   - rid: 3081823945427517442
   references:
@@ -38,7 +38,7 @@ MonoBehaviour:
         maxMarketPrice: 0
         bitesOn: 26
         rarity: 1
-        locations: 1
+        locations: 2
         rarityFactor: 1
         timeRanges: []
         dateRanges: []

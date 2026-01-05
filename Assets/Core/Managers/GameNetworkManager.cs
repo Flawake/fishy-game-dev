@@ -6,6 +6,8 @@ using GlobalCompetitionSystem;
 using Mirror.SimpleWeb;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem.UI;
 
 [AddComponentMenu("")]
 public class GameNetworkManager : NetworkManager
@@ -159,9 +161,15 @@ public class GameNetworkManager : NetworkManager
         GameObject[] objects = newScene.GetRootGameObjects();
         foreach (GameObject obj in objects)
         {
-            if (obj.name == "EventSystem")
+            EventSystem eventSystem = obj.GetComponent<EventSystem>();
+            if (eventSystem != null)
             {
-                obj.SetActive(active);
+                eventSystem.enabled = active;
+            }
+            InputSystemUIInputModule inputModule = obj.GetComponent<InputSystemUIInputModule>();
+            if (inputModule != null)
+            {
+                inputModule.enabled = active;
             }
         }
     }

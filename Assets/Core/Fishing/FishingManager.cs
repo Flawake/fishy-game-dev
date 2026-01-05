@@ -34,8 +34,6 @@ public class FishingManager : NetworkBehaviour
     public bool isFishing = false;
     public bool fightStarted = false;
 
-    bool fishGenerated = false;
-
     [SyncVar(hook = nameof(SyncvarThrowRod))]
     SyncedFishingPos syncedPlaceToThrow;
 
@@ -363,14 +361,14 @@ public class FishingManager : NetworkBehaviour
                 return;
             }
             
-            (currentFish, fishGenerated) = (new CurrentFish(), false);
+            currentFish = null;
             
             if (fishSpots.ShouldGeneratefish(placeToThrow))
             {
                 // Get luck multiplier from player data
                 float luckMultiplier = playerData.GetLuckMultiplier();
                 
-                (currentFish, fishGenerated) = spawnable.GenerateFish(playerData.GetSelectedBait().def.GetBehaviour<BaitBehaviour>().BaitType, luckMultiplier);
+                currentFish = spawnable.GenerateFish(playerData.GetSelectedBait().def, luckMultiplier);
             }
 
             // Apply wait time multiplier from special effects
@@ -425,7 +423,7 @@ public class FishingManager : NetworkBehaviour
             return;
         }
 
-        if (!fishGenerated)
+        if (currentFish == null)
         {
             RpcEndFishing(EndFishingReason.noFishGenerated);
             ServerEndFishing();

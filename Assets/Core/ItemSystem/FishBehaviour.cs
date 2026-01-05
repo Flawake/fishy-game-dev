@@ -36,5 +36,15 @@ namespace ItemSystem {
             if (!bag.ContainsKey(typeof(FishCatchState)))
                 bag[typeof(FishCatchState)] = new FishCatchState { maxCaughtLength = 0 };
         }
+
+        internal bool IsBaitEffective(ItemBaitType baitType)
+        {
+            return (bitesOn & (FishBaitType)baitType) != 0;
+        }
+
+        internal bool ActiveInArea(Area area)
+        {
+            return (FishEnumConfig.AreaToLocation(area) & locations) != 0;
+        }
     }
 } 
