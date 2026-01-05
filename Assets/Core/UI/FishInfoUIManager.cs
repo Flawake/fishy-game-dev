@@ -3,6 +3,7 @@ using ItemSystem;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Unity.VisualScripting;
 
 public class FishInfoUIManager : MonoBehaviour
 {
@@ -33,7 +34,7 @@ public class FishInfoUIManager : MonoBehaviour
 
     ItemDefinition curFish;
 
-    private void showStars(int starCount)
+    private void ShowStars(int starCount)
     {
         for (int i = 0; i < stars.Length; i++)
         {
@@ -68,13 +69,65 @@ public class FishInfoUIManager : MonoBehaviour
         }
     }
 
-    private void FillContainers(StatFish statFish)
+    private void FillContainers(int fishID)
     {
-        for (int i = 0; i < statFish.baitsCaught.Length - 1; i++)
+        StatFish statFish = NetworkClient.localPlayer.GetComponentInChildren<PlayerFishdexFishes>().GetStatFish(fishID);
+        if (statFish != null)
         {
-            ItemDefinition bait = ItemRegistry.Get(statFish.baitsCaught[i]);
-            GameObject baitObject = Instantiate(baitImagePrefab, caughtWithBaitContainer.transform);
-            baitObject.GetComponent<Image>().sprite = bait.Icon;
+            // baits caught builder
+            for (int i = 0; i < statFish.baitsCaught.Length; i++)
+            {
+                ItemDefinition bait = ItemRegistry.Get(statFish.baitsCaught[i]);
+                if (bait == null)
+                {
+                    continue;
+                }
+                GameObject baitObject = Instantiate(baitImagePrefab, caughtWithBaitContainer.transform);
+                baitObject.GetComponent<Image>().sprite = bait.Icon;
+            }
+
+            // areas caught builder
+            for (int i = 0; i < statFish.areasCaught.Length; i++)
+            {
+                Area areaCaught = (Area)statFish.areasCaught[i];
+                for (int j = 0 ; j < GlobalConnector.areaImageConnector.Length; j++)
+                {
+                    if (GlobalConnector.areaImageConnector[j].Area == areaCaught)
+                    {
+                        GameObject areaObject = Instantiate(areaImagePrefab, caughtInAreasContainer.transform);
+                        areaObject.GetComponentInChildren<Image>().sprite = GlobalConnector.areaImageConnector[j].AreaImage;
+                        break;
+                    }
+                }
+            }
+        }
+
+        ItemDefinition fish = ItemRegistry.Get(fishID);
+        FishBehaviour fishBehaviour = fish.GetBehaviour<FishBehaviour>();
+        if (fishBehaviour != null)
+        {
+            // effective bait builder
+            ItemDefinition[] items = ItemRegistry.GetFullItemsList();
+            foreach (ItemDefinition item in items)
+            {
+                BaitBehaviour baitBehaviour = item.GetBehaviour<BaitBehaviour>();
+                if (baitBehaviour != null && fishBehaviour.IsBaitEffective(baitBehaviour.BaitType))
+                {
+                    GameObject baitObject = Instantiate(baitImagePrefab, possibleBaitsContainer.transform);
+                    baitObject.GetComponent<Image>().sprite = item.Icon;
+                }
+            }
+
+            // Areas swimming builder
+            for (int i = 0; i < GlobalConnector.areaImageConnector.Length; i++)
+            {
+                if (fishBehaviour.ActiveInArea(GlobalConnector.areaImageConnector[i].Area))
+                {
+                    GameObject areaObject = Instantiate(areaImagePrefab, possibleAreasContainer.transform);
+                    areaObject.GetComponentInChildren<Image>().sprite = GlobalConnector.areaImageConnector[i].AreaImage;
+                    break;
+                }
+            }
         }
     }
 
@@ -101,13 +154,12 @@ public class FishInfoUIManager : MonoBehaviour
             fishimage.color = Color.white;
             maxCaughtLength.text = statFish.maxCaughtLength.ToString() + "cm";
             amountCaught.text = statFish.amount.ToString() + " x";
-
-            FillContainers(statFish);
         }
+        FillContainers(fishID);
         fishName.text = curFish.DisplayName;
         fishDescription.text = curFish.Description;
         fishimage.sprite = curFish.Icon;
 
-        showStars(FishEnumConfig.RarityToInt(curFishBehaviour.Rarity));
+        ShowStars(FishEnumConfig.RarityToInt(curFishBehaviour.Rarity));
     }
 }

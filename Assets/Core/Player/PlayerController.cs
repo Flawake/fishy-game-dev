@@ -383,11 +383,14 @@ public class PlayerController : NetworkBehaviour
         }
 
         // Click was not on the water or another player and the mouse was not over a ui element. Walk to the clicked position
-        stopwatch = System.Diagnostics.Stopwatch.StartNew();
-        PathFinding pathFinder = SceneObjectCache.GetPathFinding(GameNetworkManager.ClientsActiveScene);
-        if (pathFinder != null)
+        if (!fishingManager.isFishing)
         {
-            pathFinder.QueueNewPath(transform.position, clickedPos, gameObject, PathFindRequestCallback);
+            stopwatch = System.Diagnostics.Stopwatch.StartNew();
+            PathFinding pathFinder = SceneObjectCache.GetPathFinding(GameNetworkManager.ClientsActiveScene);
+            if (pathFinder != null)
+            {
+                pathFinder.QueueNewPath(transform.position, clickedPos, gameObject, PathFindRequestCallback);
+            }
         }
     }
     

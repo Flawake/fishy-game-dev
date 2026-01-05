@@ -1,4 +1,5 @@
 using ItemSystem;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -32,6 +33,7 @@ public class FishdexUIManager : MonoBehaviour
 
     private int currentPage = 1;
     private List<ItemDefinition> allFishList = new List<ItemDefinition>();
+    private int currentShowingFishIndex = 0;
     private int totalPages = 1;
 
     #endregion
@@ -211,6 +213,7 @@ public class FishdexUIManager : MonoBehaviour
 
     public void ShowFishInfo(ItemDefinition fish)
     {
+        currentShowingFishIndex = allFishList.FindIndex(f => f.Id == fish.Id);
         ClearPages();
         ResetButtonPositions();
         FishInfoObject.SetActive(true);
@@ -218,4 +221,17 @@ public class FishdexUIManager : MonoBehaviour
         fishInfoUIManager.LoadFishInfo(fish.Id);
     }
 
+    // Called from button in game
+    public void ShowNextFish()
+    {
+        currentShowingFishIndex = (currentShowingFishIndex + 1) % allFishList.Count;
+        ShowFishInfo(allFishList[currentShowingFishIndex]);
+    }
+
+    // Called from button in game
+    public void ShowPreviousFish()
+    {
+        currentShowingFishIndex = (currentShowingFishIndex - 1 + allFishList.Count) % allFishList.Count;
+        ShowFishInfo(allFishList[currentShowingFishIndex]);
+    }
 }

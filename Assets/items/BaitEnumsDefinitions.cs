@@ -68,4 +68,19 @@ public static class BaitEnumsDefinition
     {
         return (fishBait & (FishBaitType)itemBait) != 0;
     }
+
+    public static int CountBaitAmount(FishBaitType value)
+    {
+        int v = (int)value;
+        int count = 0;
+
+        while (v != 0)
+        {
+            count += v & 1;
+            v >>= 1;
+        }
+
+        return count;
+    }
+
 }

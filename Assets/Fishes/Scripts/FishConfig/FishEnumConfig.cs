@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public enum FishRarity : int
@@ -14,10 +15,23 @@ public enum Locations : int
 {
     Beach =     0b00000001,
     Tropical =  0b00000010,
+    Greenfields = 0b00000100,
 }
 
 public class FishEnumConfig
 {
+    public static Locations AreaToLocation(Area area)
+    {
+        Locations loc = area switch
+        {
+            Area.FusetaBeach => Locations.Beach,
+            Area.SelvaBandeira => Locations.Tropical,
+            Area.Greenfields => Locations.Greenfields,
+            _ => throw new NotSupportedException($"Could not make location from {area}")
+        };
+
+        return loc;
+    }
     public static byte RarityToInt(FishRarity rarity)
     {
         return rarity switch
