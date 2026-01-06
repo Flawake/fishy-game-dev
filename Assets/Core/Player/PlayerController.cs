@@ -548,6 +548,10 @@ public class PlayerController : NetworkBehaviour
         {
             return;
         }
+        if (Vector2.Distance(transform.position, targetPos) < 0.05f)
+        {
+            dir = Vector2.zero;
+        }
         ApplyAnimation(dir, HasVelocity(dir));
         dir = ClampPlayerMovement(dir);
         Vector2 newPos = (movementSpeed * Time.deltaTime * dir) + playerRigidbody.position;

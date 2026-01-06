@@ -3,7 +3,6 @@ using ItemSystem;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using Unity.VisualScripting;
 
 public class FishInfoUIManager : MonoBehaviour
 {
