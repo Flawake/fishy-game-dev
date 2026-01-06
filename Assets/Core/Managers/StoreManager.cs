@@ -14,8 +14,6 @@ public class StoreManager : NetworkBehaviour
     [SerializeField] private PlayerDataSyncManager playerDataManager;
     [SerializeField] private ItemGrantService itemGrantService;
     
-    [Header("Store Configuration")]
-    [SerializeField] private float purchaseTimeoutSeconds = 10f;
     [SerializeField] private int maxConcurrentPurchases = 1;
     [SerializeField] private bool enablePurchaseLogging = true;
 
@@ -274,14 +272,6 @@ public class StoreManager : NetworkBehaviour
         RollbackCurrencyChange(currencyType, price);
         OnPurchaseFailed?.Invoke(item, currencyType, reason);
         LogWarning($"Purchase failed: {item?.DisplayName} - {reason}");
-    }
-
-    [Command]
-    private void CmdReportTimeout(Guid tempUuid, int itemId)
-    {
-        throw new NotImplementedException();
-        var item = ItemRegistry.Get(itemId);
-        string itemName = item?.DisplayName ?? "Unknown Item";
     }
 
     [Server]
