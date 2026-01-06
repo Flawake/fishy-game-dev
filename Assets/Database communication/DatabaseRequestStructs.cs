@@ -5,91 +5,91 @@ using System;
 [Serializable]
 public class LoginRequest
 {
-    public string username;
-    public string password;
+    public string username = string.Empty;
+    public string password = string.Empty;
 }
 
 // player data requests
 [Serializable]
 public class RetreiveDataRequest
 {
-    public string user_id;
+    public string user_id = string.Empty;
 }
 
 // Inventory requests
 [Serializable]
 public class AddItemRequest
 {
-    public string user_id;
-    public int item_id;
-    public string item_uid;
-    public int amount;
-    public int cell_id;
+    public string user_id = string.Empty;
+    public int item_id = 0;
+    public string item_uid = string.Empty;
+    public int amount = 0;
+    public int cell_id = 0;
 }
 
 [Serializable]
 public class AddOrUpdateItemRequest {
-    public string user_id;
-    public string item_uuid;
-    public int definition_id;
-    public string state_blob; // base64
+    public string user_id = string.Empty;
+    public string item_uuid = string.Empty;
+    public int definition_id = 0;
+    public string state_blob = string.Empty; // base64
 }
 
 [Serializable]
 public class DegradeItemRequest
 {
-    public string user_id;
-    public string item_uid;
-    public int amount;
+    public string user_id = string.Empty;
+    public string item_uid = string.Empty;
+    public int amount = 0;
 }
 
 [Serializable]
 public class IncreaseItemRequest
 {
-    public string user_id;
-    public string item_uid;
+    public string user_id = string.Empty;
+    public string item_uid = string.Empty;
     public int amount;
 }
 
 [Serializable]
 public class DestroyItemRequest
 {
-    public string user_id;
-    public string item_uid;
+    public string user_id = string.Empty;
+    public string item_uid = string.Empty;
 }
 
 // Mail requests
 [Serializable]
 public class CreateMailRequest
 {
-    public string mail_id;
-    public string sender_id;
-    public string[] receiver_ids;
-    public string title;
-    public string message;
+    public string mail_id = string.Empty;
+    public string sender_id = string.Empty;
+    public string[] receiver_ids = new string[0];
+    public string title = string.Empty;
+    public string message = string.Empty;
 }
 
 [Serializable]
 public class DeleteMailRequest
 {
-    public string user_id;
-    public string mail_id;
+    public string user_id = string.Empty;
+    public string mail_id = string.Empty;
 }
 
 [Serializable]
 public class ReadMailRequest
 {
-    public string user_id;
-    public string mail_id;
-    public bool read;
+    public string user_id = string.Empty;
+    public string mail_id = string.Empty;
+    public bool read = false;
 }
 
 [Serializable]
 public class ArchiveMailRequest
 {
-    public string user_id;
-    public string mail_id;
-    public bool archived;
+    public string user_id = string.Empty;
+    public string mail_id = string.Empty;
+    public bool archived = false;
 }
 
 
@@ -97,101 +97,101 @@ public class ArchiveMailRequest
 [Serializable]
 public class SelectItemRequest
 {
-    public string user_id;
-    public string item_uid;
-    public string item_type;
+    public string user_id = string.Empty;
+    public string item_uid = string.Empty;
+    public string item_type = string.Empty;
 }
 [Serializable]
 public class AddXPRequest
 {
-    public string user_id;
-    public int amount;
+    public string user_id = string.Empty;
+    public int amount = 0;
 }
 
 [Serializable]
 public class ChangeBucksRequest
 {
-    public string user_id;
-    public int amount;
+    public string user_id = string.Empty;
+    public int amount = 0;
 }
 
 [Serializable]
 public class ChangeCoinsRequest
 {
-    public string user_id;
-    public int amount;
+    public string user_id = string.Empty;
+    public int amount = 0;
 }
 
 [Serializable]
 public class AddPlayTimeRequest
 {
-    public string user_id;
-    public int amount;
+    public string user_id = string.Empty;
+    public int amount = 0;
 }
 
 [Serializable]
 public class AddFishRequest
 {
-    public string user_id;
-    public int length;
-    public int fish_id;
-    public int bait_id;
-    public int area_id;
+    public string user_id = string.Empty;
+    public int length = 0;
+    public int fish_id = 0;
+    public int bait_id = 0;
+    public int area_id = 0;
 }
 
 [Serializable]
 public class CreateFriendRequest
 {
-    public string user_one;
-    public string user_two;
-    public string sender_id;
+    public string user_one = string.Empty;
+    public string user_two = string.Empty;
+    public string sender_id = string.Empty;
 }
 
 [Serializable]
 public class HandleFriendRequest
 {
-    public string user_one;
-    public string user_two;
-    public bool request_accepted;
+    public string user_one = string.Empty;
+    public string user_two = string.Empty;
+    public bool request_accepted = false;
 }
 
 [Serializable]
 public class RemoveFriendRequest
 {
-    public string user_one;
-    public string user_two;
+    public string user_one = string.Empty;
+    public string user_two = string.Empty;
 }
 
 // user requests
 [Serializable]
 public class CreateUserRequest
 {
-    public string email;
-    public string username;
-    public string password;
+    public string email = string.Empty;
+    public string username = string.Empty;
+    public string password = string.Empty;
 }
 
 // Active Effects requests
 [Serializable]
 public class AddActiveEffectRequest
 {
-    public string user_id;
-    public int item_id;          // ItemDefinition ID that created this effect
-    public string expiry_time;   // DateTime as ISO 8601 string
+    public string user_id = string.Empty;
+    public int item_id = 0;          // ItemDefinition ID that created this effect
+    public string expiry_time= string.Empty;   // DateTime as ISO 8601 string
 }
 
 [Serializable]
 public class RemoveActiveEffectRequest
 {
-    public string user_id;
-    public int item_id;          // ItemDefinition ID to identify which effect to remove
+    public string user_id = string.Empty;
+    public int item_id = 0;          // ItemDefinition ID to identify which effect to remove
 }
 
 [Serializable]
 public class RemoveExpiredEffectsRequest
 {
-    public string user_id;
-    public int item_id;
+    public string user_id = string.Empty;
+    public int item_id = 0;
 }
 
 #nullable disable
