@@ -1,8 +1,6 @@
-using System;
 using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class spawnPoint : MonoBehaviour
 {
@@ -22,7 +20,7 @@ public class spawnPoint : MonoBehaviour
     {
         if (spawnPoints.TryGetValue(sceneName, out List<Vector2> points) && points.Count > 0)
         {
-            return points[UnityEngine.Random.Range(0, points.Count)];
+            return points[Random.Range(0, points.Count)];
         }
         Debug.LogWarning($"Could not find random spawn point in scene {sceneName}");
         return Vector2.zero;

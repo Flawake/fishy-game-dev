@@ -228,7 +228,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3470684895638509335, guid: f70a0e88ef1f475408c483c51412b7d0, type: 3}
       propertyPath: sceneId
-      value: 3824425120
+      value: 2782737161
       objectReference: {fileID: 0}
     - target: {fileID: 4223937493391861998, guid: f70a0e88ef1f475408c483c51412b7d0, type: 3}
       propertyPath: customWalkArea
@@ -1461,7 +1461,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneId: 3830599368
+  sceneId: 930248303
   _assetId: 0
   serverOnly: 0
   visibility: 0
@@ -1657,7 +1657,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1836629656}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 34e3d4f4f46ae7473b4c9ac918148600, type: 3}
   m_Name: 

@@ -1572,6 +1572,7 @@ MonoBehaviour:
   - Assets/Scenes/SelvaBandeira.unity
   - Assets/Scenes/Greenfields.unity
   - Assets/Scenes/Baker.unity
+  - Assets/Scenes/FishMarket.unity
 --- !u!114 &302649097
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -323,6 +323,13 @@ public class GameNetworkManager : NetworkManager
                     return WorldTravel.CustomSpawnInstruction.WalkOusideBakery;
                 }
                 return WorldTravel.CustomSpawnInstruction.None;
+            case WorldTravel.CustomSpawnInstruction.WalkOutsideFishmarket:
+                // Only allow when walking out of the Baker into Greenfields
+                if (previousArea == Area.FishMarket && requestedArea == Area.FusetaBeach)
+                {
+                    return WorldTravel.CustomSpawnInstruction.WalkOutsideFishmarket;
+                }
+                return WorldTravel.CustomSpawnInstruction.None;
             default:
                 return WorldTravel.CustomSpawnInstruction.None;
         }

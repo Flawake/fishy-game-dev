@@ -1,0 +1,884 @@
+fileFormatVersion: 2
+guid: 483ba9c21b8c4438da83d3476fafcbf9
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -9100798064739217043
+    second: fishmarket_open_0
+  - first:
+      213: -7066612232061610619
+    second: fishmarket_open_1
+  - first:
+      213: 8192660435654600884
+    second: fishmarket_open_2
+  - first:
+      213: -9027306862686039133
+    second: fishmarket_open_3
+  - first:
+      213: 4959890913419646950
+    second: fishmarket_open_4
+  - first:
+      213: -3283135814973742318
+    second: fishmarket_open_5
+  - first:
+      213: -3909117391992617949
+    second: fishmarket_open_6
+  - first:
+      213: -3216412261954663447
+    second: fishmarket_open_7
+  - first:
+      213: -4535746446457335025
+    second: fishmarket_open_8
+  - first:
+      213: 5105753738167987478
+    second: fishmarket_open_9
+  - first:
+      213: -367648143385069169
+    second: fishmarket_open_10
+  - first:
+      213: -7543888740846888991
+    second: fishmarket_open_11
+  - first:
+      213: -2533135780346102133
+    second: fishmarket_open_12
+  - first:
+      213: 1877214311464008519
+    second: fishmarket_open_13
+  - first:
+      213: -1717458105731748022
+    second: fishmarket_open_14
+  - first:
+      213: -1202799384613850999
+    second: fishmarket_open_15
+  - first:
+      213: 2817292500822129610
+    second: fishmarket_open_16
+  - first:
+      213: -5703771755204486337
+    second: fishmarket_open_17
+  - first:
+      213: -3757531823877686039
+    second: fishmarket_open_18
+  - first:
+      213: -3589948043551514782
+    second: fishmarket_open_19
+  - first:
+      213: 4389464426840740238
+    second: fishmarket_open_20
+  - first:
+      213: -6415529464051042372
+    second: fishmarket_open_21
+  - first:
+      213: -3073665596844062981
+    second: fishmarket_open_22
+  - first:
+      213: 908607209904425996
+    second: fishmarket_open_23
+  - first:
+      213: 3881362513185534513
+    second: fishmarket_open_24
+  - first:
+      213: -5388644265865371795
+    second: fishmarket_open_25
+  - first:
+      213: -7617451803037183444
+    second: fishmarket_open_26
+  - first:
+      213: -594751036049899122
+    second: fishmarket_open_27
+  - first:
+      213: -5015275249651323846
+    second: fishmarket_open_28
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 9
+  spritePivot: {x: 0.52430546, y: 0.21874979}
+  spritePixelsToUnits: 150
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: fishmarket_open_0
+      rect:
+        serializedVersion: 2
+        x: 121
+        y: 106
+        width: 819
+        height: 862
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d6118a2d06873b180800000000000000
+      internalID: -9100798064739217043
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fishmarket_open_1
+      rect:
+        serializedVersion: 2
+        x: 935
+        y: 451
+        width: 20
+        height: 11
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 585998e8d995eed90800000000000000
+      internalID: -7066612232061610619
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fishmarket_open_2
+      rect:
+        serializedVersion: 2
+        x: 934
+        y: 425
+        width: 21
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4b8e698724d22b170800000000000000
+      internalID: 8192660435654600884
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fishmarket_open_3
+      rect:
+        serializedVersion: 2
+        x: 936
+        y: 438
+        width: 18
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3a31723bc3098b280800000000000000
+      internalID: -9027306862686039133
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fishmarket_open_4
+      rect:
+        serializedVersion: 2
+        x: 935
+        y: 412
+        width: 19
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6e7d013d18215d440800000000000000
+      internalID: 4959890913419646950
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fishmarket_open_5
+      rect:
+        serializedVersion: 2
+        x: 937
+        y: 399
+        width: 18
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 213a02ffe55ff62d0800000000000000
+      internalID: -3283135814973742318
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fishmarket_open_6
+      rect:
+        serializedVersion: 2
+        x: 927
+        y: 387
+        width: 8
+        height: 10
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3248af0817600c9c0800000000000000
+      internalID: -3909117391992617949
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fishmarket_open_7
+      rect:
+        serializedVersion: 2
+        x: 936
+        y: 387
+        width: 18
+        height: 11
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9eb4bfac6120d53d0800000000000000
+      internalID: -3216412261954663447
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fishmarket_open_8
+      rect:
+        serializedVersion: 2
+        x: 941
+        y: 392
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f039bab63aacd01c0800000000000000
+      internalID: -4535746446457335025
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fishmarket_open_9
+      rect:
+        serializedVersion: 2
+        x: 922
+        y: 362
+        width: 13
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 61d202239f74bd640800000000000000
+      internalID: 5105753738167987478
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fishmarket_open_10
+      rect:
+        serializedVersion: 2
+        x: 923
+        y: 374
+        width: 11
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f89733326f9d5eaf0800000000000000
+      internalID: -367648143385069169
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fishmarket_open_11
+      rect:
+        serializedVersion: 2
+        x: 934
+        y: 374
+        width: 21
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1e790c0d829be4790800000000000000
+      internalID: -7543888740846888991
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fishmarket_open_12
+      rect:
+        serializedVersion: 2
+        x: 936
+        y: 362
+        width: 18
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b8e73accd6e78dcd0800000000000000
+      internalID: -2533135780346102133
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fishmarket_open_13
+      rect:
+        serializedVersion: 2
+        x: 927
+        y: 349
+        width: 7
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 74b771a68743d0a10800000000000000
+      internalID: 1877214311464008519
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fishmarket_open_14
+      rect:
+        serializedVersion: 2
+        x: 938
+        y: 352
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a4f6e3bc3fc5a28e0800000000000000
+      internalID: -1717458105731748022
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fishmarket_open_15
+      rect:
+        serializedVersion: 2
+        x: 945
+        y: 348
+        width: 10
+        height: 14
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9807808155cce4fe0800000000000000
+      internalID: -1202799384613850999
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fishmarket_open_16
+      rect:
+        serializedVersion: 2
+        x: 914
+        y: 336
+        width: 21
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: acbffd35a98091720800000000000000
+      internalID: 2817292500822129610
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fishmarket_open_17
+      rect:
+        serializedVersion: 2
+        x: 936
+        y: 336
+        width: 17
+        height: 14
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f3b512bfec128d0b0800000000000000
+      internalID: -5703771755204486337
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fishmarket_open_18
+      rect:
+        serializedVersion: 2
+        x: 260
+        y: 96
+        width: 15
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9ec7b85e6b09adbc0800000000000000
+      internalID: -3757531823877686039
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fishmarket_open_19
+      rect:
+        serializedVersion: 2
+        x: 276
+        y: 96
+        width: 21
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 26fd0065641fd2ec0800000000000000
+      internalID: -3589948043551514782
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fishmarket_open_20
+      rect:
+        serializedVersion: 2
+        x: 297
+        y: 96
+        width: 18
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e815e0cc3a28aec30800000000000000
+      internalID: 4389464426840740238
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fishmarket_open_21
+      rect:
+        serializedVersion: 2
+        x: 314
+        y: 96
+        width: 38
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cb77f2181f577f6a0800000000000000
+      internalID: -6415529464051042372
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fishmarket_open_22
+      rect:
+        serializedVersion: 2
+        x: 352
+        y: 96
+        width: 19
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bf645c5bc652855d0800000000000000
+      internalID: -3073665596844062981
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fishmarket_open_23
+      rect:
+        serializedVersion: 2
+        x: 371
+        y: 96
+        width: 21
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c0c46b281750c9c00800000000000000
+      internalID: 908607209904425996
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fishmarket_open_24
+      rect:
+        serializedVersion: 2
+        x: 393
+        y: 96
+        width: 17
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 132f0f234ae5dd530800000000000000
+      internalID: 3881362513185534513
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fishmarket_open_25
+      rect:
+        serializedVersion: 2
+        x: 409
+        y: 96
+        width: 23
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d6f16282790b735b0800000000000000
+      internalID: -5388644265865371795
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fishmarket_open_26
+      rect:
+        serializedVersion: 2
+        x: 431
+        y: 96
+        width: 19
+        height: 11
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c225f42b1ff594690800000000000000
+      internalID: -7617451803037183444
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fishmarket_open_27
+      rect:
+        serializedVersion: 2
+        x: 450
+        y: 96
+        width: 22
+        height: 11
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e81437675150fb7f0800000000000000
+      internalID: -594751036049899122
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fishmarket_open_28
+      rect:
+        serializedVersion: 2
+        x: 472
+        y: 96
+        width: 10
+        height: 11
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a3c69b58bb9266ab0800000000000000
+      internalID: -5015275249651323846
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 1537655665
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      fishmarket_open_0: -9100798064739217043
+      fishmarket_open_1: -7066612232061610619
+      fishmarket_open_10: -367648143385069169
+      fishmarket_open_11: -7543888740846888991
+      fishmarket_open_12: -2533135780346102133
+      fishmarket_open_13: 1877214311464008519
+      fishmarket_open_14: -1717458105731748022
+      fishmarket_open_15: -1202799384613850999
+      fishmarket_open_16: 2817292500822129610
+      fishmarket_open_17: -5703771755204486337
+      fishmarket_open_18: -3757531823877686039
+      fishmarket_open_19: -3589948043551514782
+      fishmarket_open_2: 8192660435654600884
+      fishmarket_open_20: 4389464426840740238
+      fishmarket_open_21: -6415529464051042372
+      fishmarket_open_22: -3073665596844062981
+      fishmarket_open_23: 908607209904425996
+      fishmarket_open_24: 3881362513185534513
+      fishmarket_open_25: -5388644265865371795
+      fishmarket_open_26: -7617451803037183444
+      fishmarket_open_27: -594751036049899122
+      fishmarket_open_28: -5015275249651323846
+      fishmarket_open_3: -9027306862686039133
+      fishmarket_open_4: 4959890913419646950
+      fishmarket_open_5: -3283135814973742318
+      fishmarket_open_6: -3909117391992617949
+      fishmarket_open_7: -3216412261954663447
+      fishmarket_open_8: -4535746446457335025
+      fishmarket_open_9: 5105753738167987478
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

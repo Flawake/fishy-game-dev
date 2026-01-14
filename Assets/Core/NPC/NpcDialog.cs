@@ -103,7 +103,7 @@ public class NpcDialog : MonoBehaviour
     [SerializeField] private GameObject clickIcon;
     [SerializeField] private GameObject yesButton;
     [SerializeField] private GameObject noButton;
-    [SerializeField] private Animator npcAnimator;
+    private Animator npcAnimator;
     
     public static bool DialogActive { get; private set; }
     
@@ -309,14 +309,7 @@ public class NpcDialog : MonoBehaviour
         // Try to get animator if not already set
         if (npcAnimator == null)
         {
-            // Try direct component first
-            npcAnimator = GetComponent<Animator>();
-            
-            // If not found, try in children (Animator might be on a child GameObject)
-            if (npcAnimator == null)
-            {
-                npcAnimator = GetComponentInChildren<Animator>();
-            }
+            npcAnimator = GetComponentInChildren<Animator>();
             
             if (npcAnimator == null)
             {
