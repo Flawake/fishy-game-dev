@@ -183,6 +183,7 @@ public static class DatabaseCommunications
     [Server]
     public static void AddOrUpdateItem(ItemInstance item, Guid userID)
     {
+        Debug.Log("Adding item");
         AddOrUpdateItemRequest request = new AddOrUpdateItemRequest
         {
             user_id = userID.ToString(),

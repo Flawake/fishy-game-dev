@@ -178,7 +178,12 @@ public class PlayerInventory : NetworkBehaviour
 
     public ItemInstance GetBaitByDefinitionId(int id)
     {
-        return items.FirstOrDefault(i => i.def.Id == id && i.HasBehaviour<BaitBehaviour>());
+        return items.FirstOrDefault(i => i.def.Id == id && i.HasBehaviour<FishBehaviour>());
+    }
+
+    public ItemInstance GetFishByDefinitionId(int id)
+    {
+        return items.FirstOrDefault(i => i.def.Id == id && i.HasBehaviour<FishBehaviour>());
     }
 
     private ItemInstance GetFirstNonFullStack(int definitionId)

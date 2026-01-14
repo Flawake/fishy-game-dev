@@ -2,31 +2,31 @@ using System.Collections;
 using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
+using static WorldTravel;
 
 public class ArrivalAnimationRunner : MonoBehaviour
 {
     public bool IsRunning { get; private set; }
 
-    public void StartArrivalAnimation(WorldTravel.CustomSpawnInstruction instruction, Area area)
+    public void StartArrivalAnimation(CustomSpawnInstruction instruction, Area area)
     {
         if (!NetworkClient.active || IsRunning)
         {
             return;
         }
         StopAllCoroutines();
-        switch (instruction)
+        if (instruction == CustomSpawnInstruction.None)
         {
-            case WorldTravel.CustomSpawnInstruction.WalkOusideBakery:
-                StartCoroutine(PlayWalkOutsideBakery(area));
-                break;
-            default:
-                StartCoroutine(FadeInOnly());
-                break;
+            StartCoroutine(FadeInOnly());
+        }
+        else
+        {
+            StartCoroutine(PlayCustomWalk(area, instruction));
         }
     }
 
-    IEnumerator PlayWalkOutsideBakery(Area area)
-    {
+    IEnumerator PlayCustomWalk(Area area, CustomSpawnInstruction spawnInstruction)
+    {  
         IsRunning = true;
         PlayerController controller = GetComponent<PlayerController>();
         if (controller == null)
@@ -39,7 +39,7 @@ public class ArrivalAnimationRunner : MonoBehaviour
         Coroutine fade = StartCoroutine(FadeIn(0.52f));
 
         // Compute path from current position to arrival target if configured
-        Vector3? target = SpawnPointProvider.TryGetArrivalTarget(area, WorldTravel.CustomSpawnInstruction.WalkOusideBakery);
+        Vector3? target = SpawnPointProvider.TryGetArrivalTarget(area, spawnInstruction);
         if (target.HasValue)
         {
             PathFinding pathFinder = SceneObjectCache.GetPathFinding(GameNetworkManager.ClientsActiveScene);

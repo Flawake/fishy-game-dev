@@ -13,6 +13,7 @@ public class WorldTravel : MonoBehaviour
     {
         None,
         WalkOusideBakery,
+        WalkOutsideFishmarket,
     }
 
     private void Awake()

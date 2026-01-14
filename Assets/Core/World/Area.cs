@@ -17,6 +17,7 @@ public enum Area
     SelvaBandeira = 3,
     Greenfields = 4,
     Baker = 5,
+    FishMarket = 6,
 }
 
 public class AreaComponent : MonoBehaviour
@@ -69,6 +70,7 @@ public static class AreaCameraZoomManager
         { Area.SelvaBandeira, 100 },
         { Area.Greenfields, 100 },
         { Area.Baker, 160 },
+        { Area.FishMarket, 100 },
     };
 
     public static int GetCameraZoomPercentage(Area area)
@@ -88,6 +90,7 @@ public static class AreaUnlockManager
         { Area.SelvaBandeira, new LevelUnlockCriteria(0) },
         { Area.Greenfields, new LevelUnlockCriteria(0) },
         { Area.Baker, new LevelUnlockCriteria(0) },
+        { Area.FishMarket, new LevelUnlockCriteria(0) },
     };
 
     public static bool IsAreaUnlocked(Area area, PlayerData playerData)
@@ -110,6 +113,7 @@ public static class SceneToAreaMapper
         { "SelvaBandeira", Area.SelvaBandeira },
         { "Greenfields", Area.Greenfields },
         { "Baker", Area.Baker },
+        { "FishMarket", Area.FishMarket },
     };
 
     private static HashSet<string> _excludedScenes = new HashSet<string>
