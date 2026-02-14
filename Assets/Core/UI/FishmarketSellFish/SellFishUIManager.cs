@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ItemSystem;
 using Mirror;
+using TMPro;
 using UnityEngine;
 
 public class SellFishUIManager : MonoBehaviour
@@ -9,6 +10,7 @@ public class SellFishUIManager : MonoBehaviour
     [SerializeField] GameObject sellFishUI;
     [SerializeField] GameObject sellFishObjectHolder;
     [SerializeField] GameObject sellFishObjectPrefab;
+    [SerializeField] TMP_Text MoneyAmountText;
 
     private void BuildSellFishUI()
     {
@@ -26,6 +28,9 @@ public class SellFishUIManager : MonoBehaviour
             GameObject sellFishObject = Instantiate(sellFishObjectPrefab, sellFishObjectHolder.transform);
             sellFishObject.GetComponent<SellableFishUIManager>().BuildSellFishObject(item);
         });
+
+        gameObject.GetComponentInParent<PlayerData>().BucksAmountChanged += UpdateFishbucksAmount;
+        UpdateFishbucksAmount();
     }
 
     public void OpenSellFishUI()
@@ -38,5 +43,10 @@ public class SellFishUIManager : MonoBehaviour
     public void CloseSellFishUI()
     {
         sellFishUI.SetActive(false);
+    }
+
+    private void UpdateFishbucksAmount()
+    {
+        MoneyAmountText.text = gameObject.GetComponentInParent<PlayerData>().GetFishBucks().ToString();
     }
 }

@@ -14,15 +14,10 @@ public class DialogErnesto : MonoBehaviour
             return;
         }
 
-        /*_startDialog = new DialogNode(
+        _startDialog = new DialogNode(
             "Good morning, it is morning, right?. Whatever. Do you want to sell some fish?",
             DialogOptions.YesNo
-        );*/
-        _startDialog = new DialogNode(
-            "I can't buy fish at the moment, please come back later",
-            DialogOptions.Click
         );
-
         npcDialog.SetRootDialog(_startDialog);
 
         _startDialog

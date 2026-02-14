@@ -163,7 +163,7 @@ public class PlayerData : NetworkBehaviour
             return;
         }
         
-        playerDataManager.ServerConsumeFromStack(itemReference);
+        playerDataManager.ServerRemoveAmountFromStack(itemReference, 1);
         
         DateTime serverExpiry = DateTime.UtcNow.AddSeconds(specialEffect.DurationSeconds);
         activeSpecialEffects[specialEffect.EffectType] = new ActiveEffect(itemReference.def.Id, serverExpiry);
@@ -495,7 +495,7 @@ public class PlayerData : NetworkBehaviour
         }
         
         // Use the sync manager to handle stack consumption and database updates
-        bool success = playerDataManager.ServerConsumeFromStack(baitReference);
+        bool success = playerDataManager.ServerRemoveAmountFromStack(baitReference, 1);
 
         // Check if the bait stack is now empty
         if (success)
@@ -512,7 +512,7 @@ public class PlayerData : NetworkBehaviour
                 }
                 
                 // Check if the empty bait is currently selected
-                bool isCurrentlySelected = (selectedBait != null && selectedBait.def.Id == baitReference.def.Id);
+                bool isCurrentlySelected = selectedBait != null && selectedBait.def.Id == baitReference.def.Id;
                 
                 // If the empty bait was selected, automatically select the default bait
                 if (isCurrentlySelected)

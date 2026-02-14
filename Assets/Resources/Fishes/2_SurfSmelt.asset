@@ -38,8 +38,8 @@ MonoBehaviour:
         minimumLength: 7
         maximumLength: 23
         avarageLength: 16
-        minMartketPrice: 0
-        maxMarketPrice: 0
+        minMartketPrice: 3
+        maxMarketPrice: 3
         bitesOn: 74
         rarity: 1
         locations: 1

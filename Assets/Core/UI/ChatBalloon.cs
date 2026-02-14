@@ -85,7 +85,13 @@ public class ChatBalloon : NetworkBehaviour
         }
     }
 
-    void SetText(string text, string userName, string chatColor)
+    public void InjectTextBalloonText(string text)
+    {
+        textBalloonGraphics.SetActive(true);
+        SetText(text, "", "", false);
+    }
+
+    void SetText(string text, string userName, string chatColor, bool AddToHistory = true)
     {
         if(NetworkServer.active)
         {
@@ -111,7 +117,10 @@ public class ChatBalloon : NetworkBehaviour
         shouldFade = false;
         fadeChatAfterTime = math.max(minTimeChatVisible, timePerCharacter * text.Length);
 
-        history.AddChatHistory(text, userName, chatColor);
+        if (AddToHistory)
+        {
+            history.AddChatHistory(text, userName, chatColor);
+        }
     }
 
     public void SendChatMessage(string message)

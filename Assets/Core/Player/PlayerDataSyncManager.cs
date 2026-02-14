@@ -98,34 +98,48 @@ public class PlayerDataSyncManager : MonoBehaviour
 	}
 
 	/// <summary>
-	/// Attempts to consume one item from a stack and syncs changes to database
+	/// Attempts to consume n items from a stack and syncs changes to database
 	/// </summary>
 	/// <param name="itemReference">The item stack to consume from</param>
-	/// <returns>True if an item was successfully consumed, false otherwise</returns>
+	/// <param name="amount">The amount of items to consume from the stack</param>
+	/// <returns>True if the items were successfully consumed or the item was marked for infinite use, false otherwise</returns>
 	[Server]
-	public bool ServerConsumeFromStack(ItemInstance itemReference)
+	public bool ServerRemoveAmountFromStack(ItemInstance itemReference, int removeAmount)
 	{
 		if (itemReference == null)
+		{
+			Debug.LogWarning("Cannot consume from null item reference");
+			return false;
+		}
+		StackState stackState = itemReference.GetState<StackState>();
+		if (stackState == null)
+		{
+			Debug.LogWarning("Stackstate was null, could not remove from stack");
+			return false;
+		}
+
+		if (stackState.currentAmount < removeAmount)
+		{
+			Debug.LogWarning("Not enough items in the stack to remove from");
+			return false;
+		}
+
+		bool success = inventory.ServerRemoveAmountFromStack(itemReference, removeAmount);
+
+		if (success)
+		{
+			if (stackState.currentAmount <= 0)
 			{
-				Debug.LogWarning("Cannot consume from null item reference");
-				return false;
+				inventory.RemoveItem(itemReference.uuid);
+				DatabaseCommunications.DestroyItem(itemReference, playerData.GetUuid());
+				Debug.Log($"Stack of {itemReference.def.DisplayName} is now empty and has been removed");
 			}
-			bool success = inventory.ServerConsumeFromStack(itemReference);
-			if (success)
+			else
 			{
-				StackState stackState = itemReference.GetState<StackState>();
-				if (stackState != null && stackState.currentAmount <= 0)
-				{
-					inventory.RemoveItem(itemReference.uuid);
-					DatabaseCommunications.DestroyItem(itemReference, playerData.GetUuid());
-					Debug.Log($"Stack of {itemReference.def.DisplayName} is now empty and has been removed");
-				}
-				else
-				{
-					DatabaseCommunications.AddOrUpdateItem(itemReference, playerData.GetUuid());
-				}
+				DatabaseCommunications.AddOrUpdateItem(itemReference, playerData.GetUuid());
 			}
-			return success;
+		}
+		return success;
 	}
 
 	/// <summary>
