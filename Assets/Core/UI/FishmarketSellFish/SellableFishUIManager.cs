@@ -54,7 +54,7 @@ public class SellableFishUIManager : MonoBehaviour
     private void UpdateSellAmount(int amount)
     {
         _sellAmount = amount;
-        sellAmountText.text = _sellAmount.ToString();
+        sellAmountText.text = $"[ {_sellAmount} ]";
 
         sellPriceText.text = (_sellAmount * _baseSellPrice).ToString();
     }
@@ -62,21 +62,27 @@ public class SellableFishUIManager : MonoBehaviour
     // Called from button ingame
     public void IncreaseSellAmount()
     {
-        int newAmount = (_sellAmount + 1) % (_thisFishItem.GetState<StackState>().currentAmount + 1);
+        int newAmount = (_sellAmount % _thisFishItem.GetState<StackState>().currentAmount) + 1;
         UpdateSellAmount(newAmount);
     }
 
     // Called from button ingame
     public void DecreaseSellAmount()
     {
-        int stackSize = _thisFishItem.GetState<StackState>().currentAmount + 1;
-        int newAmount = (_sellAmount - 1 + stackSize) % stackSize;
+        int stackSize = _thisFishItem.GetState<StackState>().currentAmount;
+        int newAmount = ((_sellAmount - 2 + stackSize) % stackSize) + 1;
         UpdateSellAmount(newAmount);
+    }
+
+    public void MaxSellAmount() {
+        UpdateSellAmount(_thisFishItem.GetState<StackState>().currentAmount);
     }
 
     // Called from button ingame
     public void SellFish()
     {
-        throw new NotImplementedException();
+        GetComponentInParent<SellFish>().CmdSellFish(_thisFishItem.def.Id, _sellAmount);
+        GetComponentInParent<PlayerData>().ClientChangeFishBucksAmount(_sellAmount * _baseSellPrice);
+        Destroy(transform.gameObject);
     }
 }

@@ -9,7 +9,8 @@ using Mirror;
 /// </summary>
 public class DialogNode
 {
-    public string Text { get; }
+    public string Text { get; private set; }
+    public string PlayerResponse { get; private set; }
     public DialogOptions Options { get; }
     public DialogNode NextClick { get; set; }
     public DialogNode NextYes { get; set; }
@@ -19,6 +20,11 @@ public class DialogNode
     public Action OnYes { get; set; }
     public Action OnNo { get; set; }
 
+    public DialogNode(DialogOptions options = DialogOptions.Click)
+    {
+        Options = options;
+    }
+
     public DialogNode(string text, DialogOptions options = DialogOptions.Click)
     {
         Text = text;
@@ -26,7 +32,25 @@ public class DialogNode
     }
 
     /// <summary>
-    /// Fluent API: Set the next dialog when clicking/continuing
+    /// Set the players dialog response
+    /// </summary>
+    public DialogNode SetPlayerResponse(string response)
+    {
+        PlayerResponse = response;
+        return this;
+    }
+
+    /// <summary>
+    /// Set the dialog text
+    /// </summary>
+    public DialogNode SetDialogText(string text)
+    {
+        Text = text;
+        return this;
+    }
+
+    /// <summary>
+    /// Set the next dialog when clicking/continuing
     /// </summary>
     public DialogNode SetNextClick(DialogNode next, Action onClick = null)
     {
@@ -36,7 +60,7 @@ public class DialogNode
     }
 
     /// <summary>
-    /// Fluent API: Set the next dialog when clicking Yes
+    /// Set the next dialog when clicking Yes
     /// </summary>
     public DialogNode SetNextYes(DialogNode next, Action onYes = null)
     {
@@ -46,7 +70,7 @@ public class DialogNode
     }
 
     /// <summary>
-    /// Fluent API: Set the next dialog when clicking No
+    /// Set the next dialog when clicking No
     /// </summary>
     public DialogNode SetNextNo(DialogNode next, Action onNo = null)
     {
@@ -56,7 +80,7 @@ public class DialogNode
     }
 
     /// <summary>
-    /// Fluent API: Set callbacks without changing next dialog
+    /// Set callbacks without changing next dialog
     /// </summary>
     public DialogNode OnClickAction(Action action)
     {
@@ -220,6 +244,7 @@ public class NpcDialog : MonoBehaviour
             // Otherwise, proceed with automatic navigation
             if (_currentNode.NextClick != null)
             {
+                RunPlayerResponse();
                 ShowDialog(_currentNode.NextClick);
             }
             else
@@ -257,6 +282,7 @@ public class NpcDialog : MonoBehaviour
         // Otherwise, proceed with automatic navigation
         if (_currentNode.NextYes != null)
         {
+            RunPlayerResponse();
             ShowDialog(_currentNode.NextYes);
         }
         else
@@ -293,6 +319,7 @@ public class NpcDialog : MonoBehaviour
         // Otherwise, proceed with automatic navigation
         if (_currentNode.NextNo != null)
         {
+            RunPlayerResponse();
             ShowDialog(_currentNode.NextNo);
         }
         else
@@ -432,6 +459,14 @@ public class NpcDialog : MonoBehaviour
                 noButton.SetActive(true);
                 clickIcon.SetActive(false);
                 break;
+        }
+    }
+
+    public void RunPlayerResponse()
+    {
+        if (_currentNode != null && _currentNode.PlayerResponse != null)
+        {
+            NetworkClient.connection.identity.GetComponentInChildren<ChatBalloon>().InjectTextBalloonText(_currentNode.PlayerResponse);
         }
     }
 }

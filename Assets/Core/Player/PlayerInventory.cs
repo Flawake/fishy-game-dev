@@ -160,6 +160,11 @@ public class PlayerInventory : NetworkBehaviour
         return items;
     }
 
+    public List<ItemInstance> GetFishes()
+    {
+        return items.Where(i => i.def.GetBehaviour<FishBehaviour>() != null).ToList();
+    }
+
     [Command]
     public void CmdGetInventory()
     {
@@ -178,7 +183,7 @@ public class PlayerInventory : NetworkBehaviour
 
     public ItemInstance GetBaitByDefinitionId(int id)
     {
-        return items.FirstOrDefault(i => i.def.Id == id && i.HasBehaviour<FishBehaviour>());
+        return items.FirstOrDefault(i => i.def.Id == id && i.HasBehaviour<BaitBehaviour>());
     }
 
     public ItemInstance GetFishByDefinitionId(int id)
@@ -261,9 +266,9 @@ public class PlayerInventory : NetworkBehaviour
     }
 
     [Server]
-    public bool ServerConsumeFromStack(ItemInstance itemReference)
-    {
-        if (itemReference.def.InfiniteUse || itemReference.def.IsStatic)
+	public bool ServerRemoveAmountFromStack(ItemInstance itemReference, int amount)
+	{
+		if (itemReference.def.InfiniteUse || itemReference.def.IsStatic)
         {
             return true;
         }
@@ -273,11 +278,11 @@ public class PlayerInventory : NetworkBehaviour
             Debug.LogWarning($"Could not use item with id {itemReference.def.Id} since it's durabilityState was null");
             return false;
         }
-        stackState.currentAmount -= 1;
+        stackState.currentAmount -= amount;
         itemReference.SetState(stackState);
         TargetUpdateItem(itemReference);
         return true;
-    }
+	}
 
     [TargetRpc]
     private void TargetUpdateItem(ItemInstance danglingItem)

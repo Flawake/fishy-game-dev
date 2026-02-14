@@ -9,7 +9,7 @@ public class EnterFishmarket : NetworkBehaviour
         {
             return;
         }
-        if (other.CompareTag("PlayerSprite") && other.gameObject.GetComponentInParent<NetworkIdentity>().isLocalPlayer)
+        if (other.gameObject.GetComponentInParent<NetworkIdentity>().isLocalPlayer)
         {
             ArrivalAnimationRunner runner = other.gameObject.GetComponentInParent<ArrivalAnimationRunner>();
             if (runner != null && runner.IsRunning)
