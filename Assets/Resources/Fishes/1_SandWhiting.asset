@@ -29,7 +29,6 @@ MonoBehaviour:
   infiniteUse: 0
   behaviours:
   - rid: 3081823945427517442
-  - rid: 8240417638669615180
   references:
     version: 2
     RefIds:
@@ -39,7 +38,7 @@ MonoBehaviour:
         minimumLength: 10
         maximumLength: 40
         avarageLength: 25
-        minMartketPrice: 4
+        minMartketPrice: 2
         maxMarketPrice: 4
         bitesOn: 72
         rarity: 2
@@ -47,7 +46,3 @@ MonoBehaviour:
         rarityFactor: 1
         timeRanges: []
         dateRanges: []
-    - rid: 8240417638669615180
-      type: {class: FishPriceBehaviour, ns: ItemSystem, asm: Assembly-CSharp}
-      data:
-        valueMultiplier: 0.86

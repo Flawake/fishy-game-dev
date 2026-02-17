@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 466ab68691b39318784f667dc1da5678, type: 3}
+  m_Name: 22_horn_shark
+  m_EditorClassIdentifier: 
+  id: 10022
+  displayName: Horn Shark
+  description: 
+  icon: {fileID: 21300000, guid: 7b3bd83a4e0c549c0b07341db87744a7, type: 3}
+  maxStack: 2147483647
+  isStatic: 0
+  infiniteUse: 0
+  behaviours:
+  - rid: 3081823945427517442
+  references:
+    version: 2
+    RefIds:
+    - rid: 3081823945427517442
+      type: {class: FishBehaviour, ns: ItemSystem, asm: Assembly-CSharp}
+      data:
+        minimumLength: 109
+        maximumLength: 199
+        avarageLength: 127
+        minMartketPrice: 35
+        maxMarketPrice: 44
+        bitesOn: 32
+        rarity: 8
+        locations: 1
+        rarityFactor: 1
+        timeRanges: []
+        dateRanges: []

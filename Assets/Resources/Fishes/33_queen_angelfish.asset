@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 466ab68691b39318784f667dc1da5678, type: 3}
+  m_Name: 33_queen_angelfish
+  m_EditorClassIdentifier: 
+  id: 10033
+  displayName: Queen Angelfish
+  description: 
+  icon: {fileID: 21300000, guid: e4dd459d4147047dfaffbdfddaa682b8, type: 3}
+  maxStack: 2147483647
+  isStatic: 0
+  infiniteUse: 0
+  behaviours:
+  - rid: 3081823945427517442
+  references:
+    version: 2
+    RefIds:
+    - rid: 3081823945427517442
+      type: {class: FishBehaviour, ns: ItemSystem, asm: Assembly-CSharp}
+      data:
+        minimumLength: 32
+        maximumLength: 44
+        avarageLength: 40
+        minMartketPrice: 7
+        maxMarketPrice: 13
+        bitesOn: 72
+        rarity: 4
+        locations: 1
+        rarityFactor: 1
+        timeRanges: []
+        dateRanges: []

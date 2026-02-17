@@ -37,6 +37,7 @@ public static class BaitFields
     public const int lure = 0b00010000;
     public const int shark = 0b00100000;
     public const int fish = 0b01000000;
+    public const int vegetal = 0b10000000;
 }
 
 [System.Flags]
@@ -49,6 +50,7 @@ public enum FishBaitType : int
     lure = BaitFields.lure,
     shark = BaitFields.shark,
     fish = BaitFields.fish,
+    vegetal = BaitFields.vegetal,
 }
 
 public enum ItemBaitType : int
@@ -60,6 +62,7 @@ public enum ItemBaitType : int
     lure = BaitFields.lure,
     shark = BaitFields.shark,
     fish = BaitFields.fish,
+    vegetal = BaitFields.vegetal,
 }
 
 public static class BaitEnumsDefinition
