@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      ViewportBackgroundFishmarket_0: -6933959011334674766
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
