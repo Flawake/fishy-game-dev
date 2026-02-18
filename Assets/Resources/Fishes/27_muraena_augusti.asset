@@ -15,7 +15,7 @@ MonoBehaviour:
   id: 10027
   displayName: Muraena Augusti
   description: 
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 71d2e627d68984397a6f5d00acb9794b, type: 3}
   maxStack: 2147483647
   isStatic: 0
   infiniteUse: 0

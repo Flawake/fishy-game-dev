@@ -15,7 +15,7 @@ MonoBehaviour:
   id: 10025
   displayName: Lionfish
   description: 
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: bab97f35971cd4813ba97faa9a6aca33, type: 3}
   maxStack: 2147483647
   isStatic: 0
   infiniteUse: 0
