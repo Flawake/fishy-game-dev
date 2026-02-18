@@ -15,7 +15,7 @@ MonoBehaviour:
   id: 10035
   displayName: Rainbow Parrotfish
   description: 
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 7d6f4189f1c29444ca0a8163a12ed122, type: 3}
   maxStack: 2147483647
   isStatic: 0
   infiniteUse: 0

@@ -15,7 +15,7 @@ MonoBehaviour:
   id: 10032
   displayName: Puffer Fish
   description: 
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 484c1b4dd0d1f437ba679dc48644e589, type: 3}
   maxStack: 2147483647
   isStatic: 0
   infiniteUse: 0

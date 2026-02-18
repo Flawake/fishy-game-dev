@@ -15,7 +15,7 @@ MonoBehaviour:
   id: 10043
   displayName: Spotted Wobbegong
   description: 
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 0542063b48f9348c985ad44b5aaf19f9, type: 3}
   maxStack: 2147483647
   isStatic: 0
   infiniteUse: 0

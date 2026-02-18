@@ -15,7 +15,7 @@ MonoBehaviour:
   id: 10036
   displayName: Red Snapper
   description: 
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 17f23efb81bc7438a83c694abeef82a0, type: 3}
   maxStack: 2147483647
   isStatic: 0
   infiniteUse: 0

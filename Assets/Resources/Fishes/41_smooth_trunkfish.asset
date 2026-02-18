@@ -15,7 +15,7 @@ MonoBehaviour:
   id: 10041
   displayName: Smooth Trunkfish
   description: 
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: de013cc4456df4bcdaf981fb3050b86a, type: 3}
   maxStack: 2147483647
   isStatic: 0
   infiniteUse: 0

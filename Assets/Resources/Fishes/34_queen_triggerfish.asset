@@ -15,7 +15,7 @@ MonoBehaviour:
   id: 10034
   displayName: Queen Triggerfish
   description: 
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 57b22aa84940e4467bb9d7a277d9c07d, type: 3}
   maxStack: 2147483647
   isStatic: 0
   infiniteUse: 0

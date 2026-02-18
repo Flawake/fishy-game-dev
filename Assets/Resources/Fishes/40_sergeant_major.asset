@@ -15,7 +15,7 @@ MonoBehaviour:
   id: 10040
   displayName: Sergeant Major
   description: 
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 51a7edfa0d91a47a5a71862d8a0e3f04, type: 3}
   maxStack: 2147483647
   isStatic: 0
   infiniteUse: 0
