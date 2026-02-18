@@ -15,7 +15,7 @@ MonoBehaviour:
   id: 10039
   displayName: Sargassum Triggerfish
   description: 
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 03812ed59da724729881b7ee7d6cb119, type: 3}
   maxStack: 2147483647
   isStatic: 0
   infiniteUse: 0
