@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 466ab68691b39318784f667dc1da5678, type: 3}
-  m_Name: 38_sardinella
+  m_Name: 38_unicorn_crestfish
   m_EditorClassIdentifier: 
-  id: 10038
-  displayName: Sardinella
+  id: 10044
+  displayName: Unicorn Crestfish
   description: 
   icon: {fileID: 0}
   maxStack: 2147483647
@@ -27,13 +27,13 @@ MonoBehaviour:
     - rid: 3081823945427517442
       type: {class: FishBehaviour, ns: ItemSystem, asm: Assembly-CSharp}
       data:
-        minimumLength: 8
-        maximumLength: 16
-        avarageLength: 12
-        minMartketPrice: 1
-        maxMarketPrice: 1
-        bitesOn: 10
-        rarity: 1
+        minimumLength: 96
+        maximumLength: 148
+        avarageLength: 118
+        minMartketPrice: 34
+        maxMarketPrice: 45
+        bitesOn: 8
+        rarity: 16
         locations: 1
         rarityFactor: 1
         timeRanges: []

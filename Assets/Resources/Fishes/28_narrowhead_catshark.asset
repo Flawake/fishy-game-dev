@@ -15,7 +15,7 @@ MonoBehaviour:
   id: 10028
   displayName: Narrowhead Catshark
   description: 
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 25aafd436001e4bd0ab025f7beacec0f, type: 3}
   maxStack: 2147483647
   isStatic: 0
   infiniteUse: 0

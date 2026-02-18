@@ -15,7 +15,7 @@ MonoBehaviour:
   id: 10029
   displayName: Nassau Grouper
   description: 
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 9208b00b7c86b415b99916d5642353d7, type: 3}
   maxStack: 2147483647
   isStatic: 0
   infiniteUse: 0
