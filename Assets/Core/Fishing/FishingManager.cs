@@ -44,6 +44,9 @@ public class FishingManager : NetworkBehaviour
     float elapsedFishingTime = 0;
     float fightStartTime = 0;
 
+
+    float rodThrowDistance = 2.5f;
+
     //count in ms, since this is more precise
     int minFishingTimeSeconds;
 
@@ -97,7 +100,9 @@ public class FishingManager : NetworkBehaviour
     public bool ProcessFishing(Vector2 clickedPos)
     {
         if (!IsFishingSpot(clickedPos))
+        {
             return false;
+        }
 
         // Player clicked on a fishing spot, but is currently not allowed to fish because of an active object preventing it.
         if(player.GetObjectsPreventingFishing() != 0)
@@ -160,8 +165,6 @@ public class FishingManager : NetworkBehaviour
         
         water = new RaycastHit2D();
 
-        float rodThrowDistance = 2.3f;
-
         if (Vector2.Distance(transform.position, clickedPos) > rodThrowDistance)
         {
             DebugFishingSpot("No fishing spot, distance was too big");
@@ -197,7 +200,7 @@ public class FishingManager : NetworkBehaviour
         }
 
         // Same raycasthit, but from player to throwdirection to make sure that the collision point is inside the player's fish collider
-        hits = Physics2D.RaycastAll(transform.position, new Vector2(clickedPos.x - transform.position.x, clickedPos.y - transform.position.y), rodThrowDistance + 1, obstacleLayer);
+        hits = Physics2D.RaycastAll(transform.position, new Vector2(clickedPos.x - transform.position.x, clickedPos.y - transform.position.y), rodThrowDistance, obstacleLayer);
         if(hits.Length == 0) {
             DebugFishingSpot("Why are there 0 hits?");
             return false;
@@ -222,7 +225,7 @@ public class FishingManager : NetworkBehaviour
             return false;
         }
 
-        if (!hit.collider.gameObject.GetComponent<PlayersNearWater>().GetPlayersNearPuddle().Contains(this.GetComponent<NetworkIdentity>().netId))
+        if (!hit.collider.gameObject.GetComponent<PlayersNearWater>().GetPlayersNearPuddle().Contains(GetComponent<NetworkIdentity>().netId))
         {
             DebugFishingSpot("The player is not even near the water");
             return false;
@@ -244,6 +247,20 @@ public class FishingManager : NetworkBehaviour
     bool IsFishingSpot(Vector2 clickedPos)
     {
         return IsFishingSpot(clickedPos, out _);
+    }
+
+    /// <summary>
+    /// Returns true if the given world position is a valid fishing spot
+    /// </summary>
+    [Client]
+    public bool IsValidFishingSpot(Vector2 worldPosition)
+    {
+        return IsFishingSpot(worldPosition);
+    }
+
+    public float GetRodThrowDistance()
+    {
+        return rodThrowDistance;
     }
 
     [Client]
