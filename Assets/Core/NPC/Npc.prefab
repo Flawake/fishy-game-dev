@@ -484,7 +484,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0.059}
   m_SizeDelta: {x: 684, y: 588}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &2086091566239878951
@@ -776,7 +776,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.6, y: 0.6, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6494716182117350736}
@@ -874,7 +874,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0}
-    oldSize: {x: 0.8125, y: 1.0625}
+    oldSize: {x: 0.52, y: 0.68}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -1056,7 +1056,6 @@ MonoBehaviour:
   clickIcon: {fileID: 3198513787888211359}
   yesButton: {fileID: 8623522840080815180}
   noButton: {fileID: 8317620542786660967}
-  npcAnimator: {fileID: 0}
 --- !u!1 &4500788068034870770
 GameObject:
   m_ObjectHideFlags: 0

@@ -6,44 +6,62 @@ public class ShowOnWaterHover : MonoBehaviour
 {
     [SerializeField] GameObject targetToShow;
     [SerializeField] Camera cam;
+    [SerializeField] FishingManager fishingManager;
 
-    static int WaterLayer;
-    NetworkIdentity _localPlayerId;
+    [Header("Shader Parameters")]
+    [SerializeField] Color circleColor = new Color(0.5f, 0.5f, 0.5f, 0.15f);
+    [SerializeField] Color ringColor = new Color(0f, 0f, 0f, 0.15f);
+    [SerializeField, Range(0f, 0.5f)] float radius = 0.4f;
+    [SerializeField, Range(0f, 0.5f)] float ringThickness = 0.05f;
+
+    NetworkIdentity _localPlayerIdentity;
+    SpriteRenderer _spriteRenderer;
+    MaterialPropertyBlock _propBlock;
+
+    static readonly int CircleColorId = Shader.PropertyToID("_CircleColor");
+    static readonly int RingColorId = Shader.PropertyToID("_RingColor");
+    static readonly int RadiusId = Shader.PropertyToID("_Radius");
+    static readonly int RingThicknessId = Shader.PropertyToID("_RingThickness");
 
     void Awake()
     {
-        WaterLayer = LayerMask.GetMask("Water");
-        _localPlayerId = GetComponentInParent<NetworkIdentity>();
-        if (cam == null)
-            cam = Camera.main;
+        _localPlayerIdentity = GetComponentInParent<NetworkIdentity>();
+        _spriteRenderer = targetToShow.GetComponent<SpriteRenderer>();
+        _propBlock = new MaterialPropertyBlock();
     }
 
     void Update()
     {
-        if (_localPlayerId == null || !_localPlayerId.isLocalPlayer)
+        if (_localPlayerIdentity == null || !_localPlayerIdentity.isLocalPlayer || Mouse.current == null)
+        {
             return;
-
-        if (targetToShow == null || cam == null || Mouse.current == null)
-            return;
+        }
 
         Vector2 mousePos = Mouse.current.position.ReadValue();
         Vector2 worldPos = cam.ScreenToWorldPoint(mousePos);
-        RaycastHit2D hit = Physics2D.Raycast(worldPos, Vector2.zero, float.MaxValue, WaterLayer);
 
-        bool show = false;
-        if (hit.collider != null)
-        {
-            var playersNearWater = hit.collider.GetComponent<PlayersNearWater>();
-            if (playersNearWater != null)
-            {
-                var playersNearPuddle = playersNearWater.GetPlayersNearPuddle();
-                show = playersNearPuddle != null && playersNearPuddle.Contains(_localPlayerId.netId);
-            }
-        }
-
+        bool show = IsValidFishingSpot(worldPos);
         targetToShow.SetActive(show);
-
         if (show)
-            targetToShow.transform.position = new Vector3(worldPos.x, worldPos.y, targetToShow.transform.position.z);
+        {
+            float worldScale = targetToShow.transform.lossyScale.x;
+            radius = fishingManager.GetRodThrowDistance() / worldScale;
+            UpdateShaderProperties();
+        }
+    }
+
+    void UpdateShaderProperties()
+    {
+        _spriteRenderer.GetPropertyBlock(_propBlock);
+        _propBlock.SetColor(CircleColorId, circleColor);
+        _propBlock.SetColor(RingColorId, ringColor);
+        _propBlock.SetFloat(RadiusId, radius);
+        _propBlock.SetFloat(RingThicknessId, ringThickness);
+        _spriteRenderer.SetPropertyBlock(_propBlock);
+    }
+
+    bool IsValidFishingSpot(Vector2 worldPosition)
+    {
+        return fishingManager.IsValidFishingSpot(worldPosition);
     }
 }
