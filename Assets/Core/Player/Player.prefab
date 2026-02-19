@@ -1260,9 +1260,9 @@ MonoBehaviour:
   cam: {fileID: 2598969918979025384}
   fishingManager: {fileID: 4714916547234725786}
   circleColor: {r: 0.5, g: 0.5, b: 0.5, a: 0.15}
-  ringColor: {r: 0, g: 0, b: 0, a: 0.33333334}
+  ringColor: {r: 0, g: 0, b: 0, a: 0.5882353}
   radius: 0
-  ringThickness: 0.003
+  ringThickness: 0.002
 --- !u!1 &5109097856594139905
 GameObject:
   m_ObjectHideFlags: 0

@@ -163,7 +163,7 @@ public class PlayerData : NetworkBehaviour
             return;
         }
         
-        playerDataManager.ServerRemoveAmountFromStack(itemReference, 1);
+        playerDataManager.ServerRemoveAmountFromStack(itemReference, 1, true);
         
         DateTime serverExpiry = DateTime.UtcNow.AddSeconds(specialEffect.DurationSeconds);
         activeSpecialEffects[specialEffect.EffectType] = new ActiveEffect(itemReference.def.Id, serverExpiry);
@@ -495,7 +495,7 @@ public class PlayerData : NetworkBehaviour
         }
         
         // Use the sync manager to handle stack consumption and database updates
-        bool success = playerDataManager.ServerRemoveAmountFromStack(baitReference, 1);
+        bool success = playerDataManager.ServerRemoveAmountFromStack(baitReference, 1, true);
 
         // Check if the bait stack is now empty
         if (success)
