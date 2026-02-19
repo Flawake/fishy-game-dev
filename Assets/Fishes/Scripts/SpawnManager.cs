@@ -25,9 +25,6 @@ public class SpawnManager : NetworkBehaviour
             Debug.LogError("The water is empty");
             return null;
         }
-
-        // Just return a fish for now to not have to wait while testing
-        return fishes[Random.Range(0, fishes.Count)];
         
         // Adjust spawn number based on luck multiplier (inverted for correct rarity logic)
         int baseSpawnNumber = Random.Range(1, 1000);
