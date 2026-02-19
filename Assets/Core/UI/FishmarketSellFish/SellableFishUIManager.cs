@@ -83,9 +83,10 @@ public class SellableFishUIManager : MonoBehaviour
     {
         GetComponentInParent<SellFish>().CmdSellFish(_thisFishItem.def.Id, _sellAmount);
         GetComponentInParent<PlayerData>().ClientChangeFishBucksAmount(_sellAmount * _baseSellPrice);
+        GetComponentInParent<PlayerInventory>().RemoveAmountFromStack(_thisFishItem, _sellAmount);
         if (GetComponentInParent<PlayerInventory>().GetFishByDefinitionId(_thisFishItem.def.Id).GetState<StackState>().currentAmount <= 0)
         {
-            Destroy(transform);
+            Destroy(transform.gameObject);
         }
     }
 }
