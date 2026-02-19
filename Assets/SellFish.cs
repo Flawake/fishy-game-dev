@@ -58,7 +58,6 @@ public class SellFish : NetworkBehaviour
             // Remove money from client when selling the fish fails
             syncManager.ChangeFishBucksAmount(-moneyAmount, true);
         }
-        inventory.RemoveAmountFromStack(fish, sellAmount);
     }
 
     public int GetFishAmount()
