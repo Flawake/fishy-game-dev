@@ -266,9 +266,22 @@ public class PlayerInventory : NetworkBehaviour
     }
 
     [Server]
-	public bool ServerRemoveAmountFromStack(ItemInstance itemReference, int amount)
+	public bool ServerRemoveAmountFromStack(ItemInstance itemReference, int amount, bool needsTargetSync)
 	{
-		if (itemReference.def.InfiniteUse || itemReference.def.IsStatic)
+        if (!RemoveAmountFromStack(itemReference, amount))
+        {
+            return false;
+        }
+        if (needsTargetSync)
+        {
+            TargetUpdateItem(itemReference);
+        }
+        return true;
+	}
+
+    public bool RemoveAmountFromStack(ItemInstance itemReference, int amount)
+    {
+        if (itemReference.def.InfiniteUse || itemReference.def.IsStatic)
         {
             return true;
         }
@@ -280,9 +293,8 @@ public class PlayerInventory : NetworkBehaviour
         }
         stackState.currentAmount -= amount;
         itemReference.SetState(stackState);
-        TargetUpdateItem(itemReference);
-        return true;
-	}
+        return true; 
+    }
 
     [TargetRpc]
     private void TargetUpdateItem(ItemInstance danglingItem)

@@ -104,7 +104,7 @@ public class PlayerDataSyncManager : MonoBehaviour
 	/// <param name="amount">The amount of items to consume from the stack</param>
 	/// <returns>True if the items were successfully consumed or the item was marked for infinite use, false otherwise</returns>
 	[Server]
-	public bool ServerRemoveAmountFromStack(ItemInstance itemReference, int removeAmount)
+	public bool ServerRemoveAmountFromStack(ItemInstance itemReference, int removeAmount, bool needsTargetSync)
 	{
 		if (itemReference == null)
 		{
@@ -124,7 +124,7 @@ public class PlayerDataSyncManager : MonoBehaviour
 			return false;
 		}
 
-		bool success = inventory.ServerRemoveAmountFromStack(itemReference, removeAmount);
+		bool success = inventory.ServerRemoveAmountFromStack(itemReference, removeAmount, needsTargetSync);
 
 		if (success)
 		{

@@ -20,7 +20,7 @@ class FishSpot
     // Helper method to check if a point is inside this FishSpot
     public bool Contains(Vector2 point)
     {
-        Vector2 halfSize = size * 3f;
+        Vector2 halfSize = size / 2f;
         Vector2 min = centrePoint - halfSize;
         Vector2 max = centrePoint + halfSize;
 
@@ -74,6 +74,8 @@ public class FishSpots : NetworkBehaviour
         }
     }
 
+    FishSpot _spot = null;
+
     private void OnDrawGizmos()
     {
         for (float x = areaGrid.BottomLeft.x; x < areaGrid.UpperRight.x; x += areaGrid.GridSize)
@@ -107,6 +109,12 @@ public class FishSpots : NetworkBehaviour
                 Gizmos.color = new Color(0f, 1f, 1f, 120f / 255f);
             }
             Gizmos.DrawCube(spot.centrePoint, spot.size);
+        }
+
+        if (_spot != null)
+        {
+            Gizmos.color = Color.white;
+            Gizmos.DrawSphere(_spot.centrePoint, 1f);
         }
     }
 
@@ -173,6 +181,7 @@ public class FishSpots : NetworkBehaviour
         {
             if (spot.Contains(throwPosition))
             {
+                _spot = spot;
                 switch (spot.spotType)
                 {
                     case FishSpotType.Uninitialized:
