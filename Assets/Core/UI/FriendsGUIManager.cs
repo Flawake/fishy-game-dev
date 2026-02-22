@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Mirror;
 using UnityEngine;
 
 public class FriendsGUIManager : MonoBehaviour
@@ -8,18 +9,17 @@ public class FriendsGUIManager : MonoBehaviour
     [SerializeField] private GameObject FriendPreviewPrefab;
     [SerializeField] private GameObject PendingFriendPreviewPrefab;
     [SerializeField] private GameObject contentHolder;
-    
-    PlayerData playerData;
+    private FriendSystem friendSystem;
 
-    PlayerData GetPlayerData()
+    private FriendSystem GetFriendSystem()
     {
-        if (playerData == null)
+        if (friendSystem == null)
         {
-            playerData = GetComponentInParent<PlayerData>();
+            friendSystem = GetComponentInParent<FriendSystem>();
         }
-        return playerData;
+        return friendSystem;
     }
-    
+
     public void CloseFriendManager()
     {
         background.SetActive(false);
@@ -74,13 +74,13 @@ public class FriendsGUIManager : MonoBehaviour
         {
             Destroy(child.gameObject);
         }
-        HashSet<Guid> friends = GetPlayerData().GetFriendList();
-        foreach (Guid friend in friends)
+        SyncDictionary<Guid, Friend> friends = GetFriendSystem().GetFriendList();
+        foreach ((Guid friendGuid, Friend friend) in friends)
         {
             GameObject friendPreview = Instantiate(FriendPreviewPrefab, contentHolder.transform);
             FriendPreviewData previewData = friendPreview.GetComponent<FriendPreviewData>();
-            previewData.SetGuid(friend);
-            previewData.SetPlayerName("Can't show name yet");
+            previewData.SetGuid(friendGuid);
+            previewData.SetPlayerName(friend.friendName);
         }
     }
 
@@ -92,21 +92,17 @@ public class FriendsGUIManager : MonoBehaviour
         {
             Destroy(child.gameObject);
         }
-        Dictionary<Guid, bool> pendingRequests = GetPlayerData().GetPendingFriendRequests();
-        foreach ((Guid playerID, bool requestSent) in pendingRequests)
+        SyncDictionary<Guid, FriendRequest> pendingRequests = GetFriendSystem().GetFriendRequestList();
+        foreach ((Guid playerID, FriendRequest request) in pendingRequests)
         {
-            if (requestSent)
+            if (request.requestType == FriendRequestType.SEND)
             {
-
-            }
-            else
-            {
-
+                continue;
             }
             GameObject pendingFriend = Instantiate(PendingFriendPreviewPrefab, contentHolder.transform);
             FriendPreviewData previewData = pendingFriend.GetComponent<FriendPreviewData>();
             previewData.SetGuid(playerID);
-            previewData.SetPlayerName("Can't show name yet");
+            previewData.SetPlayerName(request.NameOther);
         }
     }
 }

@@ -6,6 +6,7 @@ using System.Linq;
 using GlobalCompetitionSystem;
 using ItemSystem;
 using UnityEngine;
+using Mirror.BouncyCastle.Ocsp;
 
 public class PlayerData : NetworkBehaviour
 {
@@ -22,13 +23,12 @@ public class PlayerData : NetworkBehaviour
     [SerializeField]
     MailSystem mail;
     [SerializeField]
+    FriendSystem friendSystem;
+    [SerializeField]
     int availableFishCoins;
     [SerializeField]
     int availableFishBucks;
-    private HashSet<Guid> friendlist = new HashSet<Guid>();
-    // bool to indicate wether the reqeust was a sent or a receiver request.
-    private Dictionary<Guid, bool> pendingFriendRequests = new Dictionary<Guid, bool>();
-    
+
     private readonly Dictionary<SpecialEffectType, ActiveEffect> activeSpecialEffects = new Dictionary<SpecialEffectType, ActiveEffect>();
 
     //Variables that are synced between ALL players
@@ -571,6 +571,8 @@ public class PlayerData : NetworkBehaviour
             inventory.SaveInventory(playerData);
             fishdexFishes.SaveFishStats(playerData);
             mail.SetMails(userID, playerData.mailbox);
+            friendSystem.SetInitialFriendList(playerData.friends);
+            friendSystem.SetInitialFriendRequestList(playerData.friend_requests);
 
             SetUuid(userID);
             SetFishCoins(playerData.coins, true);
@@ -578,8 +580,6 @@ public class PlayerData : NetworkBehaviour
             SetXp(playerData.xp);
             SetStartPlayTime();
             SetTotalPlayTimeAtStart(playerData.total_playtime);
-            ServerSetFriendList(playerData.friends);
-            ServerSetFriendRequests(playerData.friend_requests);
             ServerLoadActiveEffects(playerData.active_effects);
             SetShowInventory(false);
             
@@ -686,112 +686,6 @@ public class PlayerData : NetworkBehaviour
     }
 
     [Server]
-    public bool GuidInFriendList(Guid userID)
-    {
-        return friendlist.Contains(userID);
-    }
-
-    [Server]
-    public bool FriendrequestSendToGuid(Guid userID)
-    {
-        if (pendingFriendRequests.TryGetValue(userID, out bool requestSent))
-        {
-            return requestSent;
-        }
-
-        return false;
-    }
-
-    public HashSet<Guid> GetFriendList()
-    {
-        return friendlist;
-    }
-
-    public Dictionary<Guid, bool> GetPendingFriendRequests()
-    {
-        return pendingFriendRequests;
-    }
-
-    public bool FriendrequestReceivedFromGuid(Guid userID)
-    {
-        if (pendingFriendRequests.TryGetValue(userID, out bool requestSent))
-        {
-            return !requestSent;
-        }
-
-        return false;
-    }
-
-    [Server]
-    private void ServerSetFriendList(UserData.Friend[] friends)
-    {
-        foreach (UserData.Friend friend in friends)
-        {
-            if (friend.UserOne != GetUuid() && friend.UserTwo != GetUuid())
-            {
-                Debug.LogWarning($"Got a friend in the friend list where user_one nor user_two matches the player uuid: user_one {friend.UserOne}, user_two {friend.UserTwo}, player_uuid {GetUuid()}");
-            }
-
-            friendlist.Add(friend.UserOne == GetUuid() ? friend.UserTwo : friend.UserOne);
-        }
-    }
-
-    [Command]
-    private void CmdGetFriendList() {
-        RpcSetFriendList(friendlist);
-    }
-
-    [TargetRpc]
-    private void RpcSetFriendList(HashSet<Guid> newFriendlist)
-    {
-        friendlist = newFriendlist;
-    }
-
-    // Callable from both server and client
-    public void AddToFriendList(Guid userID)
-    {
-        friendlist.Add(userID);
-        if (isServer)
-        {
-            ClientAddToFriendList(userID);
-        }
-    }
-
-    [TargetRpc]
-    private void ClientAddToFriendList(Guid userID)
-    {
-        friendlist.Add(userID);
-    }
-
-    // Callable from both server and client
-    public void RemoveFromFriendList(Guid userID)
-    {
-        friendlist.Remove(userID);
-        if (isServer)
-        {
-            ClientRemoveFromFriendList(userID);
-        }
-    }
-
-    [TargetRpc]
-    private void ClientRemoveFromFriendList(Guid userID)
-    {
-        friendlist.Remove(userID);
-    }
-
-    [Server]
-    private void ServerSetFriendRequests(UserData.FriendRequest[] requests)
-    {
-        foreach (UserData.FriendRequest request in requests)
-        {
-            pendingFriendRequests.Add(
-                request.UserOne == GetUuid() ? request.UserTwo : request.UserOne,
-                request.RequestSenderId == GetUuid()
-                );
-        }
-    }
-
-    [Server]
     private void ServerLoadActiveEffects(UserData.ActiveEffect[] effects)
     {
         activeSpecialEffects.Clear();
@@ -848,51 +742,6 @@ public class PlayerData : NetworkBehaviour
             activeSpecialEffects[effectType] = new ActiveEffect(effect.ItemId, effect.Expiry);
             Debug.Log("Updated special effect on the client from the server");
         }
-    }
-
-    [Command]
-    private void CmdGetFriendRequestList() {
-        ClientSetFriendRequestList(pendingFriendRequests);
-    }
-
-    [TargetRpc]
-    private void ClientSetFriendRequestList(Dictionary<Guid, bool> newFriendRequestlist)
-    {
-        pendingFriendRequests = newFriendRequestlist;
-    }
-
-
-    public void AddNewFriendRequest(Guid userID, bool requestSend)
-    {
-        pendingFriendRequests.Add(userID, requestSend);
-        if (isServer)
-        {
-            ClientAddToFriendRequestList(userID, requestSend);
-        }
-    }
-
-    [TargetRpc]
-    private void ClientAddToFriendRequestList(Guid userID, bool requestSend)
-    {
-        pendingFriendRequests.Add(userID, requestSend);
-    }
-
-    // Callable from both server and client
-    public void RemoveFromFriendRequestList(Guid userID)
-    {
-        pendingFriendRequests.Remove(userID);
-        if (isServer)
-        {
-            ClientRemoveFromFriendRequestList(userID);
-        }
-    }
-
-    // This will most likely get called twice, once from the client itself and once from the server.
-    // But we need the interface in both cases and it doesn't really matter except for a few wasted clock cycles
-    [TargetRpc]
-    private void ClientRemoveFromFriendRequestList(Guid userID)
-    {
-        pendingFriendRequests.Remove(userID);
     }
 
     [Server]
@@ -1095,8 +944,6 @@ public class PlayerData : NetworkBehaviour
             CmdGetFishCoins();
             CmdGetFishBucks();
             inventory.CmdGetInventory();
-            CmdGetFriendList();
-            CmdGetFriendRequestList();
             CmdGetActiveEffects();
         }
     }
