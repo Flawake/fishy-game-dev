@@ -59,8 +59,7 @@ public class FriendSystem : NetworkBehaviour
     {
         foreach (UserData.Friend initialFriend in initialFriends)
         {
-            Guid other = initialFriend.UserOne == playerData.GetUuid() ? initialFriend.UserTwo : initialFriend.UserOne;
-            friends.Add(other, new Friend(other, initialFriend.UserName));
+            friends.Add(initialFriend.friendId, new Friend(initialFriend.friendId, initialFriend.friendName));
         }
     }
     
@@ -69,9 +68,8 @@ public class FriendSystem : NetworkBehaviour
     {
         foreach (UserData.FriendRequest initialFriendRequest in initialFriendRequests)
         {
-            Guid other = initialFriendRequest.UserOne == playerData.GetUuid() ? initialFriendRequest.UserTwo : initialFriendRequest.UserOne;
             FriendRequestType requestType = initialFriendRequest.RequestSenderId == playerData.GetUuid() ? FriendRequestType.SEND : FriendRequestType.RECEIVED;
-            friendRequests.Add(other, new FriendRequest(other, initialFriendRequest.UserName, requestType));
+            friendRequests.Add(initialFriendRequest.otherId, new FriendRequest(initialFriendRequest.otherId, initialFriendRequest.otherName, requestType));
         }
     }
 
@@ -131,6 +129,16 @@ public class FriendSystem : NetworkBehaviour
         }
     }
 
+    [Server]
+    void FriendRequestHandled(Guid otherPlayer, string nameOther, bool accepted)
+    {
+        friendRequests.Remove(otherPlayer);
+        if (accepted)
+        {
+            friends.Add(otherPlayer, new Friend(otherPlayer, nameOther));
+        }
+    }
+
     [Command]
     void CmdSendFriendRequest(Guid playerToBefriend)
     {
@@ -152,20 +160,12 @@ public class FriendSystem : NetworkBehaviour
             playerToBefriendName = "Err: unknown name";
         }
         
-        // The other player has already send a friend request in the past, add this player as friend immediatly
         if (friendRequests.TryGetValue(playerToBefriend, out FriendRequest friendRequest))
         {
             if (friendRequest.requestType == FriendRequestType.RECEIVED)
             {
-                DatabaseCommunications.HandleFriendRequest(playerData.GetUuid(), playerToBefriend, true);
-                friendRequests.Remove(playerToBefriend);
-                friends.Add(playerToBefriend, new Friend(playerToBefriend, friendRequest.NameOther));
-                if (GameNetworkManager.connUUID.TryGetValue(playerToBefriend, out NetworkConnectionToClient other))
-                {
-                    FriendSystem otherFriendSystem = other.identity.gameObject.GetComponent<FriendSystem>();
-                    otherFriendSystem.friendRequests.Remove(playerData.GetUuid());
-                    otherFriendSystem.friends.Add(playerData.GetUuid(), new Friend(playerData.GetUuid(), playerData.GetUsername()));
-                }
+                // The other player has already send a friend request in the past, add this player as friend immediatly
+                CmdAnswerFriendRequest(playerToBefriend, true);
             }
             // Request was handled
             return;
@@ -196,7 +196,7 @@ public class FriendSystem : NetworkBehaviour
     }
 
     [Command]
-    public void CmdAnswerFriendRequest(Guid answeredPlayerRequestUuid, bool accepted, NetworkConnectionToClient conn = null)
+    public void CmdAnswerFriendRequest(Guid answeredPlayerRequestUuid, bool accepted)
     {
         // Players can't accept a request they have send themself. They can cancel it tough
         if (accepted && !friendRequests.TryGetValue(answeredPlayerRequestUuid, out FriendRequest request))
@@ -212,23 +212,14 @@ public class FriendSystem : NetworkBehaviour
 
         string playerName = friendRequest.NameOther == null ? "Err: unknown name" : friendRequest.NameOther;
 
-        friendRequests.Remove(answeredPlayerRequestUuid);
-        if (accepted)
-        {
-            friends.Add(answeredPlayerRequestUuid, new Friend(answeredPlayerRequestUuid, playerName));
-        }
-
+        FriendRequestHandled(answeredPlayerRequestUuid, playerName, accepted);
 
         // Also inform the other player about the change if he's online
         GameNetworkManager.connUUID.TryGetValue(answeredPlayerRequestUuid, out NetworkConnectionToClient receiverConn);
         if (receiverConn != null)
         {
             FriendSystem otherFriendSystem = receiverConn.identity.gameObject.GetComponent<FriendSystem>();
-            otherFriendSystem.friendRequests.Remove(playerData.GetUuid());
-            if (accepted)
-            {
-                otherFriendSystem.friends.Add(playerData.GetUuid(), new Friend(playerData.GetUuid(), playerData.GetUsername()));
-            }
+            otherFriendSystem.FriendRequestHandled(playerData.GetUuid(), playerData.GetUsername(), accepted);
         }
     }
 }
@@ -261,14 +252,14 @@ public static class FriendNetworkSerialization
     {
         writer.WriteGuid(value.GuidOther);
         writer.WriteString(value.NameOther);
-        writer.WriteInt((int)value.requestType);
+        writer.WriteByte((byte)value.requestType);
     }
 
     public static FriendRequest ReadFriendRequest(this NetworkReader reader)
     {
         Guid guid = reader.ReadGuid();
         string name = reader.ReadString();
-        FriendRequestType type = (FriendRequestType)reader.ReadInt();
+        FriendRequestType type = (FriendRequestType)reader.ReadByte();
         return new FriendRequest(guid, name, type);
     }
 }
