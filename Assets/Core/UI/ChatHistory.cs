@@ -19,7 +19,7 @@ public class ChatHistory : MonoBehaviour
 
     public void OpenChat(InputAction.CallbackContext context)
     {
-        if(chatInput.isFocused)
+        if(chatInput.isFocused || MailGuiManager.IsSendingMailOpen())
         {
             return;
         }
