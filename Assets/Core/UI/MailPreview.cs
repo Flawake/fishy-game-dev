@@ -13,7 +13,7 @@ public class MailPreview : MonoBehaviour
     {
         mail = _mail;
         mailTitle.text = mail.title;
-        senderName.text = mail.senderUuid.ToString();
+        senderName.text = mail.senderName;
         mailMessage.text = mail.message;
 
         if(mail.read) {

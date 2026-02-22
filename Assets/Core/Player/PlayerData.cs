@@ -568,12 +568,6 @@ public class PlayerData : NetworkBehaviour
         try
         {
             UserData playerData = JsonUtility.FromJson<UserData>(jsonPlayerData);
-            inventory.SaveInventory(playerData);
-            fishdexFishes.SaveFishStats(playerData);
-            mail.SetMails(userID, playerData.mailbox);
-            friendSystem.SetInitialFriendList(playerData.friends);
-            friendSystem.SetInitialFriendRequestList(playerData.friend_requests);
-
             SetUuid(userID);
             SetFishCoins(playerData.coins, true);
             SetFishBucks(playerData.bucks, true);
@@ -582,6 +576,12 @@ public class PlayerData : NetworkBehaviour
             SetTotalPlayTimeAtStart(playerData.total_playtime);
             ServerLoadActiveEffects(playerData.active_effects);
             SetShowInventory(false);
+
+            inventory.SaveInventory(playerData);
+            fishdexFishes.SaveFishStats(playerData);
+            mail.SetMails(userID, playerData.mailbox);
+            friendSystem.SetInitialFriendList(playerData.friends);
+            friendSystem.SetInitialFriendRequestList(playerData.friend_requests);
             
             // Ensure player has default rod and bait
             EnsureDefaultItems();

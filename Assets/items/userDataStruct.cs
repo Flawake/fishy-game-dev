@@ -62,6 +62,7 @@ public struct UserData
     public struct MailEntry
     {
         string mail_id;
+        public string sender_name;
         public string title;
         public string message;
         

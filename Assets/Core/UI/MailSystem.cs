@@ -37,7 +37,7 @@ public class MailSystem : NetworkBehaviour
     {
         foreach (UserData.MailEntry databaseMail in mails)
         {
-            Mail mail = new Mail(playerUuid, databaseMail.title, databaseMail.message);
+            Mail mail = new Mail(playerUuid, databaseMail.title, databaseMail.message, databaseMail.sender_name);
             playerMails.Add(mail);
         }
     }
@@ -82,7 +82,8 @@ public class MailSystem : NetworkBehaviour
         Mail newMail = new Mail(
           receiverUuid,
           title,
-          message
+          message,
+          ""
         );
         receiverUuid = Guid.Empty;
         CmdSendMail(newMail);

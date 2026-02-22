@@ -1,4 +1,5 @@
 using System;
+using JetBrains.Annotations;
 [Serializable]
 public struct Mail
 {
@@ -6,6 +7,7 @@ public struct Mail
     public Guid prevMailUuid;
     public Guid senderUuid;
     public Guid receiverUuid;
+    public string senderName;
     public DateTime sendTime;
     public string title;
     public string message;
@@ -14,6 +16,7 @@ public struct Mail
     public Mail(Guid _senderUuid, Guid _prevMailUid, Guid _receiverUuid, Guid _mailUuid, DateTime _sendTime, string _title, string _message)
     {
         senderUuid = _senderUuid;
+        senderName = "";
         prevMailUuid = _prevMailUid;
         receiverUuid = _receiverUuid;
         mailUuid = _mailUuid;
@@ -23,9 +26,10 @@ public struct Mail
         read = false;
     }
 
-    public Mail(Guid _receiver, string _title, string _message)
+    public Mail(Guid _receiver, string _title, string _message, string _senderName)
     {
         senderUuid = Guid.Empty;
+        senderName = _senderName;
         prevMailUuid = Guid.Empty;
         receiverUuid = _receiver;
         mailUuid = Guid.Empty;
