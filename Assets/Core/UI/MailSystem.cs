@@ -3,11 +3,6 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-[Serializable]
-public class MailWrapper
-{
-    public Mail[] mails;
-}
 public class MailSystem : NetworkBehaviour
 {
     [SerializeField] Guid receiverUuid;
@@ -37,30 +32,14 @@ public class MailSystem : NetworkBehaviour
         base.OnStartLocalPlayer();
     }
 
-    public bool ParseMails(string jsonMails)
+    [Server]
+    public void SetMails(Guid playerUuid, UserData.MailEntry[] mails)
     {
-        try
+        foreach (UserData.MailEntry databaseMail in mails)
         {
-            MailWrapper mails = JsonUtility.FromJson<MailWrapper>(jsonMails);
-            foreach (Mail mail in mails.mails)
-            {
-                playerMails.Add(mail);
-            }
-            return true;
-        } catch (Exception e)
-        {
-            Debug.LogWarning(e);
-            return false;
+            Mail mail = new Mail(playerUuid, databaseMail.title, databaseMail.message);
+            playerMails.Add(mail);
         }
-    }
-
-    void LoadMails(List<Mail> mails)
-    {
-        playerMails = mails;
-    }
-
-    void AddMail(Mail mail) {
-
     }
 
     [Server]
@@ -83,6 +62,7 @@ public class MailSystem : NetworkBehaviour
         receiverUuid = Guid.Empty;
     }
 
+    [Server]
     public Guid GenerateMailGuid()
     {
         return Guid.NewGuid();

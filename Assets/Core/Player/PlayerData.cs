@@ -20,6 +20,8 @@ public class PlayerData : NetworkBehaviour
     [SerializeField]
     PlayerFishdexFishes fishdexFishes;
     [SerializeField]
+    MailSystem mail;
+    [SerializeField]
     int availableFishCoins;
     [SerializeField]
     int availableFishBucks;
@@ -568,6 +570,7 @@ public class PlayerData : NetworkBehaviour
             UserData playerData = JsonUtility.FromJson<UserData>(jsonPlayerData);
             inventory.SaveInventory(playerData);
             fishdexFishes.SaveFishStats(playerData);
+            mail.SetMails(userID, playerData.mailbox);
 
             SetUuid(userID);
             SetFishCoins(playerData.coins, true);
