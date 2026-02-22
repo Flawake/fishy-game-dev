@@ -59,7 +59,7 @@ public class FriendPreviewData : MonoBehaviour
     private void HandleFriendRequest(bool accepted)
     {
         FriendSystem friendSystemRef = GetFriendSystem();
-        friendSystemRef.AnswerFriendRequest(friendGUID, accepted);
+        friendSystemRef.AnswerFriendRequest(friendGUID, friendName.text, accepted);
 
         FriendsGUIManager friendsGUI = GetComponentInParent<FriendsGUIManager>();
         friendsGUI.RefreshRequestGUI();

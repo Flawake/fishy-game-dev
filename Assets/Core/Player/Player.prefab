@@ -2083,6 +2083,7 @@ MonoBehaviour:
   playerDataManager: {fileID: 2600673011262952092}
   fishdexFishes: {fileID: 1917053837910666563}
   mail: {fileID: 871487665807593460}
+  friendSystem: {fileID: 3391836200202609913}
   availableFishCoins: 0
   availableFishBucks: 0
   playerName: 

@@ -71,9 +71,11 @@ public struct UserData
     [Serializable]
     public struct Friend
     {
+        public string username;
         public string user_one;
         public string user_two;
         
+        public string UserName => username;
         public Guid UserOne => Guid.Parse(user_one);
         public Guid UserTwo => Guid.Parse(user_two);
     }
@@ -81,10 +83,11 @@ public struct UserData
     [Serializable]
     public struct FriendRequest
     {
+        public string username;
         public string user_one;
         public string user_two;
         public string request_sender_id;
-        
+        public string UserName => username;
         public Guid UserOne => Guid.Parse(user_one);
         public Guid UserTwo => Guid.Parse(user_two);
         public Guid RequestSenderId => Guid.Parse(request_sender_id);
