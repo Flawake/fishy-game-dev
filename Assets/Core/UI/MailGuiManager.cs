@@ -4,12 +4,24 @@ using UnityEngine;
 
 public class MailGuiManager : MonoBehaviour
 {
+    static GameObject mailboxObjectReference;
+    
     [SerializeField] GameObject sendMailBackground;
     [SerializeField] TMP_InputField titleField;
     [SerializeField] TMP_InputField messageField;
 
     MailSystem mailSystem;
 
+    void Awake()
+    {
+        mailboxObjectReference = sendMailBackground;
+    }
+
+    public static bool IsSendingMailOpen()
+    {
+        return mailboxObjectReference.activeSelf;
+    }
+    
     public void Close() {
         if(mailSystem == null) {
             mailSystem = transform.GetComponentInParent<MailSystem>();
