@@ -130,6 +130,12 @@ public class FishdexUIManager : MonoBehaviour
         }
     }
 
+    public void OpenFishdex()
+    {
+        fishdexObject.SetActive(true);
+        OverviewButtonClicked();
+    }
+
     public void CloseFishdex()
     {
         fishdexObject.SetActive(false);
