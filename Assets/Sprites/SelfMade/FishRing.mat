@@ -30,7 +30,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _EdgeSmoothness: 0.0001
-    - _Radius: 0.06
+    - _Radius: 0
     - _RingThickness: 0.003
     m_Colors:
     - _CircleColor: {r: 0.5, g: 0.5, b: 0.5, a: 0.15}
