@@ -5,6 +5,8 @@ using ItemSystem;
 
 public class CaughtDialogData : MonoBehaviour
 {
+    ItemDefinition curFish;
+
     [SerializeField]
     Image fishSprite;
 
@@ -18,11 +20,14 @@ public class CaughtDialogData : MonoBehaviour
     [SerializeField]
     GameObject[] stars;
 
+    [SerializeField]
+    FishdexUIManager fishdex;
+
     public void SetData(CurrentFish fishdata)
     {
-        ItemDefinition fish = ItemRegistry.Get(fishdata.id);
-        nameField.text = fish.DisplayName;
-        fishSprite.sprite = fish.Icon;
+        curFish = ItemRegistry.Get(fishdata.id);
+        nameField.text = curFish.DisplayName;
+        fishSprite.sprite = curFish.Icon;
         lengthField.text = "Length: " + fishdata.length.ToString() + " cm";
         xpField.text = fishdata.xp.ToString() + " XP";
         SetStars(FishEnumConfig.RarityToInt(fishdata.rarity));
@@ -45,6 +50,14 @@ public class CaughtDialogData : MonoBehaviour
     //Called from in game button
     public void CloseCaughtDialog()
     {
-        this.gameObject.SetActive(false);
+        gameObject.SetActive(false);
+    }
+
+    // Called from button in game
+    public void viewInFishdexButton()
+    {
+        fishdex.OpenFishdex();
+        fishdex.ShowFishInfo(curFish);
+        CloseCaughtDialog();
     }
 }

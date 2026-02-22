@@ -14267,7 +14267,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8666352613643460980}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 5875279826808464610}
+        m_TargetAssemblyTypeName: CaughtDialogData, Assembly-CSharp
+        m_MethodName: viewInFishdexButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &3830195361165151291
 GameObject:
   m_ObjectHideFlags: 0
@@ -17324,15 +17336,15 @@ MonoBehaviour:
       m_Calls: []
   m_text: View in fishdex
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8ea167f03b96fe8cbb271e60b93d53e8, type: 2}
-  m_sharedMaterial: {fileID: 1307761606352953845, guid: 8ea167f03b96fe8cbb271e60b93d53e8, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: ac96a15c6e73b4dc692f742349f54585, type: 2}
+  m_sharedMaterial: {fileID: -5615169928823306878, guid: ac96a15c6e73b4dc692f742349f54585, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4278903295
+  m_fontColor: {r: 1, g: 0.88235295, b: 0.039215688, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -20490,7 +20502,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 98, y: -200}
+  m_AnchoredPosition: {x: 56, y: -178}
   m_SizeDelta: {x: 43.179, y: 20.792}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4886289915201290091
@@ -28500,6 +28512,7 @@ MonoBehaviour:
   - {fileID: 1220234576564689407}
   - {fileID: 8393187875338232954}
   - {fileID: 9025312564485593585}
+  fishdex: {fileID: 1544112565699454505}
 --- !u!114 &4786306739560830036
 MonoBehaviour:
   m_ObjectHideFlags: 0
