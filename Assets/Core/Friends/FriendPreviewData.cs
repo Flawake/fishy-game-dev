@@ -28,6 +28,13 @@ public class FriendPreviewData : MonoBehaviour
     }
 
     // Called from button in game
+    public void TradeWithFriendButton()
+    {
+        TradingUIManager trading = transform.GetComponentInParent<TradingUIManager>();
+        trading.RequestNewTrade(friendGUID, friendName.text);
+    }
+
+    // Called from button in game
     public void MessagePlayer()
     {
         MailSystem mailSystem = transform.GetComponentInParent<MailSystem>();
