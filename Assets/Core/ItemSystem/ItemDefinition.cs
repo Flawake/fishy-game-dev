@@ -31,9 +31,14 @@ namespace ItemSystem {
 
         public bool InfiniteUse => infiniteUse;
 
-        public T GetBehaviour<T>() where T : class, IItemBehaviour
+        public T GetBehaviour<T>(Type tradableType) where T : class, IItemBehaviour
         {
             return Behaviours.OfType<T>().FirstOrDefault();
+        }
+
+        public IItemBehaviour GetBehaviour(Type behaviourType)
+        {
+            return Behaviours.FirstOrDefault(b => behaviourType.IsAssignableFrom(b.GetType()));
         }
 
 #if UNITY_EDITOR
