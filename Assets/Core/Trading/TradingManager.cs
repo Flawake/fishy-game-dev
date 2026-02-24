@@ -142,6 +142,16 @@ public class TradingManager : MonoBehaviour
         return false;
     }
 
+    [Server]
+    bool IDOwnsTradeRequest(PendingTradeRequest req, Guid claimer)
+    {
+        if(req.receiverId == claimer || req.requesterId == claimer)
+        {
+            return true;
+        }
+        return false;
+    }
+
     bool PlayerAlreadyTrading(Guid requesterID, Guid receiverID)
     {
         RunningTrade newTrade = 
@@ -240,7 +250,8 @@ public class TradingManager : MonoBehaviour
     [Command]
     void CmdAcceptTradeRequest(PendingTradeRequest tradeRequest)
     {
-        if (tradeRequest.requesterId == GetComponentInParent<PlayerData>().GetUuid())
+        Guid accepterID = GetComponentInParent<PlayerData>().GetUuid();
+        if (!IDOwnsTradeRequest(tradeRequest, accepterID) || tradeRequest.requesterId == GetComponentInParent<PlayerData>().GetUuid())
         {
             return;
         }
