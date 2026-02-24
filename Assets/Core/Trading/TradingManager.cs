@@ -3,6 +3,13 @@ using Mirror;
 using System.Collections.Generic;
 using System;
 using ItemSystem;
+using Mirror.BouncyCastle.Tls;
+
+enum CancelTradeRequestReason
+{
+    AcceptedButUnavailable,
+    RequestTimeout,
+}
 
 static class TradabilityRules
 {
@@ -125,19 +132,60 @@ public class TradingManager : MonoBehaviour
         return false;
     }
 
+    [Server]
+    bool IDOwnsTrade(RunningTrade trade, Guid claimer)
+    {
+        if(trade.receiverId == claimer || trade.requesterId == claimer)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    bool PlayerAlreadyTrading(Guid requesterID, Guid receiverID)
+    {
+        RunningTrade newTrade = 
+        new RunningTrade
+        {
+            // Invert, requester requested the request from its perspective
+            requesterId = requesterID,
+            receiverId = receiverID,
+        };
+
+        if (runningTrades.ContainsKey(newTrade.GetHashCode())) {
+            return true;
+        }
+
+        newTrade.requesterId = receiverID;
+        newTrade.receiverId = requesterID;
+
+        if (runningTrades.ContainsKey(newTrade.GetHashCode())) {
+            return true;
+        }
+
+        return false;
+    }
+
     bool CanMakeTradeRequest(Guid playerToRequestId)
     {
+        Guid thisPlayerID = GetComponentInParent<PlayerData>().GetUuid();
         // Check if request is new
         PendingTradeRequest newRequest = 
         new PendingTradeRequest
         {
-            requesterId = GetComponentInParent<PlayerData>().GetUuid(),
+            requesterId = thisPlayerID,
             receiverId = playerToRequestId,
         };
 
         if (pendingTradeRequests.ContainsKey(newRequest.GetHashCode())) {
             return false;
         }
+
+        if (playerToRequestId == thisPlayerID)
+        {
+            return false;
+        }
+
         return true;
     }
 
@@ -151,7 +199,7 @@ public class TradingManager : MonoBehaviour
 
         if (TradeAlreadyRequestedByOther(playerToRequestId, out PendingTradeRequest existingTradeRequest))
         {
-            ServerTradeRequestAccepted(existingTradeRequest);
+            ServerTradeRequestAccepted(existingTradeRequest, GetComponentInParent<PlayerData>().GetUuid());
             return;
         }
 
@@ -192,12 +240,31 @@ public class TradingManager : MonoBehaviour
     [Command]
     void CmdAcceptTradeRequest(PendingTradeRequest tradeRequest)
     {
-        ServerTradeRequestAccepted(tradeRequest);
+        if (tradeRequest.requesterId == GetComponentInParent<PlayerData>().GetUuid())
+        {
+            return;
+        }
+        if (!pendingTradeRequests.ContainsKey(tradeRequest.GetHashCode()))
+        {
+            // PendingTradeRequest might be crafted by player. But most likely expired
+            tradingUIManager.informPlayer(TradingInfoType.TradeExpired, "Player was already trading");
+            throw new NotImplementedException("Todo: tell player request already expired");
+        }
+        ServerTradeRequestAccepted(tradeRequest, GetComponentInParent<PlayerData>().GetUuid());
     }
 
     [Server]
-    void ServerTradeRequestAccepted(PendingTradeRequest tradeRequest)
+    void ServerTradeRequestAccepted(PendingTradeRequest tradeRequest, Guid Acceptor)
     {
+        if (PlayerAlreadyTrading(tradeRequest.requesterId, tradeRequest.receiverId))
+        {
+            if(GameNetworkManager.connUUID.TryGetValue(Acceptor, out NetworkConnectionToClient acceptorConnection))
+            {
+                TargetRemoveTradeRequest(acceptorConnection, tradeRequest, CancelTradeRequestReason.AcceptedButUnavailable);
+            }
+            return;
+        }
+
         pendingTradeRequests.Remove(tradeRequest.GetHashCode());
 
         RunningTrade runningTrade = new RunningTrade
@@ -210,6 +277,65 @@ public class TradingManager : MonoBehaviour
             receiverTradeItems = new List<TradableItem>(),
         };
 
-        runningTrades.Add(tradeRequest.GetHashCode(), runningTrade);
+        GameNetworkManager.connUUID.TryGetValue(tradeRequest.requesterId, out NetworkConnectionToClient requesterConnection);
+        GameNetworkManager.connUUID.TryGetValue(tradeRequest.receiverId, out NetworkConnectionToClient receiverConnection);
+
+        if (requesterConnection != null && receiverConnection != null)
+        {
+            runningTrades.Add(runningTrade.GetHashCode(), runningTrade);
+            TargetTradeRequestAccepted(requesterConnection, runningTrade);
+            TargetTradeRequestAccepted(receiverConnection, runningTrade);
+        }
+    }
+
+    [TargetRpc]
+    void TargetRemoveTradeRequest(NetworkConnection _, PendingTradeRequest tradeRequest, CancelTradeRequestReason reason)
+    {
+        pendingTradeRequests.Remove(tradeRequest.GetHashCode());
+        if (reason == CancelTradeRequestReason.AcceptedButUnavailable)
+        {
+            tradingUIManager.informPlayer(TradingInfoType.CancelTradeRequest, "Player was already trading");
+        }
+    }
+
+    [TargetRpc]
+    void TargetTradeRequestAccepted(NetworkConnection _, RunningTrade runningTrade)
+    {
+        if (runningTrades.Count > 0)
+        {
+            CmdCancelTrade();
+        }
+        else
+        {
+            runningTrades.Add(runningTrade.GetHashCode(), runningTrade);
+            tradingUIManager.openTradeMenu(runningTrade);
+        }
+    }
+
+    [TargetRpc]
+    void TargetCancelRunningTrade(NetworkConnection _, RunningTrade runningTrade)
+    {
+        runningTrades.Remove(runningTrade.GetHashCode());
+        tradingUIManager.closeTradeMenu(TradingStopReason.ClosedByOther, "The other side cancelled the trade. All items have been returned to their original owner");
+    }
+    
+    [Command]
+    void CmdCancelTrade(RunningTrade tradeToCancel, NetworkConnectionToClient sender = null)
+    {
+        Guid CmdCallerId = sender.identity.GetComponent<PlayerData>().GetUuid();
+        if (!runningTrades.ContainsKey(tradeToCancel.GetHashCode()) || !IDOwnsTrade(tradeToCancel, CmdCallerId))
+        {
+            return;
+        }
+        Guid receiver = tradeToCancel.requesterId;
+        if (tradeToCancel.requesterId == sender.identity.GetComponent<PlayerData>().GetUuid())
+        {
+            receiver = tradeToCancel.receiverId;
+        }
+
+        if(GameNetworkManager.connUUID.TryGetValue(receiver, out NetworkConnectionToClient receiverConnection))
+        {
+            TargetCancelRunningTrade(receiverConnection, tradeToCancel);
+        }
     }
 }
