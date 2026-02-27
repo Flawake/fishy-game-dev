@@ -1,0 +1,137 @@
+namespace TradeSystem
+{
+    using System;
+    using ItemSystem;
+    using Mirror;
+    using UnityEngine;
+
+    static class TradabilityRules
+    {
+        private static readonly Type[] TradableBaseTypes =
+        {
+            typeof(ShellBehaviour),
+            typeof(FishBehaviour),
+            typeof(BaitBehaviour),
+        };
+
+        public static bool IsTradable(ItemInstance item)
+        {
+            if (item.def.IsStatic || item.def.InfiniteUse)
+            {
+                return false;
+            }
+            foreach (Type tradableType in TradableBaseTypes)
+            {
+                if (item.def.GetBehaviour(tradableType) != null)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+    }
+
+    public enum TradableItemType
+    {
+        Bucks,
+        Item
+    }
+
+    public class TradableItem
+    {
+        public TradableItemType Type { get; }
+        public int BucksAmount { get; }
+        public ItemInstance ItemInst { get; }
+        private TradableItem(TradableItemType type, int bucks, ItemInstance item)
+        {
+            Type = type;
+            BucksAmount = bucks;
+            ItemInst = item;
+        }
+
+        public static TradableItem Bucks(int amount)
+        {
+            return new TradableItem(TradableItemType.Bucks, amount, null);
+        }
+
+        public static TradableItem FromItem(ItemInstance item)
+        {
+            if (!TradabilityRules.IsTradable(item))
+            {
+                //This should kick the player requesting to trade the item
+                throw new InvalidOperationException($"{item.GetType().Name} is not tradable");
+            }
+            return new TradableItem(TradableItemType.Item, 0, item);
+        }
+
+        public Sprite GetSprite()
+        {
+            if (Type == TradableItemType.Bucks) {
+                return null;
+            }
+            else
+            {
+                return ItemInst.def.Icon;
+            }
+        }
+
+        public int GetAmount()
+        {
+            if (Type == TradableItemType.Bucks) {
+                return BucksAmount;
+            }
+            else
+            {
+                StackState stackState = ItemInst.GetState<StackState>();
+                if (stackState == null)
+                {
+                    return 0;
+                }
+                else
+                {
+                    return ItemInst.GetState<StackState>().currentAmount;
+                }
+            }
+        }
+    }
+
+    public static class TradableItemSerializer
+    {
+    // Serialize TradableItem
+    public static void WriteTradableItem(this NetworkWriter writer, TradableItem item)
+    {
+        writer.WriteInt((int)item.Type);       // enum as int
+        writer.WriteInt(item.BucksAmount);     // bucks amount
+
+        bool hasItem = item.ItemInst != null;
+        writer.WriteBool(hasItem);            // null check
+
+        if (hasItem)
+        {
+            writer.Write(item.ItemInst);         // use Mirror's registered writer for ItemInstance
+        }
+    }
+
+    // Deserialize TradableItem
+    public static TradableItem ReadTradableItem(this NetworkReader reader)
+    {
+        TradableItemType type = (TradableItemType)reader.ReadInt();
+        int bucks = reader.ReadInt();
+
+        bool hasItem = reader.ReadBool();
+        ItemInstance item = null;
+        if (hasItem)
+        {
+            item = reader.Read<ItemInstance>();  // use Mirror's registered reader for ItemInstance
+        }
+
+        return type switch
+        {
+            TradableItemType.Bucks => TradableItem.Bucks(bucks),
+            TradableItemType.Item => TradableItem.FromItem(item),
+            _ => throw new InvalidOperationException("Unknown TradableItemType")
+        };
+    }
+}
+}
