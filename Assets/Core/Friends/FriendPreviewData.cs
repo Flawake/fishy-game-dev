@@ -1,5 +1,6 @@
 using System;
 using TMPro;
+using TradeSystem;
 using UnityEngine;
 
 public class FriendPreviewData : MonoBehaviour
@@ -30,7 +31,7 @@ public class FriendPreviewData : MonoBehaviour
     // Called from button in game
     public void TradeWithFriendButton()
     {
-        TradingUIManager trading = transform.GetComponentInParent<TradingUIManager>();
+        Trading trading = transform.GetComponentInParent<Trading>();
         trading.RequestNewTrade(friendGUID, friendName.text);
     }
 

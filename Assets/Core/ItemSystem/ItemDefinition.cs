@@ -31,7 +31,7 @@ namespace ItemSystem {
 
         public bool InfiniteUse => infiniteUse;
 
-        public T GetBehaviour<T>(Type tradableType) where T : class, IItemBehaviour
+        public T GetBehaviour<T>() where T : class, IItemBehaviour
         {
             return Behaviours.OfType<T>().FirstOrDefault();
         }
