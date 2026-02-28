@@ -1,5 +1,6 @@
 namespace TradeSystem
 {
+    using System;
     using System.Collections.Generic;
     using ItemSystem;
     using UnityEngine;
@@ -21,7 +22,45 @@ namespace TradeSystem
 
         public void InformPlayer(TradingInfoType infoType)
         {
-            
+            // TODO: hook up to popups / notifications.
+            Debug.Log($"Trading info: {infoType}");
+        }
+
+        void OnEnable()
+        {
+            TradeEvents.ClientTradeStateChanged += OnTradeStateChanged;
+        }
+
+        void OnDisable()
+        {
+            TradeEvents.ClientTradeStateChanged -= OnTradeStateChanged;
+        }
+
+        void OnTradeStateChanged(TradeViewModel state)
+        {
+            switch (state.Status)
+            {
+                case TradeStatus.Active:
+                    {
+                        TradeSession session = TradeService.ClientGetRunning();
+                        if (session != null && session.tradeId == state.TradeId)
+                        {
+                            OpenTradingMenu(session);
+                        }
+                        break;
+                    }
+
+                case TradeStatus.Cancelled:
+                    RunningTradeCanceled(TradingInfoType.ClosedByOther);
+                    break;
+
+                case TradeStatus.Expired:
+                    InformPlayer(TradingInfoType.TradeExpired);
+                    break;
+
+                default:
+                    break;
+            }
         }
     
         void ResetTradingMenu()
@@ -52,7 +91,7 @@ namespace TradeSystem
             }
         }
 
-        public void OpenTradingMenu(RunningTrade runningTrade)
+        public void OpenTradingMenu(TradeSession runningTrade)
         {
             background.SetActive(true);
             ResetTradingMenu();

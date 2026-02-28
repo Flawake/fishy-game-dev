@@ -98,40 +98,38 @@ namespace TradeSystem
 
     public static class TradableItemSerializer
     {
-    // Serialize TradableItem
-    public static void WriteTradableItem(this NetworkWriter writer, TradableItem item)
-    {
-        writer.WriteInt((int)item.Type);       // enum as int
-        writer.WriteInt(item.BucksAmount);     // bucks amount
-
-        bool hasItem = item.ItemInst != null;
-        writer.WriteBool(hasItem);            // null check
-
-        if (hasItem)
+        public static void WriteTradableItem(this NetworkWriter writer, TradableItem item)
         {
-            writer.Write(item.ItemInst);         // use Mirror's registered writer for ItemInstance
+            writer.WriteInt((int)item.Type);
+            writer.WriteInt(item.BucksAmount);
+
+            bool hasItem = item.ItemInst != null;
+            writer.WriteBool(hasItem);
+
+            if (hasItem)
+            {
+                writer.Write(item.ItemInst);
+            }
+        }
+        
+        public static TradableItem ReadTradableItem(this NetworkReader reader)
+        {
+            TradableItemType type = (TradableItemType)reader.ReadInt();
+            int bucks = reader.ReadInt();
+
+            bool hasItem = reader.ReadBool();
+            ItemInstance item = null;
+            if (hasItem)
+            {
+                item = reader.Read<ItemInstance>();
+            }
+
+            return type switch
+            {
+                TradableItemType.Bucks => TradableItem.Bucks(bucks),
+                TradableItemType.Item => TradableItem.FromItem(item),
+                _ => throw new InvalidOperationException("Unknown TradableItemType")
+            };
         }
     }
-
-    // Deserialize TradableItem
-    public static TradableItem ReadTradableItem(this NetworkReader reader)
-    {
-        TradableItemType type = (TradableItemType)reader.ReadInt();
-        int bucks = reader.ReadInt();
-
-        bool hasItem = reader.ReadBool();
-        ItemInstance item = null;
-        if (hasItem)
-        {
-            item = reader.Read<ItemInstance>();  // use Mirror's registered reader for ItemInstance
-        }
-
-        return type switch
-        {
-            TradableItemType.Bucks => TradableItem.Bucks(bucks),
-            TradableItemType.Item => TradableItem.FromItem(item),
-            _ => throw new InvalidOperationException("Unknown TradableItemType")
-        };
-    }
-}
 }
