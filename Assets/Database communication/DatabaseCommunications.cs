@@ -4,6 +4,8 @@ using UnityEngine;
 using Mirror;
 using ItemSystem;
 using System.Linq;
+using System.Collections.Generic;
+using NUnit.Framework;
 
 // Extension helpers for ItemInstance behaviour checks
 static class ItemInstanceExtensions {
@@ -111,59 +113,13 @@ public static class DatabaseCommunications
             fish_id = fish.id,
             area_id = (int)fish.areaFishing,
             bait_id = fish.usedBait.Id,
+            xp_earned = fish.xp,
         };
         
         string json = JsonUtility.ToJson(requestData);
         byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
-
-        string endpoint = DatabaseEndpoints.addFishStatEndpoint;
 
         WebRequestHandler.SendWebRequest(DatabaseEndpoints.addFishStatEndpoint, bodyRaw);
-    }
-
-    [Server]
-    public static  void ChangeFishCoinsAmount(int amount, Guid userID)
-    {
-        ChangeCoinsRequest requestData = new ChangeCoinsRequest
-        {
-            user_id = userID.ToString(),
-            amount = amount,
-        };
-        
-        
-        string json = JsonUtility.ToJson(requestData);
-        byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
-        WebRequestHandler.SendWebRequest(DatabaseEndpoints.changeCoinsEndpoint, bodyRaw);
-    }
-
-    [Server]
-    public static void ChangeFishBucksAmount(int amount, Guid userID)
-    {
-        
-        ChangeBucksRequest requestData = new ChangeBucksRequest
-        {
-            user_id = userID.ToString(),
-            amount = amount,
-        };
-        
-        
-        string json = JsonUtility.ToJson(requestData);
-        byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
-        WebRequestHandler.SendWebRequest(DatabaseEndpoints.changeBucksEndpoint, bodyRaw);
-    }
-
-    [Server]
-    public static void AddXP(int amount, Guid userID)
-    {
-        AddXPRequest requestData = new AddXPRequest
-        {
-            user_id = userID.ToString(),
-            amount = amount,
-        };
-        
-        string json = JsonUtility.ToJson(requestData);
-        byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
-        WebRequestHandler.SendWebRequest(DatabaseEndpoints.addXPEndpoint, bodyRaw);
     }
 
     [Server]
@@ -178,6 +134,40 @@ public static class DatabaseCommunications
         string json = JsonUtility.ToJson(requestData);
         byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
         WebRequestHandler.SendWebRequest(DatabaseEndpoints.addPlaytime, bodyRaw);
+    }
+
+    [Server]
+    public static void BuyItem(Guid buyerID, ItemInstance item, int price, StoreManager.CurrencyType currencyType)
+    {
+        Debug.Log("Buying item");
+        BuyItemRequest request = new BuyItemRequest
+        {
+            buyer_id = buyerID.ToString(),
+            item_def_id = item.def.Id,
+            item_uuid = item.uuid.ToString(),
+            item_state_blob = Convert.ToBase64String(StatePacker.Pack(item.state)),
+            item_price = price,
+            bought_using = currencyType.ToString(),
+        };
+        string json = JsonUtility.ToJson(request);
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
+        WebRequestHandler.SendWebRequest(DatabaseEndpoints.buyItemEndpoint, bodyRaw);
+    }
+
+    [Server]
+    public static void SellFishes(Guid sellerID, List<FishToSell> fishes, int earnings)
+    {
+        Debug.Log("Selling fishes");
+
+        SellFishesRequest request = new SellFishesRequest
+        {
+            seller_id = sellerID.ToString(),
+            fishes = fishes,
+            price = earnings,
+        };
+        string json = JsonUtility.ToJson(request);
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
+        WebRequestHandler.SendWebRequest(DatabaseEndpoints.addNewItemEndpoint, bodyRaw);
     }
 
     [Server]
