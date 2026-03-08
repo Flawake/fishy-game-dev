@@ -343,7 +343,6 @@ public class FishingManager : NetworkBehaviour
             ItemDefinition fishDef = ItemRegistry.Get(currentFish.id);
             ItemInstance fishInstance = new ItemInstance(fishDef);
             playerDataManager.ServerAddItem(fishInstance, currentFish, true, true);
-            playerDataManager.AddXP(currentFish.xp);
         }
     }
 

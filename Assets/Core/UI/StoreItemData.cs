@@ -58,14 +58,14 @@ public class StoreItemData : MonoBehaviour
     public void BuyUsingCoins()
     {
         EnsureStoreManager();
-        storeManager.BuyItem(storeItem, StoreManager.CurrencyType.coins);
+        storeManager.BuyItem(storeItem, StoreManager.CurrencyType.COINS);
     }
 
     //Called from game
     public void BuyUsingBucks()
     {
         EnsureStoreManager();
-        storeManager.BuyItem(storeItem, StoreManager.CurrencyType.bucks);
+        storeManager.BuyItem(storeItem, StoreManager.CurrencyType.BUCKS);
     }
 
     public void SetStoreItemData(ItemDefinition item)

@@ -3,6 +3,8 @@ using UnityEngine;
 using ItemSystem;
 using Mirror;
 using Grants;
+using System.Collections.Generic;
+using System.Linq;
 
 //Item manager should manage the syncronisation of items between the server and client.
 public class PlayerDataSyncManager : MonoBehaviour
@@ -17,24 +19,68 @@ public class PlayerDataSyncManager : MonoBehaviour
 	ItemGrantService grantService;
 
 	[Server]
-	public void ChangeFishCoinsAmount(int amount, bool needsTargetSync)
+	public void SellFish(ItemInstance fish, int sellAmount, int earnings)
 	{
-		DatabaseCommunications.ChangeFishCoinsAmount(amount, playerData.GetUuid());
-		playerData.ChangeFishCoinsAmount(amount, needsTargetSync);
+		inventory.ServerRemoveAmountFromStack(fish, sellAmount, false);
+
+		List<FishToSell> fishesList = new List<FishToSell>
+		{
+    		new FishToSell
+    		{
+        		fish_uid = fish.uuid.ToString(),
+	        	fish_id = fish.def.Id,
+    	    	new_state_blob = Convert.ToBase64String(StatePacker.Pack(fish.state))
+    		}
+		};
+
+		StackState stackState = fish.GetState<StackState>();
+		if (stackState == null)
+        {
+            Debug.LogWarning($"Could remove from id {fish.def.Id} since it's stackState was null");
+            return;
+        }
+		if (stackState.currentAmount <= 0)
+		{
+			fishesList[0].new_state_blob = null;
+		}
+
+		DatabaseCommunications.SellFishes(playerData.GetUuid(), fishesList, earnings);
 	}
 
 	[Server]
-	public void ChangeFishBucksAmount(int amount, bool needsTargetSync)
+	public void SellAllFish(List<ItemInstance> fishes, int earnings)
 	{
-		DatabaseCommunications.ChangeFishBucksAmount(amount, playerData.GetUuid());
-		playerData.ChangeFishBucksAmount(amount, needsTargetSync);
+		foreach (ItemInstance fish in fishes)
+		{
+			inventory.RemoveItem(fish.uuid);
+		}
+
+		List<FishToSell> fishesList = fishes
+            .Select(fish => new FishToSell
+            {
+                fish_uid = fish.uuid.ToString(),
+                fish_id = fish.def.Id,
+                new_state_blob = null,
+            })
+            .ToList();
+
+		DatabaseCommunications.SellFishes(playerData.GetUuid(), fishesList, earnings);
 	}
 
 	[Server]
-	public void AddXP(int amount)
+	public ItemInstance ServerBuyItem(ItemInstance instace, int price, StoreManager.CurrencyType currencyType)
 	{
-		DatabaseCommunications.AddXP(amount, playerData.GetUuid());
-		playerData.AddXp(amount);
+		ItemInstance toUpdate = inventory.ServerMergeOrAdd(instace, false);
+		if (currencyType == StoreManager.CurrencyType.BUCKS)
+		{
+			playerData.ChangeFishBucksAmount(price, false);
+		}
+		else if (currencyType == StoreManager.CurrencyType.COINS)
+		{
+			playerData.ChangeFishCoinsAmount(price, false);
+		}
+		DatabaseCommunications.BuyItem(playerData.GetUuid(), toUpdate, price, currencyType);
+		return toUpdate;
 	}
 
 	[Server]

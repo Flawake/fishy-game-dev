@@ -256,11 +256,11 @@ namespace GlobalCompetitionSystem
                     {
                         switch (_currentCompetition.CompetitionData.RunningCompetition.RewardCurrency)
                         {
-                            case StoreManager.CurrencyType.bucks:
-                                syncManager.ChangeFishBucksAmount(prizes[i], true);
+                            case StoreManager.CurrencyType.BUCKS:
+                                //syncManager.ChangeFishBucksAmount(prizes[i], true);
                                 break;
-                            case StoreManager.CurrencyType.coins:
-                                syncManager.ChangeFishCoinsAmount(prizes[i], true);
+                            case StoreManager.CurrencyType.COINS:
+                                //syncManager.ChangeFishCoinsAmount(prizes[i], true);
                                 break;
                             default:
                                 throw new NotSupportedException($"Currency type {_currentCompetition.CompetitionData.RunningCompetition.RewardCurrency} has not yet been implemented as a reward");
@@ -273,11 +273,11 @@ namespace GlobalCompetitionSystem
                 {
                     switch (_currentCompetition.CompetitionData.RunningCompetition.RewardCurrency)
                     {
-                        case StoreManager.CurrencyType.bucks:
-                            DatabaseCommunications.ChangeFishBucksAmount(prizes[i], winner.PlayerID);
+                        case StoreManager.CurrencyType.BUCKS:
+                            //DatabaseCommunications.ChangeFishBucksAmount(prizes[i], winner.PlayerID);
                             break;
-                        case StoreManager.CurrencyType.coins:
-                            DatabaseCommunications.ChangeFishCoinsAmount(prizes[i], winner.PlayerID);
+                        case StoreManager.CurrencyType.COINS:
+                            //DatabaseCommunications.ChangeFishCoinsAmount(prizes[i], winner.PlayerID);
                             break;
                         default:
                             throw new NotSupportedException($"Currency type {_currentCompetition.CompetitionData.RunningCompetition.RewardCurrency} has not yet been implemented as a reward");

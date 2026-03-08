@@ -46,18 +46,13 @@ public class SellFish : NetworkBehaviour
         FishBehaviour curFishBehaviour = fish.def.GetBehaviour<FishBehaviour>();
         if (curFishBehaviour == null)
         {
-            Debug.LogWarning($"Could not show information about a fish that should have had ID: {fish.def.Id}");
+            Debug.LogWarning($"Fish has no fishbehaviour, is this actually a sellable fish: {fish.def.Id}");
             return;
         }
 
         int moneyAmount = curFishBehaviour.MinMartketPrice * sellAmount;
 
-        syncManager.ChangeFishBucksAmount(moneyAmount, false);
-        if(!syncManager.ServerRemoveAmountFromStack(fish, sellAmount, false))
-        {
-            // Remove money from client when selling the fish fails
-            syncManager.ChangeFishBucksAmount(-moneyAmount, true);
-        }
+        syncManager.SellFish(fish, sellAmount, moneyAmount);
     }
 
     public int GetFishAmount()
@@ -103,10 +98,11 @@ public class SellFish : NetworkBehaviour
     private void CmdSellAllFishAtMarket()
     {
         List<ItemInstance> inventoryFishes = inventory.GetFishes();
+        int earnings = 0;
         foreach (ItemInstance fish in inventoryFishes)
         {
-            syncManager.ChangeFishBucksAmount(fish.def.GetBehaviour<FishBehaviour>().MinMartketPrice * fish.GetState<StackState>().currentAmount, false);
-            inventory.RemoveItem(fish.uuid);
+            earnings += fish.def.GetBehaviour<FishBehaviour>().MinMartketPrice * fish.GetState<StackState>().currentAmount;
         }
+        syncManager.SellAllFish(inventoryFishes, earnings);
     }
 }

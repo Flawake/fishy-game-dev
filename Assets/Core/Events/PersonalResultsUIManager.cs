@@ -25,8 +25,8 @@ namespace GlobalCompetitionSystem
             prizeAmountText.text = prizeAmount.ToString();
             prizeSpriteImage.sprite = prize switch
             {
-                StoreManager.CurrencyType.coins => coinsSprite,
-                StoreManager.CurrencyType.bucks => bucksSprite,
+                StoreManager.CurrencyType.COINS => coinsSprite,
+                StoreManager.CurrencyType.BUCKS => bucksSprite,
                 _ => throw new NotSupportedException($"Prize type {prize} is not supported")
             };
 

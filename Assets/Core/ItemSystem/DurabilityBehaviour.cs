@@ -21,9 +21,6 @@ namespace ItemSystem {
             return s?.remaining ?? -1;
         }
 
-        // Backwards-compat alias
-        public static int GetRemaining(ItemInstance inst) => DurabilityLeft(inst);
-
         public void InitialiseState(Dictionary<Type, IRuntimeBehaviourState> bag) {
             bag[typeof(DurabilityState)] = new DurabilityState { remaining = maxDurability };
         }

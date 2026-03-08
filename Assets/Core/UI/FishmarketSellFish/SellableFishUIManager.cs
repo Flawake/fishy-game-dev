@@ -18,20 +18,6 @@ public class SellableFishUIManager : MonoBehaviour
 
     private int _sellAmount;
 
-    /*
-        FishBehaviour curFishBehaviour = curFish.GetBehaviour<FishBehaviour>();
-        if (curFish == null || curFishBehaviour == null)
-        {
-            Debug.LogWarning($"Could not show information about a fish that should have had ID: {fishID}");
-            return;
-        }
-        ClearContainers();
-
-        StatFish statFish = NetworkClient.localPlayer.GetComponentInChildren<PlayerFishdexFishes>().GetStatFish(fishID);
-        if (statFish == null)
-        {
-    */
-
     public void BuildSellFishObject(ItemInstance fishItem)
     {
         _thisFishItem = fishItem;

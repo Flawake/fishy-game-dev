@@ -288,7 +288,7 @@ public class PlayerInventory : NetworkBehaviour
         StackState stackState = itemReference.GetState<StackState>();
         if (stackState == null)
         {
-            Debug.LogWarning($"Could not use item with id {itemReference.def.Id} since it's durabilityState was null");
+            Debug.LogWarning($"Could remove from id {itemReference.def.Id} since it's stackState was null");
             return false;
         }
         stackState.currentAmount -= amount;

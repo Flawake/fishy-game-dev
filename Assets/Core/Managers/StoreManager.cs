@@ -19,8 +19,8 @@ public class StoreManager : NetworkBehaviour
 
     public enum CurrencyType
     {
-        coins,
-        bucks
+        COINS,
+        BUCKS
     }
 
     private readonly HashSet<Guid> processedOperationIds = new HashSet<Guid>();
@@ -79,7 +79,7 @@ public class StoreManager : NetworkBehaviour
     {
         if (item?.GetBehaviour<ShopBehaviour>() is ShopBehaviour shopBehaviour)
         {
-            return currencyType == CurrencyType.coins ? shopBehaviour.PriceCoins : shopBehaviour.PriceBucks;
+            return currencyType == CurrencyType.COINS ? shopBehaviour.PriceCoins : shopBehaviour.PriceBucks;
         }
         return 0;
     }
@@ -89,7 +89,7 @@ public class StoreManager : NetworkBehaviour
         int price = GetItemPrice(item, currencyType);
         if (price <= 0) return false;
 
-        int currentAmount = currencyType == CurrencyType.coins 
+        int currentAmount = currencyType == CurrencyType.COINS 
             ? playerData.GetFishCoins() 
             : playerData.GetFishBucks();
 
@@ -150,7 +150,7 @@ public class StoreManager : NetworkBehaviour
             return false;
         }
 
-        int currentPlayerMoneyAmount = currencyType == CurrencyType.coins 
+        int currentPlayerMoneyAmount = currencyType == CurrencyType.COINS 
             ? playerData.GetFishCoins() 
             : playerData.GetFishBucks();
 
@@ -161,7 +161,7 @@ public class StoreManager : NetworkBehaviour
         }
 
         // Apply optimistic currency deduction
-        if (currencyType == CurrencyType.coins)
+        if (currencyType == CurrencyType.COINS)
         {
             playerData.ClientChangeFishCoinsAmount(-price);
         }
@@ -187,7 +187,7 @@ public class StoreManager : NetworkBehaviour
     [Client]
     private void RollbackCurrencyChange(CurrencyType currencyType, int amount)
     {
-        if (currencyType == CurrencyType.coins)
+        if (currencyType == CurrencyType.COINS)
         {
             playerData.ClientChangeFishCoinsAmount(amount);
         }
@@ -226,22 +226,9 @@ public class StoreManager : NetworkBehaviour
 
         int price = GetItemPrice(item, currencyType);
 
-        // Deduct currency on server
-        if (currencyType == CurrencyType.coins)
-        {
-            playerDataManager.ChangeFishCoinsAmount(-price, false);
-        }
-        else
-        {
-            playerDataManager.ChangeFishBucksAmount(-price, false);
-        }
-
         // Create and add item on server (authoritative)
         ItemInstance instance = new ItemInstance(item, shopBehaviour.Amount);
-        instance = playerDataManager.ServerAddItem(instance, null, false, false);
-
-        // Persist to DB (best-effort)
-        DatabaseCommunications.AddOrUpdateItem(instance, playerData.GetUuid());
+        instance = playerDataManager.ServerBuyItem(instance, price, currencyType);
 
         // Record idempotency
         processedOperationIds.Add(tempUuid);
@@ -305,7 +292,7 @@ public class StoreManager : NetworkBehaviour
             return false;
         }
 
-        int currentAmount = currencyType == CurrencyType.coins 
+        int currentAmount = currencyType == CurrencyType.COINS 
             ? playerData.GetFishCoins() 
             : playerData.GetFishBucks();
 

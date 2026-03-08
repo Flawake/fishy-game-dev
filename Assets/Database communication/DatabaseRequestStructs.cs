@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 #nullable enable
 // Authenticate requests
@@ -25,6 +26,31 @@ public class AddItemRequest
     public string item_uid = string.Empty;
     public int amount = 0;
     public int cell_id = 0;
+}
+
+[Serializable]
+public class BuyItemRequest
+{
+    public string buyer_id = string.Empty;
+    public int item_def_id = 0;
+    public string item_uuid = string.Empty;
+    public string item_state_blob = string.Empty;
+    public int item_price = 0;
+    public string bought_using = string.Empty;
+}
+
+[Serializable]
+public class FishToSell {
+    public string fish_uid = string.Empty;
+    public int fish_id = 0;
+    public string? new_state_blob = null;
+}
+
+[Serializable]
+public class SellFishesRequest {
+    public string seller_id = string.Empty;
+    public List<FishToSell> fishes = new List<FishToSell>();
+    public int price = 0;
 }
 
 [Serializable]
@@ -137,6 +163,7 @@ public class AddFishRequest
     public int fish_id = 0;
     public int bait_id = 0;
     public int area_id = 0;
+    public int xp_earned = 0;
 }
 
 [Serializable]
