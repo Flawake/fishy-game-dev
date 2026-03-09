@@ -30,7 +30,8 @@ namespace GlobalCompetitionSystem
                 _ => throw new NotSupportedException($"Prize type {prize} is not supported")
             };
 
-            if (prize == 0)
+            // Hide prize display if no prize for this rank
+            if (prizeAmount == 0)
             {
                 prizeSpriteImage.enabled = false;
                 prizeAmountText.text = "";
