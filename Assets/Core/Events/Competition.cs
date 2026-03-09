@@ -406,9 +406,8 @@ namespace GlobalCompetitionSystem
             {
                 PlayerResult winner = winners[i + 1]; // winners is 1-indexed (rank 1, 2, 3...)
                 int prizeAmount = prizes[i]; // prizes is 0-indexed
-                bool prizeGiven = false;
                 
-                // Try to give prize to online player
+                // Give prize to online player (offline players will receive prizes from backend)
                 if (GameNetworkManager.connUUID.TryGetValue(winner.PlayerID, out NetworkConnectionToClient playerConnection))
                 {
                     PlayerData playerData = playerConnection.identity.GetComponent<PlayerData>();
@@ -427,16 +426,7 @@ namespace GlobalCompetitionSystem
                             default:
                                 throw new NotSupportedException($"Currency type {_currentCompetition.CompetitionData.RunningCompetition.RewardCurrency} has not yet been implemented as a reward");
                         }
-                        prizeGiven = true;
                     }
-                }
-                
-                // If player is offline, send mail notification (mail system will handle currency delivery)
-                if (!prizeGiven)
-                {
-                    string currencyName = _currentCompetition.CompetitionData.RunningCompetition.RewardCurrency == StoreManager.CurrencyType.COINS ? "Coins" : "Bucks";
-                    SendPrizeMail(winner.PlayerID, winner.PlayerName, i + 1, prizeAmount, currencyName);
-                    Debug.Log($"[CompetitionManager] Sent prize mail to offline player {winner.PlayerName} (Rank {i + 1}): {prizeAmount} {currencyName}");
                 }
             }
         }
@@ -481,22 +471,6 @@ namespace GlobalCompetitionSystem
             }
             
             Debug.Log($"[CompetitionManager] Mailed results to {allParticipants.Count} participant(s)");
-        }
-
-        [Server]
-        private static void SendPrizeMail(Guid playerId, string playerName, int rank, int prizeAmount, string currencyName)
-        {
-            string competitionName = _currentCompetition?.CompetitionData.RunningCompetition.CompetitionState.AsString() ?? "Unknown Competition";
-            
-            string title = $"Competition Prize - Rank #{rank}";
-            string message = $"Congratulations {playerName}!\n\n" +
-                           $"You finished rank #{rank} in the '{competitionName}' competition!\n\n" +
-                           $"Your prize: {prizeAmount} {currencyName}\n\n" +
-                           $"(Note: Prize will be added to your account upon your next login)\n\n" +
-                           $"Thank you for participating!";
-            
-            Mail prizeMail = new Mail(playerId, title, message, "Competition System");
-            DatabaseCommunications.AddMail(prizeMail);
         }
 
         public static bool AddToRunningCompetition<T>(T data, PlayerData playerData)
