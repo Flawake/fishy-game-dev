@@ -283,4 +283,35 @@ public static class DatabaseCommunications
         byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
         WebRequestHandler.SendWebRequest(DatabaseEndpoints.removeExpiredEffectEndpoint, bodyRaw);
     }
+
+    [Server]
+    public static void GetActiveCompetitions(WebRequestHandler.WebRequestCallback callback)
+    {
+        // GET request - send empty body
+        byte[] bodyRaw = Encoding.UTF8.GetBytes("{}");
+        WebRequestHandler.SendWebRequest(DatabaseEndpoints.getActiveCompetitionsEndpoint, bodyRaw, null, callback);
+    }
+
+    [Server]
+    public static void GetUpcomingCompetitions(WebRequestHandler.WebRequestCallback callback)
+    {
+        // GET request - send empty body
+        byte[] bodyRaw = Encoding.UTF8.GetBytes("{}");
+        WebRequestHandler.SendWebRequest(DatabaseEndpoints.getUpcomingCompetitionsEndpoint, bodyRaw, null, callback);
+    }
+
+    [Server]
+    public static void SubmitCompetitionScore(Guid competitionId, Guid playerId, int score, WebRequestHandler.WebRequestCallback callback = null)
+    {
+        SubmitCompetitionScoreRequest requestData = new SubmitCompetitionScoreRequest
+        {
+            competition_id = competitionId.ToString(),
+            player_id = playerId.ToString(),
+            score = score,
+        };
+        
+        string json = JsonUtility.ToJson(requestData);
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
+        WebRequestHandler.SendWebRequest(DatabaseEndpoints.submitCompetitionScoreEndpoint, bodyRaw, null, callback);
+    }
 }

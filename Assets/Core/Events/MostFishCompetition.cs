@@ -55,7 +55,7 @@ namespace GlobalCompetitionSystem
             string playerName = playerData.GetUsername();
             (int _, PlayerResult result) = CompetitionData.GetPlayerResult(playerId);
             int newScore = 0;
-            if (result.PlayerID != playerId)
+            if (result != null)
             {
                 newScore = result.Result;
             }

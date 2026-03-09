@@ -221,4 +221,56 @@ public class RemoveExpiredEffectsRequest
     public int item_id = 0;
 }
 
+// Competition requests and data structures
+[Serializable]
+public class CompetitionData
+{
+    public string competition_id = string.Empty;
+    public int competition_type = 0;        // 1=MostFish, 2=LargestFish, 3=MostItems
+    public int target_fish_id = 0;
+    public string start_time = string.Empty;    // DateTime as ISO 8601 string
+    public string end_time = string.Empty;      // DateTime as ISO 8601 string
+    public string reward_currency = string.Empty; // "COINS" or "BUCKS"
+    public int[] prize_pool = new int[0];      // Array of prizes for top N players
+    public string created_at = string.Empty;    // DateTime as ISO 8601 string
+    public string status = string.Empty;        // "SCHEDULED", "ACTIVE", "COMPLETED"
+}
+
+[Serializable]
+public class CompetitionResultData
+{
+    public string result_id = string.Empty;
+    public string competition_id = string.Empty;
+    public string player_id = string.Empty;
+    public int score = 0;
+    public string last_updated = string.Empty;  // DateTime as ISO 8601 string
+}
+
+[Serializable]
+public class GetActiveCompetitionsResponse
+{
+    public CompetitionData[] competitions = new CompetitionData[0];
+}
+
+[Serializable]
+public class GetUpcomingCompetitionsResponse
+{
+    public CompetitionData[] competitions = new CompetitionData[0];
+}
+
+[Serializable]
+public class SubmitCompetitionScoreRequest
+{
+    public string competition_id = string.Empty;
+    public string player_id = string.Empty;
+    public int score = 0;
+}
+
+[Serializable]
+public class LeaderboardResponse
+{
+    public string competition_id = string.Empty;
+    public CompetitionResultData[] results = new CompetitionResultData[0];
+}
+
 #nullable disable

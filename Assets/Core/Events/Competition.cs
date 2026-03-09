@@ -11,25 +11,75 @@ namespace GlobalCompetitionSystem
 {
     public class Competition
     {
+        private readonly Guid _competitionId;
         private readonly ICompetitionState _competitionState;
         private readonly DateTime _startDateTime;
         private readonly DateTime _endDateTime;
         private StoreManager.CurrencyType _rewardCurrency;
         // index 0 is the prize for first place, etc...
         private List<int> _prizepool;
+        public Guid CompetitionId => _competitionId;
         public ICompetitionState CompetitionState => _competitionState;
         public DateTime StartDateTime => _startDateTime;
         public DateTime EndDateTime => _endDateTime;
         public StoreManager.CurrencyType RewardCurrency => _rewardCurrency;
         public List<int> Prizepool => _prizepool;
             
-        public Competition(ICompetitionState competitionState, DateTime start, DateTime end, StoreManager.CurrencyType rewardCurrency, List<int> prizepool)
+        public Competition(Guid competitionId, ICompetitionState competitionState, DateTime start, DateTime end, StoreManager.CurrencyType rewardCurrency, List<int> prizepool)
         {
+            _competitionId = competitionId;
             _competitionState = competitionState;
             _startDateTime = start;
             _endDateTime = end;
             _rewardCurrency = rewardCurrency;
             _prizepool = prizepool;
+        }
+        
+        /// <summary>
+        /// Creates a Competition instance from backend CompetitionData
+        /// </summary>
+        public static Competition FromBackendData(CompetitionData backendData)
+        {
+            // Parse competition ID
+            Guid competitionId = Guid.Parse(backendData.competition_id);
+            
+            // Map competition type to ICompetitionState
+            // Backend: 1=MostFish, 2=LargestFish, 3=MostItems
+            ICompetitionState competitionState = backendData.competition_type switch
+            {
+                1 => new MostFishCompetitonState 
+                { 
+                    specificFish = backendData.target_fish_id > 0, 
+                    fishIDToCatch = backendData.target_fish_id 
+                },
+                2 => new largestFishCompetitonState 
+                { 
+                    specificFish = backendData.target_fish_id > 0, 
+                    fishIDToCatch = backendData.target_fish_id 
+                },
+                3 => new MostItemsCompetitonState 
+                { 
+                    ItemId = backendData.target_fish_id  // target_fish_id is used for item ID in this case
+                },
+                _ => throw new ArgumentException($"Unknown competition type: {backendData.competition_type}")
+            };
+            
+            // Parse date times (backend sends ISO 8601 UTC strings)
+            DateTime startTime = DateTime.Parse(backendData.start_time).ToUniversalTime();
+            DateTime endTime = DateTime.Parse(backendData.end_time).ToUniversalTime();
+            
+            // Map currency
+            StoreManager.CurrencyType currency = backendData.reward_currency switch
+            {
+                "COINS" => StoreManager.CurrencyType.COINS,
+                "BUCKS" => StoreManager.CurrencyType.BUCKS,
+                _ => throw new ArgumentException($"Unknown currency type: {backendData.reward_currency}")
+            };
+            
+            // Convert prize pool array to list
+            List<int> prizePool = new List<int>(backendData.prize_pool);
+            
+            return new Competition(competitionId, competitionState, startTime, endTime, currency, prizePool);
         }
     }
     
@@ -167,6 +217,9 @@ namespace GlobalCompetitionSystem
     {
         [SyncVar] private static CurrentCompetition _currentCompetition;
         private static readonly SyncSortedSet<Competition> _upcomingCompetitions = new SyncSortedSet<Competition>(new CompetitionStartDateComparer());
+        private static readonly HashSet<Guid> _loadedCompetitionIds = new HashSet<Guid>();
+        private static DateTime _lastBackendPoll = DateTime.MinValue;
+        private static readonly TimeSpan _pollInterval = TimeSpan.FromMinutes(5); // Poll backend every 5 minutes
 
         public static CurrentCompetition GetCurrentCompetition()
         {
@@ -184,14 +237,26 @@ namespace GlobalCompetitionSystem
             DateTime lastRankingRefresh = DateTime.MinValue;
             // hours, minute, seconds
             TimeSpan timeBetweenRankingRebuilds = new TimeSpan(0, 1, 0);
+            
+            // Initial poll on startup (after short delay)
+            yield return new WaitForSeconds(2);
+            FetchCompetitionsFromBackend();
+            
             while (true)
             {
+                // Poll backend for new competitions periodically
+                if (DateTime.UtcNow - _lastBackendPoll > _pollInterval)
+                {
+                    FetchCompetitionsFromBackend();
+                    _lastBackendPoll = DateTime.UtcNow;
+                }
+                
                 if (_currentCompetition == null)
                 {
                     if (_upcomingCompetitions.Count > 0)
                     {
                         Competition nextCompetition = _upcomingCompetitions.First();
-                        if (nextCompetition.StartDateTime >= DateTime.Now)
+                        if (nextCompetition.StartDateTime <= DateTime.UtcNow)
                         {
                             SetCurrentCompetition(nextCompetition);
                             _upcomingCompetitions.Remove(nextCompetition);
@@ -205,20 +270,87 @@ namespace GlobalCompetitionSystem
                     _currentCompetition = null;
                 }
 
-                if (_currentCompetition != null && DateTime.Now - lastRankingRefresh > timeBetweenRankingRebuilds)
+                if (_currentCompetition != null && DateTime.UtcNow - lastRankingRefresh > timeBetweenRankingRebuilds)
                 {
                     _currentCompetition.CompetitionData.UpdatePlayerRankings();
-                    lastRankingRefresh = DateTime.Now;
+                    lastRankingRefresh = DateTime.UtcNow;
                 }
                 yield return new WaitForSeconds(1);
             }
         }
 
         [Server]
-        public static void AddUpcomingCompetition(ICompetitionState competitionState, DateTime startDate,
+        private static void FetchCompetitionsFromBackend()
+        {
+            Debug.Log("[CompetitionManager] Fetching competitions from backend...");
+            
+            // Fetch active competitions
+            DatabaseCommunications.GetActiveCompetitions((response) =>
+            {
+                if (response != null && response.competitions != null)
+                {
+                    Debug.Log($"[CompetitionManager] Received {response.competitions.Length} active competition(s) from backend");
+                    foreach (var competitionData in response.competitions)
+                    {
+                        ProcessBackendCompetition(competitionData);
+                    }
+                }
+            });
+            
+            // Fetch upcoming competitions
+            DatabaseCommunications.GetUpcomingCompetitions((response) =>
+            {
+                if (response != null && response.competitions != null)
+                {
+                    Debug.Log($"[CompetitionManager] Received {response.competitions.Length} upcoming competition(s) from backend");
+                    foreach (var competitionData in response.competitions)
+                    {
+                        ProcessBackendCompetition(competitionData);
+                    }
+                }
+            });
+        }
+
+        [Server]
+        private static void ProcessBackendCompetition(CompetitionData backendData)
+        {
+            try
+            {
+                Guid competitionId = Guid.Parse(backendData.competition_id);
+                
+                // Skip if we already loaded this competition
+                if (_loadedCompetitionIds.Contains(competitionId))
+                {
+                    return;
+                }
+                
+                // Convert backend data to Unity Competition object
+                Competition competition = Competition.FromBackendData(backendData);
+                
+                // Check if competition is in the past
+                if (competition.EndDateTime < DateTime.UtcNow)
+                {
+                    Debug.Log($"[CompetitionManager] Skipping expired competition {competitionId}");
+                    return;
+                }
+                
+                // Add to upcoming competitions
+                _upcomingCompetitions.Add(competition);
+                _loadedCompetitionIds.Add(competitionId);
+                
+                Debug.Log($"[CompetitionManager] Added competition {competitionId} (Type: {backendData.competition_type}, Start: {competition.StartDateTime}, End: {competition.EndDateTime})");
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"[CompetitionManager] Error processing backend competition: {ex.Message}");
+            }
+        }
+
+        [Server]
+        public static void AddUpcomingCompetition(Guid competitionId, ICompetitionState competitionState, DateTime startDate,
             DateTime endDate, StoreManager.CurrencyType rewardCurrency, List<int> rewardDistribution)
         {
-            _upcomingCompetitions.Add(new Competition(competitionState, startDate, endDate, rewardCurrency,
+            _upcomingCompetitions.Add(new Competition(competitionId, competitionState, startDate, endDate, rewardCurrency,
                 rewardDistribution));
         }
 
@@ -296,10 +428,42 @@ namespace GlobalCompetitionSystem
         {
             if (_currentCompetition is CurrentCompetition<T> competition)
             {
-                return competition.AddToCompetition(data, playerData);
+                bool success = competition.AddToCompetition(data, playerData);
+                
+                // If score was successfully added, submit to backend
+                if (success)
+                {
+                    SubmitScoreToBackend(playerData.GetUuid());
+                }
+                
+                return success;
             }
 
             return false;
+        }
+
+        [Server]
+        private static void SubmitScoreToBackend(Guid playerId)
+        {
+            if (_currentCompetition == null)
+            {
+                return;
+            }
+
+            Guid competitionId = _currentCompetition.CompetitionData.RunningCompetition.CompetitionId;
+            (int _, PlayerResult result) = _currentCompetition.CompetitionData.GetPlayerResult(playerId);
+            
+            if (result != null)
+            {
+                int score = result.Result;
+                
+                // Submit to backend (fire and forget - backend handles upserts)
+                DatabaseCommunications.SubmitCompetitionScore(competitionId, playerId, score, (response) =>
+                {
+                    // Success - backend will update leaderboard
+                    Debug.Log($"[CompetitionManager] Submitted score {score} for player {playerId} to competition {competitionId}");
+                });
+            }
         }
     }
 
