@@ -372,27 +372,41 @@ namespace GlobalCompetitionSystem
         }
 
         [Server]
+        [Server]
         private static void DistributePrizes()
         {
+            if (_currentCompetition == null)
+            {
+                Debug.LogWarning("[CompetitionManager] Cannot distribute prizes - no current competition");
+                return;
+            }
+
             List<int> prizes = _currentCompetition.CompetitionData.RunningCompetition.Prizepool;
             SortedList<int, PlayerResult> winners = _currentCompetition.CompetitionData.GetTopPerformers(prizes.Count);
-            for (int i = 0; i < winners.Count; i++)
+            
+            Debug.Log($"[CompetitionManager] Distributing prizes to {winners.Count} winner(s)");
+            
+            for (int i = 0; i < winners.Count && i < prizes.Count; i++)
             {
-                PlayerResult winner = winners[i];
+                PlayerResult winner = winners[i + 1]; // winners is 1-indexed (rank 1, 2, 3...)
+                int prizeAmount = prizes[i]; // prizes is 0-indexed
                 bool prizeGiven = false;
                 
+                // Try to give prize to online player
                 if (GameNetworkManager.connUUID.TryGetValue(winner.PlayerID, out NetworkConnectionToClient playerConnection))
                 {
-                    PlayerDataSyncManager syncManager = playerConnection.identity.GetComponent<PlayerDataSyncManager>();
-                    if (syncManager != null)
+                    PlayerData playerData = playerConnection.identity.GetComponent<PlayerData>();
+                    if (playerData != null)
                     {
                         switch (_currentCompetition.CompetitionData.RunningCompetition.RewardCurrency)
                         {
                             case StoreManager.CurrencyType.BUCKS:
-                                //syncManager.ChangeFishBucksAmount(prizes[i], true);
+                                playerData.ChangeFishBucksAmount(prizeAmount, true);
+                                Debug.Log($"[CompetitionManager] Awarded {prizeAmount} BUCKS to online player {winner.PlayerName} (Rank {i + 1})");
                                 break;
                             case StoreManager.CurrencyType.COINS:
-                                //syncManager.ChangeFishCoinsAmount(prizes[i], true);
+                                playerData.ChangeFishCoinsAmount(prizeAmount, true);
+                                Debug.Log($"[CompetitionManager] Awarded {prizeAmount} COINS to online player {winner.PlayerName} (Rank {i + 1})");
                                 break;
                             default:
                                 throw new NotSupportedException($"Currency type {_currentCompetition.CompetitionData.RunningCompetition.RewardCurrency} has not yet been implemented as a reward");
@@ -401,19 +415,12 @@ namespace GlobalCompetitionSystem
                     }
                 }
                 
-                if(!prizeGiven)
+                // If player is offline, send mail notification (mail system will handle currency delivery)
+                if (!prizeGiven)
                 {
-                    switch (_currentCompetition.CompetitionData.RunningCompetition.RewardCurrency)
-                    {
-                        case StoreManager.CurrencyType.BUCKS:
-                            //DatabaseCommunications.ChangeFishBucksAmount(prizes[i], winner.PlayerID);
-                            break;
-                        case StoreManager.CurrencyType.COINS:
-                            //DatabaseCommunications.ChangeFishCoinsAmount(prizes[i], winner.PlayerID);
-                            break;
-                        default:
-                            throw new NotSupportedException($"Currency type {_currentCompetition.CompetitionData.RunningCompetition.RewardCurrency} has not yet been implemented as a reward");
-                    }
+                    string currencyName = _currentCompetition.CompetitionData.RunningCompetition.RewardCurrency == StoreManager.CurrencyType.COINS ? "Coins" : "Bucks";
+                    SendPrizeMail(winner.PlayerID, winner.PlayerName, i + 1, prizeAmount, currencyName);
+                    Debug.Log($"[CompetitionManager] Sent prize mail to offline player {winner.PlayerName} (Rank {i + 1}): {prizeAmount} {currencyName}");
                 }
             }
         }
@@ -421,7 +428,59 @@ namespace GlobalCompetitionSystem
         [Server]
         public static void MailResults()
         {
-         throw new NotImplementedException();   
+            if (_currentCompetition == null)
+            {
+                Debug.LogWarning("[CompetitionManager] Cannot mail results - no current competition");
+                return;
+            }
+
+            // Get all participants
+            List<int> prizes = _currentCompetition.CompetitionData.RunningCompetition.Prizepool;
+            SortedList<int, PlayerResult> allParticipants = _currentCompetition.CompetitionData.GetTopPerformers(100); // Get top 100 or all
+            
+            string competitionName = _currentCompetition.CompetitionData.RunningCompetition.CompetitionState.AsString();
+            
+            // Mail results to all participants
+            foreach (var entry in allParticipants)
+            {
+                int rank = entry.Key;
+                PlayerResult participant = entry.Value;
+                int prizeAmount = (rank - 1 < prizes.Count) ? prizes[rank - 1] : 0;
+                string currencyName = _currentCompetition.CompetitionData.RunningCompetition.RewardCurrency == StoreManager.CurrencyType.COINS ? "Coins" : "Bucks";
+                
+                string title = prizeAmount > 0 
+                    ? $"Competition Winner! - Rank #{rank}" 
+                    : $"Competition Results - Rank #{rank}";
+                    
+                string message = prizeAmount > 0
+                    ? $"Congratulations! You finished rank #{rank} in the '{competitionName}' competition!\n\n" +
+                      $"You won: {prizeAmount} {currencyName}\n\n" +
+                      $"Thank you for participating!"
+                    : $"Thank you for participating in the '{competitionName}' competition!\n\n" +
+                      $"You finished rank #{rank}.\n\n" +
+                      $"Keep practicing and good luck in future competitions!";
+                
+                Mail resultMail = new Mail(participant.PlayerID, title, message, "Competition System");
+                DatabaseCommunications.AddMail(resultMail);
+            }
+            
+            Debug.Log($"[CompetitionManager] Mailed results to {allParticipants.Count} participant(s)");
+        }
+
+        [Server]
+        private static void SendPrizeMail(Guid playerId, string playerName, int rank, int prizeAmount, string currencyName)
+        {
+            string competitionName = _currentCompetition?.CompetitionData.RunningCompetition.CompetitionState.AsString() ?? "Unknown Competition";
+            
+            string title = $"Competition Prize - Rank #{rank}";
+            string message = $"Congratulations {playerName}!\n\n" +
+                           $"You finished rank #{rank} in the '{competitionName}' competition!\n\n" +
+                           $"Your prize: {prizeAmount} {currencyName}\n\n" +
+                           $"(Note: Prize will be added to your account upon your next login)\n\n" +
+                           $"Thank you for participating!";
+            
+            Mail prizeMail = new Mail(playerId, title, message, "Competition System");
+            DatabaseCommunications.AddMail(prizeMail);
         }
 
         public static bool AddToRunningCompetition<T>(T data, PlayerData playerData)
