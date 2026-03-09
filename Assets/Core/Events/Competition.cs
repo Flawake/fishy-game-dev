@@ -53,8 +53,8 @@ namespace GlobalCompetitionSystem
             // Parse competition ID
             Guid competitionId = Guid.Parse(backendData.competition_id);
             
-            // Cast backend integer to enum
-            CompetitionType competitionType = (CompetitionType)backendData.competition_type;
+            // Parse competition type from string to enum
+            CompetitionType competitionType = Enum.Parse<CompetitionType>(backendData.competition_type);
             
             // Map competition type to ICompetitionState
             ICompetitionState competitionState = competitionType switch
@@ -354,7 +354,7 @@ namespace GlobalCompetitionSystem
                 _upcomingCompetitions.Add(competition);
                 _loadedCompetitionIds.Add(competitionId);
                 
-                CompetitionType logType = (CompetitionType)backendData.competition_type;
+                CompetitionType logType = Enum.Parse<CompetitionType>(backendData.competition_type);
                 Debug.Log($"[CompetitionManager] Added competition {competitionId} (Type: {logType}, Start: {competition.StartDateTime}, End: {competition.EndDateTime})");
             }
             catch (Exception ex)

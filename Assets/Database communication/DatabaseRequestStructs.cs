@@ -226,7 +226,7 @@ public class RemoveExpiredEffectsRequest
 public class CompetitionData
 {
     public string competition_id = string.Empty;
-    public int competition_type = 0;        // 1=MostFish, 2=LargestFish, 3=MostItems
+    public string competition_type = string.Empty;  // "MostFish", "LargestFish", or "MostItems"
     public int target_fish_id = 0;
     public string start_time = string.Empty;    // DateTime as ISO 8601 string
     public string end_time = string.Empty;      // DateTime as ISO 8601 string
