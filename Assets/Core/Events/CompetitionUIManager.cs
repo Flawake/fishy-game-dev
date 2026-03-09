@@ -19,7 +19,6 @@ namespace  GlobalCompetitionSystem
         [SerializeField] private Transform currentCompetitionsContainerTransform;
         [SerializeField] private TMP_Text competitionEndCountdownText;
         [SerializeField] private TMP_Text competitionStartsInText;
-        [SerializeField] private TMP_Text competitionUuidText; // For debugging
 
         private void Awake()
         {
@@ -105,12 +104,6 @@ namespace  GlobalCompetitionSystem
             }
             currentCompetitionView.SetActive(true);
             CompetitionNotStarted.SetActive(false);
-            
-            // Display competition UUID for debugging
-            if (competitionUuidText != null)
-            {
-                competitionUuidText.text = $"ID: {CompetitionManager.GetCurrentCompetition().CompetitionData.RunningCompetition.CompetitionId}";
-            }
             
             GetComponentInParent<PlayerData>().CmdGetTopPerformers();
         }
