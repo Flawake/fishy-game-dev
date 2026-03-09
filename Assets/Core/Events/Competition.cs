@@ -296,10 +296,19 @@ namespace GlobalCompetitionSystem
             {
                 if (response != null && response.competitions != null)
                 {
-                    Debug.Log($"[CompetitionManager] Received {response.competitions.Length} active competition(s) from backend");
-                    foreach (var competitionData in response.competitions)
+                    if (response.competitions.Length == 0)
                     {
-                        ProcessBackendCompetition(competitionData);
+                        Debug.Log("[CompetitionManager] No active competitions from backend");
+                    }
+                    else if (response.competitions.Length == 1)
+                    {
+                        Debug.Log("[CompetitionManager] Received 1 active competition from backend");
+                        ProcessBackendCompetition(response.competitions[0]);
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"[CompetitionManager] Received {response.competitions.Length} active competitions from backend, but only one can be active at a time. Processing first competition only.");
+                        ProcessBackendCompetition(response.competitions[0]);
                     }
                 }
             });
