@@ -80,13 +80,8 @@ namespace GlobalCompetitionSystem
             DateTime startTime = DateTime.Parse(backendData.start_time).ToUniversalTime();
             DateTime endTime = DateTime.Parse(backendData.end_time).ToUniversalTime();
             
-            // Map currency
-            StoreManager.CurrencyType currency = backendData.reward_currency switch
-            {
-                "COINS" => StoreManager.CurrencyType.COINS,
-                "BUCKS" => StoreManager.CurrencyType.BUCKS,
-                _ => throw new ArgumentException($"Unknown currency type: {backendData.reward_currency}")
-            };
+            // Parse currency enum from string
+            StoreManager.CurrencyType currency = Enum.Parse<StoreManager.CurrencyType>(backendData.reward_currency);
             
             // Convert prize pool array to list
             List<int> prizePool = new List<int>(backendData.prize_pool);
