@@ -389,7 +389,6 @@ namespace GlobalCompetitionSystem
         }
 
         [Server]
-        [Server]
         private static void DistributePrizes()
         {
             if (_currentCompetition == null)
