@@ -12,4 +12,10 @@ public class TradeSystemItemView : MonoBehaviour
         item = _item;
         itemPreviewImage.sprite = item.GetSprite();
     }
+
+    // Called from button in game
+    public void AddItem()
+    {
+        GetComponentInParent<Trading>().SelectItemToTrade(item);
+    }
 }
