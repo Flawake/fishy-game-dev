@@ -291,8 +291,8 @@ namespace GlobalCompetitionSystem
         {
             Debug.Log("[CompetitionManager] Fetching competitions from backend...");
             
-            // Fetch active competitions
-            DatabaseCommunications.GetActiveCompetitions((response) =>
+            // Fetch active competition
+            DatabaseCommunications.GetActiveCompetition((response) =>
             {
                 if (response != null && response.competitions != null)
                 {

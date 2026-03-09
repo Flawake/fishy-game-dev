@@ -247,7 +247,7 @@ public class CompetitionResultData
 }
 
 [Serializable]
-public class GetActiveCompetitionsResponse
+public class GetActiveCompetitionResponse
 {
     public CompetitionData[] competitions = new CompetitionData[0];
 }

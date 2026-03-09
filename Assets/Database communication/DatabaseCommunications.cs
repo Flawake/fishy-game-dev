@@ -285,11 +285,11 @@ public static class DatabaseCommunications
     }
 
     [Server]
-    public static void GetActiveCompetitions(WebRequestHandler.WebRequestCallback callback)
+    public static void GetActiveCompetition(WebRequestHandler.WebRequestCallback callback)
     {
         // GET request - send empty body
         byte[] bodyRaw = Encoding.UTF8.GetBytes("{}");
-        WebRequestHandler.SendWebRequest(DatabaseEndpoints.getActiveCompetitionsEndpoint, bodyRaw, null, callback);
+        WebRequestHandler.SendWebRequest(DatabaseEndpoints.getActiveCompetitionEndpoint, bodyRaw, null, callback);
     }
 
     [Server]
