@@ -294,22 +294,14 @@ namespace GlobalCompetitionSystem
             // Fetch active competition
             DatabaseCommunications.GetActiveCompetition((response) =>
             {
-                if (response != null && response.competitions != null)
+                if (response != null && response.competition != null)
                 {
-                    if (response.competitions.Length == 0)
-                    {
-                        Debug.Log("[CompetitionManager] No active competitions from backend");
-                    }
-                    else if (response.competitions.Length == 1)
-                    {
-                        Debug.Log("[CompetitionManager] Received 1 active competition from backend");
-                        ProcessBackendCompetition(response.competitions[0]);
-                    }
-                    else
-                    {
-                        Debug.LogWarning($"[CompetitionManager] Received {response.competitions.Length} active competitions from backend, but only one can be active at a time. Processing first competition only.");
-                        ProcessBackendCompetition(response.competitions[0]);
-                    }
+                    Debug.Log("[CompetitionManager] Received active competition from backend");
+                    ProcessBackendCompetition(response.competition);
+                }
+                else
+                {
+                    Debug.Log("[CompetitionManager] No active competition from backend");
                 }
             });
             

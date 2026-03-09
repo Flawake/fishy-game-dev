@@ -249,7 +249,7 @@ public class CompetitionResultData
 [Serializable]
 public class GetActiveCompetitionResponse
 {
-    public CompetitionData[] competitions = new CompetitionData[0];
+    public CompetitionData competition = null;
 }
 
 [Serializable]
