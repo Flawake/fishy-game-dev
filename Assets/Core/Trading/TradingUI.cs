@@ -1,6 +1,5 @@
 namespace TradeSystem
 {
-    using System;
     using System.Collections.Generic;
     using ItemSystem;
     using UnityEngine;
@@ -15,6 +14,8 @@ namespace TradeSystem
         GameObject yourTradeInputContent;
         [SerializeField]
         GameObject othersTradeInputContent;
+        [SerializeField]
+        GameObject amountSelector;
 
 
         [SerializeField]

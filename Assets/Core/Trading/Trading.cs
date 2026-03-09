@@ -1,5 +1,6 @@
 namespace TradeSystem
 {
+    using UnityEngine;
     using Mirror;
     using System;
 
@@ -37,6 +38,19 @@ namespace TradeSystem
         #endregion
 
         #region Client
+
+        [Client]
+        public void SelectItemToTrade(TradableItem item)
+        {
+            TradeAmountSelector amountSelector = GetComponentInChildren<TradeAmountSelector>(true);
+            amountSelector.gameObject.SetActive(true);
+            amountSelector.GetComponent<TradeAmountSelector>().SetItem(item);
+        }
+
+        public void AddItemToTrade(TradableItem item, int amount)
+        {
+            Debug.Log(amount);
+        }
 
         [Client]
         public void RequestNewTrade(Guid playerToRequestId, string _playerToRequestName)
