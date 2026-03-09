@@ -9,6 +9,16 @@ using UnityEngine;
 
 namespace GlobalCompetitionSystem
 {
+    /// <summary>
+    /// Competition type enum matching backend values
+    /// </summary>
+    public enum CompetitionType
+    {
+        MostFish = 1,
+        LargestFish = 2,
+        MostItems = 3
+    }
+
     public class Competition
     {
         private readonly Guid _competitionId;
@@ -43,25 +53,27 @@ namespace GlobalCompetitionSystem
             // Parse competition ID
             Guid competitionId = Guid.Parse(backendData.competition_id);
             
+            // Cast backend integer to enum
+            CompetitionType competitionType = (CompetitionType)backendData.competition_type;
+            
             // Map competition type to ICompetitionState
-            // Backend: 1=MostFish, 2=LargestFish, 3=MostItems
-            ICompetitionState competitionState = backendData.competition_type switch
+            ICompetitionState competitionState = competitionType switch
             {
-                1 => new MostFishCompetitonState 
+                CompetitionType.MostFish => new MostFishCompetitonState 
                 { 
                     specificFish = backendData.target_fish_id > 0, 
                     fishIDToCatch = backendData.target_fish_id 
                 },
-                2 => new largestFishCompetitonState 
+                CompetitionType.LargestFish => new largestFishCompetitonState 
                 { 
                     specificFish = backendData.target_fish_id > 0, 
                     fishIDToCatch = backendData.target_fish_id 
                 },
-                3 => new MostItemsCompetitonState 
+                CompetitionType.MostItems => new MostItemsCompetitonState 
                 { 
                     ItemId = backendData.target_fish_id  // target_fish_id is used for item ID in this case
                 },
-                _ => throw new ArgumentException($"Unknown competition type: {backendData.competition_type}")
+                _ => throw new ArgumentException($"Unknown competition type: {competitionType} ({backendData.competition_type})")
             };
             
             // Parse date times (backend sends ISO 8601 UTC strings)
@@ -338,7 +350,8 @@ namespace GlobalCompetitionSystem
                 _upcomingCompetitions.Add(competition);
                 _loadedCompetitionIds.Add(competitionId);
                 
-                Debug.Log($"[CompetitionManager] Added competition {competitionId} (Type: {backendData.competition_type}, Start: {competition.StartDateTime}, End: {competition.EndDateTime})");
+                CompetitionType logType = (CompetitionType)backendData.competition_type;
+                Debug.Log($"[CompetitionManager] Added competition {competitionId} (Type: {logType}, Start: {competition.StartDateTime}, End: {competition.EndDateTime})");
             }
             catch (Exception ex)
             {
