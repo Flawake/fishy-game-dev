@@ -1,43 +1,28 @@
 namespace TradeSystem
 {
     using UnityEngine;
+    using ItemSystem;
     using Mirror;
     using System;
 
     public class Trading : NetworkBehaviour
     {
-        #region Shared helpers
-
-        bool TradeAlreadyRequestedByOther(Guid playerToRequestId, out PendingTradeRequest pendingRequest)
-        {
-            Guid thisPlayerId = GetComponentInParent<PlayerData>().GetUuid();
-            return TradeService.TryGetPendingFromTo(playerToRequestId, thisPlayerId, out pendingRequest);
-        }
-
-        bool CanMakeTradeRequest(Guid playerToRequestId)
-        {
-            Guid thisPlayerID = GetComponentInParent<PlayerData>().GetUuid();
-
-            if (playerToRequestId == thisPlayerID)
-            {
-                return false;
-            }
-            
-            if (TradeService.HasPendingRequestFromTo(thisPlayerID, playerToRequestId)) {
-                return false;
-            }
-
-            if (TradeService.ServerIsPlayerTrading(thisPlayerID))
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-        #endregion
-
         #region Client
+
+        private void Start()
+        {
+            if (!isLocalPlayer)
+            {
+                return;
+            }
+            Debug.Log("registering");
+            NetworkClient.RegisterHandler<TradeRPCRequestIncoming>(msg => TargetHandleTradeRpc(msg));
+            NetworkClient.RegisterHandler<TradeRPCRequestRemoved>(msg => TargetHandleTradeRpc(msg));
+            NetworkClient.RegisterHandler<TradeRPCTradeRequestExpired>(msg => TargetHandleTradeRpc(msg));
+            NetworkClient.RegisterHandler<TradeRPCTradeStarted>(msg => TargetHandleTradeRpc(msg));
+            NetworkClient.RegisterHandler<TradeRPCTradeCancelled>(msg => TargetHandleTradeRpc(msg));
+            NetworkClient.RegisterHandler<TradeRPCTradeitemAdded>(msg => TargetHandleTradeRpc(msg));
+        }
 
         [Client]
         public void SelectItemToTrade(TradableItem item)
@@ -47,20 +32,34 @@ namespace TradeSystem
             amountSelector.GetComponent<TradeAmountSelector>().SetItem(item);
         }
 
-        public void AddItemToTrade(TradableItem item, int amount)
+        public void AddItemToTrade(TradableItem item)
         {
-            Debug.Log(amount);
+            TradeSession current = TradeService.ClientGetRunning();
+            if (GetComponentInParent<PlayerData>().GetUuid() == current.receiverId)
+            {
+                current.requesterTradeItems.Add(item);
+            }
+            else
+            {
+                current.receiverTradeItems.Add(item);
+            }
+            TradeEvents.RaiseClient(TradeStatus.TradeItemsUpdated);
+            TradeCMDItemAdded command = new TradeCMDItemAdded
+            {
+                tradeID = current.tradeId,
+                itemAdded = item,
+            };
+            NetworkClient.Send(command);
         }
 
         [Client]
         public void RequestNewTrade(Guid playerToRequestId, string _playerToRequestName)
         {
-            TradeCommandMessage command = new TradeCommandMessage
+            TradeCMDRequestNewTrade command = new TradeCMDRequestNewTrade
             {
-                Type = TradeCommandType.RequestNewTrade,
-                TargetPlayerId = playerToRequestId,
+                requestTargetID = playerToRequestId,
             };
-            CmdHandleTradeCommand(command);
+            NetworkClient.Send(command);
         }
 
         [Client]
@@ -72,13 +71,12 @@ namespace TradeSystem
                 return;
             }
 
-            TradeCommandMessage command = new TradeCommandMessage
+            TradeCMDCancelTrade command = new TradeCMDCancelTrade
             {
-                Type = TradeCommandType.CancelTrade,
-                TradeId = current.tradeId,
+                tradeID = current.tradeId,
             };
 
-            CmdHandleTradeCommand(command);
+            NetworkClient.Send(command);
 
             TradeService.ClientRemoveRunning();
         }
@@ -86,46 +84,48 @@ namespace TradeSystem
         [Client]
         public void AcceptTradeRequest(PendingTradeRequest request)
         {
-            TradeCommandMessage command = new TradeCommandMessage
+            TradeCMDAcceptTradeRequest command = new TradeCMDAcceptTradeRequest
             {
-                Type = TradeCommandType.AcceptRequest,
-                TradeId = request.tradeId,
+                tradeID = request.tradeId,
             };
 
-            CmdHandleTradeCommand(command);
+            NetworkClient.Send(command);
         }
 
-        [TargetRpc]
-        void TargetHandleTradeRpc(TradeRpcMessage message)
+        [Client]
+        void TargetHandleTradeRpc(NetworkMessage message)
         {
-            switch (message.Type)
+            switch (message)
             {
-                case TradeRpcType.RequestIncoming:
+                case TradeRPCRequestIncoming req:
                     {
-                        TradeService.AddPending(message.Pending);
-                        TradeEvents.RaiseClient(message.Pending, TradeEventType.RequestCreated, TradeStatus.PendingRequest);
+                        TradeService.AddPending(req.Pending);
+                        TradeEvents.RaiseClient(req.Pending, TradeEventType.RequestCreated, TradeStatus.PendingRequest);
                         break;
                     }
-
-                case TradeRpcType.RequestRemoved:
+                case TradeRPCRequestRemoved req:
                     {
-                        TradeService.RemovePending(message.Pending.tradeId);
-                        if (message.CancelReason == CancelTradeRequestReason.AcceptedButUnavailable)
+                        TradeService.RemovePending(req.TradeId);
+                        if (req.CancelReason == CancelTradeRequestReason.AcceptedButUnavailable)
                         {
-                            TradeEvents.RaiseClient(message.Pending, TradeEventType.TradeCancelled, TradeStatus.Cancelled);
+                            TradeEvents.RaiseClient(TradeStatus.Cancelled);
                         }
                         break;
                     }
-
-                case TradeRpcType.TradeStarted:
+                case TradeRPCTradeRequestExpired req:
                     {
-                        TradeService.RemovePending(message.Session.tradeId);
-                        TradeService.ClientSetRunning(message.Session);
-                        TradeEvents.RaiseClient(message.Session, TradeEventType.TradeStarted, TradeStatus.Active);
+                        TradeService.RemovePending(req.PendingID);
+                        TradeEvents.RaiseClient(TradeStatus.Expired);
                         break;
                     }
-
-                case TradeRpcType.TradeCancelled:
+                case TradeRPCTradeStarted req:
+                    {
+                        TradeService.RemovePending(req.Session.tradeId);
+                        TradeService.ClientSetRunning(req.Session);
+                        TradeEvents.RaiseClient(req.Session, TradeEventType.TradeStarted, TradeStatus.Active);
+                        break;
+                    }
+                case TradeRPCTradeCancelled req:
                     {
                         TradeSession current = TradeService.ClientGetRunning();
                         TradeService.ClientRemoveRunning();
@@ -135,207 +135,24 @@ namespace TradeSystem
                         }
                         break;
                     }
-
-                case TradeRpcType.TradeExpired:
+                case TradeRPCTradeitemAdded req:
                     {
-                        TradeService.RemovePending(message.Pending.tradeId);
-                        TradeEvents.RaiseClient(message.Pending, TradeEventType.TradeExpired, TradeStatus.Expired);
+                        TradeSession current = TradeService.ClientGetRunning();
+                        TradeSession currentSession = TradeService.ClientGetRunning();
+                        if (currentSession.requesterId == GetComponentInParent<PlayerData>().GetUuid())
+                        {
+                            current.receiverTradeItems.Add(req.addedItem);
+                        }
+                        else
+                        {
+                            current.requesterTradeItems.Add(req.addedItem);
+                        }
+                        if (current != null)
+                        {
+                            TradeEvents.RaiseClient(TradeStatus.TradeItemsUpdated);
+                        }
                         break;
                     }
-            }
-        }
-
-        #endregion
-
-        #region Server
-
-        [Command]
-        void CmdHandleTradeCommand(TradeCommandMessage command, NetworkConnectionToClient sender = null)
-        {
-            switch (command.Type)
-            {
-                case TradeCommandType.RequestNewTrade:
-                    ServerHandleRequestNewTrade(command.TargetPlayerId);
-                    break;
-                case TradeCommandType.AcceptRequest:
-                    ServerHandleAcceptTradeRequest(command.TradeId, sender);
-                    break;
-                case TradeCommandType.CancelTrade:
-                    ServerHandleCancelTrade(command.TradeId, sender);
-                    break;
-            }
-        }
-
-        [Server]
-        bool IDOwnsTradeRequest(PendingTradeRequest req, Guid claimer)
-        {
-            return req.Owns(claimer);
-        }
-
-        [Server]
-        void ServerHandleRequestNewTrade(Guid playerToRequestId)
-        {
-            if (!CanMakeTradeRequest(playerToRequestId))
-            {
-                return;
-            }
-
-            if (TradeAlreadyRequestedByOther(playerToRequestId, out PendingTradeRequest existingTradeRequest))
-            {
-                ServerTradeRequestAccepted(existingTradeRequest, GetComponentInParent<PlayerData>().GetUuid());
-                return;
-            }
-
-            Guid requesterID = GetComponentInParent<PlayerData>().GetUuid();
-            string requesterName = GetComponentInParent<PlayerData>().GetUsername();
-            if (playerToRequestId == requesterID)
-            {
-                return;
-            }
-
-            GameNetworkManager.connUUID.TryGetValue(playerToRequestId, out NetworkConnectionToClient otherConnection);
-            if (otherConnection == null)
-            {
-                return;
-            }
-            GameNetworkManager.connNames.TryGetValue(otherConnection, out string playerToRequestName);
-
-            PendingTradeRequest tradeRequest = 
-            new PendingTradeRequest
-            {
-                tradeId = Guid.NewGuid(),
-                requestTime = DateTime.Now,
-                requesterId = requesterID,
-                requesterName = requesterName,
-                receiverId = playerToRequestId,
-                receiverName = playerToRequestName,
-            };
-
-            TradeService.AddPending(tradeRequest);
-
-            TradeRpcMessage rpc = new TradeRpcMessage
-            {
-                Type = TradeRpcType.RequestIncoming,
-                Pending = tradeRequest,
-            };
-
-            otherConnection.identity.GetComponent<Trading>().TargetHandleTradeRpc(rpc);
-        }
-
-        [Server]
-        void ServerHandleAcceptTradeRequest(Guid tradeId, NetworkConnectionToClient sender)
-        {
-            if (!TradeService.TryGetPending(tradeId, out PendingTradeRequest tradeRequest))
-            {
-                // Either crafted or expired on the server already.
-                TradeRpcMessage expiredRpc = new TradeRpcMessage
-                {
-                    Type = TradeRpcType.TradeExpired,
-                    Pending = default,
-                };
-                TargetHandleTradeRpc(expiredRpc);
-                return;
-            }
-
-            Guid accepterID = sender.identity.GetComponent<PlayerData>().GetUuid();
-            if (!IDOwnsTradeRequest(tradeRequest, accepterID) || tradeRequest.requesterId == accepterID)
-            {
-                return;
-            }
-
-            ServerTradeRequestAccepted(tradeRequest, accepterID);
-        }
-
-        [Server]
-        void ServerTradeRequestAccepted(PendingTradeRequest tradeRequest, Guid accepter)
-        {
-            if (TradeService.ServerIsPlayerTrading(accepter))
-            {
-                return;
-            }
-            if (TradeService.ServerIsPlayerTrading(tradeRequest.receiverId))
-            {
-                if (GameNetworkManager.connUUID.TryGetValue(accepter, out NetworkConnectionToClient accepterConnection))
-                {
-                    TradeRpcMessage removeRpc = new TradeRpcMessage
-                    {
-                        Type = TradeRpcType.RequestRemoved,
-                        Pending = tradeRequest,
-                        CancelReason = CancelTradeRequestReason.AcceptedButUnavailable,
-                    };
-
-                    accepterConnection.identity.GetComponent<Trading>().TargetHandleTradeRpc(removeRpc);
-                }
-                return;
-            }
-
-            TradeService.RemovePending(tradeRequest.tradeId);
-
-            TradeSession runningTrade = new TradeSession(tradeRequest);
-
-            GameNetworkManager.connUUID.TryGetValue(tradeRequest.requesterId, out NetworkConnectionToClient requesterConnection);
-            GameNetworkManager.connUUID.TryGetValue(tradeRequest.receiverId, out NetworkConnectionToClient receiverConnection);
-
-            if (requesterConnection != null && receiverConnection != null)
-            {
-                TradeService.ServerAddRunning(runningTrade);
-
-                TradeRpcMessage startedRpc = new TradeRpcMessage
-                {
-                    Type = TradeRpcType.TradeStarted,
-                    Session = runningTrade,
-                };
-
-                requesterConnection.identity.GetComponent<Trading>().TargetHandleTradeRpc(startedRpc);
-                receiverConnection.identity.GetComponent<Trading>().TargetHandleTradeRpc(startedRpc);
-            }
-            
-            TradeRpcMessage failedRPC = new TradeRpcMessage
-            {
-                Type = TradeRpcType.TradeExpired,
-                Pending = tradeRequest,
-            };
-
-            if (requesterConnection == null && receiverConnection != null)
-            {
-                receiverConnection.identity.GetComponent<Trading>().TargetHandleTradeRpc(failedRPC);
-            }
-
-            if (requesterConnection != null && receiverConnection == null)
-            {
-                requesterConnection.identity.GetComponent<Trading>().TargetHandleTradeRpc(failedRPC);
-            }
-        }
-
-        [Server]
-        void ServerHandleCancelTrade(Guid tradeId, NetworkConnectionToClient sender)
-        {
-            if (!TradeService.ServerTryGetRunning(tradeId, out TradeSession tradeToCancel))
-            {
-                return;
-            }
-
-            Guid callerId = sender.identity.GetComponent<PlayerData>().GetUuid();
-            if (!tradeToCancel.OwnedBy(callerId))
-            {
-                return;
-            }
-
-            TradeService.ServerRemoveRunning(tradeId);
-
-            Guid receiver = tradeToCancel.requesterId == callerId
-                ? tradeToCancel.receiverId
-                : tradeToCancel.requesterId;
-
-            if (GameNetworkManager.connUUID.TryGetValue(receiver, out NetworkConnectionToClient receiverConnection))
-            {
-                TradeRpcMessage cancelledRpc = new TradeRpcMessage
-                {
-                    Type = TradeRpcType.TradeCancelled,
-                    Session = tradeToCancel,
-                };
-
-                receiverConnection.identity.GetComponent<Trading>().TargetHandleTradeRpc(cancelledRpc);
             }
         }
 

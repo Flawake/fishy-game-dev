@@ -55,7 +55,8 @@ public class TradeAmountSelector : MonoBehaviour
     // Called from button in game
     public void AddItems()
     {
-        GetComponentInParent<Trading>().AddItemToTrade(item, ClampAmount());
+        item.SetAmount(ClampAmount());
+        GetComponentInParent<Trading>().AddItemToTrade(item);
         gameObject.SetActive(false);
     }
 }

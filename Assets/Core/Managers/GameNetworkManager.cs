@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.UI;
+using TradeSystem;
 
 [AddComponentMenu("")]
 public class GameNetworkManager : NetworkManager
@@ -128,6 +129,7 @@ public class GameNetworkManager : NetworkManager
 
         NetworkServer.RegisterHandler<CreateCharacterMessage>(OnBeginCreateCharacter);
         NetworkServer.RegisterHandler<MovePlayerMessage>(OnPlayerMoveMessage);
+        TradeServer.ServerBindCommands();
         
         StartCoroutine(CompetitionManager.UpdateCompetitions());
     }

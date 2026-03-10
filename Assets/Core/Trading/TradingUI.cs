@@ -1,5 +1,6 @@
 namespace TradeSystem
 {
+    using System;
     using System.Collections.Generic;
     using ItemSystem;
     using UnityEngine;
@@ -43,10 +44,10 @@ namespace TradeSystem
             {
                 case TradeStatus.Active:
                     {
-                        TradeSession session = TradeService.ClientGetRunning();
-                        if (session != null && session.tradeId == state.TradeId)
+                        TradeSession activeSession = TradeService.ClientGetRunning();
+                        if (activeSession != null && activeSession.tradeId == state.TradeId)
                         {
-                            OpenTradingMenu(session);
+                            OpenTradingMenu(activeSession);
                         }
                         break;
                     }
@@ -59,6 +60,15 @@ namespace TradeSystem
                     InformPlayer(TradingInfoType.TradeExpired);
                     break;
 
+                case TradeStatus.TradeItemsUpdated:
+                    {
+                        TradeSession ItemUpdatedSession = TradeService.ClientGetRunning();
+                        if (ItemUpdatedSession != null && ItemUpdatedSession.tradeId == state.TradeId)
+                        {
+                            UpdateTradingMenu(ItemUpdatedSession);
+                        }
+                    break;
+                    }
                 default:
                     break;
             }
@@ -85,11 +95,21 @@ namespace TradeSystem
             PlayerInventory inventory = GetComponentInParent<PlayerInventory>();
             List<ItemInstance> inventoryItems = inventory.GetItems();
             foreach(ItemInstance item in inventoryItems)
-            if (TradabilityRules.IsTradable(item))
             {
-                GameObject tradableItem = Instantiate(tradableItemPrefab, tradableItemsInventoryContent.transform);
-                tradableItem.GetComponent<TradeSystemItemView>().SetTradableItem(TradableItem.FromItem(item));
+                if (TradabilityRules.IsTradable(item))
+                {
+                    int amount = 1;
+                    StackState stack = item.GetState<StackState>();
+                    if (stack != null)
+                    {
+                        amount = stack.currentAmount;
+                    }
+                    GameObject tradableItem = Instantiate(tradableItemPrefab, tradableItemsInventoryContent.transform);
+                    tradableItem.GetComponent<TradeSystemItemView>().SetTradableItem(TradableItem.FromItem(item, amount));
+                }
             }
+            GameObject bucksItem = Instantiate(tradableItemPrefab, tradableItemsInventoryContent.transform);
+            bucksItem.GetComponent<TradeSystemItemView>().SetTradableItem(TradableItem.Bucks(GetComponentInParent<PlayerData>().GetFishBucks()));
         }
 
         public void OpenTradingMenu(TradeSession runningTrade)
@@ -97,6 +117,35 @@ namespace TradeSystem
             background.SetActive(true);
             ResetTradingMenu();
             MakeTradableInventory();
+        }
+
+        public void UpdateTradingMenu(TradeSession runningTrade)
+        {
+            List<TradableItem> sendItems = runningTrade.receiverTradeItems;
+            List<TradableItem> receivingItems = runningTrade.requesterTradeItems;
+            if (GetComponentInParent<PlayerData>().GetUuid() == runningTrade.requesterId)
+            {
+                sendItems = runningTrade.requesterTradeItems;
+                receivingItems = runningTrade.receiverTradeItems;
+            }
+            foreach(Transform child in yourTradeInputContent.transform)
+            {
+                Destroy(child.gameObject);
+            }
+            foreach(Transform child in othersTradeInputContent.transform)
+            {
+                Destroy(child.gameObject);
+            }
+            foreach (TradableItem item in sendItems)
+            {
+                GameObject tradableItem = Instantiate(tradableItemPrefab, yourTradeInputContent.transform);
+                tradableItem.GetComponent<TradeSystemItemView>().SetTradableItem(item);
+            }
+            foreach (TradableItem item in receivingItems)
+            {
+                GameObject tradableItem = Instantiate(tradableItemPrefab, othersTradeInputContent.transform);
+                tradableItem.GetComponent<TradeSystemItemView>().SetTradableItem(item);
+            }
         }
 
         public void RunningTradeCanceled(TradingInfoType infoType)

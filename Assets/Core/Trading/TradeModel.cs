@@ -1,6 +1,7 @@
 namespace TradeSystem
 {
     using System;
+    using Mirror;
 
     public readonly struct PlayerId : IEquatable<PlayerId>
     {
@@ -55,13 +56,6 @@ namespace TradeSystem
         TradeExpired,
     }
 
-    public enum TradeCommandType
-    {
-        RequestNewTrade,
-        AcceptRequest,
-        CancelTrade,
-    }
-
     public enum TradeStatus
     {
         None,
@@ -70,36 +64,65 @@ namespace TradeSystem
         Cancelled,
         Completed,
         Expired,
+        TradeItemsUpdated,
     }
 
-    public struct TradeCommandMessage
+    #region TradeCMD
+    public struct TradeCMDRequestNewTrade : NetworkMessage
     {
-        public TradeCommandType Type;
-
-        public Guid TargetPlayerId;
-
-        public Guid TradeId;
+        public Guid requestTargetID;
     }
 
-    public enum TradeRpcType
+    public struct TradeCMDAcceptTradeRequest : NetworkMessage
     {
-        RequestIncoming,
-        RequestRemoved,
-        TradeStarted,
-        TradeCancelled,
-        TradeExpired,
+        public Guid tradeID;
     }
 
-    public struct TradeRpcMessage
+    public struct TradeCMDCancelTrade : NetworkMessage
     {
-        public TradeRpcType Type;
+        public Guid tradeID;
+    }
 
+    public struct TradeCMDItemAdded : NetworkMessage
+    {
+        public Guid tradeID;
+        public TradableItem itemAdded;
+    }
+
+    #endregion
+
+    #region TradeRPC
+    public struct TradeRPCRequestIncoming : NetworkMessage
+    {
         public PendingTradeRequest Pending;
+    }
 
-        public TradeSession Session;
-
+    public struct TradeRPCRequestRemoved : NetworkMessage
+    {
+        public Guid TradeId;
         public CancelTradeRequestReason CancelReason;
     }
+
+    public struct TradeRPCTradeRequestExpired : NetworkMessage
+    {
+        public Guid PendingID;
+    }
+
+    public struct TradeRPCTradeStarted : NetworkMessage
+    {
+        public TradeSession Session;
+    }
+
+    public struct TradeRPCTradeCancelled : NetworkMessage
+    {
+        
+    }
+
+    public struct TradeRPCTradeitemAdded : NetworkMessage
+    {
+        public TradableItem addedItem;
+    }
+    #endregion
 
     public struct PendingTradeRequest
     {
@@ -151,6 +174,11 @@ namespace TradeSystem
             ReceiverId = session.receiverId;
             ReceiverName = session.receiverName;
         }
+
+        public TradeViewModel(TradeStatus status)
+        {
+            Status = status;
+        }
     }
 
     public static class TradeEvents
@@ -166,6 +194,10 @@ namespace TradeSystem
         {
             ClientTradeStateChanged?.Invoke(new TradeViewModel(type, status, session));
         }
+
+        public static void RaiseClient(TradeStatus status)
+        {
+            ClientTradeStateChanged?.Invoke(new TradeViewModel(status));
+        }
     }
 }
-
