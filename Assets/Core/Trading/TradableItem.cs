@@ -41,12 +41,12 @@ namespace TradeSystem
     public class TradableItem
     {
         public TradableItemType Type { get; }
-        public int BucksAmount { get; }
         public ItemInstance ItemInst { get; }
-        private TradableItem(TradableItemType type, int bucks, ItemInstance item)
+        public int Amount { get; internal set; }
+        private TradableItem(TradableItemType type, int amount, ItemInstance item)
         {
             Type = type;
-            BucksAmount = bucks;
+            Amount = amount;
             ItemInst = item;
         }
 
@@ -55,14 +55,27 @@ namespace TradeSystem
             return new TradableItem(TradableItemType.Bucks, amount, null);
         }
 
-        public static TradableItem FromItem(ItemInstance item)
+        public bool isValid()
+        {
+            if (Type == TradableItemType.Item)
+            {
+                return TradabilityRules.IsTradable(ItemInst);
+            }
+            if (Type == TradableItemType.Bucks)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public static TradableItem FromItem(ItemInstance item, int amount)
         {
             if (!TradabilityRules.IsTradable(item))
             {
                 //This should kick the player requesting to trade the item
                 throw new InvalidOperationException($"{item.GetType().Name} is not tradable");
             }
-            return new TradableItem(TradableItemType.Item, 0, item);
+            return new TradableItem(TradableItemType.Item, amount, item);
         }
 
         public Sprite GetSprite()
@@ -76,23 +89,14 @@ namespace TradeSystem
             }
         }
 
+        public void SetAmount(int amount)
+        {
+            Amount = amount;
+        }
+
         public int GetAmount()
         {
-            if (Type == TradableItemType.Bucks) {
-                return BucksAmount;
-            }
-            else
-            {
-                StackState stackState = ItemInst.GetState<StackState>();
-                if (stackState == null)
-                {
-                    return 0;
-                }
-                else
-                {
-                    return ItemInst.GetState<StackState>().currentAmount;
-                }
-            }
+            return Amount;
         }
     }
 
@@ -101,7 +105,7 @@ namespace TradeSystem
         public static void WriteTradableItem(this NetworkWriter writer, TradableItem item)
         {
             writer.WriteInt((int)item.Type);
-            writer.WriteInt(item.BucksAmount);
+            writer.WriteInt(item.Amount);
 
             bool hasItem = item.ItemInst != null;
             writer.WriteBool(hasItem);
@@ -115,7 +119,7 @@ namespace TradeSystem
         public static TradableItem ReadTradableItem(this NetworkReader reader)
         {
             TradableItemType type = (TradableItemType)reader.ReadInt();
-            int bucks = reader.ReadInt();
+            int amount = reader.ReadInt();
 
             bool hasItem = reader.ReadBool();
             ItemInstance item = null;
@@ -126,8 +130,8 @@ namespace TradeSystem
 
             return type switch
             {
-                TradableItemType.Bucks => TradableItem.Bucks(bucks),
-                TradableItemType.Item => TradableItem.FromItem(item),
+                TradableItemType.Bucks => TradableItem.Bucks(amount),
+                TradableItemType.Item => TradableItem.FromItem(item, amount),
                 _ => throw new InvalidOperationException("Unknown TradableItemType")
             };
         }
