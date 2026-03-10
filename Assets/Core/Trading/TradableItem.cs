@@ -98,6 +98,28 @@ namespace TradeSystem
         {
             return Amount;
         }
+
+        public bool Eq(TradableItem other)
+        {
+            if (Type != other.Type)
+            {
+                return false;
+            }
+            
+            if (Type == TradableItemType.Bucks && other.Type == TradableItemType.Bucks)
+            {
+                return true;
+            }
+
+            if (Type == TradableItemType.Item && other.Type == TradableItemType.Item)
+            {
+                if (ItemInst.uuid == other.ItemInst.uuid)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 
     public static class TradableItemSerializer
