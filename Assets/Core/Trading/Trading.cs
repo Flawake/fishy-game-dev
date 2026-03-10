@@ -4,11 +4,10 @@ namespace TradeSystem
     using ItemSystem;
     using Mirror;
     using System;
+    using Unity.VisualScripting;
 
     public class Trading : NetworkBehaviour
     {
-        #region Client
-
         private void Start()
         {
             if (!isLocalPlayer)
@@ -32,24 +31,40 @@ namespace TradeSystem
             amountSelector.GetComponent<TradeAmountSelector>().SetItem(item);
         }
 
-        public void AddItemToTrade(TradableItem item)
+        public void AddItemToTrade(TradableItem newItem, bool addedBySelf)
         {
             TradeSession current = TradeService.ClientGetRunning();
-            if (GetComponentInParent<PlayerData>().GetUuid() == current.receiverId)
+            bool isRequester = GetComponentInParent<PlayerData>().GetUuid() == current.requesterId;
+
+            var list = isRequester ? current.receiverTradeItems : current.requesterTradeItems;
+
+            if (addedBySelf)
             {
-                current.requesterTradeItems.Add(item);
+                list = isRequester ? current.requesterTradeItems : current.receiverTradeItems;
             }
-            else
+
+            int index = list.FindIndex(item => item.Eq(newItem));
+
+            // Remove item istead of update to make clear to the player that the item amount has been changed
+            if (index >= 0)
             {
-                current.receiverTradeItems.Add(item);
+                list.RemoveAt(index);
             }
-            TradeEvents.RaiseClient(TradeStatus.TradeItemsUpdated);
-            TradeCMDItemAdded command = new TradeCMDItemAdded
+
+            list.Add(newItem);
+
+            Debug.Log(newItem.Amount);
+            
+            if (addedBySelf)
             {
-                tradeID = current.tradeId,
-                itemAdded = item,
-            };
-            NetworkClient.Send(command);
+                TradeCMDItemAdded command = new TradeCMDItemAdded
+                {
+                    tradeID = current.tradeId,
+                    itemAdded = newItem,
+                };
+                NetworkClient.Send(command);
+                TradeEvents.RaiseClient(TradeEventType.TradeItemsUpdated, current.tradeId);
+            }
         }
 
         [Client]
@@ -100,7 +115,7 @@ namespace TradeSystem
                 case TradeRPCRequestIncoming req:
                     {
                         TradeService.AddPending(req.Pending);
-                        TradeEvents.RaiseClient(req.Pending, TradeEventType.RequestCreated, TradeStatus.PendingRequest);
+                        TradeEvents.RaiseClient(TradeEventType.RequestCreated, req.Pending.tradeId);
                         break;
                     }
                 case TradeRPCRequestRemoved req:
@@ -108,21 +123,21 @@ namespace TradeSystem
                         TradeService.RemovePending(req.TradeId);
                         if (req.CancelReason == CancelTradeRequestReason.AcceptedButUnavailable)
                         {
-                            TradeEvents.RaiseClient(TradeStatus.Cancelled);
+                            TradeEvents.RaiseClient(TradeEventType.RequestCancelled, req.TradeId);
                         }
                         break;
                     }
                 case TradeRPCTradeRequestExpired req:
                     {
                         TradeService.RemovePending(req.PendingID);
-                        TradeEvents.RaiseClient(TradeStatus.Expired);
+                        TradeEvents.RaiseClient(TradeEventType.RequestExpired, req.PendingID);
                         break;
                     }
                 case TradeRPCTradeStarted req:
                     {
                         TradeService.RemovePending(req.Session.tradeId);
                         TradeService.ClientSetRunning(req.Session);
-                        TradeEvents.RaiseClient(req.Session, TradeEventType.TradeStarted, TradeStatus.Active);
+                        TradeEvents.RaiseClient(TradeEventType.TradeStarted, req.Session.tradeId);
                         break;
                     }
                 case TradeRPCTradeCancelled req:
@@ -131,31 +146,21 @@ namespace TradeSystem
                         TradeService.ClientRemoveRunning();
                         if (current != null)
                         {
-                            TradeEvents.RaiseClient(current, TradeEventType.TradeCancelled, TradeStatus.Cancelled);
+                            TradeEvents.RaiseClient(TradeEventType.TradeCancelled, current.tradeId);
                         }
                         break;
                     }
                 case TradeRPCTradeitemAdded req:
                     {
                         TradeSession current = TradeService.ClientGetRunning();
-                        TradeSession currentSession = TradeService.ClientGetRunning();
-                        if (currentSession.requesterId == GetComponentInParent<PlayerData>().GetUuid())
-                        {
-                            current.receiverTradeItems.Add(req.addedItem);
-                        }
-                        else
-                        {
-                            current.requesterTradeItems.Add(req.addedItem);
-                        }
+                        AddItemToTrade(req.addedItem, false);
                         if (current != null)
                         {
-                            TradeEvents.RaiseClient(TradeStatus.TradeItemsUpdated);
+                            TradeEvents.RaiseClient(TradeEventType.TradeItemsUpdated, current.tradeId);
                         }
                         break;
                     }
             }
         }
-
-        #endregion
     }
 }

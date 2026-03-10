@@ -50,10 +50,11 @@ namespace TradeSystem
     public enum TradeEventType
     {
         RequestCreated,
-        RequestAccepted,
+        RequestCancelled,
+        RequestExpired,
         TradeStarted,
         TradeCancelled,
-        TradeExpired,
+        TradeItemsUpdated,
     }
 
     public enum TradeStatus
@@ -143,41 +144,12 @@ namespace TradeSystem
     public class TradeViewModel
     {
         public TradeEventType EventType { get; }
-        public TradeStatus Status { get; }
-
         public Guid TradeId { get; }
-        public Guid RequesterId { get; }
-        public string RequesterName { get; }
-        public Guid ReceiverId { get; }
-        public string ReceiverName { get; }
 
-        public TradeViewModel(TradeEventType eventType, TradeStatus status, PendingTradeRequest request)
+        public TradeViewModel(TradeEventType eventType, Guid tradeID)
         {
             EventType = eventType;
-            Status = status;
-
-            TradeId = request.tradeId;
-            RequesterId = request.requesterId;
-            RequesterName = request.requesterName;
-            ReceiverId = request.receiverId;
-            ReceiverName = request.receiverName;
-        }
-
-        public TradeViewModel(TradeEventType eventType, TradeStatus status, TradeSession session)
-        {
-            EventType = eventType;
-            Status = status;
-
-            TradeId = session.tradeId;
-            RequesterId = session.requesterId;
-            RequesterName = session.requesterName;
-            ReceiverId = session.receiverId;
-            ReceiverName = session.receiverName;
-        }
-
-        public TradeViewModel(TradeStatus status)
-        {
-            Status = status;
+            TradeId = tradeID;
         }
     }
 
@@ -185,19 +157,9 @@ namespace TradeSystem
     {
         public static event Action<TradeViewModel> ClientTradeStateChanged;
 
-        public static void RaiseClient(PendingTradeRequest request, TradeEventType type, TradeStatus status)
+        public static void RaiseClient(TradeEventType type, Guid tradeID)
         {
-            ClientTradeStateChanged?.Invoke(new TradeViewModel(type, status, request));
-        }
-
-        public static void RaiseClient(TradeSession session, TradeEventType type, TradeStatus status)
-        {
-            ClientTradeStateChanged?.Invoke(new TradeViewModel(type, status, session));
-        }
-
-        public static void RaiseClient(TradeStatus status)
-        {
-            ClientTradeStateChanged?.Invoke(new TradeViewModel(status));
+            ClientTradeStateChanged?.Invoke(new TradeViewModel(type, tradeID));
         }
     }
 }

@@ -40,9 +40,14 @@ namespace TradeSystem
 
         void OnTradeStateChanged(TradeViewModel state)
         {
-            switch (state.Status)
+            switch (state.EventType)
             {
-                case TradeStatus.Active:
+
+                case TradeEventType.RequestExpired:
+                    InformPlayer(TradingInfoType.TradeExpired);
+                    break;
+                
+                case TradeEventType.TradeStarted:
                     {
                         TradeSession activeSession = TradeService.ClientGetRunning();
                         if (activeSession != null && activeSession.tradeId == state.TradeId)
@@ -52,22 +57,19 @@ namespace TradeSystem
                         break;
                     }
 
-                case TradeStatus.Cancelled:
+                case TradeEventType.TradeCancelled:
                     RunningTradeCanceled(TradingInfoType.ClosedByOther);
                     break;
 
-                case TradeStatus.Expired:
-                    InformPlayer(TradingInfoType.TradeExpired);
-                    break;
-
-                case TradeStatus.TradeItemsUpdated:
+                case TradeEventType.TradeItemsUpdated:
                     {
+                        Debug.Log("Items updated");
                         TradeSession ItemUpdatedSession = TradeService.ClientGetRunning();
                         if (ItemUpdatedSession != null && ItemUpdatedSession.tradeId == state.TradeId)
                         {
                             UpdateTradingMenu(ItemUpdatedSession);
                         }
-                    break;
+                        break;
                     }
                 default:
                     break;

@@ -367,10 +367,10 @@ namespace TradeSystem
         }
 
         [Server]
-        static void ServerHandleItemAdded(NetworkConnectionToClient sender, Guid tradeID, TradableItem tradableItem)
+        static void ServerHandleItemAdded(NetworkConnectionToClient adderConn, Guid tradeID, TradableItem tradableItem)
         {
-            PlayerData playerData = sender.identity.GetComponent<PlayerData>();
-            Guid itemAdderID = playerData.GetUuid();
+            PlayerData adderData = adderConn.identity.GetComponent<PlayerData>();
+            Guid itemAdderID = adderData.GetUuid();
             if (!TradeService.ServerTryGetRunning(tradeID, out TradeSession trade))
             {
                 Debug.LogWarning("TradeSession not found");
@@ -387,14 +387,14 @@ namespace TradeSystem
             }
             if (tradableItem.Type == TradableItemType.Bucks)
             {
-                if (playerData.GetFishBucks() < tradableItem.Amount) {
+                if (adderData.GetFishBucks() < tradableItem.Amount) {
                     // Should kick caller automatically
                     throw new InvalidOperationException();
                 }
             }
             else if (tradableItem.Type == TradableItemType.Item)
             {
-                if (sender.identity.GetComponent<PlayerInventory>().GetItem(tradableItem.ItemInst.uuid).GetState<StackState>().currentAmount < tradableItem.Amount) {
+                if (adderConn.identity.GetComponent<PlayerInventory>().GetItem(tradableItem.ItemInst.uuid).GetState<StackState>().currentAmount < tradableItem.Amount) {
                     // Should kick caller automatically
                     throw new InvalidOperationException();
                 }
@@ -405,9 +405,23 @@ namespace TradeSystem
                 addedItem = tradableItem,
             };
 
+            var list = (adderData.GetUuid() == trade.receiverId)
+                ? trade.receiverTradeItems
+                : trade.requesterTradeItems;
+
+            int index = list.FindIndex(item => item.Eq(tradableItem));
+
+            if (index >= 0)
+            {
+                list[index] = tradableItem;
+            }
+            else
+            {
+                list.Add(tradableItem);
+            }
+
             if (itemAdderID == trade.receiverId)
             {
-                trade.receiverTradeItems.Add(tradableItem);
                 GameNetworkManager.connUUID.TryGetValue(trade.requesterId, out NetworkConnectionToClient otherConnection);
                 if (otherConnection == null)
                 {
@@ -417,7 +431,6 @@ namespace TradeSystem
             }
             else
             {
-                trade.requesterTradeItems.Add(tradableItem);
                 GameNetworkManager.connUUID.TryGetValue(trade.receiverId, out NetworkConnectionToClient otherConnection);
                 if (otherConnection == null)
                 {
