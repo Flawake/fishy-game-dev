@@ -12,7 +12,7 @@ public class TradeAmountSelector : MonoBehaviour
     TradableItem item;
     int maxTradeAmount = 1;
 
-    void Awake()
+    void OnEnable()
     {
         inputField.text = 1.ToString();
     }

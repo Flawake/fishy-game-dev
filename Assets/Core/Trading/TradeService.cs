@@ -171,6 +171,9 @@ namespace TradeSystem
             NetworkServer.RegisterHandler<TradeCMDAcceptTradeRequest>((sender, cmd) => CmdHandleTradeCommand(sender, cmd));
             NetworkServer.RegisterHandler<TradeCMDCancelTrade>((sender, cmd) => CmdHandleTradeCommand(sender, cmd));
             NetworkServer.RegisterHandler<TradeCMDItemAdded>((sender, cmd) => CmdHandleTradeCommand(sender, cmd));
+            NetworkServer.RegisterHandler<TradeCMDAcceptTrade>((sender, cmd) => CmdHandleTradeCommand(sender, cmd));
+            NetworkServer.RegisterHandler<TradeCMDVerifyTrade>((sender, cmd) => CmdHandleTradeCommand(sender, cmd));
+            NetworkServer.RegisterHandler<TradeCMDDenyVerifyTrade>((sender, cmd) => CmdHandleTradeCommand(sender, cmd));
         }
 
         [Server]
@@ -344,7 +347,7 @@ namespace TradeSystem
             }
 
             Guid callerId = sender.identity.GetComponent<PlayerData>().GetUuid();
-            if (!tradeToCancel.OwnedBy(callerId))
+            if (!tradeToCancel.IsOwnedBy(callerId))
             {
                 return;
             }
@@ -376,7 +379,7 @@ namespace TradeSystem
                 Debug.LogWarning("TradeSession not found");
                 return;
             }
-            if (!trade.OwnedBy(itemAdderID))
+            if (!trade.IsOwnedBy(itemAdderID))
             {
                 return;
             }
@@ -399,6 +402,8 @@ namespace TradeSystem
                     throw new InvalidOperationException();
                 }
             }
+
+            ResetAcceptState(tradeID);
 
             TradeRPCTradeitemAdded updateMessage = new TradeRPCTradeitemAdded
             {
@@ -440,6 +445,150 @@ namespace TradeSystem
             }
         }
 
+        [Server]
+        public static void ServerAcceptTrade(NetworkConnectionToClient accepterConn, Guid tradeID)
+        {
+            PlayerData accepterData = accepterConn.identity.GetComponent<PlayerData>();
+            Guid AccepterID = accepterData.GetUuid();
+            if (!TradeService.ServerTryGetRunning(tradeID, out TradeSession trade))
+            {
+                Debug.LogWarning("TradeSession not found");
+                return;
+            }
+            if (!trade.IsOwnedBy(AccepterID))
+            {
+                return;
+            }
+
+            var flag = (AccepterID == trade.requesterId)
+                ? TradeSessionState.RequesterAccepted
+                : TradeSessionState.ReceiverAccepted;
+
+            trade.State |= flag;
+
+            TradeRPCAcceptTrade acceptMessage = new TradeRPCAcceptTrade
+            {
+                tradeID = tradeID,
+            };
+
+            if (AccepterID == trade.receiverId)
+            {
+                GameNetworkManager.connUUID.TryGetValue(trade.requesterId, out NetworkConnectionToClient otherConnection);
+                if (otherConnection == null)
+                {
+                    return;
+                }
+                otherConnection.Send(acceptMessage);
+            }
+            else
+            {
+                GameNetworkManager.connUUID.TryGetValue(trade.receiverId, out NetworkConnectionToClient otherConnection);
+                if (otherConnection == null)
+                {
+                    return;
+                }
+                otherConnection.Send(acceptMessage);
+            }
+
+            if (trade.BothPlayersAccepted())
+            {
+                TradeRPCTradeAccepted openVerifyTradeMessage = new TradeRPCTradeAccepted
+                {
+                    tradeID = tradeID,
+                };
+                GameNetworkManager.connUUID.TryGetValue(trade.requesterId, out NetworkConnectionToClient connOne);
+                connOne?.Send(openVerifyTradeMessage);
+                GameNetworkManager.connUUID.TryGetValue(trade.receiverId, out NetworkConnectionToClient connTwo);
+                connTwo?.Send(openVerifyTradeMessage);
+            }
+        }
+        
+        [Server]
+        public static void ServerVerifyTrade(NetworkConnectionToClient accepterConn, Guid tradeID)
+        {
+            PlayerData accepterData = accepterConn.identity.GetComponent<PlayerData>();
+            Guid AccepterID = accepterData.GetUuid();
+            if (!TradeService.ServerTryGetRunning(tradeID, out TradeSession trade))
+            {
+                Debug.LogWarning("TradeSession not found");
+                return;
+            }
+            if (!trade.IsOwnedBy(AccepterID))
+            {
+                return;
+            }
+
+            if (!trade.BothPlayersAccepted())
+            {
+                return;
+            }
+
+            var flag = (AccepterID == trade.requesterId)
+                ? TradeSessionState.RequesterVerified
+                : TradeSessionState.ReceiverVerified;
+
+            trade.State |= flag;
+
+            if (trade.BothPlayersVerified())
+            {
+                TradeRPCTradeVerified openVerifyTradeMessage = new TradeRPCTradeVerified
+                {
+                    tradeID = tradeID,
+                };
+                GameNetworkManager.connUUID.TryGetValue(trade.requesterId, out NetworkConnectionToClient connOne);
+                connOne?.Send(openVerifyTradeMessage);
+                GameNetworkManager.connUUID.TryGetValue(trade.receiverId, out NetworkConnectionToClient connTwo);
+                connTwo?.Send(openVerifyTradeMessage);
+            }
+        }
+
+        [Server]
+        public static void ServerDenyVerifyTrade(NetworkConnectionToClient denierConn, Guid tradeID)
+        {
+            PlayerData denierData = denierConn.identity.GetComponent<PlayerData>();
+            Guid denierID = denierData.GetUuid();
+            if (!TradeService.ServerTryGetRunning(tradeID, out TradeSession trade))
+            {
+                Debug.LogWarning("TradeSession not found");
+                return;
+            }
+            if (!trade.IsOwnedBy(denierID))
+            {
+                return;
+            }
+            ResetAcceptState(tradeID);
+
+
+            TradeRPCDenyVerifyTrade denyTradeMessage = new TradeRPCDenyVerifyTrade
+            {
+                tradeID = tradeID,
+            };
+
+            if (denierID == trade.receiverId)
+            {
+                GameNetworkManager.connUUID.TryGetValue(trade.requesterId, out NetworkConnectionToClient conn);
+                conn?.Send(denyTradeMessage);
+                return;
+            } 
+            else
+            {
+                GameNetworkManager.connUUID.TryGetValue(trade.receiverId, out NetworkConnectionToClient conn);
+                conn?.Send(denyTradeMessage);
+                return;
+            }
+        }
+
+        [Server]
+        public static void ResetAcceptState(Guid tradeID)
+        {
+            if (!TradeService.ServerTryGetRunning(tradeID, out TradeSession trade))
+            {
+                Debug.LogWarning("TradeSession not found");
+                return;
+            }
+            trade.State = 0;
+        }
+
         static void CmdHandleTradeCommand(NetworkConnectionToClient requester, NetworkMessage tradeCommand)
         {
             switch (tradeCommand)
@@ -455,6 +604,15 @@ namespace TradeSystem
                     break;
                 case TradeCMDItemAdded cmd:
                     ServerHandleItemAdded(requester, cmd.tradeID, cmd.itemAdded);
+                    break;
+                case TradeCMDAcceptTrade cmd:
+                    ServerAcceptTrade(requester, cmd.tradeID);
+                    break;
+                case TradeCMDVerifyTrade cmd:
+                    ServerVerifyTrade(requester, cmd.tradeID);
+                    break;
+                case TradeCMDDenyVerifyTrade cmd:
+                    ServerDenyVerifyTrade(requester, cmd.tradeID);
                     break;
             }
         }

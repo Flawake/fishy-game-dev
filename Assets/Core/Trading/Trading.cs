@@ -21,6 +21,11 @@ namespace TradeSystem
             NetworkClient.RegisterHandler<TradeRPCTradeStarted>(msg => TargetHandleTradeRpc(msg));
             NetworkClient.RegisterHandler<TradeRPCTradeCancelled>(msg => TargetHandleTradeRpc(msg));
             NetworkClient.RegisterHandler<TradeRPCTradeitemAdded>(msg => TargetHandleTradeRpc(msg));
+            NetworkClient.RegisterHandler<TradeRPCAcceptTrade>(msg => TargetHandleTradeRpc(msg));
+            NetworkClient.RegisterHandler<TradeRPCTradeAccepted>(msg => TargetHandleTradeRpc(msg));
+            NetworkClient.RegisterHandler<TradeRPCVerifyTrade>(msg => TargetHandleTradeRpc(msg));
+            NetworkClient.RegisterHandler<TradeRPCDenyVerifyTrade>(msg => TargetHandleTradeRpc(msg));
+            NetworkClient.RegisterHandler<TradeRPCTradeVerified>(msg => TargetHandleTradeRpc(msg));
         }
 
         [Client]
@@ -33,6 +38,7 @@ namespace TradeSystem
 
         public void AddItemToTrade(TradableItem newItem, bool addedBySelf)
         {
+            ResetAcceptState();
             TradeSession current = TradeService.ClientGetRunning();
             bool isRequester = GetComponentInParent<PlayerData>().GetUuid() == current.requesterId;
 
@@ -108,6 +114,84 @@ namespace TradeSystem
         }
 
         [Client]
+        public void AcceptTrade(bool accpetedBySelf)
+        {
+            TradeSession currentTrade = TradeService.ClientGetRunning();
+
+            if (currentTrade == null)
+            {
+                return;
+            }
+
+            bool isRequester = GetComponentInParent<PlayerData>().GetUuid() == currentTrade.requesterId;
+
+            TradeSessionState selfFlag = isRequester
+                ? TradeSessionState.RequesterAccepted
+                : TradeSessionState.ReceiverAccepted;
+
+            TradeSessionState otherFlag = isRequester
+                ? TradeSessionState.ReceiverAccepted
+                : TradeSessionState.RequesterAccepted;
+
+            currentTrade.State |= accpetedBySelf ? selfFlag : otherFlag;
+
+            if (accpetedBySelf)
+            {
+                TradeCMDAcceptTrade command = new TradeCMDAcceptTrade
+                {
+                    tradeID = currentTrade.tradeId,
+                };
+
+                NetworkClient.Send(command);
+            }
+        }
+
+        [Client]
+        public void VerifyTrade(bool accpetedBySelf)
+        {
+            TradeSession currentTrade = TradeService.ClientGetRunning();
+            if (currentTrade == null)
+            {
+                return;
+            }
+
+            if (accpetedBySelf)
+            {
+                TradeCMDVerifyTrade command = new TradeCMDVerifyTrade
+                {
+                    tradeID = currentTrade.tradeId,
+                };
+
+                NetworkClient.Send(command);
+            }
+        }
+
+        [Client]
+        public void DenyVerifyTrade()
+        {
+            TradeSession currentTrade = TradeService.ClientGetRunning();
+            if (currentTrade == null)
+            {
+                return;
+            }
+            ResetAcceptState();
+            TradeCMDDenyVerifyTrade command = new TradeCMDDenyVerifyTrade
+            {
+                tradeID = currentTrade.tradeId,
+            };
+
+            NetworkClient.Send(command);
+        }
+
+        [Client]
+        public void ResetAcceptState()
+        {
+            TradeSession currentTrade = TradeService.ClientGetRunning();
+            currentTrade.State = 0;
+            TradeEvents.RaiseClient(TradeEventType.CloseVerifyMenu, currentTrade.tradeId);
+        }
+
+        [Client]
         void TargetHandleTradeRpc(NetworkMessage message)
         {
             switch (message)
@@ -158,6 +242,31 @@ namespace TradeSystem
                         {
                             TradeEvents.RaiseClient(TradeEventType.TradeItemsUpdated, current.tradeId);
                         }
+                        break;
+                    }
+                case TradeRPCAcceptTrade req:
+                    {
+                        AcceptTrade(false);
+                        break;
+                    }
+                case TradeRPCTradeAccepted req:
+                    {
+                        TradeEvents.RaiseClient(TradeEventType.OpenVerifyMenu, req.tradeID);
+                        break;
+                    }
+                case TradeRPCVerifyTrade req:
+                    {
+                        VerifyTrade(false);
+                        break;
+                    }
+                case TradeRPCDenyVerifyTrade req:
+                    {
+                        ResetAcceptState();
+                        break;
+                    }
+                case TradeRPCTradeVerified req:
+                    {
+                        TradeEvents.RaiseClient(TradeEventType.TradeCompleted, req.tradeID);
                         break;
                     }
             }

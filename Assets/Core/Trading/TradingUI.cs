@@ -17,6 +17,8 @@ namespace TradeSystem
         GameObject othersTradeInputContent;
         [SerializeField]
         GameObject amountSelector;
+        [SerializeField]
+        GameObject verifyTradeObject;
 
 
         [SerializeField]
@@ -42,7 +44,8 @@ namespace TradeSystem
         {
             switch (state.EventType)
             {
-
+                case TradeEventType.RequestCreated:
+                    break;
                 case TradeEventType.RequestExpired:
                     InformPlayer(TradingInfoType.TradeExpired);
                     break;
@@ -71,8 +74,27 @@ namespace TradeSystem
                         }
                         break;
                     }
+                case TradeEventType.OpenVerifyMenu:
+                    {
+                        TradeSession tradeSession = TradeService.ClientGetRunning();
+                        if (tradeSession != null && tradeSession.BothPlayersAccepted())
+                        {
+                            verifyTradeObject.SetActive(true);
+                        }
+                        break;
+                    }
+                case TradeEventType.CloseVerifyMenu:
+                    {
+                        verifyTradeObject.SetActive(false);
+                        break;
+                    }
+                case TradeEventType.TradeCompleted:
+                    {
+                        CloseTradingMenu();
+                        break;
+                    }
                 default:
-                    break;
+                    throw new NotImplementedException("Unhandled TradeEventType");
             }
         }
     
@@ -159,12 +181,21 @@ namespace TradeSystem
         public void CloseTradingMenu()
         {
             background.SetActive(false);
+            amountSelector.SetActive(false);
+            verifyTradeObject.SetActive(false);
         }
 
+        // Called from button in game
         public void CloseTradingMenuButtonu()
         {
             CloseTradingMenu();
             GetComponentInParent<Trading>().CancelCurrentTrade();
+        }
+
+        // Called from button in game
+        public void AcceptradeButton()
+        {
+            GetComponentInParent<Trading>().AcceptTrade(true);
         }
     }
 }
