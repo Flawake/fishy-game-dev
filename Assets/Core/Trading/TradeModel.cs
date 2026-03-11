@@ -55,6 +55,9 @@ namespace TradeSystem
         TradeStarted,
         TradeCancelled,
         TradeItemsUpdated,
+        OpenVerifyMenu,
+        CloseVerifyMenu,
+        TradeCompleted,
     }
 
     public enum TradeStatus
@@ -90,6 +93,21 @@ namespace TradeSystem
         public TradableItem itemAdded;
     }
 
+    public struct TradeCMDAcceptTrade : NetworkMessage
+    {
+        public Guid tradeID;
+    }
+
+    public struct TradeCMDVerifyTrade : NetworkMessage
+    {
+        public Guid tradeID;
+    }
+
+    public struct TradeCMDDenyVerifyTrade : NetworkMessage
+    {
+        public Guid tradeID;
+    }
+
     #endregion
 
     #region TradeRPC
@@ -121,8 +139,35 @@ namespace TradeSystem
 
     public struct TradeRPCTradeitemAdded : NetworkMessage
     {
+        public Guid tradeID;
         public TradableItem addedItem;
     }
+
+    public struct TradeRPCAcceptTrade : NetworkMessage
+    {
+        public Guid tradeID;
+    }
+
+    public struct TradeRPCTradeAccepted : NetworkMessage
+    {
+        public Guid tradeID;
+    }
+
+    public struct TradeRPCVerifyTrade : NetworkMessage
+    {
+        public Guid tradeID;
+    }
+
+    public struct TradeRPCDenyVerifyTrade : NetworkMessage
+    {
+        public Guid tradeID;
+    }
+
+    public struct TradeRPCTradeVerified : NetworkMessage
+    {
+        public Guid tradeID;
+    }
+
     #endregion
 
     public struct PendingTradeRequest

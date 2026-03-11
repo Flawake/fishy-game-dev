@@ -4,16 +4,23 @@ namespace TradeSystem
     using System.Collections.Generic;
     using Mirror;
 
+    [Flags]
     public enum TradeSessionState
     {
-        RequesterAccepted,
-        ReceiverAccepted,
+        None = 0,
+
+        RequesterAccepted = 1 << 0,
+        ReceiverAccepted  = 1 << 1,
+        RequesterVerified = 1 << 2,
+        ReceiverVerified  = 1 << 3,
+
+        AcceptFlags = RequesterAccepted | ReceiverAccepted,
+        VerifyFlags  = RequesterVerified  | ReceiverVerified,
     }
 
     public class TradeSession
     {
         public Guid tradeId;
-
         public Guid requesterId;
         public string requesterName;
         public Guid receiverId;
@@ -21,7 +28,7 @@ namespace TradeSystem
         public List<TradableItem> requesterTradeItems;
         public List<TradableItem> receiverTradeItems;
 
-        public TradeSessionState State { get; private set; }
+        public TradeSessionState State;
 
         public TradeSession() {}
 
@@ -36,9 +43,19 @@ namespace TradeSystem
             receiverTradeItems = new List<TradableItem>();
         }
         
-        public bool OwnedBy(Guid playerId)
+        public bool IsOwnedBy(Guid playerId)
         {
             return requesterId == playerId || receiverId == playerId;
+        }
+
+        public bool BothPlayersAccepted()
+        {
+            return (State & TradeSessionState.AcceptFlags) == TradeSessionState.AcceptFlags;
+        }
+
+        public bool BothPlayersVerified()
+        {
+            return (State & TradeSessionState.VerifyFlags) == TradeSessionState.VerifyFlags;
         }
     }
 
