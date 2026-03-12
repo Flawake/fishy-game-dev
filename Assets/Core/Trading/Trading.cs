@@ -38,6 +38,10 @@ namespace TradeSystem
 
         public void AddItemToTrade(TradableItem newItem, bool addedBySelf)
         {
+            if (newItem.Amount <= 0)
+            {
+                return;
+            }
             ResetAcceptState();
             TradeSession current = TradeService.ClientGetRunning();
             bool isRequester = GetComponentInParent<PlayerData>().GetUuid() == current.requesterId;
@@ -266,6 +270,7 @@ namespace TradeSystem
                     }
                 case TradeRPCTradeVerified req:
                     {
+                        TradeService.ClientRemoveRunning();
                         TradeEvents.RaiseClient(TradeEventType.TradeCompleted, req.tradeID);
                         break;
                     }

@@ -132,8 +132,12 @@ namespace TradeSystem
                     tradableItem.GetComponent<TradeSystemItemView>().SetTradableItem(TradableItem.FromItem(item, amount));
                 }
             }
-            GameObject bucksItem = Instantiate(tradableItemPrefab, tradableItemsInventoryContent.transform);
-            bucksItem.GetComponent<TradeSystemItemView>().SetTradableItem(TradableItem.Bucks(GetComponentInParent<PlayerData>().GetFishBucks()));
+            int fishbucks = GetComponentInParent<PlayerData>().GetFishBucks();
+            if (fishbucks > 0)
+            {
+                GameObject bucksItem = Instantiate(tradableItemPrefab, tradableItemsInventoryContent.transform);
+                bucksItem.GetComponent<TradeSystemItemView>().SetTradableItem(TradableItem.Bucks(GetComponentInParent<PlayerData>().GetFishBucks()));
+            }
         }
 
         public void OpenTradingMenu(TradeSession runningTrade)

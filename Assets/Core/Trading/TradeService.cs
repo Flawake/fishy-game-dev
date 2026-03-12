@@ -4,6 +4,7 @@ namespace TradeSystem
     using Mirror;
     using System;
     using System.Collections.Generic;
+    using Unity.VisualScripting;
     using UnityEngine;
 
     public static class TradeService
@@ -403,6 +404,11 @@ namespace TradeSystem
                 }
             }
 
+            if (tradableItem.Amount <= 0)
+            {
+                return;
+            }
+
             ResetAcceptState(tradeID);
 
             TradeRPCTradeitemAdded updateMessage = new TradeRPCTradeitemAdded
@@ -539,7 +545,144 @@ namespace TradeSystem
                 connOne?.Send(openVerifyTradeMessage);
                 GameNetworkManager.connUUID.TryGetValue(trade.receiverId, out NetworkConnectionToClient connTwo);
                 connTwo?.Send(openVerifyTradeMessage);
+
+                CommitTrade(trade);
+
+                TradeService.ServerRemoveRunning(trade.tradeId);
             }
+        }
+
+        [Server]
+        static void CommitTrade(TradeSession session)
+        {
+            GameNetworkManager.connUUID.TryGetValue(session.requesterId, out NetworkConnectionToClient requesterConn);
+            GameNetworkManager.connUUID.TryGetValue(session.receiverId, out NetworkConnectionToClient receiverConn);
+            if (requesterConn == null || receiverConn == null)
+            {
+                return;
+            }
+            PlayerInventory requesterInv = requesterConn.identity.GetComponent<PlayerInventory>();
+            PlayerInventory receiverInv = receiverConn.identity.GetComponent<PlayerInventory>();
+            if (requesterInv == null || receiverInv == null)
+            {
+                return;
+            }
+
+            int requesterMoneySend = 0;
+            int receiverMoneySend = 0;
+
+            HashSet<ItemInstance> requesterUpdatedItems = new HashSet<ItemInstance>();
+            HashSet<ItemInstance> receiverUpdatedItems = new HashSet<ItemInstance>();
+
+            // Add items
+            foreach (TradableItem item in session.requesterTradeItems)
+            {
+                Debug.Log(item.Amount);
+                if (item.Type == TradableItemType.Item)
+                {
+                    // Don't use the item referenced by the other player
+                    ItemInstance newItem = new ItemInstance(item.ItemInst.def, item.Amount);
+                    ItemInstance updated = receiverInv.ServerMergeOrAdd(newItem, true);
+                    if (!receiverUpdatedItems.Contains(updated))
+                    {
+                        receiverUpdatedItems.Add(updated);
+                    }
+                }
+                else if (item.Type == TradableItemType.Bucks)
+                {
+                    requesterMoneySend = item.Amount;
+                    requesterConn.identity.GetComponent<PlayerData>().ChangeFishBucksAmount(-requesterMoneySend, true);
+                    receiverConn.identity.GetComponent<PlayerData>().ChangeFishBucksAmount(requesterMoneySend, true);
+                }
+            }
+            foreach (TradableItem item in session.receiverTradeItems)
+            {
+                Debug.Log(item.Amount);
+                if (item.Type == TradableItemType.Item)
+                {
+                    // Don't use the item referenced by the other player
+                    ItemInstance newItem = new ItemInstance(item.ItemInst.def, item.Amount);
+                    ItemInstance updated =  requesterInv.ServerMergeOrAdd(newItem, true);
+                    if (!requesterUpdatedItems.Contains(updated))
+                    {
+                        requesterUpdatedItems.Add(updated);
+                    }
+                }
+                else if (item.Type == TradableItemType.Bucks)
+                {
+                    receiverMoneySend = item.Amount;
+                    requesterConn.identity.GetComponent<PlayerData>().ChangeFishBucksAmount(receiverMoneySend, true);
+                    receiverConn.identity.GetComponent<PlayerData>().ChangeFishBucksAmount(-receiverMoneySend, true);
+                }
+            }
+
+            // Remove items
+            foreach (TradableItem item in session.requesterTradeItems)
+            {
+                if (item.Type == TradableItemType.Item)
+                {
+                    ItemInstance refItem = requesterInv.GetFirstNonFullStack(item.ItemInst.def.Id);
+                    requesterInv.ServerRemoveAmountFromStack(refItem, item.Amount, true);
+                    if (!requesterUpdatedItems.Contains(refItem))
+                    {
+                        requesterUpdatedItems.Add(refItem);
+                    }
+                    StackState stack = refItem.GetState<StackState>();
+                    if (stack != null && stack.currentAmount <= 0)
+                    {
+                        requesterInv.RemoveItem(refItem.uuid);
+                        if (!requesterUpdatedItems.Contains(refItem))
+                        {
+                            requesterUpdatedItems.Remove(refItem);
+                        }
+                        Debug.LogWarning("DB should still remove item");
+                    }
+                }
+            }
+            foreach (TradableItem item in session.receiverTradeItems)
+            {
+                if (item.Type == TradableItemType.Item)
+                {
+                    ItemInstance refItem = receiverInv.GetFirstNonFullStack(item.ItemInst.def.Id);
+                    receiverInv.ServerRemoveAmountFromStack(refItem, item.Amount, true);
+                    if (!receiverUpdatedItems.Contains(refItem))
+                    {
+                        receiverUpdatedItems.Add(refItem);
+                    }
+                    StackState stack = refItem.GetState<StackState>();
+                    if (stack != null && stack.currentAmount <= 0)
+                    {
+                        receiverInv.RemoveItem(refItem.uuid);
+                        if (!receiverUpdatedItems.Contains(refItem))
+                        {
+                            receiverUpdatedItems.Remove(refItem);
+                        }
+                        Debug.LogWarning("DB should still remove item");
+                    }
+                }
+            }
+
+            List<TradeItemRequest> requesterItemsUpdated = new List<TradeItemRequest>();
+            List<TradeItemRequest> receiverItemsUpdated = new List<TradeItemRequest>();
+            foreach (ItemInstance item in requesterUpdatedItems)
+            {
+                requesterItemsUpdated.Add(new TradeItemRequest
+                {
+                    item_uid = item.uuid.ToString(),
+                    item_id = item.def.Id,
+                    state_blob = Convert.ToBase64String(StatePacker.Pack(item.state)),
+                });
+            }
+            foreach (ItemInstance item in receiverUpdatedItems)
+            {
+                receiverItemsUpdated.Add(new TradeItemRequest
+                {
+                    item_uid = item.uuid.ToString(),
+                    item_id = item.def.Id,
+                    state_blob = Convert.ToBase64String(StatePacker.Pack(item.state)),
+                });
+            }
+            DatabaseCommunications.CommitTradeRequest(session.requesterId, session.receiverId, requesterItemsUpdated, receiverItemsUpdated, receiverMoneySend, requesterMoneySend);
         }
 
         [Server]
