@@ -8,6 +8,8 @@ public static class DatabaseEndpoints
     public static string buyItemEndpoint = serverAddress + "/shop/buy_item";
     public static string addNewItemEndpoint = serverAddress + "inventory/add";
     public static string removeItemEndpoint = serverAddress + "inventory/destroy";
+
+    public static string tradeCommitEndpoint = serverAddress + "trade/commit_trade";
     
     public static string addFishStatEndpoint = serverAddress + "stats/add_fish";
     public static string selectItemEndpoint = serverAddress + "stats/select_item";

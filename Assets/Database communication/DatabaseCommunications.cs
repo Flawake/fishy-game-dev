@@ -3,9 +3,7 @@ using System.Text;
 using UnityEngine;
 using Mirror;
 using ItemSystem;
-using System.Linq;
 using System.Collections.Generic;
-using NUnit.Framework;
 
 // Extension helpers for ItemInstance behaviour checks
 static class ItemInstanceExtensions {
@@ -28,6 +26,24 @@ public static class DatabaseCommunications
         string json = JsonUtility.ToJson(requestData);
         byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
         WebRequestHandler.SendWebRequest(DatabaseEndpoints.loginEndpoint, bodyRaw, conn, callback);
+    }
+
+    [Server]
+    public static void CommitTradeRequest(Guid userOneID, Guid userTwoID, List<TradeItemRequest> userOneItemsReceived, List<TradeItemRequest> userTwoItemsReceived, int userOneBucksReceived, int userTwoBucksReceived)
+    {
+        TradeRequest requestData = new TradeRequest
+        {
+            user_one_id = userOneID.ToString(),
+            user_two_id = userTwoID.ToString(),
+            user_one_receives = userOneItemsReceived,
+            user_two_receives = userTwoItemsReceived,
+            user_one_bucks_received = userOneBucksReceived,
+            user_two_bucks_received = userTwoBucksReceived,
+        };
+        
+        string json = JsonUtility.ToJson(requestData);
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
+        WebRequestHandler.SendWebRequest(DatabaseEndpoints.tradeCommitEndpoint, bodyRaw);
     }
 
     [Server]

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 
 #nullable enable
 // Authenticate requests
@@ -164,6 +165,25 @@ public class AddFishRequest
     public int bait_id = 0;
     public int area_id = 0;
     public int xp_earned = 0;
+}
+
+[Serializable]
+public class TradeItemRequest {
+    public string item_uid = string.Empty;
+    public int item_id;
+    public string state_blob = string.Empty;
+}
+
+
+[Serializable]
+public class TradeRequest
+{
+    public string user_one_id = string.Empty;
+    public string user_two_id = string.Empty;
+    public List<TradeItemRequest> user_one_receives = new List<TradeItemRequest>();
+    public List<TradeItemRequest> user_two_receives = new List<TradeItemRequest>();
+    public int user_one_bucks_received;
+    public int user_two_bucks_received;
 }
 
 [Serializable]
