@@ -410,9 +410,7 @@ namespace TradeSystem
                 addedItem = tradableItem,
             };
 
-            var list = (adderData.GetUuid() == trade.receiverId)
-                ? trade.receiverTradeItems
-                : trade.requesterTradeItems;
+            var list = trade.GetOwnTradeList(adderData.GetUuid());
 
             int index = list.FindIndex(item => item.Eq(tradableItem));
 

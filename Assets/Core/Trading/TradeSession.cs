@@ -58,13 +58,26 @@ namespace TradeSystem
             return (State & TradeSessionState.VerifyFlags) == TradeSessionState.VerifyFlags;
         }
 
-        public List<TradableItem> GetOwnTradeList(Guid playerID)
+        public List<TradableItem> GetOwnTradeList(Guid ownPlayerID)
         {
-            if (playerID == receiverId)
+            if (ownPlayerID == receiverId)
             {
                 return receiverTradeItems;
             }
-            else if (playerID == requesterId)
+            else if (ownPlayerID == requesterId)
+            {
+                return requesterTradeItems;
+            }
+            return null;
+        }
+
+        public List<TradableItem> GetOtherTradeList(Guid ownPlayerID)
+        {
+            if (ownPlayerID == requesterId)
+            {
+                return receiverTradeItems;
+            }
+            else if (ownPlayerID == receiverId)
             {
                 return requesterTradeItems;
             }
