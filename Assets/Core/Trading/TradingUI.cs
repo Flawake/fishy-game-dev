@@ -129,6 +129,7 @@ namespace TradeSystem
                 if (TradabilityRules.IsTradable(item))
                 {
                     int amount = 1;
+                    int amountInTrade = 0;
                     StackState stack = item.GetState<StackState>();
                     if (stack != null)
                     {
@@ -140,13 +141,17 @@ namespace TradeSystem
                             .GetOwnTradeList(GetComponentInParent<PlayerData>().GetUuid())
                             .FirstOrDefault(i => i.ItemInst != null && i.ItemInst.uuid == item.uuid);
 
-                        if (tradeItem != null && tradeItem.Amount == item.GetState<StackState>().currentAmount)
+                        if (tradeItem != null)
                         {
-                            continue;
+                            amountInTrade = tradeItem.Amount;
+                            if (amountInTrade == item.GetState<StackState>().currentAmount)
+                            {
+                                continue;
+                            }
                         }
                     }
                     GameObject tradableItem = Instantiate(tradableItemPrefab, tradableItemsInventoryContent.transform);
-                    tradableItem.GetComponent<TradeSystemItemView>().SetTradableItem(TradableItem.FromItem(item, amount));
+                    tradableItem.GetComponent<TradeSystemItemView>().SetTradableItem(TradableItem.FromItem(item, amount - amountInTrade));
                 }
             }
             int fishbucks = GetComponentInParent<PlayerData>().GetFishBucks();
@@ -156,7 +161,7 @@ namespace TradeSystem
             if (fishbucks - fishbucksInTrade > 0)
             {
                 GameObject bucksItem = Instantiate(tradableItemPrefab, tradableItemsInventoryContent.transform);
-                bucksItem.GetComponent<TradeSystemItemView>().SetTradableItem(TradableItem.Bucks(GetComponentInParent<PlayerData>().GetFishBucks()));
+                bucksItem.GetComponent<TradeSystemItemView>().SetTradableItem(TradableItem.Bucks(fishbucks - fishbucksInTrade));
             }
         }
 
