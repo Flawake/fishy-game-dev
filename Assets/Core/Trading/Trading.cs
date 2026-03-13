@@ -38,14 +38,11 @@ namespace TradeSystem
         {
             ResetAcceptState();
             TradeSession current = TradeService.ClientGetRunning();
-            bool isRequester = GetComponentInParent<PlayerData>().GetUuid() == current.requesterId;
+            Guid thisPlayerID = GetComponentInParent<PlayerData>().GetUuid();
 
-            var list = isRequester ? current.receiverTradeItems : current.requesterTradeItems;
-
-            if (addedBySelf)
-            {
-                list = isRequester ? current.requesterTradeItems : current.receiverTradeItems;
-            }
+            var list = addedBySelf ? 
+                current.GetOwnTradeList(thisPlayerID) : 
+                current.GetOtherTradeList(thisPlayerID);
 
             int index = list.FindIndex(item => item.Eq(newItem));
 

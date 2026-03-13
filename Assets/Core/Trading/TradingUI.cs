@@ -118,50 +118,79 @@ namespace TradeSystem
 
         void MakeTradableInventory(TradeSession currentTrade)
         {
-            foreach (Transform item in tradableItemsInventoryContent.transform)
-            {
-                Destroy(item.gameObject);
-            }
-            PlayerInventory inventory = GetComponentInParent<PlayerInventory>();
-            List<ItemInstance> inventoryItems = inventory.GetItems();
-            foreach(ItemInstance item in inventoryItems)
-            {
-                if (TradabilityRules.IsTradable(item))
-                {
-                    int amount = 1;
-                    int amountInTrade = 0;
-                    StackState stack = item.GetState<StackState>();
-                    if (stack != null)
-                    {
-                        amount = stack.currentAmount;
-                    }
-                    if (currentTrade != null)
-                    {
-                        var tradeItem = currentTrade
-                            .GetOwnTradeList(GetComponentInParent<PlayerData>().GetUuid())
-                            .FirstOrDefault(i => i.ItemInst != null && i.ItemInst.uuid == item.uuid);
+            var playerData = GetComponentInParent<PlayerData>();
+            var inventory = GetComponentInParent<PlayerInventory>();
 
-                        if (tradeItem != null)
-                        {
-                            amountInTrade = tradeItem.Amount;
-                            if (amountInTrade == item.GetState<StackState>().currentAmount)
-                            {
-                                continue;
-                            }
-                        }
-                    }
-                    GameObject tradableItem = Instantiate(tradableItemPrefab, tradableItemsInventoryContent.transform);
-                    tradableItem.GetComponent<TradeSystemItemView>().SetTradableItem(TradableItem.FromItem(item, amount - amountInTrade));
-                }
-            }
-            int fishbucks = GetComponentInParent<PlayerData>().GetFishBucks();
-            int fishbucksInTrade = currentTrade
-                            .GetOwnTradeList(GetComponentInParent<PlayerData>().GetUuid())
-                            .FirstOrDefault(i => i.Type == TradableItemType.Bucks)?.Amount ?? 0;
-            if (fishbucks - fishbucksInTrade > 0)
+            var tradableItems = BuildTradableItems(
+                inventory.GetItems(),
+                currentTrade,
+                playerData.GetUuid(),
+                playerData.GetFishBucks());
+
+            RenderTradableItems(tradableItems);
+        }
+
+        IEnumerable<TradableItem> BuildTradableItems(
+            IEnumerable<ItemInstance> inventoryItems,
+            TradeSession currentTrade,
+            Guid playerUuid,
+            int fishbucks)
+        {
+            List<TradableItem> tradeList = currentTrade?.GetOwnTradeList(playerUuid) 
+                            ?? null;
+
+            IEnumerable<TradableItem> itemTradables = inventoryItems
+                .Where(TradabilityRules.IsTradable)
+                .Select(item => CreateTradableItem(item, tradeList))
+                .Where(t => t != null);
+
+            TradableItem bucksTradable = CreateBucksTradable(fishbucks, tradeList);
+
+            return bucksTradable != null
+                ? itemTradables.Append(bucksTradable)
+                : itemTradables;
+        }
+
+
+        TradableItem CreateTradableItem(ItemInstance item, IEnumerable<TradableItem> tradeList)
+        {
+            int amount = item.GetState<StackState>()?.currentAmount ?? 0;
+
+            int amountInTrade = tradeList
+                .FirstOrDefault(t => t.ItemInst?.uuid == item.uuid)
+                ?.Amount ?? 0;
+
+            int available = amount - amountInTrade;
+
+            return available > 0
+                ? TradableItem.FromItem(item, available)
+                : null;
+        }
+
+        TradableItem CreateBucksTradable(int fishbucks, IEnumerable<TradableItem> tradeList)
+        {
+            int bucksInTrade = tradeList
+                .FirstOrDefault(t => t.Type == TradableItemType.Bucks)
+                ?.Amount ?? 0;
+
+            int available = fishbucks - bucksInTrade;
+
+            return available > 0
+                ? TradableItem.Bucks(available)
+                : null;
+        }
+
+        void RenderTradableItems(IEnumerable<TradableItem> items)
+        {
+            foreach (Transform child in tradableItemsInventoryContent.transform)
             {
-                GameObject bucksItem = Instantiate(tradableItemPrefab, tradableItemsInventoryContent.transform);
-                bucksItem.GetComponent<TradeSystemItemView>().SetTradableItem(TradableItem.Bucks(fishbucks - fishbucksInTrade));
+                Destroy(child.gameObject);
+            }
+
+            foreach (TradableItem item in items)
+            {
+                GameObject gameObject = Instantiate(tradableItemPrefab, tradableItemsInventoryContent.transform);
+                gameObject.GetComponent<TradeSystemItemView>().SetTradableItem(item);
             }
         }
 
@@ -174,13 +203,10 @@ namespace TradeSystem
 
         public void UpdateTradingMenu(TradeSession runningTrade)
         {
-            List<TradableItem> sendItems = runningTrade.receiverTradeItems;
-            List<TradableItem> receivingItems = runningTrade.requesterTradeItems;
-            if (GetComponentInParent<PlayerData>().GetUuid() == runningTrade.requesterId)
-            {
-                sendItems = runningTrade.requesterTradeItems;
-                receivingItems = runningTrade.receiverTradeItems;
-            }
+            Guid thisPlayerID = GetComponentInParent<PlayerData>().GetUuid();
+            List<TradableItem> sendItems = runningTrade.GetOwnTradeList(thisPlayerID);
+            List<TradableItem> receivingItems = runningTrade.GetOtherTradeList(thisPlayerID);
+
             foreach(Transform child in yourTradeInputContent.transform)
             {
                 Destroy(child.gameObject);
@@ -189,6 +215,7 @@ namespace TradeSystem
             {
                 Destroy(child.gameObject);
             }
+
             foreach (TradableItem item in sendItems)
             {
                 GameObject tradableItem = Instantiate(tradableItemPrefab, yourTradeInputContent.transform);
