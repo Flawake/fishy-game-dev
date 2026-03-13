@@ -404,11 +404,6 @@ namespace TradeSystem
                 }
             }
 
-            if (tradableItem.Amount <= 0)
-            {
-                return;
-            }
-
             ResetAcceptState(tradeID);
 
             TradeRPCTradeitemAdded updateMessage = new TradeRPCTradeitemAdded
@@ -422,13 +417,23 @@ namespace TradeSystem
 
             int index = list.FindIndex(item => item.Eq(tradableItem));
 
-            if (index >= 0)
+            if (tradableItem.Amount <= 0)
             {
-                list[index] = tradableItem;
+                if (index >= 0)
+                {
+                    list.RemoveAt(index);
+                }
             }
             else
             {
-                list.Add(tradableItem);
+                if (index >= 0)
+                {
+                    list[index] = tradableItem;
+                }
+                else
+                {
+                    list.Add(tradableItem);
+                }
             }
 
             if (itemAdderID == trade.receiverId)

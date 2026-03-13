@@ -38,10 +38,6 @@ namespace TradeSystem
 
         public void AddItemToTrade(TradableItem newItem, bool addedBySelf)
         {
-            if (newItem.Amount <= 0)
-            {
-                return;
-            }
             ResetAcceptState();
             TradeSession current = TradeService.ClientGetRunning();
             bool isRequester = GetComponentInParent<PlayerData>().GetUuid() == current.requesterId;
@@ -55,15 +51,23 @@ namespace TradeSystem
 
             int index = list.FindIndex(item => item.Eq(newItem));
 
-            // Remove item istead of update to make clear to the player that the item amount has been changed
-            if (index >= 0)
+            if (newItem.Amount <= 0)
             {
-                list.RemoveAt(index);
+                if (index >= 0)
+                {
+                    list.RemoveAt(index);
+                }
             }
+            else
+            {
+                // Remove item istead of update to make clear to the player that the item amount has been changed. Newly added items change to last position
+                if (index >= 0)
+                {
+                    list.RemoveAt(index);
+                }
 
-            list.Add(newItem);
-
-            Debug.Log(newItem.Amount);
+                list.Add(newItem);
+            }
             
             if (addedBySelf)
             {

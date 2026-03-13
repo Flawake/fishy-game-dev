@@ -57,6 +57,19 @@ namespace TradeSystem
         {
             return (State & TradeSessionState.VerifyFlags) == TradeSessionState.VerifyFlags;
         }
+
+        public List<TradableItem> GetOwnTradeList(Guid playerID)
+        {
+            if (playerID == receiverId)
+            {
+                return receiverTradeItems;
+            }
+            else if (playerID == requesterId)
+            {
+                return requesterTradeItems;
+            }
+            return null;
+        }
     }
 
     public static class TradeSessionReaderWriter

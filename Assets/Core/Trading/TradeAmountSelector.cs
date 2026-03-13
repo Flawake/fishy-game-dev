@@ -42,6 +42,7 @@ public class TradeAmountSelector : MonoBehaviour
     {
         int amount = int.Parse(inputField.text);
         amount = math.min(amount, maxTradeAmount);
+        amount = math.max(amount, 0);
         inputField.text = amount.ToString();
         return amount;
     }

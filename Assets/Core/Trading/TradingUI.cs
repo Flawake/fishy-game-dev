@@ -2,6 +2,7 @@ namespace TradeSystem
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using ItemSystem;
     using UnityEngine;
     
@@ -67,10 +68,11 @@ namespace TradeSystem
                 case TradeEventType.TradeItemsUpdated:
                     {
                         Debug.Log("Items updated");
-                        TradeSession ItemUpdatedSession = TradeService.ClientGetRunning();
-                        if (ItemUpdatedSession != null && ItemUpdatedSession.tradeId == state.TradeId)
+                        TradeSession tradeSession = TradeService.ClientGetRunning();
+                        if (tradeSession != null && tradeSession.tradeId == state.TradeId)
                         {
-                            UpdateTradingMenu(ItemUpdatedSession);
+                            UpdateTradingMenu(tradeSession);
+                            MakeTradableInventory(tradeSession);
                         }
                         break;
                     }
@@ -114,8 +116,12 @@ namespace TradeSystem
             }
         }
 
-        void MakeTradableInventory()
+        void MakeTradableInventory(TradeSession currentTrade)
         {
+            foreach (Transform item in tradableItemsInventoryContent.transform)
+            {
+                Destroy(item.gameObject);
+            }
             PlayerInventory inventory = GetComponentInParent<PlayerInventory>();
             List<ItemInstance> inventoryItems = inventory.GetItems();
             foreach(ItemInstance item in inventoryItems)
@@ -128,12 +134,26 @@ namespace TradeSystem
                     {
                         amount = stack.currentAmount;
                     }
+                    if (currentTrade != null)
+                    {
+                        var tradeItem = currentTrade
+                            .GetOwnTradeList(GetComponentInParent<PlayerData>().GetUuid())
+                            .FirstOrDefault(i => i.ItemInst != null && i.ItemInst.uuid == item.uuid);
+
+                        if (tradeItem != null && tradeItem.Amount == item.GetState<StackState>().currentAmount)
+                        {
+                            continue;
+                        }
+                    }
                     GameObject tradableItem = Instantiate(tradableItemPrefab, tradableItemsInventoryContent.transform);
                     tradableItem.GetComponent<TradeSystemItemView>().SetTradableItem(TradableItem.FromItem(item, amount));
                 }
             }
             int fishbucks = GetComponentInParent<PlayerData>().GetFishBucks();
-            if (fishbucks > 0)
+            int fishbucksInTrade = currentTrade
+                            .GetOwnTradeList(GetComponentInParent<PlayerData>().GetUuid())
+                            .FirstOrDefault(i => i.Type == TradableItemType.Bucks)?.Amount ?? 0;
+            if (fishbucks - fishbucksInTrade > 0)
             {
                 GameObject bucksItem = Instantiate(tradableItemPrefab, tradableItemsInventoryContent.transform);
                 bucksItem.GetComponent<TradeSystemItemView>().SetTradableItem(TradableItem.Bucks(GetComponentInParent<PlayerData>().GetFishBucks()));
@@ -144,7 +164,7 @@ namespace TradeSystem
         {
             background.SetActive(true);
             ResetTradingMenu();
-            MakeTradableInventory();
+            MakeTradableInventory(runningTrade);
         }
 
         public void UpdateTradingMenu(TradeSession runningTrade)
