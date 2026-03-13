@@ -1,10 +1,8 @@
 namespace TradeSystem
 {
     using UnityEngine;
-    using ItemSystem;
     using Mirror;
     using System;
-    using Unity.VisualScripting;
 
     public class Trading : NetworkBehaviour
     {
