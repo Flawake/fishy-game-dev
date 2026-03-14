@@ -170,6 +170,7 @@ public class AddFishRequest
 public class TradeItemRequest {
     public string item_uid = string.Empty;
     public int item_id;
+    public int item_amount;
     public string state_blob = string.Empty;
 }
 
