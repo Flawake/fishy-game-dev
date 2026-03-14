@@ -219,7 +219,7 @@ namespace TradeSystem
             foreach (TradableItem item in sendItems)
             {
                 GameObject tradableItem = Instantiate(tradableItemPrefab, yourTradeInputContent.transform);
-                tradableItem.GetComponent<TradeSystemItemView>().SetTradableItem(item);
+                tradableItem.GetComponent<TradeSystemItemView>().SetTradableItem(item).EnableRemoveButton();
             }
             foreach (TradableItem item in receivingItems)
             {
