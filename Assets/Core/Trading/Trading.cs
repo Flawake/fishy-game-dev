@@ -56,6 +56,10 @@ namespace TradeSystem
             else
             {
                 // Remove item istead of update to make clear to the player that the item amount has been changed. Newly added items change to last position
+                if (index >= 0 && newItem.Amount == list[index].Amount)
+                {
+                    return;
+                }
                 if (index >= 0)
                 {
                     list.RemoveAt(index);
