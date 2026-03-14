@@ -633,11 +633,6 @@ namespace TradeSystem
                     if (stack != null && stack.currentAmount <= 0)
                     {
                         requesterInv.RemoveItem(refItem.uuid);
-                        if (!requesterUpdatedItems.Contains(refItem))
-                        {
-                            requesterUpdatedItems.Remove(refItem);
-                        }
-                        Debug.LogWarning("DB should still remove item");
                     }
                 }
             }
@@ -655,11 +650,6 @@ namespace TradeSystem
                     if (stack != null && stack.currentAmount <= 0)
                     {
                         receiverInv.RemoveItem(refItem.uuid);
-                        if (!receiverUpdatedItems.Contains(refItem))
-                        {
-                            receiverUpdatedItems.Remove(refItem);
-                        }
-                        Debug.LogWarning("DB should still remove item");
                     }
                 }
             }
@@ -672,6 +662,7 @@ namespace TradeSystem
                 {
                     item_uid = item.uuid.ToString(),
                     item_id = item.def.Id,
+                    item_amount = item.GetState<StackState>().currentAmount,
                     state_blob = Convert.ToBase64String(StatePacker.Pack(item.state)),
                 });
             }
@@ -681,6 +672,7 @@ namespace TradeSystem
                 {
                     item_uid = item.uuid.ToString(),
                     item_id = item.def.Id,
+                    item_amount = item.GetState<StackState>().currentAmount,
                     state_blob = Convert.ToBase64String(StatePacker.Pack(item.state)),
                 });
             }
