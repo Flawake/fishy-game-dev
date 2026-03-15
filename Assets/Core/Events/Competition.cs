@@ -52,6 +52,10 @@ namespace GlobalCompetitionSystem
         {
             // Parse competition ID
             Guid competitionId = Guid.Parse(backendData.competition_id);
+
+            // Neutral target identifier from backend. Depending on competition type,
+            // this maps to either a fish definition ID or an item definition ID.
+            int targetId = backendData.target_fish_id;
             
             // Parse competition type from string to enum
             CompetitionType competitionType = Enum.Parse<CompetitionType>(backendData.competition_type);
@@ -61,17 +65,17 @@ namespace GlobalCompetitionSystem
             {
                 CompetitionType.MostFish => new MostFishCompetitonState 
                 { 
-                    specificFish = backendData.target_fish_id > 0, 
-                    fishIDToCatch = backendData.target_fish_id 
+                    specificFish = targetId > 0,
+                    fishIDToCatch = targetId
                 },
                 CompetitionType.LargestFish => new largestFishCompetitonState 
                 { 
-                    specificFish = backendData.target_fish_id > 0, 
-                    fishIDToCatch = backendData.target_fish_id 
+                    specificFish = targetId > 0,
+                    fishIDToCatch = targetId
                 },
                 CompetitionType.MostItems => new MostItemsCompetitonState 
                 { 
-                    ItemId = backendData.target_fish_id  // target_fish_id is used for item ID in this case
+                    ItemId = targetId
                 },
                 _ => throw new ArgumentException($"Unknown competition type: {competitionType} ({backendData.competition_type})")
             };
