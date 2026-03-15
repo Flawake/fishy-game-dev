@@ -229,8 +229,7 @@ namespace GlobalCompetitionSystem
         [SyncVar] private static CurrentCompetition _currentCompetition;
         private static readonly SyncSortedSet<Competition> _upcomingCompetitions = new SyncSortedSet<Competition>(new CompetitionStartDateComparer());
         private static readonly HashSet<Guid> _loadedCompetitionIds = new HashSet<Guid>();
-        private static DateTime _lastBackendPoll = DateTime.MinValue;
-        private static readonly TimeSpan _pollInterval = TimeSpan.FromMinutes(5); // Poll backend every 5 minutes
+        private const float BackendPollIntervalSeconds = 300f;
 
         public static CurrentCompetition GetCurrentCompetition()
         {
@@ -249,19 +248,8 @@ namespace GlobalCompetitionSystem
             // hours, minute, seconds
             TimeSpan timeBetweenRankingRebuilds = new TimeSpan(0, 1, 0);
             
-            // Initial poll on startup (after short delay)
-            yield return new WaitForSeconds(2);
-            FetchCompetitionsFromBackend();
-            
             while (true)
             {
-                // Poll backend for new competitions periodically
-                if (DateTime.UtcNow - _lastBackendPoll > _pollInterval)
-                {
-                    FetchCompetitionsFromBackend();
-                    _lastBackendPoll = DateTime.UtcNow;
-                }
-                
                 if (_currentCompetition == null)
                 {
                     if (_upcomingCompetitions.Count > 0)
@@ -287,6 +275,18 @@ namespace GlobalCompetitionSystem
                     lastRankingRefresh = DateTime.UtcNow;
                 }
                 yield return new WaitForSeconds(1);
+            }
+        }
+
+        [Server]
+        public static IEnumerator PollCompetitionsFromBackend()
+        {
+            yield return new WaitForSeconds(2);
+
+            while (true)
+            {
+                FetchCompetitionsFromBackend();
+                yield return new WaitForSeconds(BackendPollIntervalSeconds);
             }
         }
 

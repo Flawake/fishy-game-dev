@@ -129,6 +129,7 @@ public class GameNetworkManager : NetworkManager
         NetworkServer.RegisterHandler<CreateCharacterMessage>(OnBeginCreateCharacter);
         NetworkServer.RegisterHandler<MovePlayerMessage>(OnPlayerMoveMessage);
         
+        StartCoroutine(CompetitionManager.PollCompetitionsFromBackend());
         StartCoroutine(CompetitionManager.UpdateCompetitions());
     }
 
