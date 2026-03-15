@@ -135,8 +135,7 @@ namespace  GlobalCompetitionSystem
                 return;
             }
             
-            // Get prize pool from backend (passed as parameter, but also available from current competition)
-            List<int> prizePool = prizes ?? CompetitionManager.GetCurrentCompetition().CompetitionData.RunningCompetition.Prizepool;
+            List<int> prizePool = prizes;
             
             foreach (Transform child in currentCompetitionsContainerTransform)
             {
