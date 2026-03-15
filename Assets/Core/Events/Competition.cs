@@ -403,7 +403,7 @@ namespace GlobalCompetitionSystem
                 PlayerResult winner = winners[i + 1]; // winners is 1-indexed (rank 1, 2, 3...)
                 int prizeAmount = prizes[i]; // prizes is 0-indexed
                 
-                // Give prize to online player (offline players will receive prizes from backend)
+                // Local runtime state update for online players
                 if (GameNetworkManager.connUUID.TryGetValue(winner.PlayerID, out NetworkConnectionToClient playerConnection))
                 {
                     PlayerData playerData = playerConnection.identity.GetComponent<PlayerData>();
