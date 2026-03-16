@@ -42,7 +42,8 @@ public class BuyItemRequest
 [Serializable]
 public class FishToSell {
     public string fish_uid = string.Empty;
-    public int fish_id = 0;
+    public int fish_id;
+    public int fish_amount;
     public string? new_state_blob = null;
 }
 

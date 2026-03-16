@@ -22,6 +22,11 @@ public class PlayerDataSyncManager : MonoBehaviour
 	public void SellFish(ItemInstance fish, int sellAmount, int earnings)
 	{
 		inventory.ServerRemoveAmountFromStack(fish, sellAmount, false);
+		if (fish.GetState<StackState>().currentAmount <= 0)
+		{
+			inventory.RemoveItem(fish.uuid);
+		}
+
 
 		List<FishToSell> fishesList = new List<FishToSell>
 		{
@@ -29,20 +34,10 @@ public class PlayerDataSyncManager : MonoBehaviour
     		{
         		fish_uid = fish.uuid.ToString(),
 	        	fish_id = fish.def.Id,
+				fish_amount = fish.GetState<StackState>().currentAmount,
     	    	new_state_blob = Convert.ToBase64String(StatePacker.Pack(fish.state))
     		}
 		};
-
-		StackState stackState = fish.GetState<StackState>();
-		if (stackState == null)
-        {
-            Debug.LogWarning($"Could remove from id {fish.def.Id} since it's stackState was null");
-            return;
-        }
-		if (stackState.currentAmount <= 0)
-		{
-			fishesList[0].new_state_blob = null;
-		}
 
 		DatabaseCommunications.SellFishes(playerData.GetUuid(), fishesList, earnings);
 	}
@@ -60,6 +55,7 @@ public class PlayerDataSyncManager : MonoBehaviour
             {
                 fish_uid = fish.uuid.ToString(),
                 fish_id = fish.def.Id,
+				fish_amount = fish.GetState<StackState>().currentAmount,
                 new_state_blob = null,
             })
             .ToList();
