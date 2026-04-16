@@ -4,6 +4,7 @@ namespace TradeSystem
     using System.Collections.Generic;
     using System.Linq;
     using ItemSystem;
+    using TMPro;
     using UnityEngine;
     
     public class TradingUIManager : MonoBehaviour
@@ -20,6 +21,10 @@ namespace TradeSystem
         GameObject amountSelector;
         [SerializeField]
         GameObject verifyTradeObject;
+        [SerializeField]
+        TMP_Text own_name_field;
+        [SerializeField]
+        TMP_Text other_name_field;
 
 
         [SerializeField]
@@ -199,6 +204,16 @@ namespace TradeSystem
             background.SetActive(true);
             ResetTradingMenu();
             MakeTradableInventory(runningTrade);
+            string ownName = GetComponentInParent<PlayerData>().GetUuid() == runningTrade.receiverId ? 
+                runningTrade.receiverName : 
+                runningTrade.requesterName;
+
+            string otherName = GetComponentInParent<PlayerData>().GetUuid() == runningTrade.receiverId ? 
+                runningTrade.requesterName : 
+                runningTrade.receiverName;
+
+            own_name_field.text = ownName;
+            other_name_field.text = otherName;
         }
 
         public void UpdateTradingMenu(TradeSession runningTrade)
