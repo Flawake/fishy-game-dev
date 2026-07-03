@@ -58,6 +58,9 @@ namespace TradeSystem
         OpenVerifyMenu,
         CloseVerifyMenu,
         TradeCompleted,
+        ResetReadyState,
+        AcceptSelf,
+        AcceptOther,
     }
 
     public enum TradeStatus

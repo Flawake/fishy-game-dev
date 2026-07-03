@@ -144,12 +144,15 @@ namespace TradeSystem
 
             if (accpetedBySelf)
             {
+                TradeEvents.RaiseClient(TradeEventType.AcceptSelf, currentTrade.tradeId);
                 TradeCMDAcceptTrade command = new TradeCMDAcceptTrade
                 {
                     tradeID = currentTrade.tradeId,
                 };
 
                 NetworkClient.Send(command);
+            } else {
+                TradeEvents.RaiseClient(TradeEventType.AcceptOther, currentTrade.tradeId);
             }
         }
 
@@ -170,7 +173,7 @@ namespace TradeSystem
                 };
 
                 NetworkClient.Send(command);
-            }
+            } 
         }
 
         [Client]
@@ -196,6 +199,7 @@ namespace TradeSystem
             TradeSession currentTrade = TradeService.ClientGetRunning();
             currentTrade.State = 0;
             TradeEvents.RaiseClient(TradeEventType.CloseVerifyMenu, currentTrade.tradeId);
+            TradeEvents.RaiseClient(TradeEventType.ResetReadyState, currentTrade.tradeId);
         }
 
         [Client]

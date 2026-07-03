@@ -4,9 +4,11 @@ namespace TradeSystem
     using System.Collections.Generic;
     using System.Linq;
     using ItemSystem;
+    using Mirror;
     using TMPro;
     using UnityEngine;
-    
+    using UnityEngine.UI;
+
     public class TradingUIManager : MonoBehaviour
     {
         [SerializeField]
@@ -22,13 +24,43 @@ namespace TradeSystem
         [SerializeField]
         GameObject verifyTradeObject;
         [SerializeField]
-        TMP_Text own_name_field;
+        TMP_Text ownNameField;
         [SerializeField]
-        TMP_Text other_name_field;
+        TMP_Text otherNameField;
+
+        [SerializeField]
+        Image ownTradeStateImage;
+        [SerializeField]
+        TMP_Text ownTradeStateText;
+        [SerializeField]
+        Image otherTradeStateImage;
+        [SerializeField]
+        TMP_Text otherTradeStateText;
+        [SerializeField]
+        TMP_Dropdown tradeFilter;
+
+        [SerializeField]
+        Sprite checkMark;
+        [SerializeField]
+        Sprite explenationMark;
 
 
         [SerializeField]
         GameObject background;
+
+        private String makingOfferText = "Making offer";
+        private String readyText = "Ready";
+
+        enum ItemFiler
+        {
+            EVERYTHING,
+            FISH,
+            SHELLS,
+            BAITS,
+            RODS,
+            SPECIAL,
+
+        }
 
         public void InformPlayer(TradingInfoType infoType)
         {
@@ -63,6 +95,10 @@ namespace TradeSystem
                         {
                             OpenTradingMenu(activeSession);
                         }
+                        ownTradeStateImage.sprite = explenationMark;
+                        otherTradeStateImage.sprite = explenationMark;
+                        ownTradeStateText.text = makingOfferText;
+                        otherTradeStateText.text = makingOfferText;
                         break;
                     }
 
@@ -72,12 +108,11 @@ namespace TradeSystem
 
                 case TradeEventType.TradeItemsUpdated:
                     {
-                        Debug.Log("Items updated");
                         TradeSession tradeSession = TradeService.ClientGetRunning();
                         if (tradeSession != null && tradeSession.tradeId == state.TradeId)
                         {
                             UpdateTradingMenu(tradeSession);
-                            MakeTradableInventory(tradeSession);
+                            MakeTradableInventory(tradeSession, ItemFiler.EVERYTHING);
                         }
                         break;
                     }
@@ -98,6 +133,26 @@ namespace TradeSystem
                 case TradeEventType.TradeCompleted:
                     {
                         CloseTradingMenu();
+                        break;
+                    }
+                case TradeEventType.ResetReadyState:
+                    {
+                        ownTradeStateImage.sprite = explenationMark;
+                        otherTradeStateImage.sprite = explenationMark;
+                        ownTradeStateText.text = makingOfferText;
+                        otherTradeStateText.text = makingOfferText;
+                        break;
+                    }
+                case TradeEventType.AcceptSelf:
+                    {
+                        ownTradeStateImage.sprite = checkMark;
+                        ownTradeStateText.text = readyText;
+                        break;
+                    }
+                case TradeEventType.AcceptOther:
+                    {
+                        otherTradeStateImage.sprite = checkMark;
+                        otherTradeStateText.text = readyText;
                         break;
                     }
                 default:
@@ -121,7 +176,7 @@ namespace TradeSystem
             }
         }
 
-        void MakeTradableInventory(TradeSession currentTrade)
+        void MakeTradableInventory(TradeSession currentTrade, ItemFiler filter)
         {
             var playerData = GetComponentInParent<PlayerData>();
             var inventory = GetComponentInParent<PlayerInventory>();
@@ -130,7 +185,8 @@ namespace TradeSystem
                 inventory.GetItems(),
                 currentTrade,
                 playerData.GetUuid(),
-                playerData.GetFishBucks());
+                playerData.GetFishBucks(),
+                filter);
 
             RenderTradableItems(tradableItems);
         }
@@ -139,7 +195,8 @@ namespace TradeSystem
             IEnumerable<ItemInstance> inventoryItems,
             TradeSession currentTrade,
             Guid playerUuid,
-            int fishbucks)
+            int fishbucks,
+            ItemFiler filter)
         {
             List<TradableItem> tradeList = currentTrade?.GetOwnTradeList(playerUuid) 
                             ?? null;
@@ -151,9 +208,21 @@ namespace TradeSystem
 
             TradableItem bucksTradable = CreateBucksTradable(fishbucks, tradeList);
 
-            return bucksTradable != null
-                ? itemTradables.Append(bucksTradable)
-                : itemTradables;
+            if(bucksTradable != null)
+            {
+                itemTradables = itemTradables.Append(bucksTradable);
+            }
+
+            return filter switch
+            {
+                ItemFiler.EVERYTHING => itemTradables,
+                ItemFiler.FISH => itemTradables.Where(item => item.HasBehaviour<FishBehaviour>()),
+                ItemFiler.SHELLS => itemTradables.Where(item => item.HasBehaviour<ShellBehaviour>()),
+                ItemFiler.BAITS => itemTradables.Where(item => item.HasBehaviour<BaitBehaviour>()),
+                ItemFiler.RODS => itemTradables.Where(item => item.HasBehaviour<RodBehaviour>()),
+                ItemFiler.SPECIAL => itemTradables.Where(item => item.HasBehaviour<SpecialBehaviour>()),
+                _ => throw new Exception("Unhandled option"),
+            };
         }
 
 
@@ -202,8 +271,9 @@ namespace TradeSystem
         public void OpenTradingMenu(TradeSession runningTrade)
         {
             background.SetActive(true);
+            tradeFilter.value = 0;
             ResetTradingMenu();
-            MakeTradableInventory(runningTrade);
+            MakeTradableInventory(runningTrade, ItemFiler.EVERYTHING);
             string ownName = GetComponentInParent<PlayerData>().GetUuid() == runningTrade.receiverId ? 
                 runningTrade.receiverName : 
                 runningTrade.requesterName;
@@ -212,8 +282,8 @@ namespace TradeSystem
                 runningTrade.requesterName : 
                 runningTrade.receiverName;
 
-            own_name_field.text = ownName;
-            other_name_field.text = otherName;
+            ownNameField.text = ownName;
+            otherNameField.text = otherName;
         }
 
         public void UpdateTradingMenu(TradeSession runningTrade)
@@ -243,6 +313,17 @@ namespace TradeSystem
             }
         }
 
+        [Client]
+        public void FilterUpdated()
+        {
+            ItemFiler filter = (ItemFiler)tradeFilter.value;
+            TradeSession tradeSession = TradeService.ClientGetRunning();
+            if (tradeSession != null)
+            {
+                MakeTradableInventory(tradeSession, filter);
+            }
+        }
+
         public void RunningTradeCanceled(TradingInfoType infoType)
         {
             InformPlayer(infoType);
@@ -264,7 +345,7 @@ namespace TradeSystem
         }
 
         // Called from button in game
-        public void AcceptradeButton()
+        public void AcceptTradeButton()
         {
             GetComponentInParent<Trading>().AcceptTrade(true);
         }
