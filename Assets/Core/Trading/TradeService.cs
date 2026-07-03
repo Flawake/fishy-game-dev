@@ -537,21 +537,23 @@ namespace TradeSystem
 
             trade.State |= flag;
 
+
             if (trade.BothPlayersVerified())
             {
                 TradeRPCTradeVerified openVerifyTradeMessage = new TradeRPCTradeVerified
                 {
                     tradeID = tradeID,
                 };
-                GameNetworkManager.connUUID.TryGetValue(trade.requesterId, out NetworkConnectionToClient connOne);
-                connOne?.Send(openVerifyTradeMessage);
-                GameNetworkManager.connUUID.TryGetValue(trade.receiverId, out NetworkConnectionToClient connTwo);
-                connTwo?.Send(openVerifyTradeMessage);
+                GameNetworkManager.connUUID.TryGetValue(trade.requesterId, out NetworkConnectionToClient requesterConn);
+                GameNetworkManager.connUUID.TryGetValue(trade.receiverId, out NetworkConnectionToClient receiverConn);
+
+                requesterConn?.Send(openVerifyTradeMessage);
+                receiverConn?.Send(openVerifyTradeMessage);
 
                 CommitTrade(trade);
 
                 TradeService.ServerRemoveRunning(trade.tradeId);
-            }
+            } 
         }
 
         [Server]

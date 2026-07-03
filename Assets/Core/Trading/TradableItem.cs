@@ -81,7 +81,7 @@ namespace TradeSystem
         public Sprite GetSprite()
         {
             if (Type == TradableItemType.Bucks) {
-                return null;
+                return GlobalConnector.bucksImage;
             }
             else
             {
@@ -117,6 +117,25 @@ namespace TradeSystem
                 {
                     return true;
                 }
+            }
+            return false;
+        }
+
+        public bool HasBehaviour<T>() where T : class, IItemBehaviour
+        {
+            if (Type == TradableItemType.Bucks)
+            {
+                return false;
+            }
+            
+            if (ItemInst == null)
+            {
+                return false;
+            }
+
+            if (ItemInst.def.GetBehaviour<T>() != null)
+            {
+                return true;
             }
             return false;
         }

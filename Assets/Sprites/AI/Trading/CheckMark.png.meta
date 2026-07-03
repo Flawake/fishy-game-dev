@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: e07a17dee3a1e4883afda76da4775607
+guid: d9fb387e2f5e94a1aaeb8d73dbfd681d
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 3358191259481500691
-    second: Button-Photoroom_0
+      213: 5545118057803231360
+    second: CheckMark_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -46,7 +46,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -72,7 +72,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 2048
+    maxTextureSize: 128
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 1
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Button-Photoroom_0
+      name: CheckMark_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 1722
-        height: 624
+        width: 40
+        height: 40
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 31c67357821ba9e20800000000000000
-      internalID: 3358191259481500691
+      spriteID: 08037f88e7734fc40800000000000000
+      internalID: 5545118057803231360
       vertices: []
       indices: 
       edges: []
@@ -138,7 +138,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Button-Photoroom_0: 3358191259481500691
+      CheckMark_0: 5545118057803231360
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

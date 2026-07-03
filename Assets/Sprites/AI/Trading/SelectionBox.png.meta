@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 7d636572256bd44b2b6e118eb791db0a
+guid: d0a3f66edf5d04235a3fb26871f08272
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -2587982038189678548
-    second: Trading_Background_0
+      213: 8848645169978974834
+    second: SelectionBox_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -46,7 +46,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -113,23 +113,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Trading_Background_0
+      name: SelectionBox_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 1536
-        height: 1024
+        width: 539
+        height: 136
       alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 20, y: 20, z: 22, w: 20}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: c20ec984c04a51cd0800000000000000
-      internalID: -2587982038189678548
+      spriteID: 272a21466e3bcca70800000000000000
+      internalID: 8848645169978974834
       vertices: []
       indices: 
       edges: []
@@ -138,7 +138,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
+    spriteID: 59711c4fe98c144cebdf5f13e18e224e
     internalID: 0
     vertices: []
     indices: 
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Trading_Background_0: -2587982038189678548
+      SelectionBox_0: 8848645169978974834
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
