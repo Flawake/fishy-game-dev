@@ -93,9 +93,9 @@ Material:
     m_Ints: []
     m_Floats:
     - _Ambient: 1
-    - _Bevel: 0.508
+    - _Bevel: 0.341
     - _BevelClamp: 0.226
-    - _BevelOffset: -0.408
+    - _BevelOffset: -0.5
     - _BevelRoundness: 1
     - _BevelWidth: -0.122
     - _BumpFace: 0
@@ -117,7 +117,7 @@ Material:
     - _OutlineSoftness: 0
     - _OutlineUVSpeedX: 0
     - _OutlineUVSpeedY: 0
-    - _OutlineWidth: 0.484
+    - _OutlineWidth: 0.665
     - _PerspectiveFilter: 0.875
     - _Reflectivity: 12.21
     - _ScaleRatioA: 0.8

@@ -22,15 +22,32 @@ public class FishEnumConfig
 {
     public static Locations AreaToLocation(Area area)
     {
-        Locations loc = area switch
+        if (!TryAreaToLocation(area, out Locations loc))
         {
-            Area.FusetaBeach => Locations.Beach,
-            Area.SelvaBandeira => Locations.Tropical,
-            Area.Greenfields => Locations.Greenfields,
-            _ => throw new NotSupportedException($"Could not make location from {area}")
-        };
+            throw new NotSupportedException($"Could not make location from {area}");
+        }
 
         return loc;
+    }
+
+    // Non throwing variant of AreaToLocation, returns false for areas without fishing water
+    public static bool TryAreaToLocation(Area area, out Locations location)
+    {
+        switch (area)
+        {
+            case Area.FusetaBeach:
+                location = Locations.Beach;
+                return true;
+            case Area.SelvaBandeira:
+                location = Locations.Tropical;
+                return true;
+            case Area.Greenfields:
+                location = Locations.Greenfields;
+                return true;
+            default:
+                location = default;
+                return false;
+        }
     }
     public static byte RarityToInt(FishRarity rarity)
     {

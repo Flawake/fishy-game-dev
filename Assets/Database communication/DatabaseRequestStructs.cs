@@ -219,6 +219,25 @@ public class CreateUserRequest
     public string password = string.Empty;
 }
 
+// Daily quest requests
+[Serializable]
+public class HandInFish
+{
+    public string fish_uid = string.Empty;
+    public int fish_id;
+    public int fish_amount;
+    public string? new_state_blob = null;
+}
+
+[Serializable]
+public class CompleteDailyQuestRequest
+{
+    public string user_id = string.Empty;
+    public string quest_date = string.Empty;
+    public int reward_coins = 0;
+    public List<HandInFish> fishes = new List<HandInFish>();
+}
+
 // Active Effects requests
 [Serializable]
 public class AddActiveEffectRequest

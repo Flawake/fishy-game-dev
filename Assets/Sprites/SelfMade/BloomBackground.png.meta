@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: cef4353569a8841cd8085b7863be7032
+guid: 11fdd416d0a3b4a9d9314f00457a6cdc
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 635046441581133840
-    second: ButtonGreen_0
+      213: -2294684909323896500
+    second: BloomBackground_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -48,11 +48,11 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 1
   spriteExtrude: 1
-  spriteMeshType: 1
+  spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 130
-  spriteBorder: {x: 55, y: 36, z: 72, w: 49}
+  spritePixelsToUnits: 50
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
   alphaIsTransparency: 1
@@ -75,8 +75,8 @@ TextureImporter:
     maxTextureSize: 512
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 100
+    textureCompression: 0
+    compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
@@ -113,23 +113,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: ButtonGreen_0
+      name: BloomBackground_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 314
-        height: 87
+        width: 256
+        height: 256
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 010c15ebf5320d800800000000000000
-      internalID: 635046441581133840
+      spriteID: c49bc449b34a720e0800000000000000
+      internalID: -2294684909323896500
       vertices: []
       indices: 
       edges: []
@@ -139,7 +139,7 @@ TextureImporter:
     physicsShape: []
     bones: []
     spriteID: 5e97eb03825dee720800000000000000
-    internalID: 1537655665
+    internalID: 0
     vertices: []
     indices: 
     edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      ButtonGreen_0: 635046441581133840
+      BloomBackground_0: -2294684909323896500
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

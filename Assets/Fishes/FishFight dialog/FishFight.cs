@@ -13,7 +13,8 @@ public class FishFight : MonoBehaviour
         impossible
     }
 
-    private float startedFightTime = 0;
+    // Use double since float may lose too much presision when game is running long
+    private double startedFightTime = 0;
 
     private bool right_pressed;
     private bool left_pressed;
@@ -114,7 +115,7 @@ public class FishFight : MonoBehaviour
         progressBar.value = progressBar.minValue;
         minFishingTimeSeconds = minFishingTime;
         
-        startedFightTime = Time.time;
+        startedFightTime = Time.timeAsDouble;
         initialized = true;
         StartCoroutine(startMiniGame());
     }
@@ -185,9 +186,9 @@ public class FishFight : MonoBehaviour
         progressBar.value = progress / 100;
 
         // Make sure that the progress bar is filled AND the time is enough, accumelated float errors and frame timing can mess up the totalfishingtime and stop a few ms too early, which the anti-cheat than catches.
-        if (progress / 100 > progressBar.maxValue && Time.time - startedFightTime > minFishingTimeSeconds)
+        if (progress / 100 > progressBar.maxValue && Time.timeAsDouble - startedFightTime > minFishingTimeSeconds)
         {
-            if(Time.time - startedFightTime < minFishingTimeSeconds)
+            if(Time.timeAsDouble - startedFightTime < minFishingTimeSeconds)
             {
                 Debug.LogWarning($"That was a lil to early ({minFishingTimeSeconds - (Time.time - startedFightTime)})");
                 Debug.LogWarning($"minFishingTimeSeconds: {minFishingTimeSeconds}, startedFightTime: {startedFightTime}, Time: {Time.time}");
@@ -250,7 +251,7 @@ public class FishFight : MonoBehaviour
             idle++;
         }
         
-        // Scale fish pull by progress
+        // Scale fish pull by progress, if the progress is less then 40%
         if(progress < 40)
         {
             fishPull *= progress / 40;
@@ -262,7 +263,7 @@ public class FishFight : MonoBehaviour
         }
         
         // 50% change to flip the direction if the current pull vector is opposite to the total pull vector
-        if (Random.Range(0f, 1f) < 0.5f && (fishPull < 0 && totalFishPull > 0) || (fishPull > 0 && totalFishPull < 0))
+        if (Random.Range(0f, 1f) < 0.5f && ((fishPull < 0 && totalFishPull > 0) || (fishPull > 0 && totalFishPull < 0)))
         {
             fishPull = -fishPull;
         }
@@ -323,12 +324,12 @@ public class FishFight : MonoBehaviour
             totalFishPull *= 0.8f;
             if (totalFishPull < 0 && Random.Range(0f, 1f) < 0.08f)
             {
-                totalFishPull *= -0.8f;
+                totalFishPull *= -0.74f;
             }
         }
         
         // Finally, update the minigame position
-        relativePos += totalFishPull * 5.5f;
+        relativePos += totalFishPull * 4.8f;
     }
 
     private void Start()

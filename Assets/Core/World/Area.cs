@@ -101,6 +101,18 @@ public static class AreaUnlockManager
         }
         return false;
     }
+
+    /// <summary>
+    /// All areas that are unlockable by level, ordered by area id so the result is deterministic
+    /// </summary>
+    public static List<Area> GetLevelUnlockableAreas()
+    {
+        return _unlockCriteria
+            .Where(pair => pair.Value is LevelUnlockCriteria)
+            .Select(pair => pair.Key)
+            .OrderBy(area => (int)area)
+            .ToList();
+    }
 }
 
 public static class SceneToAreaMapper

@@ -47,6 +47,22 @@ public static class DatabaseCommunications
     }
 
     [Server]
+    public static void CompleteDailyQuest(Guid userID, string questDate, int rewardCoins, List<HandInFish> fishes)
+    {
+        CompleteDailyQuestRequest requestData = new CompleteDailyQuestRequest
+        {
+            user_id = userID.ToString(),
+            quest_date = questDate,
+            reward_coins = rewardCoins,
+            fishes = fishes,
+        };
+
+        string json = JsonUtility.ToJson(requestData);
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
+        WebRequestHandler.SendWebRequest(DatabaseEndpoints.completeDailyQuestEndpoint, bodyRaw);
+    }
+
+    [Server]
     public static void AddFriendRequest(Guid userOne, Guid userTwo, Guid senderID)
     {
         CreateFriendRequest requestData = new CreateFriendRequest
