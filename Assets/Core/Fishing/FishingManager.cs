@@ -299,7 +299,7 @@ public class FishingManager : NetworkBehaviour
         isFishing = false;
     }
 
-    [ClientRpc]
+    [TargetRpc]
     void RpcStartFight(CurrentFish currentFish, int minFishingTime)
     {
         minFishingTimeSeconds = minFishingTime;
@@ -309,6 +309,12 @@ public class FishingManager : NetworkBehaviour
         }
         fishFightDialog.SetActive(true);
         fishFight.StartFight(currentFish, minFishingTime);
+    }
+
+    [ClientRpc]
+    void RpcShowCaughtFish(int fishID)
+    {
+        GetComponentInChildren<ShowCaughtFishOnPlayer>().ShowFish(fishID);
     }
 
     [Client]
@@ -338,6 +344,7 @@ public class FishingManager : NetworkBehaviour
         }
         else
         {
+            RpcShowCaughtFish(currentFish.id);
             TargetShowCaughtDialog();
             CompetitionManager.AddToRunningCompetition(currentFish, playerData);
             ItemDefinition fishDef = ItemRegistry.Get(currentFish.id);

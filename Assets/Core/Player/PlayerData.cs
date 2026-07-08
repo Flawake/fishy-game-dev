@@ -8,7 +8,7 @@ using ItemSystem;
 using UnityEngine;
 using Mirror.BouncyCastle.Ocsp;
 
-public class PlayerData : NetworkBehaviour
+public partial class PlayerData : NetworkBehaviour
 {
     //Not all variables that should be synced between the client and the player are a syncVar
     //For example: no player except yourself should know how much fishcoins or fishbucks you have.
@@ -575,6 +575,7 @@ public class PlayerData : NetworkBehaviour
             SetStartPlayTime();
             SetTotalPlayTimeAtStart(playerData.total_playtime);
             ServerLoadActiveEffects(playerData.active_effects);
+            ServerLoadLastDailyQuestCompleted(playerData.LastQuestCompleted);
             SetShowInventory(false);
 
             inventory.SaveInventory(playerData);
@@ -947,6 +948,7 @@ public class PlayerData : NetworkBehaviour
             CmdGetFishBucks();
             inventory.CmdGetInventory();
             CmdGetActiveEffects();
+            CmdGetDailyQuestState();
         }
     }
 

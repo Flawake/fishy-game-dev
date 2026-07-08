@@ -121,8 +121,8 @@ TextureImporter:
         width: 1652
         height: 940
       alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 106, y: 135, z: 99, w: 122}
       customData: 
       outline: []
       physicsShape: []
@@ -138,7 +138,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 6b7dc745656404492855ebb13118f2ab
     internalID: 0
     vertices: []
     indices: 
@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      UIBackgroundWood_0: -6163389896170431467
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

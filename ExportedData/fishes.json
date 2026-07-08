@@ -1,0 +1,1229 @@
+{
+  "format_version": 1,
+  "fishes": [
+    {
+      "id": 10001,
+      "display_name": "Sand Whiting",
+      "max_stack": 2147483647,
+      "is_static": false,
+      "infinite_use": false,
+      "minimum_length": 10,
+      "maximum_length": 40,
+      "average_length": 25,
+      "min_market_price": 2,
+      "max_market_price": 4,
+      "bites_on": [
+        "insects",
+        "fish"
+      ],
+      "rarity": "UNCOMMON",
+      "locations": [
+        "Beach"
+      ],
+      "rarity_factor": 1.0,
+      "time_ranges": [],
+      "date_ranges": []
+    },
+    {
+      "id": 10002,
+      "display_name": "Surf Smelt",
+      "max_stack": 2147483647,
+      "is_static": false,
+      "infinite_use": false,
+      "minimum_length": 7,
+      "maximum_length": 23,
+      "average_length": 16,
+      "min_market_price": 1,
+      "max_market_price": 3,
+      "bites_on": [
+        "dough",
+        "insects",
+        "fish"
+      ],
+      "rarity": "COMMON",
+      "locations": [
+        "Beach"
+      ],
+      "rarity_factor": 1.0,
+      "time_ranges": [],
+      "date_ranges": []
+    },
+    {
+      "id": 10003,
+      "display_name": "Bluegill",
+      "max_stack": 2147483647,
+      "is_static": false,
+      "infinite_use": false,
+      "minimum_length": 18,
+      "maximum_length": 41,
+      "average_length": 16,
+      "min_market_price": 1,
+      "max_market_price": 1,
+      "bites_on": [
+        "dough",
+        "insects",
+        "lure"
+      ],
+      "rarity": "COMMON",
+      "locations": [
+        "Tropical"
+      ],
+      "rarity_factor": 1.0,
+      "time_ranges": [],
+      "date_ranges": []
+    },
+    {
+      "id": 10004,
+      "display_name": "blackfin dartfish",
+      "max_stack": 2147483647,
+      "is_static": false,
+      "infinite_use": false,
+      "minimum_length": 5,
+      "maximum_length": 13,
+      "average_length": 8,
+      "min_market_price": 2,
+      "max_market_price": 3,
+      "bites_on": [
+        "dough",
+        "insects",
+        "vegetal"
+      ],
+      "rarity": "UNCOMMON",
+      "locations": [
+        "Beach"
+      ],
+      "rarity_factor": 1.0,
+      "time_ranges": [],
+      "date_ranges": []
+    },
+    {
+      "id": 10005,
+      "display_name": "Blue Ring Angelfish",
+      "max_stack": 2147483647,
+      "is_static": false,
+      "infinite_use": false,
+      "minimum_length": 18,
+      "maximum_length": 30,
+      "average_length": 24,
+      "min_market_price": 6,
+      "max_market_price": 11,
+      "bites_on": [
+        "insects",
+        "fish"
+      ],
+      "rarity": "RARE",
+      "locations": [
+        "Beach"
+      ],
+      "rarity_factor": 1.0,
+      "time_ranges": [],
+      "date_ranges": []
+    },
+    {
+      "id": 10006,
+      "display_name": "Blue Striped Grunt",
+      "max_stack": 2147483647,
+      "is_static": false,
+      "infinite_use": false,
+      "minimum_length": 9,
+      "maximum_length": 27,
+      "average_length": 13,
+      "min_market_price": 1,
+      "max_market_price": 1,
+      "bites_on": [
+        "dough",
+        "insects"
+      ],
+      "rarity": "COMMON",
+      "locations": [
+        "Beach"
+      ],
+      "rarity_factor": 1.0,
+      "time_ranges": [],
+      "date_ranges": []
+    },
+    {
+      "id": 10007,
+      "display_name": "Bowmouth Guitarfish",
+      "max_stack": 2147483647,
+      "is_static": false,
+      "infinite_use": false,
+      "minimum_length": 205,
+      "maximum_length": 306,
+      "average_length": 230,
+      "min_market_price": 13,
+      "max_market_price": 23,
+      "bites_on": [
+        "insects"
+      ],
+      "rarity": "EPIC",
+      "locations": [
+        "Beach"
+      ],
+      "rarity_factor": 1.0,
+      "time_ranges": [],
+      "date_ranges": []
+    },
+    {
+      "id": 10008,
+      "display_name": "Bramble Shark",
+      "max_stack": 2147483647,
+      "is_static": false,
+      "infinite_use": false,
+      "minimum_length": 250,
+      "maximum_length": 309,
+      "average_length": 270,
+      "min_market_price": 189,
+      "max_market_price": 269,
+      "bites_on": [
+        "shark"
+      ],
+      "rarity": "LEGENDARY",
+      "locations": [
+        "Beach"
+      ],
+      "rarity_factor": 1.0,
+      "time_ranges": [],
+      "date_ranges": []
+    },
+    {
+      "id": 10009,
+      "display_name": "Bridled Leatherjacket",
+      "max_stack": 2147483647,
+      "is_static": false,
+      "infinite_use": false,
+      "minimum_length": 9,
+      "maximum_length": 13,
+      "average_length": 12,
+      "min_market_price": 9,
+      "max_market_price": 15,
+      "bites_on": [
+        "insects"
+      ],
+      "rarity": "EPIC",
+      "locations": [
+        "Beach"
+      ],
+      "rarity_factor": 1.0,
+      "time_ranges": [
+        {
+          "begin": {
+            "hours": 12,
+            "minutes": 0
+          },
+          "end": {
+            "hours": 13,
+            "minutes": 0
+          }
+        }
+      ],
+      "date_ranges": []
+    },
+    {
+      "id": 10010,
+      "display_name": "Clownfish",
+      "max_stack": 2147483647,
+      "is_static": false,
+      "infinite_use": false,
+      "minimum_length": 11,
+      "maximum_length": 17,
+      "average_length": 14,
+      "min_market_price": 2,
+      "max_market_price": 4,
+      "bites_on": [
+        "dough",
+        "vegetal"
+      ],
+      "rarity": "UNCOMMON",
+      "locations": [
+        "Beach"
+      ],
+      "rarity_factor": 1.0,
+      "time_ranges": [],
+      "date_ranges": []
+    },
+    {
+      "id": 10011,
+      "display_name": "Coelacanth",
+      "max_stack": 2147483647,
+      "is_static": false,
+      "infinite_use": false,
+      "minimum_length": 133,
+      "maximum_length": 179,
+      "average_length": 143,
+      "min_market_price": 98,
+      "max_market_price": 135,
+      "bites_on": [
+        "fish"
+      ],
+      "rarity": "LEGENDARY",
+      "locations": [
+        "Beach"
+      ],
+      "rarity_factor": 1.0,
+      "time_ranges": [
+        {
+          "begin": {
+            "hours": 16,
+            "minutes": 0
+          },
+          "end": {
+            "hours": 2,
+            "minutes": 0
+          }
+        }
+      ],
+      "date_ranges": []
+    },
+    {
+      "id": 10012,
+      "display_name": "Common Dolphinfish",
+      "max_stack": 2147483647,
+      "is_static": false,
+      "infinite_use": false,
+      "minimum_length": 121,
+      "maximum_length": 189,
+      "average_length": 130,
+      "min_market_price": 22,
+      "max_market_price": 36,
+      "bites_on": [
+        "lure",
+        "fish"
+      ],
+      "rarity": "EPIC",
+      "locations": [
+        "Beach"
+      ],
+      "rarity_factor": 1.0,
+      "time_ranges": [],
+      "date_ranges": []
+    },
+    {
+      "id": 10013,
+      "display_name": "Coral Catshark",
+      "max_stack": 2147483647,
+      "is_static": false,
+      "infinite_use": false,
+      "minimum_length": 41,
+      "maximum_length": 69,
+      "average_length": 62,
+      "min_market_price": 13,
+      "max_market_price": 27,
+      "bites_on": [
+        "shark"
+      ],
+      "rarity": "RARE",
+      "locations": [
+        "Beach"
+      ],
+      "rarity_factor": 1.0,
+      "time_ranges": [],
+      "date_ranges": []
+    },
+    {
+      "id": 10014,
+      "display_name": "Coral Hind",
+      "max_stack": 2147483647,
+      "is_static": false,
+      "infinite_use": false,
+      "minimum_length": 30,
+      "maximum_length": 44,
+      "average_length": 34,
+      "min_market_price": 4,
+      "max_market_price": 7,
+      "bites_on": [
+        "insects",
+        "fish"
+      ],
+      "rarity": "UNCOMMON",
+      "locations": [
+        "Beach"
+      ],
+      "rarity_factor": 1.0,
+      "time_ranges": [],
+      "date_ranges": []
+    },
+    {
+      "id": 10015,
+      "display_name": "French Angelfish",
+      "max_stack": 2147483647,
+      "is_static": false,
+      "infinite_use": false,
+      "minimum_length": 32,
+      "maximum_length": 40,
+      "average_length": 37,
+      "min_market_price": 18,
+      "max_market_price": 24,
+      "bites_on": [
+        "insects",
+        "fish"
+      ],
+      "rarity": "EPIC",
+      "locations": [
+        "Beach"
+      ],
+      "rarity_factor": 1.0,
+      "time_ranges": [],
+      "date_ranges": []
+    },
+    {
+      "id": 10016,
+      "display_name": "Giant Grouper",
+      "max_stack": 2147483647,
+      "is_static": false,
+      "infinite_use": false,
+      "minimum_length": 183,
+      "maximum_length": 304,
+      "average_length": 249,
+      "min_market_price": 19,
+      "max_market_price": 26,
+      "bites_on": [
+        "lure",
+        "fish"
+      ],
+      "rarity": "EPIC",
+      "locations": [
+        "Beach"
+      ],
+      "rarity_factor": 1.0,
+      "time_ranges": [],
+      "date_ranges": [
+        {
+          "begin": {
+            "month": 9,
+            "day": 1
+          },
+          "end": {
+            "month": 3,
+            "day": 31
+          }
+        }
+      ]
+    },
+    {
+      "id": 10017,
+      "display_name": "Giant Moray",
+      "max_stack": 2147483647,
+      "is_static": false,
+      "infinite_use": false,
+      "minimum_length": 107,
+      "maximum_length": 299,
+      "average_length": 210,
+      "min_market_price": 23,
+      "max_market_price": 36,
+      "bites_on": [
+        "fish"
+      ],
+      "rarity": "EPIC",
+      "locations": [
+        "Beach"
+      ],
+      "rarity_factor": 1.0,
+      "time_ranges": [
+        {
+          "begin": {
+            "hours": 23,
+            "minutes": 0
+          },
+          "end": {
+            "hours": 6,
+            "minutes": 0
+          }
+        }
+      ],
+      "date_ranges": []
+    },
+    {
+      "id": 10018,
+      "display_name": "Giant Oarfish",
+      "max_stack": 2147483647,
+      "is_static": false,
+      "infinite_use": false,
+      "minimum_length": 1252,
+      "maximum_length": 1754,
+      "average_length": 1467,
+      "min_market_price": 473,
+      "max_market_price": 748,
+      "bites_on": [
+        "fish"
+      ],
+      "rarity": "LEGENDARY",
+      "locations": [
+        "Beach"
+      ],
+      "rarity_factor": 1.0,
+      "time_ranges": [],
+      "date_ranges": [
+        {
+          "begin": {
+            "month": 1,
+            "day": 1
+          },
+          "end": {
+            "month": 6,
+            "day": 31
+          }
+        }
+      ]
+    },
+    {
+      "id": 10019,
+      "display_name": "Grammonus Yunokawai",
+      "max_stack": 2147483647,
+      "is_static": false,
+      "infinite_use": false,
+      "minimum_length": 6,
+      "maximum_length": 10,
+      "average_length": 8,
+      "min_market_price": 234,
+      "max_market_price": 453,
+      "bites_on": [
+        "fish"
+      ],
+      "rarity": "LEGENDARY",
+      "locations": [
+        "Beach"
+      ],
+      "rarity_factor": 1.0,
+      "time_ranges": [
+        {
+          "begin": {
+            "hours": 2,
+            "minutes": 0
+          },
+          "end": {
+            "hours": 6,
+            "minutes": 0
+          }
+        }
+      ],
+      "date_ranges": [
+        {
+          "begin": {
+            "month": 10,
+            "day": 1
+          },
+          "end": {
+            "month": 10,
+            "day": 30
+          }
+        }
+      ]
+    },
+    {
+      "id": 10020,
+      "display_name": "Green Sawfish",
+      "max_stack": 2147483647,
+      "is_static": false,
+      "infinite_use": false,
+      "minimum_length": 572,
+      "maximum_length": 729,
+      "average_length": 637,
+      "min_market_price": 61,
+      "max_market_price": 90,
+      "bites_on": [
+        "lure",
+        "fish"
+      ],
+      "rarity": "LEGENDARY",
+      "locations": [
+        "Beach"
+      ],
+      "rarity_factor": 1.0,
+      "time_ranges": [],
+      "date_ranges": []
+    },
+    {
+      "id": 10021,
+      "display_name": "Honeycomb Cowfish",
+      "max_stack": 2147483647,
+      "is_static": false,
+      "infinite_use": false,
+      "minimum_length": 32,
+      "maximum_length": 49,
+      "average_length": 40,
+      "min_market_price": 6,
+      "max_market_price": 9,
+      "bites_on": [
+        "dough",
+        "insects",
+        "fish"
+      ],
+      "rarity": "RARE",
+      "locations": [
+        "Beach"
+      ],
+      "rarity_factor": 1.0,
+      "time_ranges": [],
+      "date_ranges": []
+    },
+    {
+      "id": 10022,
+      "display_name": "Horn Shark",
+      "max_stack": 2147483647,
+      "is_static": false,
+      "infinite_use": false,
+      "minimum_length": 109,
+      "maximum_length": 199,
+      "average_length": 127,
+      "min_market_price": 35,
+      "max_market_price": 44,
+      "bites_on": [
+        "shark"
+      ],
+      "rarity": "EPIC",
+      "locations": [
+        "Beach"
+      ],
+      "rarity_factor": 1.0,
+      "time_ranges": [],
+      "date_ranges": []
+    },
+    {
+      "id": 10023,
+      "display_name": "Humphead Parrotfish",
+      "max_stack": 2147483647,
+      "is_static": false,
+      "infinite_use": false,
+      "minimum_length": 45,
+      "maximum_length": 150,
+      "average_length": 78,
+      "min_market_price": 12,
+      "max_market_price": 26,
+      "bites_on": [
+        "vegetal"
+      ],
+      "rarity": "EPIC",
+      "locations": [
+        "Beach"
+      ],
+      "rarity_factor": 1.0,
+      "time_ranges": [
+        {
+          "begin": {
+            "hours": 7,
+            "minutes": 0
+          },
+          "end": {
+            "hours": 20,
+            "minutes": 0
+          }
+        }
+      ],
+      "date_ranges": []
+    },
+    {
+      "id": 10024,
+      "display_name": "Leafy Seadragon",
+      "max_stack": 2147483647,
+      "is_static": false,
+      "infinite_use": false,
+      "minimum_length": 23,
+      "maximum_length": 44,
+      "average_length": 30,
+      "min_market_price": 23,
+      "max_market_price": 45,
+      "bites_on": [
+        "dough",
+        "vegetal"
+      ],
+      "rarity": "LEGENDARY",
+      "locations": [
+        "Beach"
+      ],
+      "rarity_factor": 1.0,
+      "time_ranges": [],
+      "date_ranges": []
+    },
+    {
+      "id": 10025,
+      "display_name": "Lionfish",
+      "max_stack": 2147483647,
+      "is_static": false,
+      "infinite_use": false,
+      "minimum_length": 17,
+      "maximum_length": 41,
+      "average_length": 28,
+      "min_market_price": 33,
+      "max_market_price": 60,
+      "bites_on": [
+        "insects",
+        "fish"
+      ],
+      "rarity": "LEGENDARY",
+      "locations": [
+        "Beach"
+      ],
+      "rarity_factor": 1.0,
+      "time_ranges": [
+        {
+          "begin": {
+            "hours": 7,
+            "minutes": 0
+          },
+          "end": {
+            "hours": 11,
+            "minutes": 0
+          }
+        }
+      ],
+      "date_ranges": []
+    },
+    {
+      "id": 10026,
+      "display_name": "Mandarinfish",
+      "max_stack": 2147483647,
+      "is_static": false,
+      "infinite_use": false,
+      "minimum_length": 4,
+      "maximum_length": 7,
+      "average_length": 6,
+      "min_market_price": 34,
+      "max_market_price": 51,
+      "bites_on": [
+        "dough",
+        "insects"
+      ],
+      "rarity": "LEGENDARY",
+      "locations": [
+        "Beach"
+      ],
+      "rarity_factor": 1.0,
+      "time_ranges": [
+        {
+          "begin": {
+            "hours": 8,
+            "minutes": 0
+          },
+          "end": {
+            "hours": 17,
+            "minutes": 0
+          }
+        }
+      ],
+      "date_ranges": [
+        {
+          "begin": {
+            "month": 7,
+            "day": 1
+          },
+          "end": {
+            "month": 9,
+            "day": 31
+          }
+        }
+      ]
+    },
+    {
+      "id": 10027,
+      "display_name": "Muraena Augusti",
+      "max_stack": 2147483647,
+      "is_static": false,
+      "infinite_use": false,
+      "minimum_length": 70,
+      "maximum_length": 130,
+      "average_length": 115,
+      "min_market_price": 24,
+      "max_market_price": 35,
+      "bites_on": [
+        "fish"
+      ],
+      "rarity": "EPIC",
+      "locations": [
+        "Beach"
+      ],
+      "rarity_factor": 1.0,
+      "time_ranges": [],
+      "date_ranges": []
+    },
+    {
+      "id": 10028,
+      "display_name": "Narrowhead Catshark",
+      "max_stack": 2147483647,
+      "is_static": false,
+      "infinite_use": false,
+      "minimum_length": 167,
+      "maximum_length": 299,
+      "average_length": 245,
+      "min_market_price": 17,
+      "max_market_price": 27,
+      "bites_on": [
+        "fish"
+      ],
+      "rarity": "EPIC",
+      "locations": [
+        "Beach"
+      ],
+      "rarity_factor": 1.0,
+      "time_ranges": [],
+      "date_ranges": []
+    },
+    {
+      "id": 10029,
+      "display_name": "Nassau Grouper",
+      "max_stack": 2147483647,
+      "is_static": false,
+      "infinite_use": false,
+      "minimum_length": 87,
+      "maximum_length": 121,
+      "average_length": 100,
+      "min_market_price": 15,
+      "max_market_price": 22,
+      "bites_on": [
+        "insects",
+        "lure",
+        "fish"
+      ],
+      "rarity": "RARE",
+      "locations": [
+        "Beach"
+      ],
+      "rarity_factor": 1.0,
+      "time_ranges": [
+        {
+          "begin": {
+            "hours": 18,
+            "minutes": 0
+          },
+          "end": {
+            "hours": 4,
+            "minutes": 0
+          }
+        }
+      ],
+      "date_ranges": [
+        {
+          "begin": {
+            "month": 12,
+            "day": 1
+          },
+          "end": {
+            "month": 1,
+            "day": 31
+          }
+        }
+      ]
+    },
+    {
+      "id": 10030,
+      "display_name": "Nurse Shark",
+      "max_stack": 2147483647,
+      "is_static": false,
+      "infinite_use": false,
+      "minimum_length": 224,
+      "maximum_length": 429,
+      "average_length": 376,
+      "min_market_price": 67,
+      "max_market_price": 113,
+      "bites_on": [
+        "shark"
+      ],
+      "rarity": "EPIC",
+      "locations": [
+        "Beach"
+      ],
+      "rarity_factor": 1.0,
+      "time_ranges": [
+        {
+          "begin": {
+            "hours": 22,
+            "minutes": 0
+          },
+          "end": {
+            "hours": 6,
+            "minutes": 0
+          }
+        }
+      ],
+      "date_ranges": [
+        {
+          "begin": {
+            "month": 8,
+            "day": 1
+          },
+          "end": {
+            "month": 5,
+            "day": 31
+          }
+        }
+      ]
+    },
+    {
+      "id": 10031,
+      "display_name": "Pacuma Toadfish",
+      "max_stack": 2147483647,
+      "is_static": false,
+      "infinite_use": false,
+      "minimum_length": 26,
+      "maximum_length": 56,
+      "average_length": 29,
+      "min_market_price": 12,
+      "max_market_price": 24,
+      "bites_on": [
+        "fish"
+      ],
+      "rarity": "EPIC",
+      "locations": [
+        "Beach"
+      ],
+      "rarity_factor": 1.0,
+      "time_ranges": [],
+      "date_ranges": []
+    },
+    {
+      "id": 10032,
+      "display_name": "Puffer Fish",
+      "max_stack": 2147483647,
+      "is_static": false,
+      "infinite_use": false,
+      "minimum_length": 16,
+      "maximum_length": 32,
+      "average_length": 24,
+      "min_market_price": 1,
+      "max_market_price": 1,
+      "bites_on": [
+        "dough",
+        "insects"
+      ],
+      "rarity": "COMMON",
+      "locations": [
+        "Beach"
+      ],
+      "rarity_factor": 1.0,
+      "time_ranges": [],
+      "date_ranges": [
+        {
+          "begin": {
+            "month": 7,
+            "day": 1
+          },
+          "end": {
+            "month": 9,
+            "day": 31
+          }
+        }
+      ]
+    },
+    {
+      "id": 10033,
+      "display_name": "Queen Angelfish",
+      "max_stack": 2147483647,
+      "is_static": false,
+      "infinite_use": false,
+      "minimum_length": 32,
+      "maximum_length": 44,
+      "average_length": 40,
+      "min_market_price": 7,
+      "max_market_price": 13,
+      "bites_on": [
+        "insects",
+        "fish"
+      ],
+      "rarity": "RARE",
+      "locations": [
+        "Beach"
+      ],
+      "rarity_factor": 1.0,
+      "time_ranges": [],
+      "date_ranges": []
+    },
+    {
+      "id": 10034,
+      "display_name": "Queen Triggerfish",
+      "max_stack": 2147483647,
+      "is_static": false,
+      "infinite_use": false,
+      "minimum_length": 40,
+      "maximum_length": 60,
+      "average_length": 50,
+      "min_market_price": 13,
+      "max_market_price": 20,
+      "bites_on": [
+        "lure",
+        "fish"
+      ],
+      "rarity": "RARE",
+      "locations": [
+        "Beach"
+      ],
+      "rarity_factor": 1.0,
+      "time_ranges": [],
+      "date_ranges": []
+    },
+    {
+      "id": 10035,
+      "display_name": "Rainbow Parrotfish",
+      "max_stack": 2147483647,
+      "is_static": false,
+      "infinite_use": false,
+      "minimum_length": 86,
+      "maximum_length": 119,
+      "average_length": 98,
+      "min_market_price": 18,
+      "max_market_price": 24,
+      "bites_on": [
+        "vegetal"
+      ],
+      "rarity": "EPIC",
+      "locations": [
+        "Beach"
+      ],
+      "rarity_factor": 1.0,
+      "time_ranges": [],
+      "date_ranges": []
+    },
+    {
+      "id": 10036,
+      "display_name": "Red Snapper",
+      "max_stack": 2147483647,
+      "is_static": false,
+      "infinite_use": false,
+      "minimum_length": 32,
+      "maximum_length": 99,
+      "average_length": 48,
+      "min_market_price": 6,
+      "max_market_price": 13,
+      "bites_on": [
+        "lure",
+        "fish"
+      ],
+      "rarity": "UNCOMMON",
+      "locations": [
+        "Beach"
+      ],
+      "rarity_factor": 1.0,
+      "time_ranges": [],
+      "date_ranges": []
+    },
+    {
+      "id": 10037,
+      "display_name": "Roosterfish",
+      "max_stack": 2147483647,
+      "is_static": false,
+      "infinite_use": false,
+      "minimum_length": 104,
+      "maximum_length": 172,
+      "average_length": 132,
+      "min_market_price": 8,
+      "max_market_price": 11,
+      "bites_on": [
+        "insects",
+        "fish"
+      ],
+      "rarity": "RARE",
+      "locations": [
+        "Beach"
+      ],
+      "rarity_factor": 1.0,
+      "time_ranges": [],
+      "date_ranges": []
+    },
+    {
+      "id": 10038,
+      "display_name": "Unicorn Crestfish",
+      "max_stack": 2147483647,
+      "is_static": false,
+      "infinite_use": false,
+      "minimum_length": 96,
+      "maximum_length": 148,
+      "average_length": 118,
+      "min_market_price": 34,
+      "max_market_price": 45,
+      "bites_on": [
+        "insects"
+      ],
+      "rarity": "LEGENDARY",
+      "locations": [
+        "Beach"
+      ],
+      "rarity_factor": 1.0,
+      "time_ranges": [],
+      "date_ranges": []
+    },
+    {
+      "id": 10039,
+      "display_name": "Sargassum Triggerfish",
+      "max_stack": 2147483647,
+      "is_static": false,
+      "infinite_use": false,
+      "minimum_length": 13,
+      "maximum_length": 24,
+      "average_length": 19,
+      "min_market_price": 5,
+      "max_market_price": 9,
+      "bites_on": [
+        "dough",
+        "insects",
+        "fish"
+      ],
+      "rarity": "RARE",
+      "locations": [
+        "Beach"
+      ],
+      "rarity_factor": 1.0,
+      "time_ranges": [],
+      "date_ranges": []
+    },
+    {
+      "id": 10040,
+      "display_name": "Sergeant Major",
+      "max_stack": 2147483647,
+      "is_static": false,
+      "infinite_use": false,
+      "minimum_length": 12,
+      "maximum_length": 22,
+      "average_length": 18,
+      "min_market_price": 3,
+      "max_market_price": 7,
+      "bites_on": [
+        "insects",
+        "vegetal"
+      ],
+      "rarity": "UNCOMMON",
+      "locations": [
+        "Beach"
+      ],
+      "rarity_factor": 1.0,
+      "time_ranges": [],
+      "date_ranges": []
+    },
+    {
+      "id": 10041,
+      "display_name": "Smooth Trunkfish",
+      "max_stack": 2147483647,
+      "is_static": false,
+      "infinite_use": false,
+      "minimum_length": 27,
+      "maximum_length": 49,
+      "average_length": 36,
+      "min_market_price": 1,
+      "max_market_price": 3,
+      "bites_on": [
+        "dough",
+        "vegetal"
+      ],
+      "rarity": "UNCOMMON",
+      "locations": [
+        "Beach"
+      ],
+      "rarity_factor": 1.0,
+      "time_ranges": [],
+      "date_ranges": []
+    },
+    {
+      "id": 10042,
+      "display_name": "Spotted Handfish",
+      "max_stack": 2147483647,
+      "is_static": false,
+      "infinite_use": false,
+      "minimum_length": 8,
+      "maximum_length": 14,
+      "average_length": 12,
+      "min_market_price": 97,
+      "max_market_price": 137,
+      "bites_on": [
+        "insects"
+      ],
+      "rarity": "LEGENDARY",
+      "locations": [
+        "Beach"
+      ],
+      "rarity_factor": 1.0,
+      "time_ranges": [],
+      "date_ranges": []
+    },
+    {
+      "id": 10043,
+      "display_name": "Spotted Wobbegong",
+      "max_stack": 2147483647,
+      "is_static": false,
+      "infinite_use": false,
+      "minimum_length": 238,
+      "maximum_length": 319,
+      "average_length": 287,
+      "min_market_price": 21,
+      "max_market_price": 36,
+      "bites_on": [
+        "shark"
+      ],
+      "rarity": "RARE",
+      "locations": [
+        "Beach"
+      ],
+      "rarity_factor": 1.0,
+      "time_ranges": [],
+      "date_ranges": []
+    },
+    {
+      "id": 10044,
+      "display_name": "Barbel",
+      "max_stack": 2147483647,
+      "is_static": false,
+      "infinite_use": false,
+      "minimum_length": 56,
+      "maximum_length": 119,
+      "average_length": 70,
+      "min_market_price": 21,
+      "max_market_price": 36,
+      "bites_on": [
+        "dough",
+        "insects",
+        "fish",
+        "vegetal"
+      ],
+      "rarity": "RARE",
+      "locations": [
+        "Greenfields"
+      ],
+      "rarity_factor": 1.0,
+      "time_ranges": [],
+      "date_ranges": []
+    },
+    {
+      "id": 10045,
+      "display_name": "Bitterling",
+      "max_stack": 2147483647,
+      "is_static": false,
+      "infinite_use": false,
+      "minimum_length": 3,
+      "maximum_length": 8,
+      "average_length": 4,
+      "min_market_price": 4,
+      "max_market_price": 7,
+      "bites_on": [
+        "dough",
+        "insects"
+      ],
+      "rarity": "UNCOMMON",
+      "locations": [
+        "Greenfields"
+      ],
+      "rarity_factor": 1.0,
+      "time_ranges": [],
+      "date_ranges": []
+    },
+    {
+      "id": 10046,
+      "display_name": "Bream",
+      "max_stack": 2147483647,
+      "is_static": false,
+      "infinite_use": false,
+      "minimum_length": 53,
+      "maximum_length": 84,
+      "average_length": 70,
+      "min_market_price": 4,
+      "max_market_price": 9,
+      "bites_on": [
+        "dough",
+        "insects"
+      ],
+      "rarity": "UNCOMMON",
+      "locations": [
+        "Greenfields"
+      ],
+      "rarity_factor": 1.0,
+      "time_ranges": [],
+      "date_ranges": []
+    }
+  ]
+}

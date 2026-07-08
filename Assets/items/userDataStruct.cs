@@ -18,7 +18,11 @@ public struct UserData
     public Friend[] friends;
     public FriendRequest[] friend_requests;
     public ActiveEffect[] active_effects;
-    
+    [SerializeField] string? last_quest_completed;
+
+    // Quest date ("yyyy-MM-dd") of the last completed daily quest, empty when never completed
+    public readonly string LastQuestCompleted => last_quest_completed ?? string.Empty;
+
     public readonly Guid? SelectedRod
     {
         get
