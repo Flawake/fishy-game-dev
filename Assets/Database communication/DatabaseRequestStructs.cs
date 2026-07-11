@@ -219,7 +219,7 @@ public class CreateUserRequest
     public string password = string.Empty;
 }
 
-// Daily quest requests
+// Herb quest requests
 [Serializable]
 public class HandInFish
 {
@@ -230,12 +230,49 @@ public class HandInFish
 }
 
 [Serializable]
-public class CompleteDailyQuestRequest
+public class CompleteHerbQuestRequest
 {
     public string user_id = string.Empty;
-    public string quest_date = string.Empty;
+    public string herb_quest_id = string.Empty;
     public int reward_coins = 0;
     public List<HandInFish> fishes = new List<HandInFish>();
+}
+
+// Records that a player accepted (saw) the Herb quest of a given day, so the game
+// can skip Herb's introduction the next time that player talks to him.
+[Serializable]
+public class AcceptHerbQuestRequest
+{
+    public string user_id = string.Empty;
+    public string herb_quest_id = string.Empty;
+}
+
+// One fish species the current Herb quest asks for and how many of it.
+[Serializable]
+public class HerbQuestFishDto
+{
+    public int fish_id;
+    public int amount;
+}
+
+// Response of the herb_quest/current_daily endpoint: the Herb quest that is active
+// right now. The database is the single source of truth for this, the game server
+// only reads it and never generates a quest itself.
+[Serializable]
+public class CurrentHerbQuestResponse
+{
+    // Unique id of this quest (a UUID). Used to detect a new quest.
+    public string herb_quest_id = string.Empty;
+    // Area enum value (see Area.cs) the quest fishes are caught in / Herb stands in.
+    public int area_id;
+    // Fishcoins the player receives for handing the quest in.
+    public int reward_coins;
+    // The fishes (species + amount) the quest asks for.
+    public List<HerbQuestFishDto> fishes = new List<HerbQuestFishDto>();
+    // When the database will roll over to the next quest (Herb's next move),
+    // ISO 8601 / UTC (e.g. "2026-07-10T02:00:00Z"). The game server schedules its
+    // next poll for this moment and then retries until a new herb_quest_id is served.
+    public string next_move_at = string.Empty;
 }
 
 // Active Effects requests

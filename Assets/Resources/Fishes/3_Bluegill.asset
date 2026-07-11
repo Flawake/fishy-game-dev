@@ -33,12 +33,12 @@ MonoBehaviour:
       data:
         minimumLength: 18
         maximumLength: 41
-        avarageLength: 16
+        avarageLength: 25
         minMartketPrice: 1
         maxMarketPrice: 1
         bitesOn: 26
         rarity: 1
-        locations: 2
+        locations: 4
         rarityFactor: 1
         timeRanges: []
         dateRanges: []

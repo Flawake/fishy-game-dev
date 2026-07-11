@@ -575,7 +575,8 @@ public partial class PlayerData : NetworkBehaviour
             SetStartPlayTime();
             SetTotalPlayTimeAtStart(playerData.total_playtime);
             ServerLoadActiveEffects(playerData.active_effects);
-            ServerLoadLastDailyQuestCompleted(playerData.LastQuestCompleted);
+            ServerLoadLastCompletedHerbQuestId(playerData.LastCompletedHerbQuestId);
+            ServerLoadLastAcceptedHerbQuestId(playerData.LastAcceptedHerbQuestId);
             SetShowInventory(false);
 
             inventory.SaveInventory(playerData);
@@ -948,7 +949,7 @@ public partial class PlayerData : NetworkBehaviour
             CmdGetFishBucks();
             inventory.CmdGetInventory();
             CmdGetActiveEffects();
-            CmdGetDailyQuestState();
+            CmdGetHerbQuestState();
         }
     }
 

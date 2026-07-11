@@ -11,7 +11,13 @@ public static class DatabaseEndpoints
 
     public static string tradeCommitEndpoint = serverAddress + "trade/commit_trade";
 
-    public static string completeDailyQuestEndpoint = serverAddress + "quest/complete_daily";
+    public static string completeHerbQuestEndpoint = serverAddress + "herb_quest/complete_daily";
+    // Records that a player accepted (saw) the current Herb quest, so the game can skip
+    // Herb's introduction next time that player talks to him.
+    public static string acceptHerbQuestEndpoint = serverAddress + "herb_quest/accept_daily";
+    // Returns the Herb quest that is currently active (the same for every player).
+    // Polled by the game server, the database is the single source of truth for the quest.
+    public static string currentHerbQuestEndpoint = serverAddress + "herb_quest/current_daily";
     
     public static string addFishStatEndpoint = serverAddress + "stats/add_fish";
     public static string selectItemEndpoint = serverAddress + "stats/select_item";
