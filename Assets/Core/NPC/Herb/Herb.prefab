@@ -161,8 +161,8 @@ MonoBehaviour:
     tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
     quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo...
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 7da98d99178173a57992cbd46ceff3fe, type: 2}
-  m_sharedMaterial: {fileID: -6458306508012540742, guid: 7da98d99178173a57992cbd46ceff3fe, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -297,8 +297,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: NAME
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: b7fb69b02869d4e0e9287e549fc773e9, type: 2}
-  m_sharedMaterial: {fileID: 7552239418548573224, guid: b7fb69b02869d4e0e9287e549fc773e9, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -947,8 +947,10 @@ GameObject:
   - component: {fileID: 4223937493391861998}
   - component: {fileID: 669959895183475887}
   - component: {fileID: 5493110953388718892}
+  - component: {fileID: 8100000000000000001}
+  - component: {fileID: 8100000000000000002}
   m_Layer: 8
-  m_Name: Npc
+  m_Name: Herb
   m_TagString: NPC
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -985,7 +987,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sceneId: 0
-  _assetId: 2775201675
+  _assetId: 1557191926
   serverOnly: 0
   visibility: 0
   hasSpawned: 0
@@ -1056,6 +1058,36 @@ MonoBehaviour:
   clickIcon: {fileID: 3198513787888211359}
   yesButton: {fileID: 8623522840080815180}
   noButton: {fileID: 8317620542786660967}
+--- !u!114 &8100000000000000001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4328120829538916709}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4eb098b5e4d2b483b82fd319ed93411a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  npcDialog: {fileID: 5493110953388718892}
+--- !u!114 &8100000000000000002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4328120829538916709}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 134f2095bdbf44f79abe83cfdc81c507, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  areaId: 0
+  rewardCoins: 0
 --- !u!1 &4500788068034870770
 GameObject:
   m_ObjectHideFlags: 0

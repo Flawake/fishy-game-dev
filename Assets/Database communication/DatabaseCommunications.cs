@@ -46,20 +46,50 @@ public static class DatabaseCommunications
         WebRequestHandler.SendWebRequest(DatabaseEndpoints.tradeCommitEndpoint, bodyRaw);
     }
 
+    /// <summary>
+    /// Fetches the Herb quest that is currently active. The database owns the quest,
+    /// the game server only reads it (see HerbSpawnManager which polls this).
+    /// The request has no body of interest, the quest is global (same for everyone).
+    /// </summary>
     [Server]
-    public static void CompleteDailyQuest(Guid userID, string questDate, int rewardCoins, List<HandInFish> fishes)
+    public static void GetCurrentHerbQuest(WebRequestHandler.WebRequestCallback callback)
     {
-        CompleteDailyQuestRequest requestData = new CompleteDailyQuestRequest
+        byte[] bodyRaw = Encoding.UTF8.GetBytes("{}");
+        WebRequestHandler.SendWebRequest(DatabaseEndpoints.currentHerbQuestEndpoint, bodyRaw, callback);
+    }
+
+    [Server]
+    public static void CompleteHerbQuest(Guid userID, Guid herbQuestId, int rewardCoins, List<HandInFish> fishes)
+    {
+        CompleteHerbQuestRequest requestData = new CompleteHerbQuestRequest
         {
             user_id = userID.ToString(),
-            quest_date = questDate,
+            herb_quest_id = herbQuestId.ToString(),
             reward_coins = rewardCoins,
             fishes = fishes,
         };
 
         string json = JsonUtility.ToJson(requestData);
         byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
-        WebRequestHandler.SendWebRequest(DatabaseEndpoints.completeDailyQuestEndpoint, bodyRaw);
+        WebRequestHandler.SendWebRequest(DatabaseEndpoints.completeHerbQuestEndpoint, bodyRaw);
+    }
+
+    /// <summary>
+    /// Records that a player accepted (saw) the Herb quest of the given day. Used so the
+    /// game can skip Herb's introduction the next time this player talks to him.
+    /// </summary>
+    [Server]
+    public static void AcceptHerbQuest(Guid userID, Guid herbQuestId)
+    {
+        AcceptHerbQuestRequest requestData = new AcceptHerbQuestRequest
+        {
+            user_id = userID.ToString(),
+            herb_quest_id = herbQuestId.ToString(),
+        };
+
+        string json = JsonUtility.ToJson(requestData);
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
+        WebRequestHandler.SendWebRequest(DatabaseEndpoints.acceptHerbQuestEndpoint, bodyRaw);
     }
 
     [Server]

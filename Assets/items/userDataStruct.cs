@@ -18,10 +18,16 @@ public struct UserData
     public Friend[] friends;
     public FriendRequest[] friend_requests;
     public ActiveEffect[] active_effects;
-    [SerializeField] string? last_quest_completed;
+    [SerializeField] string? last_completed_herb_quest_id;
+    [SerializeField] string? last_accepted_herb_quest_id;
 
-    // Quest date ("yyyy-MM-dd") of the last completed daily quest, empty when never completed
-    public readonly string LastQuestCompleted => last_quest_completed ?? string.Empty;
+    // Id of the last completed Herb quest, Guid.Empty when never completed
+    public readonly Guid LastCompletedHerbQuestId =>
+        string.IsNullOrEmpty(last_completed_herb_quest_id) ? Guid.Empty : Guid.Parse(last_completed_herb_quest_id);
+
+    // Id of the last accepted Herb quest, Guid.Empty when never accepted
+    public readonly Guid LastAcceptedHerbQuestId =>
+        string.IsNullOrEmpty(last_accepted_herb_quest_id) ? Guid.Empty : Guid.Parse(last_accepted_herb_quest_id);
 
     public readonly Guid? SelectedRod
     {

@@ -3,65 +3,67 @@ using UnityEngine;
 
 /// <summary>
 /// Dialog of Herb, the wandering NPC that gives everybody the same daily quest:
-/// bring him a mix of 2-4 fishes from the area he is standing in, get paid
-/// 1 fishcoin per fish. He moves and finds a new quest every day at 04:00 Amsterdam time.
+/// bring him the fishes he is craving, get paid in fishcoins.
+///
+/// Herb is spawned into the area his quest points to by <see cref="HerbSpawnManager"/>,
+/// and despawned/respawned whenever the quest changes. This dialog therefore never has to
+/// deal with a rollover in place: it is simply built from the quest carried on the spawned
+/// Herb (see <see cref="HerbQuestSync"/>).
 /// </summary>
 public class DialogHerb : MonoBehaviour
 {
     [SerializeField] NpcDialog npcDialog;
 
     private DialogNode _startDialog;
+    private DialogNode returningDialog;
     private DialogNode questDialog;
     private DialogNode declinedDialog;
     private DialogNode alreadyDoneDialog;
     private DialogNode notEnoughDialog;
     private DialogNode successDialog;
     private DialogNode failedDialog;
-    private DialogNode noQuestDialog;
 
-    private int builtForQuestDayNumber = int.MinValue;
+    private HerbQuest quest;
     private PlayerData localPlayerData;
-
-    private void Awake()
-    {
-        // Dialogs only exist on clients, just like the other NPC dialogs
-        if (NetworkServer.active)
-        {
-            return;
-        }
-
-        BuildDialog();
-    }
 
     private void OnDestroy()
     {
         if (localPlayerData != null)
         {
-            localPlayerData.DailyQuestHandInProcessed -= OnHandInProcessed;
+            localPlayerData.HerbQuestHandInProcessed -= OnHandInProcessed;
         }
     }
 
-    private void BuildDialog()
+    /// <summary>
+    /// Builds the dialog from the quest carried on the spawned Herb. Called by
+    /// <see cref="HerbQuestSync"/> on the client once the synced quest data has arrived.
+    /// </summary>
+    public void BuildForQuest(HerbQuest herbQuest)
     {
-        HerbQuest quest = HerbQuestManager.GetCurrentQuest();
-        builtForQuestDayNumber = quest.questDayNumber;
-
-        _startDialog = new DialogNode(DialogOptions.Click);
-        npcDialog.SetRootDialog(_startDialog);
-
-        if (!quest.IsValid)
+        // Dialogs only exist on clients, just like the other NPC dialogs.
+        if (!NetworkClient.active)
         {
-            _startDialog.SetDialogText("Name's Herb. Normally I'd have a job for you, but today the fish just aren't in season. Come find me tomorrow!");
             return;
         }
 
+        quest = herbQuest;
+
+        _startDialog = new DialogNode(DialogOptions.Click);
+
+        if (quest == null || !quest.IsValid)
+        {
+            _startDialog.SetDialogText("Name's Herb. Normally I'd have a job for you, but I'm all out of cravings right now. Come find me again soon!");
+            npcDialog.SetRootDialog(_startDialog);
+            return;
+        }
+
+        returningDialog = new DialogNode(DialogOptions.Click);
         questDialog = new DialogNode(DialogOptions.YesNo);
         declinedDialog = new DialogNode(DialogOptions.Click);
         alreadyDoneDialog = new DialogNode(DialogOptions.Click);
         notEnoughDialog = new DialogNode(DialogOptions.Click);
         successDialog = new DialogNode(DialogOptions.Click);
         failedDialog = new DialogNode(DialogOptions.Click);
-        noQuestDialog = new DialogNode(DialogOptions.Click);
 
         string fishList = quest.DescribeFishes();
         int reward = quest.RewardCoins;
@@ -71,28 +73,33 @@ public class DialogHerb : MonoBehaviour
             .SetDialogText("Hey there! Herb's the name. I wander from shore to shore and every day I'm craving different fish.")
             .SetPlayerResponse("What are you craving today?");
 
+        // Once the player has met Herb today the introduction is skipped and this leads
+        // straight into the hand-in attempt (see ShowQuestOrAlreadyDone / RefreshRootDialog).
+        returningDialog
+            .SetNextClick(null, TryHandInQuest)
+            .SetDialogText("Ah, back already! Let's see if you brought what I'm craving.");
+
         questDialog
             .SetDialogText($"Today I'd love to eat: {fishList}. All of them swim right here in this area! Bring them to me and I'll pay you {reward} fishcoins. Do you have them with you?")
             .SetNextYes(null, TryHandInQuest)
             .SetNextNo(declinedDialog);
 
         declinedDialog
-            .SetDialogText("No rush! I'm here until four in the morning, then I'm off to the next spot.");
+            .SetDialogText("No rush! I'll be around for a while, then I'm off to the next spot.");
 
         alreadyDoneDialog
-            .SetDialogText("You already brought me my fish today, they were delicious! Come look for me tomorrow, I'll be somewhere else with a new craving.");
+            .SetDialogText("You already brought me my fish today, they were delicious! Come look for me again, I'll be somewhere else with a new craving.");
 
         notEnoughDialog
             .SetDialogText($"Hmm, that's not everything on my list. I need: {fishList}. The good news: you can catch all of them right here!");
 
         successDialog
-            .SetDialogText($"Mmm, exactly what I was craving! Here's your {reward} fishcoins, as promised. See you tomorrow, somewhere else!");
+            .SetDialogText($"Mmm, exactly what I was craving! Here's your {reward} fishcoins, as promised. See you next time, somewhere else!");
 
         failedDialog
             .SetDialogText("Huh, something went wrong on my end... Let's try that again in a moment.");
 
-        noQuestDialog
-            .SetDialogText("Ah, you just missed it, my craving changed with the clock! Talk to me again for the new list.");
+        RefreshRootDialog();
     }
 
     private PlayerData GetLocalPlayerData()
@@ -102,61 +109,72 @@ public class DialogHerb : MonoBehaviour
             localPlayerData = NetworkClient.connection.identity.GetComponentInChildren<PlayerData>();
             if (localPlayerData != null)
             {
-                localPlayerData.DailyQuestHandInProcessed += OnHandInProcessed;
+                localPlayerData.HerbQuestHandInProcessed += OnHandInProcessed;
             }
         }
         return localPlayerData;
     }
 
     /// <summary>
-    /// Rebuilds the dialog when Herb rolled over to a new quest while this scene was open
+    /// Points the dialog at the right entry node: the "already brought" line for a player
+    /// who already completed today's quest, the returning-player hand-in node for one who
+    /// only accepted it, or the introduction otherwise.
     /// </summary>
-    private bool RefreshQuestIfRolledOver()
+    private void RefreshRootDialog()
     {
-        if (HerbQuestManager.CurrentQuestDayNumber() == builtForQuestDayNumber)
+        if (quest == null || !quest.IsValid || returningDialog == null)
         {
-            return false;
-        }
-        DialogNode rolledOverNode = noQuestDialog;
-        BuildDialog();
-        if (rolledOverNode != null)
-        {
-            npcDialog.ShowDialog(rolledOverNode);
-        }
-        return true;
-    }
-
-    private void ShowQuestOrAlreadyDone()
-    {
-        if (RefreshQuestIfRolledOver())
-        {
+            npcDialog.SetRootDialog(_startDialog);
             return;
         }
 
         PlayerData playerData = GetLocalPlayerData();
-        HerbQuest quest = HerbQuestManager.GetCurrentQuest();
-        if (playerData != null && playerData.HasCompletedDailyQuest(quest))
+
+        // Already handed in today's quest: open straight on the "already brought" line
+        // instead of greeting the player as if they might still hand fishes in.
+        if (playerData != null && playerData.HasCompletedHerbQuest(quest))
+        {
+            npcDialog.SetRootDialog(alreadyDoneDialog);
+            return;
+        }
+
+        bool skipIntro = playerData != null && playerData.HasAcceptedHerbQuest(quest);
+        npcDialog.SetRootDialog(skipIntro ? returningDialog : _startDialog);
+    }
+
+    private void ShowQuestOrAlreadyDone()
+    {
+        PlayerData playerData = GetLocalPlayerData();
+        if (playerData == null || quest == null)
+        {
+            return;
+        }
+
+        if (playerData.HasCompletedHerbQuest(quest))
         {
             npcDialog.ShowDialog(alreadyDoneDialog);
+            return;
+        }
+
+        // The player has now seen today's quest; remember it so Herb skips the
+        // introduction next time and the dialog opens straight on the hand-in.
+        if (!playerData.HasAcceptedHerbQuest(quest))
+        {
+            playerData.CmdAcceptHerbQuest();
+            npcDialog.SetRootDialog(returningDialog);
         }
     }
 
     private void TryHandInQuest()
     {
-        if (RefreshQuestIfRolledOver())
-        {
-            return;
-        }
-
         PlayerData playerData = GetLocalPlayerData();
-        if (playerData == null)
+        if (playerData == null || quest == null)
         {
             npcDialog.ShowDialog(failedDialog);
             return;
         }
 
-        HerbQuest quest = HerbQuestManager.GetCurrentQuest();
-        if (playerData.HasCompletedDailyQuest(quest))
+        if (playerData.HasCompletedHerbQuest(quest))
         {
             npcDialog.ShowDialog(alreadyDoneDialog);
             return;
@@ -169,8 +187,9 @@ public class DialogHerb : MonoBehaviour
             return;
         }
 
-        // The server re-validates everything, removes the fishes and rewards the coins
-        playerData.CmdHandInDailyQuest();
+        // The server re-validates everything against its own current quest,
+        // removes the fishes and rewards the coins.
+        playerData.CmdHandInHerbQuest();
         npcDialog.ShowDialog(successDialog);
     }
 
@@ -180,6 +199,14 @@ public class DialogHerb : MonoBehaviour
         if (!success && NpcDialog.DialogActive)
         {
             npcDialog.ShowDialog(failedDialog);
+            return;
+        }
+
+        if (success)
+        {
+            // Quest is done for today: reopening Herb should go straight to the
+            // "already brought" line instead of the returning-player hand-in node.
+            npcDialog.SetRootDialog(alreadyDoneDialog);
         }
     }
 }
