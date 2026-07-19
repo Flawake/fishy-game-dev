@@ -7,6 +7,7 @@ namespace ItemSystem {
     {
         LuckBoost,
         WaitTimeReduction,
+        FishRadar,
         // Add more special effects as needed
     }
     
