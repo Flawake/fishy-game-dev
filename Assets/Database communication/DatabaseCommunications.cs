@@ -229,7 +229,7 @@ public static class DatabaseCommunications
         };
         string json = JsonUtility.ToJson(request);
         byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
-        WebRequestHandler.SendWebRequest(DatabaseEndpoints.addNewItemEndpoint, bodyRaw);
+        WebRequestHandler.SendWebRequest(DatabaseEndpoints.sellFishEndpoint, bodyRaw);
     }
 
     [Server]

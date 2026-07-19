@@ -1,3 +1,5 @@
+using Telepathy;
+
 public static class DatabaseEndpoints
 {
     public static string serverAddress = EnvConfig.DatabaseAccessServer;
@@ -34,4 +36,6 @@ public static class DatabaseEndpoints
     public static string removeExpiredEffectEndpoint = serverAddress + "effects/remove_expired";
     
     public static string getPlayerDataEndpoint = serverAddress + "data/retreive_all_playerdata";
+
+    public static string sellFishEndpoint = serverAddress + "fish_market/sell_fishes";
 }

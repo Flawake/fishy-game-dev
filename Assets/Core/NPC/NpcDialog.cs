@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using Mirror;
@@ -165,6 +164,8 @@ public class NpcDialog : MonoBehaviour
             return;
         }
 
+        NetworkClient.connection.identity.GetComponent<PlayerController>().IncreaseObjectsPreventingMovement();
+
         // Make NPC face the player
         FacePlayer();
         
@@ -213,6 +214,7 @@ public class NpcDialog : MonoBehaviour
         canvasObject.SetActive(false);
         DialogActive = false;
         PlayerController.OnMouseClickedAction -= HandleMouseClick;
+        NetworkClient.connection.identity.GetComponent<PlayerController>().DecreaseObjectsPreventingMovement();
         _currentNode = null;
     }
 
@@ -468,5 +470,11 @@ public class NpcDialog : MonoBehaviour
         {
             NetworkClient.connection.identity.GetComponentInChildren<ChatBalloon>().InjectTextBalloonText(_currentNode.PlayerResponse);
         }
+    }
+
+    void OnDestroy()
+    {
+        PlayerController.OnMouseClickedAction -= HandleMouseClick;
+        NetworkClient.connection.identity.GetComponent<PlayerController>().DecreaseObjectsPreventingMovement();
     }
 }
