@@ -96,7 +96,7 @@ public class StoreUIManager : MonoBehaviour
         foreach (ItemDefinition storeItem in itemObjects)
         {
             GameObject storeItemHolder = Instantiate(StoreItemPrefab, storeItemsHolder.transform);
-            if(!storeItemHolder.TryGetComponent<StoreItemData>(out StoreItemData itemData))
+            if(!storeItemHolder.TryGetComponent(out StoreItemData itemData))
             {
                 continue;
             }

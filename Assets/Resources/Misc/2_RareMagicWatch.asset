@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 50002
   displayName: Rare magic watch
-  description: 
+  description: Magically speeds up time so your wait time for a bait decreases
   icon: {fileID: 21300000, guid: c6ea7d8cc331801ccb3767bb166aa7a3, type: 3}
   maxStack: 2147483647
   isStatic: 0
@@ -31,6 +31,7 @@ MonoBehaviour:
         priceCoins: 5
         priceBucks: -1
         amount: 1
+        unlockLevel: 0
     - rid: 3081823945427517450
       type: {class: SpecialBehaviour, ns: ItemSystem, asm: Assembly-CSharp}
       data:

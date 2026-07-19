@@ -24,8 +24,6 @@ public class StoreItemData : MonoBehaviour
 
 
     ItemDefinition storeItem;
-
-    StoreUIManager storeUIManager;
     StoreManager storeManager;
 
     int priceFishBux;
@@ -34,37 +32,19 @@ public class StoreItemData : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        storeUIManager = GetComponentInParent<StoreUIManager>();
         storeManager = GetComponentInParent<StoreManager>();
     }
 
-    private void EnsureStoreUIManager()
-    {
-        if (storeUIManager == null)
-        {
-            storeUIManager = GetComponentInParent<StoreUIManager>();
-        }
-    }
-
-    private void EnsureStoreManager()
-    {
-        if (storeManager == null)
-        {
-            storeManager = GetComponentInParent<StoreManager>();
-        }
-    }
 
     //Called from game
     public void BuyUsingCoins()
     {
-        EnsureStoreManager();
         storeManager.BuyItem(storeItem, StoreManager.CurrencyType.COINS);
     }
 
     //Called from game
     public void BuyUsingBucks()
     {
-        EnsureStoreManager();
         storeManager.BuyItem(storeItem, StoreManager.CurrencyType.BUCKS);
     }
 
@@ -77,7 +57,6 @@ public class StoreItemData : MonoBehaviour
     {
         storeItem = item;
         itemName.text = item.DisplayName;
-        itemDescription.text = item.Description;
         itemImageContainer.sprite = item.Icon;
         if(priceCoins > 0)
         {
@@ -92,5 +71,56 @@ public class StoreItemData : MonoBehaviour
 
         priceFishCoins = priceCoins;
         priceFishBux = priceBucks;
+
+        if (item.GetBehaviour<RodBehaviour>() != null) {
+            ShowRodInformation(item);
+        } 
+        else if (item.GetBehaviour<BaitBehaviour>() != null) {
+            ShowBaitInformation(item);
+        } 
+        else {
+            itemDescription.text = item.Description;
+        }
+    }
+
+    private void ShowRodInformation(ItemDefinition rod)
+    {
+        RodBehaviour rodBehaviour = rod.GetBehaviour<RodBehaviour>();
+        string durability = "Infinite";
+        if (!rod.InfiniteUse)
+        {
+            DurabilityBehaviour durabilityBehaviour = rod.GetBehaviour<DurabilityBehaviour>();
+            if (durabilityBehaviour == null) {
+               durability = "Error"; 
+            }
+            else {
+                durability = durabilityBehaviour.MaxDurability.ToString();
+            }
+        }
+
+        string strength = rodBehaviour.Strength.ToString();
+        string reach = rodBehaviour.ThrowDistance.ToString();
+        itemDescription.text = $"<color=\"black\">Throw ins: <color=\"orange\">{durability} \n <color=\"black\">for fish till: <color=\"orange\">{strength} CM \n\r <color=\"black\">Reach: <color=\"orange\">{reach}";
+    }
+
+    private void ShowBaitInformation(ItemDefinition bait)
+    {
+        BaitBehaviour baitBehaviour = bait.GetBehaviour<BaitBehaviour>();
+
+        string durability = "Infinite";
+        if (!bait.InfiniteUse)
+        {
+            DurabilityBehaviour durabilityBehaviour = bait.GetBehaviour<DurabilityBehaviour>();
+            if (durabilityBehaviour == null) {
+               durability = "Error"; 
+            }
+            else {
+                durability = durabilityBehaviour.MaxDurability.ToString();
+            }
+        }
+
+        string baitType = baitBehaviour.BaitType.ToString();
+
+        itemDescription.text = $"<color=\"black\">Throw ins: <color=\"orange\">{durability} \n <color=\"black\">for fish that bite on: <color=\"orange\">{baitType}";
     }
 }

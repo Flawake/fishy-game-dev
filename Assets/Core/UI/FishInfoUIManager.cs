@@ -25,6 +25,10 @@ public class FishInfoUIManager : MonoBehaviour
     [SerializeField]
     TMP_Text amountCaught;
     [SerializeField]
+    TMP_Text maxLength;
+    [SerializeField]
+    TMP_Text averageLength;
+    [SerializeField]
     GameObject[] stars;
     [SerializeField]
     GameObject baitImagePrefab;
@@ -155,6 +159,8 @@ public class FishInfoUIManager : MonoBehaviour
             amountCaught.text = statFish.amount.ToString() + " x";
         }
         FillContainers(fishID);
+        averageLength.text = curFishBehaviour.AvarageLength.ToString() + "CM";
+        maxLength.text = curFishBehaviour.MaximumLength.ToString() + "CM";
         fishName.text = curFish.DisplayName;
         fishDescription.text = curFish.Description;
         fishimage.sprite = curFish.Icon;

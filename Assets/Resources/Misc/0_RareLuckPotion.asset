@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 50000
   displayName: Rare luck potion
-  description: 
+  description: Better change for epic and legendary fishes
   icon: {fileID: 21300000, guid: 33163aa5997d5bc0c82fe1be40dce7b2, type: 3}
   maxStack: 2147483647
   isStatic: 0
@@ -31,6 +31,7 @@ MonoBehaviour:
         priceCoins: 3
         priceBucks: 5000
         amount: 1
+        unlockLevel: 0
     - rid: 3081823945427517450
       type: {class: SpecialBehaviour, ns: ItemSystem, asm: Assembly-CSharp}
       data:

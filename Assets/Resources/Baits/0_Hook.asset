@@ -18,7 +18,7 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: 99f60211ebb8a123dbe36bbfde1d66b1, type: 3}
   maxStack: 2147483647
   isStatic: 1
-  infiniteUse: 0
+  infiniteUse: 1
   behaviours:
   - rid: 7137401008670638160
   references:
