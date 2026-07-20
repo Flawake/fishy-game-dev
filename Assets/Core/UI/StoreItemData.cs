@@ -35,7 +35,6 @@ public class StoreItemData : MonoBehaviour
         storeManager = GetComponentInParent<StoreManager>();
     }
 
-
     //Called from game
     public void BuyUsingCoins()
     {
