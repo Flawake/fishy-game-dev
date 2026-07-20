@@ -15,6 +15,10 @@ public class PlayerStatsOverlayUIManager : MonoBehaviour
     Image magicwatchImage;
     [SerializeField]
     TMP_Text magicwatchTimeLeft;
+    [SerializeField]
+    Image fishRadarImage;
+    [SerializeField]
+    TMP_Text fishRadarTimeLeft;
 
     private PlayerData playerData;
 
@@ -53,6 +57,10 @@ public class PlayerStatsOverlayUIManager : MonoBehaviour
         // Update magic watch UI
         bool hasWaitTimeReduction = activeEffects.TryGetValue(SpecialEffectType.WaitTimeReduction, out var waitEffect);
         UpdateEffectUI(magicwatchImage, magicwatchTimeLeft, hasWaitTimeReduction, waitEffect.ItemId, waitEffect.Expiry);
+
+        // Update fishradar watch UI
+        bool hasFishRadar = activeEffects.TryGetValue(SpecialEffectType.FishRadar, out var radarEffect);
+        UpdateEffectUI(fishRadarImage, fishRadarTimeLeft, hasFishRadar, radarEffect.ItemId, radarEffect.Expiry);
     }
 
     private void UpdateEffectUI(Image effectImage, TMP_Text timeText, bool hasEffect, int itemId, DateTime expiry)

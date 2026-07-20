@@ -79,7 +79,7 @@ public class StoreItemData : MonoBehaviour
             ShowBaitInformation(item);
         } 
         else {
-            itemDescription.text = item.Description;
+            itemDescription.text = "<color=\"black\">" + item.Description;
         }
     }
 
@@ -110,12 +110,12 @@ public class StoreItemData : MonoBehaviour
         string durability = "Infinite";
         if (!bait.InfiniteUse)
         {
-            DurabilityBehaviour durabilityBehaviour = bait.GetBehaviour<DurabilityBehaviour>();
-            if (durabilityBehaviour == null) {
+            ShopBehaviour shopBehaviour = bait.GetBehaviour<ShopBehaviour>();
+            if (shopBehaviour == null) {
                durability = "Error"; 
             }
             else {
-                durability = durabilityBehaviour.MaxDurability.ToString();
+                durability = shopBehaviour.Amount.ToString();
             }
         }
 

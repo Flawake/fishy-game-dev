@@ -12,7 +12,6 @@ namespace TradeSystem
             {
                 return;
             }
-            Debug.Log("registering");
             NetworkClient.RegisterHandler<TradeRPCRequestIncoming>(msg => TargetHandleTradeRpc(msg));
             NetworkClient.RegisterHandler<TradeRPCRequestRemoved>(msg => TargetHandleTradeRpc(msg));
             NetworkClient.RegisterHandler<TradeRPCTradeRequestExpired>(msg => TargetHandleTradeRpc(msg));
