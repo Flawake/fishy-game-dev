@@ -1,14 +1,17 @@
+using ItemSystem;
 using Mirror;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Timeline;
 
 enum FishSpotType
 {
     Uninitialized,
     Bad,
     Normal,
-    Good
+    Good,
+    Perfect
 }
 
 class FishSpot
@@ -102,9 +105,13 @@ public class FishSpots : NetworkBehaviour
             }
             if (spot.spotType == FishSpotType.Normal)
             {
-                Gizmos.color = new Color(0f, 1f, 0f, 120f / 255f);
+                Gizmos.color = new Color(1f, 1f, 0f, 120f / 255f);
             }
             if (spot.spotType == FishSpotType.Good)
+            {
+                Gizmos.color = new Color(0f, 1f, 0f, 120f / 255f);
+            }
+            if (spot.spotType == FishSpotType.Perfect)
             {
                 Gizmos.color = new Color(0f, 1f, 1f, 120f / 255f);
             }
@@ -118,21 +125,56 @@ public class FishSpots : NetworkBehaviour
         }
     }
 
+    private float nextGenerationTime = 0;   // variable used on client
+
     private float lastGeneratedTime = float.MinValue;
-    float secondsBetweenGenerations = 10 * 60;
+    readonly private float secondsBetweenGenerations = 10 * 60;
     private void Update()
     {
-        if (lastGeneratedTime + secondsBetweenGenerations < Time.time && isServer)
+        if (isServer)
         {
-            lastGeneratedTime = Time.time;
-            generateFishSpots();       
+            if (lastGeneratedTime + secondsBetweenGenerations < Time.time)
+            {
+                lastGeneratedTime = Time.time;
+                GenerateFishSpots();       
+            }
+        }
+
+        if (NetworkClient.active)
+        {
+            if (PlayerHasActiveRadar(NetworkClient.connection.identity.GetComponent<PlayerData>().GetActiveSpecialEffects(), out int _))
+            {
+                if (nextGenerationTime < Time.time)
+                {
+                    ClientUpdateRadarSpots();
+                    nextGenerationTime = Time.time + 5; // Add 5 seconds to give the server time to repond before spamming the server request in the next frame.
+                }
+            } else 
+            {
+                ClientRemoveRadarSpots();
+            }
         }
     }
 
     [Server]
-    private void generateFishSpots()
+    private void GenerateFishSpots()
     {
         List<int> toDetermineFishSpots = Enumerable.Range(0, fishSpots.Count).ToList();
+
+        // 15% perfect spots
+        int perfectLeft = (int)((float)fishSpots.Count / 100 * 15);
+        for (int i = 0; i < perfectLeft; i++)
+        {
+            int listSpotIndex = Random.Range(0, toDetermineFishSpots.Count);
+            int fishSpotIndex = toDetermineFishSpots[listSpotIndex];
+            toDetermineFishSpots.RemoveAt(listSpotIndex);
+            fishSpots[fishSpotIndex] = new FishSpot()
+            {
+                size = fishSpots[fishSpotIndex].size,
+                centrePoint = fishSpots[fishSpotIndex].centrePoint,
+                spotType = FishSpotType.Perfect,
+            };
+        }
         
         // 15% good spots
         int goodLeft = (int)((float)fishSpots.Count / 100 * 15);
@@ -189,25 +231,65 @@ public class FishSpots : NetworkBehaviour
                     case FishSpotType.Bad:
                         return Random.Range(0, 10) >= 8;
                     case FishSpotType.Normal:
-                        return Random.Range(0, 10) >= 3;
+                        return Random.Range(0, 10) >= 5;
                     case FishSpotType.Good:
+                        return Random.Range(0, 10) >= 3;
+                    case FishSpotType.Perfect:
                         return true;
                 }
             }
         }
         return false;
     }
-    
-    
-    [Command]
-    void CmdGetFishingSpots()
+
+    private bool PlayerHasActiveRadar(Dictionary<SpecialEffectType, ActiveEffect> effects, out int radarType)
     {
-        RpcGetFishingSpots(fishSpots);
+        radarType = -1;
+        foreach (KeyValuePair<SpecialEffectType, ActiveEffect> effect in effects)
+        {
+            if (effect.Key == SpecialEffectType.FishRadar)
+            {
+                radarType = (int)ItemRegistry.Get(effect.Value.ItemId).GetBehaviour<SpecialBehaviour>().EffectValue;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void ClientUpdateRadarSpots()
+    {
+        CmdGetFishingSpots();
+    }
+
+    private void ClientRemoveRadarSpots()
+    {
+        fishSpots.Clear();
+    }
+    
+    
+    [Command(requiresAuthority = false)]
+    void CmdGetFishingSpots(NetworkConnectionToClient conn = null)
+    {
+        if (PlayerHasActiveRadar(conn.identity.GetComponent<PlayerData>().GetActiveSpecialEffects(), out int radarStrength)) {
+            int nextGenerationDelay = (int)(lastGeneratedTime + secondsBetweenGenerations - Time.time);
+            switch (radarStrength) {
+                case 1:
+                    RpcGetFishingSpots(fishSpots.Where(spot => spot.spotType == FishSpotType.Normal).ToList(), nextGenerationDelay);
+                    break;
+                case 2:
+                    RpcGetFishingSpots(fishSpots.Where(spot => spot.spotType == FishSpotType.Good).ToList(), nextGenerationDelay);
+                    break;
+                case 3:
+                    RpcGetFishingSpots(fishSpots.Where(spot => spot.spotType == FishSpotType.Perfect).ToList(), nextGenerationDelay);
+                    break;
+            }
+        }
     }
 
     [ClientRpc]
-    void RpcGetFishingSpots(List<FishSpot> fishSpots)
+    void RpcGetFishingSpots(List<FishSpot> fishSpots, int timeTillNextGeneration)
     {
         this.fishSpots = fishSpots;
+        nextGenerationTime = timeTillNextGeneration + Time.time;
     }
 }
