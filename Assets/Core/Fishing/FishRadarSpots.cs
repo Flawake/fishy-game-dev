@@ -121,7 +121,15 @@ public class FishRadarSpots : NetworkBehaviour
 
         foreach(FishSpot spot in spots)
         {
-            GameObject newSpot = Instantiate(fishSpotPrefab);
+            // Client-side render filter: skip spots that are not fully enclosed in water
+            // so we don't draw a fish spot over dry land. The
+            // spot still exists server-side and remains catchable.
+            if (!fishSpots.IsFootprintInWater(spot))
+            {
+                continue;
+            }
+
+            GameObject newSpot = Instantiate(fishSpotPrefab, transform);
             newSpot.GetComponent<FishSpotRenderer>().Create(spot, spotType);
             activeSpots.Add(newSpot);
         }
