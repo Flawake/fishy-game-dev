@@ -27,10 +27,81 @@ public class FishRadarSpots : NetworkBehaviour
     private GameObject fishSpotPrefab;
     private List<GameObject> activeSpots = new List<GameObject>();
 
+    // Material applied to spawned fish spot sprites; its stencil test clips them
+    // to the water mask so nothing draws over land.
+    private Material spotMaterial;
+
+    // Invisible mesh that writes the water shape into the stencil buffer.
+    private GameObject waterMaskObject;
+
     private void Awake()
     {
         fishSpots = GetComponent<FishSpots>();
         fishSpotPrefab = Resources.Load<GameObject>("FishSpot");
+        SetupWaterMask();
+    }
+
+    // Builds a stencil mask from the water collider so fish spot sprites render
+    // pixel-perfect, clipped to the water's exact outline. The mask mesh writes a
+    // stencil value wherever the water is; the spot material only draws where that
+    // value is present.
+    private void SetupWaterMask()
+    {
+        // No graphics device on a dedicated (headless) server, so there is
+        // nothing to mask and no shaders to load.
+        if (SystemInfo.graphicsDeviceType == UnityEngine.Rendering.GraphicsDeviceType.Null)
+        {
+            return;
+        }
+
+        Collider2D water = fishSpots.WaterCollider;
+        if (water == null)
+        {
+            return;
+        }
+
+        Shader maskShader = Resources.Load<Shader>("Shaders/WaterStencilMask");
+        Shader spotShader = Resources.Load<Shader>("Shaders/FishSpotMasked");
+        if (maskShader == null || spotShader == null)
+        {
+            Debug.LogWarning("FishSpot mask shaders not found under Resources/Shaders; spots will not be clipped.");
+            return;
+        }
+
+        spotMaterial = new Material(spotShader);
+
+        // World-space mesh of the water shape (body position + rotation baked in).
+        Mesh waterMesh = water.CreateMesh(true, true);
+        if (waterMesh == null)
+        {
+            return;
+        }
+
+        waterMaskObject = new GameObject("FishSpotWaterMask");
+        // Match the fish spot layer so the same camera that draws the spots also
+        // draws the mask (the stencil buffer is per-camera).
+        waterMaskObject.layer = fishSpotPrefab != null ? fishSpotPrefab.layer : gameObject.layer;
+        // Vertices are already in world space, so keep the transform at the origin.
+        waterMaskObject.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
+        waterMaskObject.transform.localScale = Vector3.one;
+
+        MeshFilter filter = waterMaskObject.AddComponent<MeshFilter>();
+        filter.sharedMesh = waterMesh;
+
+        MeshRenderer meshRenderer = waterMaskObject.AddComponent<MeshRenderer>();
+        meshRenderer.sharedMaterial = new Material(maskShader);
+        meshRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+        meshRenderer.receiveShadows = false;
+        meshRenderer.lightProbeUsage = UnityEngine.Rendering.LightProbeUsage.Off;
+        meshRenderer.reflectionProbeUsage = UnityEngine.Rendering.ReflectionProbeUsage.Off;
+    }
+
+    private void OnDestroy()
+    {
+        if (waterMaskObject != null)
+        {
+            Destroy(waterMaskObject);
+        }
     }
 
     private void Update()
@@ -121,15 +192,19 @@ public class FishRadarSpots : NetworkBehaviour
 
         foreach(FishSpot spot in spots)
         {
-            // Client-side render filter: skip spots that are not fully enclosed in water
-            // so we don't draw a fish spot over dry land. The
-            // spot still exists server-side and remains catchable.
-            if (!fishSpots.IsFootprintInWater(spot))
+            GameObject newSpot = Instantiate(fishSpotPrefab, transform);
+
+            // Clip the sprite to the water outline via the stencil mask material,
+            // so the parts of the spot that fall on land are not drawn.
+            if (spotMaterial != null)
             {
-                continue;
+                SpriteRenderer sr = newSpot.GetComponent<SpriteRenderer>();
+                if (sr != null)
+                {
+                    sr.sharedMaterial = spotMaterial;
+                }
             }
 
-            GameObject newSpot = Instantiate(fishSpotPrefab, transform);
             newSpot.GetComponent<FishSpotRenderer>().Create(spot, spotType);
             activeSpots.Add(newSpot);
         }

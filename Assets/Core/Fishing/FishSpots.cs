@@ -233,30 +233,9 @@ public class FishSpots : NetworkBehaviour
         return fishSpots.Where(spot => spot.spotType == type).ToList();
     }
 
-    // True when the whole rendered footprint of the spot sits inside the water
-    // collider.
-    internal bool IsFootprintInWater(FishSpot spot)
-    {
-        Vector2 halfFootprint = spot.size / 2f;
-
-        Vector2[] corners =
-        {
-            spot.centrePoint + new Vector2(-halfFootprint.x, -halfFootprint.y),
-            spot.centrePoint + new Vector2( halfFootprint.x, -halfFootprint.y),
-            spot.centrePoint + new Vector2(-halfFootprint.x,  halfFootprint.y),
-            spot.centrePoint + new Vector2( halfFootprint.x,  halfFootprint.y),
-        };
-
-        foreach (Vector2 corner in corners)
-        {
-            if (!waterCollider.OverlapPoint(corner))
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
+    // The water collider, exposed so the radar renderer can build a stencil
+    // mask that clips fish spot sprites to the water's exact shape.
+    internal Collider2D WaterCollider => waterCollider;
 
     // Seconds until the next server-side spot generation.
     internal int GetSecondsUntilNextGeneration()
