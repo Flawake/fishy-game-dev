@@ -86,7 +86,7 @@ public class PlayerStatsOverlayUIManager : MonoBehaviour
             else
             {
                 timeText.text = "xx:xx";
-                effectImage.color = new Color(40f/255f, 40f/255f, 40f/255f, 1f);
+                effectImage.color = new Color(60f/255f, 60f/255f, 60f/255f, 1f);
             }
         }
         else

@@ -293,3 +293,8 @@ public class FishSpots : NetworkBehaviour
         nextGenerationTime = timeTillNextGeneration + Time.time;
     }
 }
+
+public class FishRadarSpots
+{
+    
+}
