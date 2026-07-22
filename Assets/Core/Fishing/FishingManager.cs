@@ -308,6 +308,7 @@ public class FishingManager : NetworkBehaviour
             return;
         }
         fishFightDialog.SetActive(true);
+        UILayerManager.BringToFront(fishFightDialog);
         fishFight.StartFight(currentFish, minFishingTime);
     }
 
@@ -333,6 +334,7 @@ public class FishingManager : NetworkBehaviour
     void TargetShowCaughtDialog()
     {
         caughtDialog.SetActive(true);
+        UILayerManager.BringToFront(caughtDialog);
         caughtData.SetData(currentFish);
     }
 

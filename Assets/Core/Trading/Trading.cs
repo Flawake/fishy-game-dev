@@ -29,6 +29,7 @@ namespace TradeSystem
         {
             TradeAmountSelector amountSelector = GetComponentInChildren<TradeAmountSelector>(true);
             amountSelector.gameObject.SetActive(true);
+            UILayerManager.BringToFront(amountSelector.gameObject);
             amountSelector.GetComponent<TradeAmountSelector>().SetItem(item);
         }
 

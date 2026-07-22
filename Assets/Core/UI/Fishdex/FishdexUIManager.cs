@@ -126,6 +126,7 @@ public class FishdexUIManager : MonoBehaviour
         else
         {
             fishdexObject.SetActive(true);
+            UILayerManager.BringToFront(fishdexObject);
             OverviewButtonClicked();
         }
     }
@@ -133,6 +134,7 @@ public class FishdexUIManager : MonoBehaviour
     public void OpenFishdex()
     {
         fishdexObject.SetActive(true);
+        UILayerManager.BringToFront(fishdexObject);
         OverviewButtonClicked();
     }
 

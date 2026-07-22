@@ -36,6 +36,7 @@ public class SellFishUIManager : MonoBehaviour
     public void OpenSellFishUI()
     {
         sellFishUI.SetActive(true);
+        UILayerManager.BringToFront(sellFishUI);
         BuildSellFishUI();
     }
 

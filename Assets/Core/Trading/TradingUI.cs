@@ -144,6 +144,7 @@ namespace TradeSystem
                         if (tradeSession != null && tradeSession.BothPlayersAccepted())
                         {
                             verifyTradeObject.SetActive(true);
+                            UILayerManager.BringToFront(verifyTradeObject);
                         }
                         break;
                     }
@@ -297,6 +298,7 @@ namespace TradeSystem
         public void OpenTradingMenu(TradeSession runningTrade)
         {
             background.SetActive(true);
+            UILayerManager.BringToFront(background);
             tradeFilter.value = 0;
             ResetTradingMenu();
             MakeTradableInventory(runningTrade, ItemFiler.EVERYTHING);
