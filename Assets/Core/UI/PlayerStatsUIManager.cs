@@ -28,6 +28,7 @@ public class PlayerStatsUIManager : MonoBehaviour
     private void OpenStore()
     {
         infoUI.SetActive(true);
+        UILayerManager.BringToFront(infoUI);
     }
     
     //Called from button in game

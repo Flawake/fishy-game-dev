@@ -63,6 +63,7 @@ namespace  GlobalCompetitionSystem
         public void OpenCompetitionUI()
         {
             competitionBackground.SetActive(true);
+            UILayerManager.BringToFront(competitionBackground);
             OpenCurrentCompetitionsScreen();
         }
 

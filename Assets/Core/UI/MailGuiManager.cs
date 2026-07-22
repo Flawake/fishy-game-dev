@@ -51,6 +51,7 @@ public class MailGuiManager : MonoBehaviour
         titleField.text = "";
         messageField.text = "";
         sendMailBackground.SetActive(true);
+        UILayerManager.BringToFront(sendMailBackground);
     }
 
     public void ClickSendButton() {
@@ -75,6 +76,7 @@ public class MailGuiManager : MonoBehaviour
 
     public void OpenShowMailGUI(Mail mail) {
         showMailBackground.SetActive(true);
+        UILayerManager.BringToFront(showMailBackground);
         ShowMail(mail);
     }
 
@@ -112,6 +114,7 @@ public class MailGuiManager : MonoBehaviour
         }
         
         mailInboxHolder.SetActive(true);
+        UILayerManager.BringToFront(mailInboxHolder);
         List<Mail> playerMails = GetComponentInParent<MailSystem>().GetPlayerMails();
         LoadMailPreviews(playerMails);
     }

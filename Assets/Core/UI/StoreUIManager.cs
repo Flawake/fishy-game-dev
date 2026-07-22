@@ -25,6 +25,7 @@ public class StoreUIManager : MonoBehaviour
         if(storeUI.activeInHierarchy == false)
         {
             storeUI.SetActive(true);
+            UILayerManager.BringToFront(storeUI);
             ShowRodsPage();
             EnsurePlayerController();
         }

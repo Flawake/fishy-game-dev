@@ -29,6 +29,7 @@ public class FriendsGUIManager : MonoBehaviour
     {
         LoadFriends();
         background.SetActive(true);
+        UILayerManager.BringToFront(background);
     }
 
     public void ToggleFriendManager()

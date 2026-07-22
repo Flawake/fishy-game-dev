@@ -103,6 +103,7 @@ public class InventoryUIManager : MonoBehaviour
             //0 is show all
             ChangeBackPackMenu(filter);
             inventoryUI.SetActive(true);
+            UILayerManager.BringToFront(inventoryUI);
         }
         else
         {
