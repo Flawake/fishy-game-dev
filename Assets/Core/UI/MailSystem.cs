@@ -52,6 +52,16 @@ public class MailSystem : NetworkBehaviour
     public void ClientAddMail(Mail mail)
     {
         playerMails.Add(mail);
+
+        string message = string.IsNullOrEmpty(mail.title)
+            ? "You received a new mail"
+            : $"New mail: {mail.title}";
+        MessageUIHandler.AddNotification(new Notification
+        {
+            message = message,
+            // Clicking the notification opens the received mail.
+            callback = () => GetComponentInChildren<MailGuiManager>(true).OpenShowMailGUI(mail)
+        });
     }
 
     public List<Mail> GetPlayerMails() {

@@ -1,9 +1,11 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Notification
 {
     public string message;
+    public Action callback;
 }
 
 public class MessageUIHandler : MonoBehaviour

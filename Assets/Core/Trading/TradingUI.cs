@@ -83,14 +83,27 @@ namespace TradeSystem
             switch (state.EventType)
             {
                 case TradeEventType.RequestCreated:
-                    Notification notification = new Notification
                     {
-                        message = $"{} send you a trade request"
-                    };
-                    MessageUIHandler.AddNotification(notification);
-                    break;
+                        Notification notification = new Notification();
+                        if (TradeService.TryGetPending(state.TradeId, out PendingTradeRequest pending))
+                        {
+                            notification.message = $"{pending.requesterName} sent you a trade request";
+                            // Clicking the notification accepts the trade request.
+                            notification.callback = () => GetComponentInParent<Trading>().AcceptTradeRequest(pending);
+                        }
+                        else
+                        {
+                            notification.message = "Someone sent you a trade request";
+                        }
+                        MessageUIHandler.AddNotification(notification);
+                        break;
+                    }
                 case TradeEventType.RequestExpired:
                     InformPlayer(TradingInfoType.TradeExpired);
+                    MessageUIHandler.AddNotification(new Notification
+                    {
+                        message = "A trade request timed out"
+                    });
                     break;
                 
                 case TradeEventType.TradeStarted:
@@ -109,6 +122,10 @@ namespace TradeSystem
 
                 case TradeEventType.TradeCancelled:
                     RunningTradeCanceled(TradingInfoType.ClosedByOther);
+                    MessageUIHandler.AddNotification(new Notification
+                    {
+                        message = "The other player cancelled the trade"
+                    });
                     break;
 
                 case TradeEventType.TradeItemsUpdated:
@@ -138,6 +155,10 @@ namespace TradeSystem
                 case TradeEventType.TradeCompleted:
                     {
                         CloseTradingMenu();
+                        MessageUIHandler.AddNotification(new Notification
+                        {
+                            message = "Trade completed successfully"
+                        });
                         break;
                     }
                 case TradeEventType.ResetReadyState:
