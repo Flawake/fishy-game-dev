@@ -66,7 +66,7 @@ public class StoreManager : NetworkBehaviour
         return false;
     }
     
-    public int GetRequiredBuyLevel(ItemDefinition item) 
+    public static int GetRequiredBuyLevel(ItemDefinition item) 
     {
         if (item?.GetBehaviour<ShopBehaviour>() is ShopBehaviour shopBehaviour)
         {
