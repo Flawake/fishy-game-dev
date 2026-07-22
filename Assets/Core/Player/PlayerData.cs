@@ -849,7 +849,6 @@ public partial class PlayerData : NetworkBehaviour
     [Server]
     private void SetFishBucks(int newAmount, bool needsTargetSync)
     {
-        Debug.Log($"Updated{newAmount}");
         availableFishBucks = newAmount;
         //isServer does also check if this object has been spawned on clients
         if (isServer && needsTargetSync)
