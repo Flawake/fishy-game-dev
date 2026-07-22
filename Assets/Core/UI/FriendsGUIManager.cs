@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
 
@@ -42,6 +41,13 @@ public class FriendsGUIManager : MonoBehaviour
         {
             OpenFriendManager();
         }
+    }
+
+    public void OpenFriendRequests()
+    {
+        LoadFriendRequests();
+        background.SetActive(true);
+        UILayerManager.BringToFront(background);
     }
 
     public void RefreshRequestGUI()
