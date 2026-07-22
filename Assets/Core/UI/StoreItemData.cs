@@ -21,6 +21,10 @@ public class StoreItemData : MonoBehaviour
     TMP_Text buyCoinsText;
     [SerializeField]
     TMP_Text buyBucksText;
+    [SerializeField]
+    GameObject unlockCriteriaOverlay;
+    [SerializeField]
+    TMP_Text unlockCriteriaText;
 
 
     ItemDefinition storeItem;
@@ -50,6 +54,18 @@ public class StoreItemData : MonoBehaviour
     public void SetStoreItemData(ItemDefinition item)
     {
         SetStoreItemData(item, item.GetBehaviour<ShopBehaviour>().PriceCoins, item.GetBehaviour<ShopBehaviour>().PriceBucks);
+
+        int playerLevel = LevelMath.XpToLevel(GetComponentInParent<PlayerData>().GetXp()).level;
+        if (playerLevel < StoreManager.GetRequiredBuyLevel(item))
+        {
+            buyCoinsButton.GetComponent<Button>().interactable = false;
+            buyBucksButton.GetComponent<Button>().interactable = false;
+            unlockCriteriaOverlay.SetActive(true);
+            unlockCriteriaText.text = "Unlocks at level " + StoreManager.GetRequiredBuyLevel(item);
+        } else
+        {
+            unlockCriteriaOverlay.SetActive(false);
+        }
     }
     
     public void SetStoreItemData(ItemDefinition item, int priceCoins, int priceBucks)
