@@ -246,9 +246,12 @@ public class StoreManager : NetworkBehaviour
     [TargetRpc]
     private void TargetPurchaseConfirmed(NetworkConnectionToClient target, Guid realUuid, Guid tempUuid, int itemId, CurrencyType currencyType, int price)
     {
-        var item = ItemRegistry.Get(itemId);
+        ItemDefinition item = ItemRegistry.Get(itemId);
         OnPurchaseConfirmed?.Invoke(item, currencyType, price);
-        LogInfo($"Purchase confirmed: {item?.DisplayName} for {price} {currencyType}");
+        Notification notification = new Notification {
+            message = $"Bought {item?.DisplayName} for {price} {currencyType}"
+        };
+        MessageUIHandler.AddNotification(notification);
     }
 
     [TargetRpc]

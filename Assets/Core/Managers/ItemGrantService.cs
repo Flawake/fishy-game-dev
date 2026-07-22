@@ -16,6 +16,7 @@ namespace Grants
 		{
 			public Guid optimisticUuid;
 			public int addedAmount;
+			public Notification notificationOnGrant;
 		}
 
 		// Client-side map from operationId -> optimistic grant context
@@ -51,6 +52,10 @@ namespace Grants
 			{
 				optimisticUuid = stored.uuid,
 				addedAmount = amount,
+				notificationOnGrant = new Notification
+				{
+					message = $"Added {amount} {item.DisplayName} to inventory",
+				}
 			};
 			return operationId;
 		}
@@ -71,6 +76,11 @@ namespace Grants
 						stack.currentAmount = grant.addedAmount;
 						item.SetState(stack);
 						playerInventory.TryMergeOrAdd(item);
+					}
+				} else {
+					if (grant.notificationOnGrant != null)
+					{
+						MessageUIHandler.AddNotification(grant.notificationOnGrant);
 					}
 				}
 				optimisticGrants.Remove(operationId);

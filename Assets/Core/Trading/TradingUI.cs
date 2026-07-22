@@ -83,6 +83,11 @@ namespace TradeSystem
             switch (state.EventType)
             {
                 case TradeEventType.RequestCreated:
+                    Notification notification = new Notification
+                    {
+                        message = $"{} send you a trade request"
+                    };
+                    MessageUIHandler.AddNotification(notification);
                     break;
                 case TradeEventType.RequestExpired:
                     InformPlayer(TradingInfoType.TradeExpired);
