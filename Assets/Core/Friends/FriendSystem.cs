@@ -178,7 +178,28 @@ public class FriendSystem : NetworkBehaviour
         {
             FriendSystem otherFriendSystem = receiverConn.identity.gameObject.GetComponent<FriendSystem>();
             otherFriendSystem.friendRequests.Add(playerData.GetUuid(), new FriendRequest(playerData.GetUuid(), playerData.GetUsername(), FriendRequestType.RECEIVED));
+            otherFriendSystem.TargetNotifyFriendRequestReceived(receiverConn, playerData.GetUsername());
         }
+    }
+
+    // Notifies the receiving player that they got a new friend request.
+    [TargetRpc]
+    void TargetNotifyFriendRequestReceived(NetworkConnectionToClient target, string senderName)
+    {
+        MessageUIHandler.AddNotification(new Notification
+        {
+            message = $"{senderName} sent you a friend request"
+        });
+    }
+
+    // Notifies the original requester that their friend request was accepted.
+    [TargetRpc]
+    void TargetNotifyFriendRequestAccepted(NetworkConnectionToClient target, string accepterName)
+    {
+        MessageUIHandler.AddNotification(new Notification
+        {
+            message = $"{accepterName} accepted your friend request"
+        });
     }
 
     [Client]
@@ -220,6 +241,10 @@ public class FriendSystem : NetworkBehaviour
         {
             FriendSystem otherFriendSystem = receiverConn.identity.gameObject.GetComponent<FriendSystem>();
             otherFriendSystem.FriendRequestHandled(playerData.GetUuid(), playerData.GetUsername(), accepted);
+            if (accepted)
+            {
+                otherFriendSystem.TargetNotifyFriendRequestAccepted(receiverConn, playerData.GetUsername());
+            }
         }
     }
 }

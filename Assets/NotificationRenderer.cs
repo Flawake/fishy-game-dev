@@ -7,12 +7,14 @@ public class NotificationRenderer : MonoBehaviour
 {
     [SerializeField] private TMP_Text notificationText;
     [SerializeField] private CanvasGroup canvasGroup;
+    private event Action buttonCallback;
 
     public event Action<NotificationRenderer> OnFinished;
 
     public void Render(Notification notification)
     {
         notificationText.text = notification.message;
+        buttonCallback = notification.callback;
 
         canvasGroup.alpha = 1f;
 
@@ -60,5 +62,15 @@ public class NotificationRenderer : MonoBehaviour
         OnFinished?.Invoke(this);
 
         Destroy(gameObject);
+    }
+
+    // Called by button in game
+    public void RunAction()
+    {
+        if (buttonCallback != null)
+        {
+            buttonCallback.Invoke();
+            buttonCallback = null;  // Make sure notifications can only be clicked once
+        }
     }
 }

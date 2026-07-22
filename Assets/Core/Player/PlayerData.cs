@@ -450,6 +450,8 @@ public partial class PlayerData : NetworkBehaviour
             DurabilityState durabilityState = rodReference.GetState<DurabilityState>();
             if (durabilityState != null && durabilityState.remaining <= 0)
             {
+                TargetShowNotification($"Your {rodReference.def.DisplayName} broke");
+
                 // Automatically replace with default rod (Bamboo Rod with ID 1000)
                 ItemInstance defaultRod = inventory.GetRodByDefinitionId(1000);
                 if (defaultRod == null)
@@ -459,7 +461,7 @@ public partial class PlayerData : NetworkBehaviour
                 }
                 
                 // Check if the broken rod is currently selected
-                bool isCurrentlySelected = (selectedRod != null && selectedRod.uuid == rodReference.uuid);
+                bool isCurrentlySelected = selectedRod != null && selectedRod.uuid == rodReference.uuid;
                 
                 // If the broken rod was selected, automatically select the default rod
                 if (isCurrentlySelected)
@@ -469,6 +471,13 @@ public partial class PlayerData : NetworkBehaviour
                 }
             }
         }
+    }
+
+    // Shows a notification on this player's own client.
+    [TargetRpc]
+    private void TargetShowNotification(string message)
+    {
+        MessageUIHandler.AddNotification(new Notification { message = message });
     }
 
     [TargetRpc]
@@ -505,6 +514,8 @@ public partial class PlayerData : NetworkBehaviour
             StackState stackState = baitReference.GetState<StackState>();
             if (stackState != null && stackState.currentAmount <= 0)
             {
+                TargetShowNotification($"You ran out of {baitReference.def.DisplayName}");
+
                 // Automatically replace with default bait (Hook with ID 0)
                 ItemInstance defaultBait = inventory.GetBaitByDefinitionId(0);
                 if (defaultBait == null)
