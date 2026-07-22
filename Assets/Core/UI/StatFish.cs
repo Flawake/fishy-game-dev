@@ -22,8 +22,8 @@ public class StatFish
         id = fish.id;
         amount = _amount;
         maxCaughtLength = fish.length;
-        areasCaught = new int[(int)fish.areaFishing];
-        baitsCaught = new int[fish.usedBait.Id];
+        areasCaught = new int[] { (int)fish.areaFishing };
+        baitsCaught = new int[] { fish.usedBait.Id };
     }
 
     public StatFish(int id, int amount, int maxCaughtLength, int[] areasCaught, int[] baitsCaught)
