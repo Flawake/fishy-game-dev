@@ -188,7 +188,8 @@ public class FriendSystem : NetworkBehaviour
     {
         MessageUIHandler.AddNotification(new Notification
         {
-            message = $"{senderName} sent you a friend request"
+            message = $"{senderName} sent you a friend request",
+            callback = () => GetComponentInChildren<FriendsGUIManager>().OpenFriendRequests(),
         });
     }
 
