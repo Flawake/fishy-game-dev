@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using ItemSystem;
+using TMPro;
 using UnityEngine;
 
 public class StoreUIManager : MonoBehaviour
@@ -14,10 +15,16 @@ public class StoreUIManager : MonoBehaviour
     [SerializeField]
     GameObject storeItemsHolder;
     [SerializeField]
+    TMP_Text bucksField;
+    [SerializeField]
+    TMP_Text coinsField;
+    [SerializeField]
 
     private void Start()
     {
         controller = GetComponentInParent<PlayerController>();
+        gameObject.GetComponentInParent<PlayerData>().BucksAmountChanged += UpdateMoneyFields;
+        gameObject.GetComponentInParent<PlayerData>().CoinsAmountChanged += UpdateMoneyFields;
     }
 
     public void ToggleStore()
@@ -111,5 +118,11 @@ public class StoreUIManager : MonoBehaviour
         {
             controller = GetComponentInParent<PlayerController>();
         }
+    }
+
+    private void UpdateMoneyFields()
+    {
+        bucksField.text = gameObject.GetComponentInParent<PlayerData>().GetFishBucks().ToString();
+        coinsField.text = gameObject.GetComponentInParent<PlayerData>().GetFishCoins().ToString();
     }
 }
