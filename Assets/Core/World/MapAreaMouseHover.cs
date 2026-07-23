@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -9,12 +10,20 @@ public class MapAreaMouseHover : MonoBehaviour, IPointerEnterHandler, IPointerEx
     RectTransform rectTransform;
     [SerializeField]
     GameObject areaNameBoxObject;
+    [SerializeField]
+    TMP_Text areaOnlinePlayersText;
+    [SerializeField]
+    AreaComponent area;
 
     public void OnPointerEnter(PointerEventData eventData)
     {
 
         if (areaNameBoxObject != null)
         {
+            areaOnlinePlayersText.text = "0";
+            if (GameNetworkManager.AreaPlayerCount.TryGetValue(area.area, out int onlinePlayerCount)) {
+                areaOnlinePlayersText.text = onlinePlayerCount.ToString();
+            }
             areaNameBoxObject.SetActive(true);
         }
     }

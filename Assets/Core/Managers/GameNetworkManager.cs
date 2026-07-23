@@ -27,6 +27,8 @@ public class GameNetworkManager : NetworkManager
 
     // Tracks the current area of each connected player (by connectionId) on the server for validation & anti-cheat
     internal static readonly Dictionary<int, Area> connectionCurrentArea = new Dictionary<int, Area>();
+    // Client-side snapshot of how many players are in each area, used for the worldmap hover.
+    public static readonly Dictionary<Area, int> AreaPlayerCount = new Dictionary<Area, int>();
     
     // Scene name of where the client currently is, this variable is meaningless on the server
     public static Scene ClientsActiveScene { get; protected set; }
@@ -103,6 +105,7 @@ public class GameNetworkManager : NetworkManager
         connUUID.Remove(conn);
         connectedPlayersInfo.Remove(conn.connectionId);
         connectionCurrentArea.Remove(conn.connectionId);
+        BroadcastAreaPlayerCounts();
 
         conn.identity.GetComponent<PlayerData>();
 
@@ -150,6 +153,21 @@ public class GameNetworkManager : NetworkManager
     {
         base.OnStartClient();
         NetworkClient.RegisterHandler<ArrivalInstructionMessage>(OnArrivalInstructionMessage);
+        NetworkClient.RegisterHandler<AreaPlayerCountMessage>(OnAreaPlayerCountMessage);
+    }
+
+    [Client]
+    void OnAreaPlayerCountMessage(AreaPlayerCountMessage msg)
+    {
+        AreaPlayerCount.Clear();
+        if (msg.entries == null)
+        {
+            return;
+        }
+        foreach (AreaPlayerCountEntry entry in msg.entries)
+        {
+            AreaPlayerCount[entry.area] = entry.count;
+        }
     }
 
     public static void SetEventSystemActive(string sceneName, bool active)
@@ -271,6 +289,7 @@ public class GameNetworkManager : NetworkManager
                 };
                 connectedPlayersInfo.Add(conn.connectionId, playerConnection);
                 connectionCurrentArea[conn.connectionId] = Area.Container;
+                BroadcastAreaPlayerCounts();
             }
             else
             {
@@ -311,6 +330,27 @@ public class GameNetworkManager : NetworkManager
 
         // Update current area tracking
         connectionCurrentArea[conn.connectionId] = data.requestedArea;
+        BroadcastAreaPlayerCounts();
+    }
+    
+    [Server]
+    private static void BroadcastAreaPlayerCounts()
+    {
+        Dictionary<Area, int> counts = new Dictionary<Area, int>();
+        foreach (Area area in connectionCurrentArea.Values)
+        {
+            counts.TryGetValue(area, out int current);
+            counts[area] = current + 1;
+        }
+
+        AreaPlayerCountEntry[] entries = new AreaPlayerCountEntry[counts.Count];
+        int i = 0;
+        foreach (KeyValuePair<Area, int> pair in counts)
+        {
+            entries[i++] = new AreaPlayerCountEntry { area = pair.Key, count = pair.Value };
+        }
+
+        NetworkServer.SendToAll(new AreaPlayerCountMessage { entries = entries });
     }
 
     [Server]
@@ -430,4 +470,18 @@ public struct ArrivalInstructionMessage : NetworkMessage
     public WorldTravel.CustomSpawnInstruction instruction;
     public Vector3 spawnPosition;
     public bool hasSpawnPosition;
+}
+
+// A single area -> player count pair. Areas with zero players are omitted from the snapshot.
+public struct AreaPlayerCountEntry
+{
+    public Area area;
+    public int count;
+}
+
+// Full snapshot of the per-area player counts, broadcast by the server to all clients whenever
+// the counts change. Clients rebuild GameNetworkManager.AreaPlayerCount from this.
+public struct AreaPlayerCountMessage : NetworkMessage
+{
+    public AreaPlayerCountEntry[] entries;
 }
