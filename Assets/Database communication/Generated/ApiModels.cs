@@ -464,7 +464,7 @@ namespace FishyGame.Api
         public string name = string.Empty;
         public string? selected_bait = null;
         public string? selected_rod = null;
-        public int total_playtime = 0;
+        public long total_playtime = 0;
         public int xp = 0;
     }
 }

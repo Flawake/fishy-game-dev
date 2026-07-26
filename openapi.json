@@ -2115,7 +2115,7 @@
                     },
                     "total_playtime": {
                         "type": "integer",
-                        "format": "int32"
+                        "format": "int64"
                     },
                     "xp": {
                         "type": "integer",
