@@ -21,6 +21,7 @@ public class FishingManager : NetworkBehaviour
     [SerializeField] PlayerInventory inventory;
     [SerializeField] PlayerData playerData;
     [SerializeField] RodAnimator rodAnimator;
+    [SerializeField] MissionManager missionManager;
     [SerializeField] Collider2D fishCollider;
     FishFight fishFight;
     CaughtDialogData caughtData;
@@ -352,6 +353,7 @@ public class FishingManager : NetworkBehaviour
             ItemDefinition fishDef = ItemRegistry.Get(currentFish.id);
             ItemInstance fishInstance = new ItemInstance(fishDef);
             playerDataManager.ServerAddItem(fishInstance, currentFish, true, true);
+            missionManager.FishCaught(currentFish.id);
         }
     }
 

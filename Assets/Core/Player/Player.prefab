@@ -2059,6 +2059,7 @@ GameObject:
   - component: {fileID: 3996301776217940549}
   - component: {fileID: 2600673011262952092}
   - component: {fileID: 1917053837910666563}
+  - component: {fileID: 5312884471096330175}
   - component: {fileID: 871487665807593460}
   - component: {fileID: 3391836200202609913}
   - component: {fileID: 1605114713381361352}
@@ -2216,6 +2217,7 @@ MonoBehaviour:
   inventory: {fileID: 1831225255022429458}
   playerData: {fileID: 3625476836490181}
   rodAnimator: {fileID: 7029505193400487229}
+  missionManager: {fileID: 5312884471096330175}
   fishCollider: {fileID: 642131257449331877}
   playerCamera: {fileID: 2598969918979025384}
   isFishing: 0
@@ -2355,6 +2357,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  missionManager: {fileID: 5312884471096330175}
 --- !u!114 &871487665807593460
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3020,3 +3023,19 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &5312884471096330175
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7976679866149745988}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06cec15519e8b4bf6a810fcbf08180e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 1
+  syncInterval: 0.1
+  fishdex: {fileID: 1917053837910666563}

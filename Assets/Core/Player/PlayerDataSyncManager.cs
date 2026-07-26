@@ -5,6 +5,7 @@ using Mirror;
 using Grants;
 using System.Collections.Generic;
 using System.Linq;
+using FishyGame.Api;
 
 //Item manager should manage the syncronisation of items between the server and client.
 public class PlayerDataSyncManager : MonoBehaviour

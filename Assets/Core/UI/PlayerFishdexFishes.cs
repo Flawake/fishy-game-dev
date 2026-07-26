@@ -7,6 +7,11 @@ public class PlayerFishdexFishes : NetworkBehaviour
 {
     public readonly SyncList<StatFish> statFishContainer = new();
 
+    [SerializeField] MissionManager missionManager;
+
+    /// <summary>Number of distinct species this player has discovered.</summary>
+    public int DiscoveredSpeciesCount => statFishContainer.Count;
+
     [Server]
     public void SaveFishStats(UserData playerData)
     {
@@ -70,6 +75,7 @@ public class PlayerFishdexFishes : NetworkBehaviour
         else
         {
             statFishContainer.Add(new StatFish(fish, 1));
+            missionManager.FishdexUpdated(statFishContainer.Count);
         }
     }
 

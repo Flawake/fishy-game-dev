@@ -1,4 +1,5 @@
 using System;
+using FishyGame.Api;
 using Mirror;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -80,28 +81,20 @@ public class HerbSpawnManager : MonoBehaviour
         DatabaseCommunications.GetCurrentHerbQuest(OnQuestResponse);
     }
 
-    private void OnQuestResponse(WebRequestHandler.ResponseMessageData response)
+    private void OnQuestResponse(ApiResult<CurrentHerbQuestResponse> result)
     {
         _requestInFlight = false;
 
-        if (response.EndRequestReason != WebRequestHandler.RequestEndReason.success)
+        // The generated client reports both transport failures and unreadable
+        // bodies through Error, so the manual JsonUtility parse is gone.
+        if (!result.Success)
         {
-            Debug.LogWarning($"[HerbSpawnManager] Quest poll failed ({response.EndRequestReason}), retrying in {RetrySeconds}s");
+            Debug.LogWarning($"[HerbSpawnManager] Quest poll failed ({result.Error}), retrying in {RetrySeconds}s");
             ScheduleRetry();
             return;
         }
 
-        CurrentHerbQuestResponse parsed = null;
-        try
-        {
-            parsed = JsonUtility.FromJson<CurrentHerbQuestResponse>(response.ResponseData);
-        }
-        catch (Exception e)
-        {
-            Debug.LogWarning($"[HerbSpawnManager] Could not parse quest response: {e.Message}");
-        }
-
-        HerbQuest quest = HerbQuestManager.FromResponse(parsed);
+        HerbQuest quest = HerbQuestManager.FromResponse(result.Value);
         if (quest == null)
         {
             ScheduleRetry();
