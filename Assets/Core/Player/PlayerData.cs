@@ -594,7 +594,7 @@ public partial class PlayerData : NetworkBehaviour
             SetFishBucks(playerData.bucks, true);
             SetXp(playerData.xp);
             SetStartPlayTime();
-            // total_playtime is int32 in the contract, the game tracks it as ulong
+            // total_playtime is int64 in the contract, the game tracks it as uint64(ulong)
             SetTotalPlayTimeAtStart((ulong)Math.Max(0, playerData.total_playtime));
             ServerLoadActiveEffects(playerData.active_effects);
             ServerLoadLastCompletedHerbQuestId(playerData.LastCompletedHerbQuestId);
@@ -606,7 +606,7 @@ public partial class PlayerData : NetworkBehaviour
             mail.SetMails(userID, playerData.mailbox);
             friendSystem.SetInitialFriendList(playerData.friends);
             friendSystem.SetInitialFriendRequestList(playerData.friend_requests);
-            missionManager.SetInitialMissionData()
+            missionManager.SetInitialMissionData(playerData.active_missions, playerData.completed_missions);
             
             // Ensure player has default rod and bait
             EnsureDefaultItems();
