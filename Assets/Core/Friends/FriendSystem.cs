@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
 
@@ -55,18 +56,19 @@ public class FriendSystem : NetworkBehaviour
     private SyncDictionary<Guid, FriendRequest> friendRequests = new SyncDictionary<Guid, FriendRequest>();
 
     [Server]
-    public void SetInitialFriendList(UserData.Friend[] initialFriends)
+    // fully qualified: this file also declares a game-side Friend/FriendRequest
+    public void SetInitialFriendList(List<FishyGame.Api.Friend> initialFriends)
     {
-        foreach (UserData.Friend initialFriend in initialFriends)
+        foreach (FishyGame.Api.Friend initialFriend in initialFriends)
         {
             friends.Add(initialFriend.friendId, new Friend(initialFriend.friendId, initialFriend.friendName));
         }
     }
     
     [Server]
-    public void SetInitialFriendRequestList(UserData.FriendRequest[] initialFriendRequests)
+    public void SetInitialFriendRequestList(List<FishyGame.Api.FriendRequest> initialFriendRequests)
     {
-        foreach (UserData.FriendRequest initialFriendRequest in initialFriendRequests)
+        foreach (FishyGame.Api.FriendRequest initialFriendRequest in initialFriendRequests)
         {
             FriendRequestType requestType = initialFriendRequest.RequestSenderId == playerData.GetUuid() ? FriendRequestType.SEND : FriendRequestType.RECEIVED;
             friendRequests.Add(initialFriendRequest.otherId, new FriendRequest(initialFriendRequest.otherId, initialFriendRequest.otherName, requestType));

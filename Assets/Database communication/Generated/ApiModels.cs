@@ -30,24 +30,31 @@ namespace FishyGame.Api
     /// Request body for recording that a player accepted (saw) the current Herb quest.
     /// </summary>
     [Serializable]
-    public class AcceptDailyQuestRequest
+    public partial class AcceptDailyQuestRequest
     {
         public string herb_quest_id = string.Empty;
         public string user_id = string.Empty;
     }
 
     [Serializable]
-    public class ActiveEffect
+    public partial class ActiveEffect
     {
         public string expiry_time = string.Empty;
         public int item_id = 0;
+    }
+
+    [Serializable]
+    public partial class ActiveMission
+    {
+        public int mission_id = 0;
+        public int mission_progress = 0;
     }
 
     /// <summary>
     /// Request body for adding an active effect
     /// </summary>
     [Serializable]
-    public class AddActiveEffectRequest
+    public partial class AddActiveEffectRequest
     {
         public string expiry_time = string.Empty;
         public int item_id = 0;
@@ -58,7 +65,7 @@ namespace FishyGame.Api
     /// Request body for adding playtime of a player
     /// </summary>
     [Serializable]
-    public class AddFishRequest
+    public partial class AddFishRequest
     {
         public int area_id = 0;
         public int bait_id = 0;
@@ -69,7 +76,7 @@ namespace FishyGame.Api
     }
 
     [Serializable]
-    public class AddOrUpdateItemRequest
+    public partial class AddOrUpdateItemRequest
     {
         public int definition_id = 0;
         public string item_uuid = string.Empty;
@@ -81,7 +88,7 @@ namespace FishyGame.Api
     /// Request body for adding playtime of a player
     /// </summary>
     [Serializable]
-    public class AddPlayTimeRequest
+    public partial class AddPlayTimeRequest
     {
         public int amount = 0;
         public string user_id = string.Empty;
@@ -91,7 +98,7 @@ namespace FishyGame.Api
     /// Request body for archiving a mail.
     /// </summary>
     [Serializable]
-    public class ArchiveMailRequest
+    public partial class ArchiveMailRequest
     {
         public bool archived = false;
         public string mail_id = string.Empty;
@@ -102,7 +109,7 @@ namespace FishyGame.Api
     /// Request body for buying an item.
     /// </summary>
     [Serializable]
-    public class BuyItemRequest
+    public partial class BuyItemRequest
     {
         public string bought_using = string.Empty;
         public string buyer_id = string.Empty;
@@ -116,7 +123,7 @@ namespace FishyGame.Api
     /// Request body for changing a password.
     /// </summary>
     [Serializable]
-    public class ChangePasswordRequest
+    public partial class ChangePasswordRequest
     {
         public string new_password = string.Empty;
         public string username = string.Empty;
@@ -126,7 +133,7 @@ namespace FishyGame.Api
     /// Request body for handing in the current Herb quest.
     /// </summary>
     [Serializable]
-    public class CompleteDailyQuestRequest
+    public partial class CompleteDailyQuestRequest
     {
         public List<HandInFish> fishes = new List<HandInFish>();
         public string herb_quest_id = string.Empty;
@@ -142,7 +149,7 @@ namespace FishyGame.Api
     /// Request body for completing a mission.
     /// </summary>
     [Serializable]
-    public class CompleteMissionRequest
+    public partial class CompleteMissionRequest
     {
         public int mission_id = 0;
         public string user_id = string.Empty;
@@ -152,7 +159,7 @@ namespace FishyGame.Api
     /// Request body for creating a mail.
     /// </summary>
     [Serializable]
-    public class CreateMailRequest
+    public partial class CreateMailRequest
     {
         public string mail_id = string.Empty;
         public string message = string.Empty;
@@ -165,7 +172,7 @@ namespace FishyGame.Api
     /// Request body for creating a user.
     /// </summary>
     [Serializable]
-    public class CreateUserRequest
+    public partial class CreateUserRequest
     {
         public string email = string.Empty;
         public string password = string.Empty;
@@ -176,7 +183,7 @@ namespace FishyGame.Api
     /// The currently active Herb quest (global, same for every player).
     /// </summary>
     [Serializable]
-    public class CurrentHerbQuestResponse
+    public partial class CurrentHerbQuestResponse
     {
         public int area_id = 0;
         public List<HerbQuestFishDto> fishes = new List<HerbQuestFishDto>();
@@ -192,7 +199,7 @@ namespace FishyGame.Api
     /// Request body for deleting a mail.
     /// </summary>
     [Serializable]
-    public class DeleteMailRequest
+    public partial class DeleteMailRequest
     {
         public string mail_id = string.Empty;
         public string user_id = string.Empty;
@@ -202,14 +209,14 @@ namespace FishyGame.Api
     /// Request body for adding an item.
     /// </summary>
     [Serializable]
-    public class DestroyItemRequest
+    public partial class DestroyItemRequest
     {
         public string item_uid = string.Empty;
         public string user_id = string.Empty;
     }
 
     [Serializable]
-    public class FishData
+    public partial class FishData
     {
         public int amount = 0;
         public List<int> areas = new List<int>();
@@ -220,7 +227,7 @@ namespace FishyGame.Api
     }
 
     [Serializable]
-    public class FishToSell
+    public partial class FishToSell
     {
         public int fish_amount = 0;
         public int fish_id = 0;
@@ -229,14 +236,14 @@ namespace FishyGame.Api
     }
 
     [Serializable]
-    public class Friend
+    public partial class Friend
     {
         public string friend_id = string.Empty;
         public string friend_name = string.Empty;
     }
 
     [Serializable]
-    public class FriendRequest
+    public partial class FriendRequest
     {
         public string other_id = string.Empty;
         public string other_name = string.Empty;
@@ -247,7 +254,7 @@ namespace FishyGame.Api
     /// Request body for adding a friend.
     /// </summary>
     [Serializable]
-    public class FriendRequests
+    public partial class FriendRequests
     {
         public string sender_id = string.Empty;
         public string user_one = string.Empty;
@@ -258,7 +265,7 @@ namespace FishyGame.Api
     /// A single fish stack the player hands in for the Herb quest.
     /// </summary>
     [Serializable]
-    public class HandInFish
+    public partial class HandInFish
     {
         /// <summary>
         /// The amount left in the stack after handing in; 0 or less destroys the stack.
@@ -270,7 +277,7 @@ namespace FishyGame.Api
     }
 
     [Serializable]
-    public class HandleFriendRequest
+    public partial class HandleFriendRequest
     {
         public bool request_accepted = false;
         public string user_one = string.Empty;
@@ -281,14 +288,14 @@ namespace FishyGame.Api
     /// One fish species the current Herb quest asks for.
     /// </summary>
     [Serializable]
-    public class HerbQuestFishDto
+    public partial class HerbQuestFishDto
     {
         public int amount = 0;
         public int fish_id = 0;
     }
 
     [Serializable]
-    public class InventoryItem
+    public partial class InventoryItem
     {
         public int definition_id = 0;
         public string item_uuid = string.Empty;
@@ -296,21 +303,21 @@ namespace FishyGame.Api
     }
 
     [Serializable]
-    public class LoginRequest
+    public partial class LoginRequest
     {
         public string password = string.Empty;
         public string username = string.Empty;
     }
 
     [Serializable]
-    public class LoginResponse
+    public partial class LoginResponse
     {
         public int code = 0;
         public string jwt = string.Empty;
     }
 
     [Serializable]
-    public class MailEntry
+    public partial class MailEntry
     {
         public bool archived = false;
         public string mail_id = string.Empty;
@@ -325,7 +332,7 @@ namespace FishyGame.Api
     /// Request body for progressing a mission.
     /// </summary>
     [Serializable]
-    public class ProgressMissionRequest
+    public partial class ProgressMissionRequest
     {
         public int mission_id = 0;
         public int new_progress = 0;
@@ -336,7 +343,7 @@ namespace FishyGame.Api
     /// Request body for reading a mail.
     /// </summary>
     [Serializable]
-    public class ReadMailRequest
+    public partial class ReadMailRequest
     {
         public string mail_id = string.Empty;
         public bool read = false;
@@ -347,7 +354,7 @@ namespace FishyGame.Api
     /// Request body for removing expired effects for a specific user
     /// </summary>
     [Serializable]
-    public class RemoveExpiredEffectRequest
+    public partial class RemoveExpiredEffectRequest
     {
         public int item_id = 0;
         public string user_id = string.Empty;
@@ -357,7 +364,7 @@ namespace FishyGame.Api
     /// Request body for removing a friend.
     /// </summary>
     [Serializable]
-    public class RemoveFriend
+    public partial class RemoveFriend
     {
         public string user_one = string.Empty;
         public string user_two = string.Empty;
@@ -367,7 +374,7 @@ namespace FishyGame.Api
     /// Request body for retrieving all data belonging to a single player.
     /// </summary>
     [Serializable]
-    public class RetrieveDataRequest
+    public partial class RetrieveDataRequest
     {
         public string user_id = string.Empty;
     }
@@ -376,7 +383,7 @@ namespace FishyGame.Api
     /// Request body for requesting a players username.
     /// </summary>
     [Serializable]
-    public class RetrieveUsernameRequest
+    public partial class RetrieveUsernameRequest
     {
         public string email = string.Empty;
     }
@@ -385,7 +392,7 @@ namespace FishyGame.Api
     /// Request body for adding playtime of a player
     /// </summary>
     [Serializable]
-    public class SelectItemRequest
+    public partial class SelectItemRequest
     {
         public string item_type = string.Empty;
         public string item_uid = string.Empty;
@@ -396,7 +403,7 @@ namespace FishyGame.Api
     /// Request body for selling a fish
     /// </summary>
     [Serializable]
-    public class SellFishesRequest
+    public partial class SellFishesRequest
     {
         public List<FishToSell> fishes = new List<FishToSell>();
         public int price = 0;
@@ -407,14 +414,14 @@ namespace FishyGame.Api
     /// Request body for starting a new mission.
     /// </summary>
     [Serializable]
-    public class StartMissionRequest
+    public partial class StartMissionRequest
     {
         public int mission_id = 0;
         public string user_id = string.Empty;
     }
 
     [Serializable]
-    public class TradeItemRequest
+    public partial class TradeItemRequest
     {
         public int item_amount = 0;
         public int item_id = 0;
@@ -423,7 +430,7 @@ namespace FishyGame.Api
     }
 
     [Serializable]
-    public class TradeRequest
+    public partial class TradeRequest
     {
         public int user_one_bucks_received = 0;
         public string user_one_id = string.Empty;
@@ -434,11 +441,13 @@ namespace FishyGame.Api
     }
 
     [Serializable]
-    public class UserData
+    public partial class UserData
     {
         public List<ActiveEffect> active_effects = new List<ActiveEffect>();
+        public List<ActiveMission> active_missions = new List<ActiveMission>();
         public int bucks = 0;
         public int coins = 0;
+        public List<int> completed_missions = new List<int>();
         public List<FishData> fish_data = new List<FishData>();
         public List<FriendRequest> friend_requests = new List<FriendRequest>();
         public List<Friend> friends = new List<Friend>();

@@ -8,4 +8,9 @@ public class MakeTradesMission : Mission<TradeMadeEvent>
     {
         state.AddProgress();
     }
+
+    public override Sprite GetMissionIcon()
+    {
+        return StaticMissionIconRegistry.makeTradesMissionIcon;
+    }
 }

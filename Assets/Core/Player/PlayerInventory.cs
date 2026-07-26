@@ -17,11 +17,11 @@ public class PlayerInventory : NetworkBehaviour
     // Inventory loading -------------------------------------------------
     // ------------------------------------------------------------------
     [Server]
-    public void SaveInventory(UserData userData)
+    public void SaveInventory(FishyGame.Api.UserData userData)
     {
         items.Clear();
 
-        foreach (UserData.InventoryItem inv in userData.inventory_items)
+        foreach (FishyGame.Api.InventoryItem inv in userData.inventory_items)
         {
             ItemDefinition def = ItemRegistry.Get(inv.definition_id);
             if (def == null)

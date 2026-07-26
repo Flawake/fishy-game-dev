@@ -13,14 +13,14 @@ public class PlayerFishdexFishes : NetworkBehaviour
     public int DiscoveredSpeciesCount => statFishContainer.Count;
 
     [Server]
-    public void SaveFishStats(UserData playerData)
+    public void SaveFishStats(FishyGame.Api.UserData playerData)
     {
-        if(playerData.fish_data.Length == 0)
+        if(playerData.fish_data.Count == 0)
         {
             return;
         }
 
-        foreach(UserData.FishData fish in playerData.fish_data)
+        foreach(FishyGame.Api.FishData fish in playerData.fish_data)
         {
             statFishContainer.Add(new StatFish(fish));
         }

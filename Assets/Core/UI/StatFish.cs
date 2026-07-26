@@ -8,13 +8,14 @@ public class StatFish
     public int[] areasCaught;
     public int[] baitsCaught;
 
-    public StatFish(UserData.FishData fish)
+    public StatFish(FishyGame.Api.FishData fish)
     {
         id = fish.fish_id;
         amount = fish.amount;
         maxCaughtLength = fish.max_length;
-        areasCaught = fish.areas;
-        baitsCaught = fish.baits;
+        // the generated DTO uses List<int>; SyncList needs the arrays
+        areasCaught = fish.areas.ToArray();
+        baitsCaught = fish.baits.ToArray();
     }
 
     public StatFish(CurrentFish fish, int _amount)

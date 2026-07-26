@@ -9,6 +9,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.UI;
 using TradeSystem;
+using FishyGame.Api;
 
 [AddComponentMenu("")]
 public class GameNetworkManager : NetworkManager
@@ -254,17 +255,20 @@ public class GameNetworkManager : NetworkManager
     }
 
     [Server]
-    void PlayerDataReceived(WebRequestHandler.ResponseMessageData data)
+    void PlayerDataReceived(NetworkConnectionToClient conn, ApiResult<UserData> result)
     {
-        if (data.EndRequestReason != WebRequestHandler.RequestEndReason.success)
+        if (!result.Success)
         {
-            data.Connection.Disconnect();
+            Debug.LogWarning($"Could not retrieve player data: {result.Error}");
+            conn.Disconnect();
+            return;
         }
-        PlayerAuthData authData = data.Connection.authenticationData as PlayerAuthData;
-        authData.playerData = data;
+
+        PlayerAuthData authData = conn.authenticationData as PlayerAuthData;
+        authData.playerData = result.Value;
         if (authData.IsDataComplete())
         {
-            OnEndCreateCharacter(data.Connection);
+            OnEndCreateCharacter(conn);
         }
     }
 
@@ -272,13 +276,13 @@ public class GameNetworkManager : NetworkManager
     // Spawns player in when all data from the database has been received
     void OnEndCreateCharacter(NetworkConnectionToClient conn)
     {
-        WebRequestHandler.ResponseMessageData playerData = (conn.authenticationData as PlayerAuthData).playerData.Value;
+        UserData playerData = (conn.authenticationData as PlayerAuthData).playerData;
         GameObject playerObject = (conn.authenticationData as PlayerAuthData).playerObject;
         PlayerData dataPlayer = playerObject.GetComponent<PlayerData>();
-        
+
         if (connUUID.TryGetValue(conn, out Guid uuid) && uuid != Guid.Empty)
         {
-            if(dataPlayer.ParsePlayerData(playerData.ResponseData, uuid))
+            if(dataPlayer.ParsePlayerData(playerData, uuid))
             {
                 NetworkServer.AddPlayerForConnection(conn, playerObject);
                 
@@ -439,7 +443,8 @@ public class GameNetworkManager : NetworkManager
 public class PlayerAuthData
 {
     public GameObject playerObject;
-    public WebRequestHandler.ResponseMessageData? playerData;
+    // set once UserDataApi.RetrieveAllPlayerdata comes back; null until then
+    public UserData playerData;
 
     public bool IsDataComplete()
     {

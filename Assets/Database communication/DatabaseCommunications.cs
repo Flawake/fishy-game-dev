@@ -30,7 +30,7 @@ public static class DatabaseCommunications
     }
 
     [Server]
-    public static void RegisterRequest(string username, string password, string email, NetworkConnectionToClient conn, Action<NetworkConnectionToClient, ApiResult<bool>> callback)
+    public static void RegisterRequest(string username, string password, string email, NetworkConnectionToClient conn, Action<NetworkConnectionToClient, ApiResult<LoginResponse>> callback)
     {
         UsersApi.Register(
             new CreateUserRequest
@@ -130,24 +130,15 @@ public static class DatabaseCommunications
             callback);
     }
 
-    // NOT MIGRATED YET. UserDataApi.RetrieveAllPlayerdata hands back a parsed
-    // FishyGame.Api.UserData, but the whole downstream chain expects raw JSON:
-    // PlayerAuthData.playerData stores a ResponseMessageData, and
-    // PlayerData.ParsePlayerData deserialises into the hand-written UserData
-    // struct in Assets/items/userDataStruct.cs (arrays plus helper properties
-    // like LastCompletedHerbQuestId, which the generated class does not have).
-    // Migrating this means reconciling those two UserData types first.
     [Server]
-    public static void RetrievePlayerData(Guid userID, NetworkConnectionToClient conn, WebRequestHandler.WebRequestCallback callback)
+    public static void RetrievePlayerData(Guid userID, NetworkConnectionToClient conn, Action<NetworkConnectionToClient, ApiResult<UserData>> callback)
     {
-        RetrieveDataRequest requestData = new RetrieveDataRequest
-        {
-            user_id = userID.ToString()
-        };
-
-        string json = JsonUtility.ToJson(requestData);
-        byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
-        WebRequestHandler.SendWebRequest(DatabaseEndpoints.getPlayerDataEndpoint, bodyRaw, conn, callback);
+        UserDataApi.RetrieveAllPlayerdata(
+            new RetrieveDataRequest
+            {
+                user_id = userID.ToString()
+            },
+            result => callback?.Invoke(conn, result));
     }
 
     [Server]
@@ -190,7 +181,6 @@ public static class DatabaseCommunications
                 item_uuid = item.uuid.ToString(),
                 item_state_blob = Convert.ToBase64String(StatePacker.Pack(item.state)),
                 item_price = price,
-                // CurrencyType is COINS/BUCKS, matching the MoneyType enum in the spec.
                 bought_using = currencyType.ToString(),
             },
             callback);
@@ -269,7 +259,6 @@ public static class DatabaseCommunications
             {
                 mail_id = mail.mailUuid.ToString(),
                 sender_id = mail.senderUuid.ToString(),
-                // the generated DTO uses List<string>, the hand-written one used string[]
                 receiver_ids = new List<string> { mail.receiverUuid.ToString() },
                 title = mail.title,
                 message = mail.message,

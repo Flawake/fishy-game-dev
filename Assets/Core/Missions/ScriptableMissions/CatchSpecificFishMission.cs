@@ -14,4 +14,9 @@ public class CatchSpecificFishMission : Mission<FishCaughtEvent>
 
         state.AddProgress();
     }
+
+    public override Sprite GetMissionIcon()
+    {
+        return fishDefinition.Icon;
+    }
 }

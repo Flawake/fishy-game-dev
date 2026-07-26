@@ -69,7 +69,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "boolean"
+                                    "$ref": "#/components/schemas/LoginResponse"
                                 }
                             }
                         }
@@ -1094,6 +1094,23 @@
                     }
                 }
             },
+            "ActiveMission": {
+                "type": "object",
+                "required": [
+                    "mission_id",
+                    "mission_progress"
+                ],
+                "properties": {
+                    "mission_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "mission_progress": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                }
+            },
             "AddActiveEffectRequest": {
                 "type": "object",
                 "description": "Request body for adding an active effect",
@@ -2001,13 +2018,21 @@
                     "mailbox",
                     "friends",
                     "friend_requests",
-                    "active_effects"
+                    "active_effects",
+                    "completed_missions",
+                    "active_missions"
                 ],
                 "properties": {
                     "active_effects": {
                         "type": "array",
                         "items": {
                             "$ref": "#/components/schemas/ActiveEffect"
+                        }
+                    },
+                    "active_missions": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ActiveMission"
                         }
                     },
                     "bucks": {
@@ -2017,6 +2042,13 @@
                     "coins": {
                         "type": "integer",
                         "format": "int32"
+                    },
+                    "completed_missions": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer",
+                            "format": "int32"
+                        }
                     },
                     "fish_data": {
                         "type": "array",

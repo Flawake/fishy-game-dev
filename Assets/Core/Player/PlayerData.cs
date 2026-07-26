@@ -7,6 +7,7 @@ using GlobalCompetitionSystem;
 using ItemSystem;
 using UnityEngine;
 using Mirror.BouncyCastle.Ocsp;
+using FishyGame.Api;
 
 public partial class PlayerData : NetworkBehaviour
 {
@@ -24,6 +25,8 @@ public partial class PlayerData : NetworkBehaviour
     MailSystem mail;
     [SerializeField]
     FriendSystem friendSystem;
+    [SerializeField]
+    MissionManager missionManager;
     [SerializeField]
     int availableFishCoins;
     [SerializeField]
@@ -574,17 +577,25 @@ public partial class PlayerData : NetworkBehaviour
     }
 
     [Server]
-    public bool ParsePlayerData(string jsonPlayerData, Guid userID)
+    // Takes the already-parsed DTO: the generated client deserialises the
+    // response, so there is no JSON left to read here.
+    public bool ParsePlayerData(UserData playerData, Guid userID)
     {
         try
         {
-            UserData playerData = JsonUtility.FromJson<UserData>(jsonPlayerData);
+            if (playerData == null)
+            {
+                Debug.LogWarning("ParsePlayerData received no player data");
+                return false;
+            }
+
             SetUuid(userID);
             SetFishCoins(playerData.coins, true);
             SetFishBucks(playerData.bucks, true);
             SetXp(playerData.xp);
             SetStartPlayTime();
-            SetTotalPlayTimeAtStart(playerData.total_playtime);
+            // total_playtime is int32 in the contract, the game tracks it as ulong
+            SetTotalPlayTimeAtStart((ulong)Math.Max(0, playerData.total_playtime));
             ServerLoadActiveEffects(playerData.active_effects);
             ServerLoadLastCompletedHerbQuestId(playerData.LastCompletedHerbQuestId);
             ServerLoadLastAcceptedHerbQuestId(playerData.LastAcceptedHerbQuestId);
@@ -595,6 +606,7 @@ public partial class PlayerData : NetworkBehaviour
             mail.SetMails(userID, playerData.mailbox);
             friendSystem.SetInitialFriendList(playerData.friends);
             friendSystem.SetInitialFriendRequestList(playerData.friend_requests);
+            missionManager.SetInitialMissionData()
             
             // Ensure player has default rod and bait
             EnsureDefaultItems();
@@ -699,11 +711,12 @@ public partial class PlayerData : NetworkBehaviour
     }
 
     [Server]
-    private void ServerLoadActiveEffects(UserData.ActiveEffect[] effects)
+    // fully qualified: ActiveEffect is also a game-side struct in Core/Utils
+    private void ServerLoadActiveEffects(List<FishyGame.Api.ActiveEffect> effects)
     {
         activeSpecialEffects.Clear();
-        
-        foreach (UserData.ActiveEffect effect in effects)
+
+        foreach (FishyGame.Api.ActiveEffect effect in effects)
         {
             if (effect.ExpiryTime > DateTime.UtcNow)
             {

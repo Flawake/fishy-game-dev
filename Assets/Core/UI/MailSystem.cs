@@ -33,9 +33,9 @@ public class MailSystem : NetworkBehaviour
     }
 
     [Server]
-    public void SetMails(Guid playerUuid, UserData.MailEntry[] mails)
+    public void SetMails(Guid playerUuid, List<FishyGame.Api.MailEntry> mails)
     {
-        foreach (UserData.MailEntry databaseMail in mails)
+        foreach (FishyGame.Api.MailEntry databaseMail in mails)
         {
             Mail mail = new Mail(playerUuid, databaseMail.title, databaseMail.message, databaseMail.sender_name);
             playerMails.Add(mail);
