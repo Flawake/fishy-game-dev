@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
+using FishyGame.Api;
 using Mirror;
-using UnityEditor.SceneManagement;
 using UnityEngine;
 
 /// <summary>
@@ -17,9 +17,7 @@ public struct MissionState
 }
 
 /// <summary>
-/// Per-player mission tracking. Lives on the Player prefab next to
-/// PlayerFishdexFishes and PlayerDataSyncManager.
-///
+/// Per-player mission tracking. Lives on the Player prefab.
 /// Progress is server-authoritative: only [Server] code mutates it, and the
 /// owning client receives a read-only copy. A modified client cannot award
 /// itself mission rewards.
@@ -43,6 +41,32 @@ public class MissionManager : NetworkBehaviour
     {
         // Mission progress is nobody else's business.
         syncMode = SyncMode.Owner;
+    }
+
+    [Server]
+    public void SetInitialMissionData(List<ActiveMission> activeMissions, List<int> completedMissions)
+    {
+        foreach(ActiveMission activeMission in activeMissions)
+        {
+            this.activeMissions.Add(
+                new MissionWrapper(MissionRegistry.Get(activeMission.mission_id), activeMission.mission_progress)
+            );
+        }
+
+        foreach(MissionWrapper mission in this.activeMissions)
+        {
+            syncedMissions.Add(new MissionState
+            {
+                missionID = mission.MissionID,
+                progress = mission.Progress,
+                completed = mission.Completed,
+            });
+        }
+
+        foreach(int missionID in completedMissions)
+        {
+            completedMissionIDs.Add(missionID);
+        }
     }
 
     // ---- Dispatch ---------------------------------------------------------
@@ -167,9 +191,6 @@ public class MissionManager : NetworkBehaviour
         completed = wrapper.Completed,
     };
 
-    // TODO: load active mission progress from the database on login and persist
-    // it on change, the way PlayerFishdexFishes/DatabaseCommunications does.
-
 #if UNITY_EDITOR
     [UnityEditor.InitializeOnLoadMethod]
     public static void VerifyMissions()
@@ -208,7 +229,7 @@ public class MissionManager : NetworkBehaviour
             }
         }
         
-        // Should check that there are no missions with the same requirements
+        // TODO: Should check that there are no missions with the same requirements
     }
 #endif
 }

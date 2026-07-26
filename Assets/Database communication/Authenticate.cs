@@ -1,11 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Networking;
 using TMPro;
 using Mirror;
-using System.Linq;
 using System.Text.RegularExpressions;
 
 public class Authenticate : MonoBehaviour

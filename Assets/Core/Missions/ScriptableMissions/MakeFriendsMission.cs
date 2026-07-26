@@ -8,4 +8,9 @@ public class MakeFriendsMission : Mission<FriendMadeEvent>
     {
         state.AddProgress();
     }
+
+    public override Sprite GetMissionIcon()
+    {
+        return StaticMissionIconRegistry.makeFriendsMissionIcon;
+    }
 }

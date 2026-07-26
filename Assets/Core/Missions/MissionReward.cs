@@ -1,10 +1,12 @@
 using System;
+using System.Reflection.Emit;
 using ItemSystem;
 using UnityEngine;
 
 public interface IMissionReward
 {
     public void DistributeReward();
+    public string GetRewardDescription();
     public Sprite GetIcon();
 }
 
@@ -12,10 +14,13 @@ public interface IMissionReward
 public class MissionRewardMoney : IMissionReward
 {
     public StoreManager.CurrencyType rewardCurrency;
+    public int rewardAmount;
     public void DistributeReward()
     {
         
     }
+
+    public string GetRewardDescription() => $"{rewardAmount} {rewardCurrency}";
 
     public Sprite GetIcon()
     {
@@ -40,8 +45,18 @@ public class MissionRewardItem : IMissionReward
         
     }
 
+    public string GetRewardDescription()
+    {
+        string amount = "";
+        if (rewardItem.GetState<StackState>() != null)
+        {
+            amount = rewardItem.GetState<StackState>().currentAmount.ToString();
+        }
+        return $"{amount} {rewardItem.def.name}";
+    }
+
     public Sprite GetIcon()
     {
-        return null;
+        return rewardItem.def.Icon;
     }
 }

@@ -8,4 +8,9 @@ public class FishdexMilestoneMission : Mission<FishdexUpdatedEvent>
     {
         state.SetProgress(missionEvent.TotalSpeciesDiscovered);
     }
+
+    public override Sprite GetMissionIcon()
+    {
+        return StaticMissionIconRegistry.fishdexProgressMissionIcon;
+    }
 }

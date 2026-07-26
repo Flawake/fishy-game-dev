@@ -181,51 +181,35 @@ public class PlayerAuthenticator : NetworkAuthenticator
         DatabaseCommunications.RegisterRequest(username, password, email, conn, EndRegisterRequestMessage);
     }
 
-    // Login goes through the generated client, so it gets a typed LoginResponse and
-    // the connection back from the closure instead of from ResponseMessageData.
+    // Both auth flows go through the generated client now, so both get a typed
+    // LoginResponse and the connection back from the closure.
     void EndLoginRequestMessage(NetworkConnectionToClient conn, ApiResult<LoginResponse> result)
+    {
+        EndAuthRequest(conn, result, true);
+    }
+
+    void EndRegisterRequestMessage(NetworkConnectionToClient conn, ApiResult<LoginResponse> result)
+    {
+        EndAuthRequest(conn, result, false);
+    }
+
+    void EndAuthRequest(NetworkConnectionToClient conn, ApiResult<LoginResponse> result, bool isLogin)
     {
         if (!result.Success)
         {
             Debug.LogError(result.Error);
-            CompleteAuthRequest(conn, false, null, true);
+            CompleteAuthRequest(conn, false, null, isLogin);
             return;
         }
 
-        AuthResponse payload = result.Value == null
-            ? null
-            : new AuthResponse { code = result.Value.code, jwt = result.Value.jwt };
-
-        CompleteAuthRequest(conn, true, payload, true);
-    }
-
-    // Register still uses the hand-written path until it is migrated too.
-    void EndRegisterRequestMessage(WebRequestHandler.ResponseMessageData response)
-    {
-        bool transportSucceeded =
-            response.EndRequestReason == WebRequestHandler.RequestEndReason.success;
-
-        AuthResponse payload = null;
-        if (transportSucceeded)
-        {
-            try
-            {
-                payload = JsonUtility.FromJson<AuthResponse>(response.ResponseData);
-            }
-            catch (Exception e)
-            {
-                Debug.LogError(e);
-            }
-        }
-
-        CompleteAuthRequest(response.Connection, transportSucceeded, payload, false);
+        CompleteAuthRequest(conn, true, result.Value, isLogin);
     }
 
     /// <summary>
     /// Shared tail of both auth flows. A null payload means the response could not
     /// be read, which is reported as code 3 exactly as before.
     /// </summary>
-    void CompleteAuthRequest(NetworkConnectionToClient conn, bool transportSucceeded, AuthResponse payload, bool isLogin)
+    void CompleteAuthRequest(NetworkConnectionToClient conn, bool transportSucceeded, LoginResponse payload, bool isLogin)
     {
         if (!transportSucceeded)
         {

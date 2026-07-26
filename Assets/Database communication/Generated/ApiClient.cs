@@ -280,9 +280,9 @@ namespace FishyGame.Api
         /// Creates a user. The email and username should be unique.
         /// </summary>
         /// <remarks>POST /account/register</remarks>
-        public static void Register(CreateUserRequest body, Action<ApiResult<bool>>? onComplete = null)
+        public static void Register(CreateUserRequest body, Action<ApiResult<LoginResponse>>? onComplete = null)
         {
-            ApiDispatch.Send("POST", "/account/register", JsonUtility.ToJson(body), ApiParse.Bool, onComplete);
+            ApiDispatch.Send("POST", "/account/register", JsonUtility.ToJson(body), ApiParse.Object<LoginResponse>, onComplete);
         }
 
         /// <summary>

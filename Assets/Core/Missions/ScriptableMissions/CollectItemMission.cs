@@ -16,4 +16,9 @@ public class CollectItemMission : Mission<ItemCollectedEvent>
 
         state.AddProgress(missionEvent.Amount);
     }
+
+    public override Sprite GetMissionIcon()
+    {
+        return itemDefinition.Icon;
+    }
 }

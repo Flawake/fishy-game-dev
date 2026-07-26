@@ -23,6 +23,7 @@ public abstract class Mission : ScriptableObject
     /// once, in <see cref="Mission{TEvent}"/>; subclasses never see this.
     /// </summary>
     public abstract void ProgressMission(IMissionEvent missionEvent, MissionWrapper state);
+    public abstract Sprite GetMissionIcon();
 }
 
 public abstract class Mission<TEvent> : Mission where TEvent : IMissionEvent

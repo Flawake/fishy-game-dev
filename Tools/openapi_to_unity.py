@@ -155,7 +155,9 @@ def render_class(name, schema, schemas):
     required = set(schema.get("required", []))
     lines = doc_comment(schema, "    ")
     lines.append("    [Serializable]")
-    lines.append(f"    public class {name}")
+    # partial so hand-written companion files can add helper properties
+    # (Guid parsing, DateTime parsing, ...) without touching generated code.
+    lines.append(f"    public partial class {name}")
     lines.append("    {")
     props = schema.get("properties", {})
     if not props:

@@ -29,6 +29,13 @@ public class MissionWrapper
         started = true;
     }
 
+    public MissionWrapper(Mission mission, int progress)
+    {
+        this.mission = mission;
+        this.progress = progress;
+        started = true;
+    }
+
     /// <summary>Hand an event to the mission, which decides whether it matters.</summary>
     public void Deliver(IMissionEvent missionEvent)
     {
