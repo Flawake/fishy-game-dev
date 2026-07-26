@@ -1,3 +1,4 @@
+using FishyGame.Api;
 using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,6 +6,10 @@ using UnityEngine.Networking;
 
 public class WebRequestHandlerInterface : MonoBehaviour
 {
+    private void Awake()
+    {
+        ApiConfig.Transport = new WebRequestHandlerApiTransport(EnvConfig.DatabaseAccessServer);
+    }
     private void Update()
     {
         if (!NetworkServer.active)

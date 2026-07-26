@@ -5,6 +5,7 @@ namespace TradeSystem
     using System;
     using System.Collections.Generic;
     using UnityEngine;
+    using FishyGame.Api;
 
     public static class TradeService
     {

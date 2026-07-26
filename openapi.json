@@ -1,0 +1,2150 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "backend",
+        "description": "",
+        "license": {
+            "name": ""
+        },
+        "version": "0.2.0"
+    },
+    "paths": {
+        "/account/change_password": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "description": "Changes a users password",
+                "operationId": "change_password",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ChangePasswordRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Changed password",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input data"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/account/register": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "description": "Creates a user. The email and username should be unique.",
+                "operationId": "register",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateUserRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "User created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input data"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/account/retrieve_username": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "description": "Sends the username of the account the email belongs to to the mail address",
+                "operationId": "retrieve_username",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RetrieveUsernameRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Username send successfull",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input data"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/auth/login": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "description": "Recieve a jwt when creditials are valid.",
+                "operationId": "login",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/LoginRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/LoginResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input data"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/data/retrieve_all_playerdata": {
+            "post": {
+                "tags": [
+                    "UserData"
+                ],
+                "description": "Retrieves user data from the database",
+                "operationId": "retrieve_all_playerdata",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RetrieveDataRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Retrieved successfully. Null when the user has no data.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "type": "null"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/UserData"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input data"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/effects/add_effect": {
+            "post": {
+                "tags": [
+                    "Effects"
+                ],
+                "operationId": "add_effect",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AddActiveEffectRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Effect added successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request data"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/effects/cleanup_all_expired": {
+            "post": {
+                "tags": [
+                    "Effects"
+                ],
+                "operationId": "cleanup_all_expired_effects",
+                "responses": {
+                    "200": {
+                        "description": "All expired effects cleaned up",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/effects/remove_expired": {
+            "post": {
+                "tags": [
+                    "Effects"
+                ],
+                "operationId": "remove_expired_effects",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RemoveExpiredEffectRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Expired effects removed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/fish_market/sell_fishes": {
+            "post": {
+                "tags": [
+                    "FishMarket"
+                ],
+                "operationId": "sell_fishes",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SellFishesRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Fishes sold successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request data"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/friend/add_friend_request": {
+            "post": {
+                "tags": [
+                    "Friends"
+                ],
+                "description": "Adds a friend request to the database",
+                "operationId": "add_friend_request",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/FriendRequests"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully added a friend request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input data"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/friend/handle_request": {
+            "post": {
+                "tags": [
+                    "Friends"
+                ],
+                "description": "Handles a pending friend request",
+                "operationId": "handle_friend_request",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/HandleFriendRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully handled a friend request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input data"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/friend/remove_friend": {
+            "post": {
+                "tags": [
+                    "Friends"
+                ],
+                "description": "Removes a friend from the database",
+                "operationId": "remove_friend",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RemoveFriend"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully removed friend",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input data"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/herb_quest/accept_daily": {
+            "post": {
+                "tags": [
+                    "HerbQuest"
+                ],
+                "description": "Records that a player accepted (saw) the current Herb quest so the game can skip Herb's introduction next time.",
+                "operationId": "accept_daily_quest",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AcceptDailyQuestRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Acceptance recorded",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request data"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/herb_quest/complete_daily": {
+            "post": {
+                "tags": [
+                    "HerbQuest"
+                ],
+                "description": "Hand in the Herb quest fishes. Validates against the stored quest, re-derives the reward from it, and fails when the quest is stale or already completed.",
+                "operationId": "complete_daily_quest",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CompleteDailyQuestRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Quest handed in, fishes removed and coins rewarded",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request data"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/herb_quest/current_daily": {
+            "post": {
+                "tags": [
+                    "HerbQuest"
+                ],
+                "description": "Returns the Herb quest that is currently active. The database owns the quest; the game server polls this endpoint.",
+                "operationId": "current_daily_quest",
+                "responses": {
+                    "200": {
+                        "description": "The currently active Herb quest",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CurrentHerbQuestResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/inventory/addOrUpdate": {
+            "post": {
+                "tags": [
+                    "Inventory"
+                ],
+                "description": "Inserts an item in the database or updates it if it did already exist",
+                "operationId": "add_or_update_item",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AddOrUpdateItemRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Item added/updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input data"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/inventory/destroy": {
+            "post": {
+                "tags": [
+                    "Inventory"
+                ],
+                "description": "Removes an item from the database",
+                "operationId": "destroy_item",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DestroyItemRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Item removed successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input data"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/mail/archive_state": {
+            "post": {
+                "tags": [
+                    "Mails"
+                ],
+                "description": "Changes the archived state",
+                "operationId": "archive_mail",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ArchiveMailRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Mail archive state changed successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input data"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/mail/change_read_state": {
+            "post": {
+                "tags": [
+                    "Mails"
+                ],
+                "description": "Changes the read state",
+                "operationId": "read_mail",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ReadMailRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Mail read state changed successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input data"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/mail/create": {
+            "post": {
+                "tags": [
+                    "Mails"
+                ],
+                "description": "Creates a mail",
+                "operationId": "create_mail",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateMailRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Mail created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input data"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/mail/delete": {
+            "post": {
+                "tags": [
+                    "Mails"
+                ],
+                "description": "Deletes a mail",
+                "operationId": "delete_mail",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DeleteMailRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Mail successfully deleted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input data"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/missions/complete_mission": {
+            "post": {
+                "tags": [
+                    "Missions"
+                ],
+                "description": "complete mission",
+                "operationId": "complete_mission",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CompleteMissionRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Set successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input data"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/missions/progress_mission": {
+            "post": {
+                "tags": [
+                    "Missions"
+                ],
+                "description": "Sets new mission progress",
+                "operationId": "progress_mission",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ProgressMissionRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Set successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input data"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/missions/start_mission": {
+            "post": {
+                "tags": [
+                    "Missions"
+                ],
+                "description": "Starts a mission for a player",
+                "operationId": "start_mission",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StartMissionRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Set successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input data"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/shop/buy_item": {
+            "post": {
+                "tags": [
+                    "Shop"
+                ],
+                "description": "Buys an item",
+                "operationId": "buy_item",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BuyItemRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Item bough successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input data"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/stats/add_fish": {
+            "post": {
+                "tags": [
+                    "Stats"
+                ],
+                "description": "Adds a stat fish to a given user account",
+                "operationId": "add_fish",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AddFishRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "stat fish added successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input data"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/stats/add_playtime": {
+            "post": {
+                "tags": [
+                    "Stats"
+                ],
+                "description": "Adds more playtime to a given user account",
+                "operationId": "add_playtime",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AddPlayTimeRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "playtime changed successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input data"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/stats/select_item": {
+            "post": {
+                "tags": [
+                    "Stats"
+                ],
+                "description": "Select an item",
+                "operationId": "select_item",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SelectItemRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully selected an item",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input data"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        },
+        "/trade/commit_trade": {
+            "post": {
+                "tags": [
+                    "Trading"
+                ],
+                "description": "Remove and add traded items to the accuonts",
+                "operationId": "commit_trade",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TradeRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "trade items commited_successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "invalid input data"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "AcceptDailyQuestRequest": {
+                "type": "object",
+                "description": "Request body for recording that a player accepted (saw) the current Herb quest.",
+                "required": [
+                    "user_id",
+                    "herb_quest_id"
+                ],
+                "properties": {
+                    "herb_quest_id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "user_id": {
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                }
+            },
+            "ActiveEffect": {
+                "type": "object",
+                "required": [
+                    "item_id",
+                    "expiry_time"
+                ],
+                "properties": {
+                    "expiry_time": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "item_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                }
+            },
+            "AddActiveEffectRequest": {
+                "type": "object",
+                "description": "Request body for adding an active effect",
+                "required": [
+                    "user_id",
+                    "item_id",
+                    "expiry_time"
+                ],
+                "properties": {
+                    "expiry_time": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "item_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "user_id": {
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                }
+            },
+            "AddFishRequest": {
+                "type": "object",
+                "description": "Request body for adding playtime of a player",
+                "required": [
+                    "user_id",
+                    "length",
+                    "fish_id",
+                    "bait_id",
+                    "area_id",
+                    "xp_earned"
+                ],
+                "properties": {
+                    "area_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "bait_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "fish_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "length": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "user_id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "xp_earned": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                }
+            },
+            "AddOrUpdateItemRequest": {
+                "type": "object",
+                "required": [
+                    "user_id",
+                    "item_uuid",
+                    "definition_id",
+                    "state_blob"
+                ],
+                "properties": {
+                    "definition_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "item_uuid": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "state_blob": {
+                        "type": "string"
+                    },
+                    "user_id": {
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                }
+            },
+            "AddPlayTimeRequest": {
+                "type": "object",
+                "description": "Request body for adding playtime of a player",
+                "required": [
+                    "user_id",
+                    "amount"
+                ],
+                "properties": {
+                    "amount": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "user_id": {
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                }
+            },
+            "ArchiveMailRequest": {
+                "type": "object",
+                "description": "Request body for archiving a mail.",
+                "required": [
+                    "user_id",
+                    "mail_id",
+                    "archived"
+                ],
+                "properties": {
+                    "archived": {
+                        "type": "boolean"
+                    },
+                    "mail_id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "user_id": {
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                }
+            },
+            "BuyItemRequest": {
+                "type": "object",
+                "description": "Request body for buying an item.",
+                "required": [
+                    "buyer_id",
+                    "item_def_id",
+                    "item_uuid",
+                    "item_state_blob",
+                    "item_price",
+                    "bought_using"
+                ],
+                "properties": {
+                    "bought_using": {
+                        "$ref": "#/components/schemas/MoneyType"
+                    },
+                    "buyer_id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "item_def_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "item_price": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "item_state_blob": {
+                        "type": "string"
+                    },
+                    "item_uuid": {
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                }
+            },
+            "ChangePasswordRequest": {
+                "type": "object",
+                "description": "Request body for changing a password.",
+                "required": [
+                    "username",
+                    "new_password"
+                ],
+                "properties": {
+                    "new_password": {
+                        "type": "string"
+                    },
+                    "username": {
+                        "type": "string"
+                    }
+                }
+            },
+            "CompleteDailyQuestRequest": {
+                "type": "object",
+                "description": "Request body for handing in the current Herb quest.",
+                "required": [
+                    "user_id",
+                    "herb_quest_id",
+                    "reward_coins",
+                    "fishes"
+                ],
+                "properties": {
+                    "fishes": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/HandInFish"
+                        }
+                    },
+                    "herb_quest_id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "reward_coins": {
+                        "type": "integer",
+                        "format": "int32",
+                        "description": "Sent by the game for reference; the database re-derives the reward from the\nstored quest and ignores this value."
+                    },
+                    "user_id": {
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                }
+            },
+            "CompleteMissionRequest": {
+                "type": "object",
+                "description": "Request body for completing a mission.",
+                "required": [
+                    "user_id",
+                    "mission_id"
+                ],
+                "properties": {
+                    "mission_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "user_id": {
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                }
+            },
+            "CreateMailRequest": {
+                "type": "object",
+                "description": "Request body for creating a mail.",
+                "required": [
+                    "mail_id",
+                    "sender_id",
+                    "receiver_ids",
+                    "title",
+                    "message"
+                ],
+                "properties": {
+                    "mail_id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "receiver_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    "sender_id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": {
+                        "type": "string"
+                    }
+                }
+            },
+            "CreateUserRequest": {
+                "type": "object",
+                "description": "Request body for creating a user.",
+                "required": [
+                    "email",
+                    "username",
+                    "password"
+                ],
+                "properties": {
+                    "email": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    },
+                    "username": {
+                        "type": "string"
+                    }
+                }
+            },
+            "CurrentHerbQuestResponse": {
+                "type": "object",
+                "description": "The currently active Herb quest (global, same for every player).",
+                "required": [
+                    "herb_quest_id",
+                    "area_id",
+                    "reward_coins",
+                    "fishes",
+                    "next_move_at"
+                ],
+                "properties": {
+                    "area_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "fishes": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/HerbQuestFishDto"
+                        }
+                    },
+                    "herb_quest_id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "next_move_at": {
+                        "type": "string",
+                        "description": "ISO 8601 / UTC, e.g. \"2026-07-11T04:00:00+00:00\"."
+                    },
+                    "reward_coins": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                }
+            },
+            "DeleteMailRequest": {
+                "type": "object",
+                "description": "Request body for deleting a mail.",
+                "required": [
+                    "user_id",
+                    "mail_id"
+                ],
+                "properties": {
+                    "mail_id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "user_id": {
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                }
+            },
+            "DestroyItemRequest": {
+                "type": "object",
+                "description": "Request body for adding an item.",
+                "required": [
+                    "user_id",
+                    "item_uid"
+                ],
+                "properties": {
+                    "item_uid": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "user_id": {
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                }
+            },
+            "FishData": {
+                "type": "object",
+                "required": [
+                    "fish_id",
+                    "amount",
+                    "max_length",
+                    "first_caught",
+                    "areas",
+                    "baits"
+                ],
+                "properties": {
+                    "amount": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "areas": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer",
+                            "format": "int32"
+                        }
+                    },
+                    "baits": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer",
+                            "format": "int32"
+                        }
+                    },
+                    "first_caught": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "fish_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "max_length": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                }
+            },
+            "FishToSell": {
+                "type": "object",
+                "required": [
+                    "fish_uid",
+                    "fish_id",
+                    "fish_amount",
+                    "new_state_blob"
+                ],
+                "properties": {
+                    "fish_amount": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "fish_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "fish_uid": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "new_state_blob": {
+                        "type": "string"
+                    }
+                }
+            },
+            "Friend": {
+                "type": "object",
+                "required": [
+                    "friend_id",
+                    "friend_name"
+                ],
+                "properties": {
+                    "friend_id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "friend_name": {
+                        "type": "string"
+                    }
+                }
+            },
+            "FriendRequest": {
+                "type": "object",
+                "required": [
+                    "other_id",
+                    "other_name",
+                    "request_sender_id"
+                ],
+                "properties": {
+                    "other_id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "other_name": {
+                        "type": "string"
+                    },
+                    "request_sender_id": {
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                }
+            },
+            "FriendRequests": {
+                "type": "object",
+                "description": "Request body for adding a friend.",
+                "required": [
+                    "user_one",
+                    "user_two",
+                    "sender_id"
+                ],
+                "properties": {
+                    "sender_id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "user_one": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "user_two": {
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                }
+            },
+            "HandInFish": {
+                "type": "object",
+                "description": "A single fish stack the player hands in for the Herb quest.",
+                "required": [
+                    "fish_uid",
+                    "fish_id",
+                    "fish_amount"
+                ],
+                "properties": {
+                    "fish_amount": {
+                        "type": "integer",
+                        "format": "int32",
+                        "description": "The amount left in the stack after handing in; 0 or less destroys the stack."
+                    },
+                    "fish_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "fish_uid": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "new_state_blob": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    }
+                }
+            },
+            "HandleFriendRequest": {
+                "type": "object",
+                "required": [
+                    "user_one",
+                    "user_two",
+                    "request_accepted"
+                ],
+                "properties": {
+                    "request_accepted": {
+                        "type": "boolean"
+                    },
+                    "user_one": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "user_two": {
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                }
+            },
+            "HerbQuestFishDto": {
+                "type": "object",
+                "description": "One fish species the current Herb quest asks for.",
+                "required": [
+                    "fish_id",
+                    "amount"
+                ],
+                "properties": {
+                    "amount": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "fish_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                }
+            },
+            "InventoryItem": {
+                "type": "object",
+                "required": [
+                    "item_uuid",
+                    "definition_id",
+                    "state_blob"
+                ],
+                "properties": {
+                    "definition_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "item_uuid": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "state_blob": {
+                        "type": "string"
+                    }
+                }
+            },
+            "ItemType": {
+                "type": "string",
+                "enum": [
+                    "Rod",
+                    "Bait",
+                    "Extra"
+                ]
+            },
+            "LoginRequest": {
+                "type": "object",
+                "required": [
+                    "username",
+                    "password"
+                ],
+                "properties": {
+                    "password": {
+                        "type": "string"
+                    },
+                    "username": {
+                        "type": "string"
+                    }
+                }
+            },
+            "LoginResponse": {
+                "type": "object",
+                "required": [
+                    "code",
+                    "jwt"
+                ],
+                "properties": {
+                    "code": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "jwt": {
+                        "type": "string"
+                    }
+                }
+            },
+            "MailEntry": {
+                "type": "object",
+                "required": [
+                    "mail_id",
+                    "title",
+                    "message",
+                    "send_time",
+                    "read",
+                    "archived",
+                    "sender_name"
+                ],
+                "properties": {
+                    "archived": {
+                        "type": "boolean"
+                    },
+                    "mail_id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "read": {
+                        "type": "boolean"
+                    },
+                    "send_time": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "sender_name": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "type": "string"
+                    }
+                }
+            },
+            "MoneyType": {
+                "type": "string",
+                "description": "Request body for buying an item.",
+                "enum": [
+                    "COINS",
+                    "BUCKS"
+                ]
+            },
+            "ProgressMissionRequest": {
+                "type": "object",
+                "description": "Request body for progressing a mission.",
+                "required": [
+                    "user_id",
+                    "mission_id",
+                    "new_progress"
+                ],
+                "properties": {
+                    "mission_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "new_progress": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "user_id": {
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                }
+            },
+            "ReadMailRequest": {
+                "type": "object",
+                "description": "Request body for reading a mail.",
+                "required": [
+                    "user_id",
+                    "mail_id",
+                    "read"
+                ],
+                "properties": {
+                    "mail_id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "read": {
+                        "type": "boolean"
+                    },
+                    "user_id": {
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                }
+            },
+            "RemoveExpiredEffectRequest": {
+                "type": "object",
+                "description": "Request body for removing expired effects for a specific user",
+                "required": [
+                    "user_id",
+                    "item_id"
+                ],
+                "properties": {
+                    "item_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "user_id": {
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                }
+            },
+            "RemoveFriend": {
+                "type": "object",
+                "description": "Request body for removing a friend.",
+                "required": [
+                    "user_one",
+                    "user_two"
+                ],
+                "properties": {
+                    "user_one": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "user_two": {
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                }
+            },
+            "RetrieveDataRequest": {
+                "type": "object",
+                "description": "Request body for retrieving all data belonging to a single player.",
+                "required": [
+                    "user_id"
+                ],
+                "properties": {
+                    "user_id": {
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                }
+            },
+            "RetrieveUsernameRequest": {
+                "type": "object",
+                "description": "Request body for requesting a players username.",
+                "required": [
+                    "email"
+                ],
+                "properties": {
+                    "email": {
+                        "type": "string"
+                    }
+                }
+            },
+            "SelectItemRequest": {
+                "type": "object",
+                "description": "Request body for adding playtime of a player",
+                "required": [
+                    "user_id",
+                    "item_uid",
+                    "item_type"
+                ],
+                "properties": {
+                    "item_type": {
+                        "$ref": "#/components/schemas/ItemType"
+                    },
+                    "item_uid": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "user_id": {
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                }
+            },
+            "SellFishesRequest": {
+                "type": "object",
+                "description": "Request body for selling a fish",
+                "required": [
+                    "seller_id",
+                    "fishes",
+                    "price"
+                ],
+                "properties": {
+                    "fishes": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/FishToSell"
+                        }
+                    },
+                    "price": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "seller_id": {
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                }
+            },
+            "StartMissionRequest": {
+                "type": "object",
+                "description": "Request body for starting a new mission.",
+                "required": [
+                    "user_id",
+                    "mission_id"
+                ],
+                "properties": {
+                    "mission_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "user_id": {
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                }
+            },
+            "TradeItemRequest": {
+                "type": "object",
+                "required": [
+                    "item_uid",
+                    "item_id",
+                    "item_amount",
+                    "state_blob"
+                ],
+                "properties": {
+                    "item_amount": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "item_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "item_uid": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "state_blob": {
+                        "type": "string"
+                    }
+                }
+            },
+            "TradeRequest": {
+                "type": "object",
+                "required": [
+                    "user_one_id",
+                    "user_two_id",
+                    "user_one_receives",
+                    "user_two_receives",
+                    "user_one_bucks_received",
+                    "user_two_bucks_received"
+                ],
+                "properties": {
+                    "user_one_bucks_received": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "user_one_id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "user_one_receives": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/TradeItemRequest"
+                        }
+                    },
+                    "user_two_bucks_received": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "user_two_id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "user_two_receives": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/TradeItemRequest"
+                        }
+                    }
+                }
+            },
+            "UserData": {
+                "type": "object",
+                "required": [
+                    "name",
+                    "xp",
+                    "coins",
+                    "bucks",
+                    "total_playtime",
+                    "fish_data",
+                    "inventory_items",
+                    "mailbox",
+                    "friends",
+                    "friend_requests",
+                    "active_effects"
+                ],
+                "properties": {
+                    "active_effects": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ActiveEffect"
+                        }
+                    },
+                    "bucks": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "coins": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "fish_data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/FishData"
+                        }
+                    },
+                    "friend_requests": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/FriendRequest"
+                        }
+                    },
+                    "friends": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Friend"
+                        }
+                    },
+                    "inventory_items": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/InventoryItem"
+                        }
+                    },
+                    "last_accepted_herb_quest_id": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "uuid",
+                        "description": "Id of the last Herb quest the player accepted/saw (null when never accepted)."
+                    },
+                    "last_completed_herb_quest_id": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "uuid",
+                        "description": "Id of the last Herb quest the player completed (null when never completed)."
+                    },
+                    "mailbox": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/MailEntry"
+                        }
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "selected_bait": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "uuid"
+                    },
+                    "selected_rod": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "uuid"
+                    },
+                    "total_playtime": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "xp": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Users",
+            "description": "Account creation and account management."
+        },
+        {
+            "name": "Authentication",
+            "description": "Credential exchange for a JWT."
+        },
+        {
+            "name": "UserData",
+            "description": "Bulk read of everything belonging to one player."
+        },
+        {
+            "name": "Inventory",
+            "description": "Per-player item storage."
+        },
+        {
+            "name": "Shop",
+            "description": "Buying items for coins or bucks."
+        },
+        {
+            "name": "FishMarket",
+            "description": "Selling caught fish."
+        },
+        {
+            "name": "Trading",
+            "description": "Player-to-player item and currency trades."
+        },
+        {
+            "name": "Stats",
+            "description": "Playtime, caught fish and equipped item stats."
+        },
+        {
+            "name": "Mails",
+            "description": "In-game mailbox."
+        },
+        {
+            "name": "Friends",
+            "description": "Friend list and friend requests."
+        },
+        {
+            "name": "Effects",
+            "description": "Timed effects applied to a player."
+        },
+        {
+            "name": "HerbQuest",
+            "description": "Herb's global daily quest."
+        },
+        {
+            "name": "Missions",
+            "description": "Per-player mission progress."
+        }
+    ]
+}

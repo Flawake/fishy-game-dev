@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using FishyGame.Api;
 using Mirror;
 using TMPro;
 using UnityEngine;
@@ -180,73 +181,101 @@ public class PlayerAuthenticator : NetworkAuthenticator
         DatabaseCommunications.RegisterRequest(username, password, email, conn, EndRegisterRequestMessage);
     }
 
-    void EndLoginRequestMessage(WebRequestHandler.ResponseMessageData response)
+    // Login goes through the generated client, so it gets a typed LoginResponse and
+    // the connection back from the closure instead of from ResponseMessageData.
+    void EndLoginRequestMessage(NetworkConnectionToClient conn, ApiResult<LoginResponse> result)
     {
-        EndAuthRequestMessage(response, true);
+        if (!result.Success)
+        {
+            Debug.LogError(result.Error);
+            CompleteAuthRequest(conn, false, null, true);
+            return;
+        }
+
+        AuthResponse payload = result.Value == null
+            ? null
+            : new AuthResponse { code = result.Value.code, jwt = result.Value.jwt };
+
+        CompleteAuthRequest(conn, true, payload, true);
     }
 
+    // Register still uses the hand-written path until it is migrated too.
     void EndRegisterRequestMessage(WebRequestHandler.ResponseMessageData response)
     {
-        EndAuthRequestMessage(response, false);
-    }
+        bool transportSucceeded =
+            response.EndRequestReason == WebRequestHandler.RequestEndReason.success;
 
-    void EndAuthRequestMessage(WebRequestHandler.ResponseMessageData response, bool isLogin)
-    {
-        NetworkConnectionToClient conn = response.Connection;
-
-        if (response.EndRequestReason == WebRequestHandler.RequestEndReason.success)
+        AuthResponse payload = null;
+        if (transportSucceeded)
         {
             try
             {
-                AuthResponse loginResponse = JsonUtility.FromJson<AuthResponse>(response.ResponseData);
-                Debug.Log($"loginResponse code = {loginResponse.code}");
-                if (loginResponse.code == 200)
-                {
-                    Guid playerUuid = Guid.Parse(JwtUtils.GetUuidFromJwt(loginResponse.jwt));
-                    GameNetworkManager.connUUID.Add(conn, playerUuid);
-                    SendResponse(0, isLogin, conn);
-
-
-                    // Accept the successful authentication
-                    ServerAccept(conn);
-                }
-                else
-                {
-                    SendResponse(loginResponse.code, isLogin, conn);
-
-                    // must set NetworkConnection isAuthenticated = false
-                    conn.isAuthenticated = false;
-
-                    // disconnect the client after 1 second so that response message gets delivered
-                    StartCoroutine(DelayedDisconnect(conn, 1f));
-                }
+                payload = JsonUtility.FromJson<AuthResponse>(response.ResponseData);
             }
             catch (Exception e)
             {
                 Debug.LogError(e);
-
-                SendResponse(3, isLogin, conn);
-
-                // must set NetworkConnection isAuthenticated = false
-                conn.isAuthenticated = false;
-
-                // disconnect the client after 1 second so that response message gets delivered
-                StartCoroutine(DelayedDisconnect(conn, 1f));
             }
         }
-        else
+
+        CompleteAuthRequest(response.Connection, transportSucceeded, payload, false);
+    }
+
+    /// <summary>
+    /// Shared tail of both auth flows. A null payload means the response could not
+    /// be read, which is reported as code 3 exactly as before.
+    /// </summary>
+    void CompleteAuthRequest(NetworkConnectionToClient conn, bool transportSucceeded, AuthResponse payload, bool isLogin)
+    {
+        if (!transportSucceeded)
         {
             connectionsPendingDisconnect.Add(conn);
 
             // create and send msg to client so it knows to disconnect
-            SendResponse(2, isLogin, conn);
-
-            // must set NetworkConnection isAuthenticated = false
-            conn.isAuthenticated = false;
-
-            // disconnect the client after 1 second so that response message gets delivered
-            StartCoroutine(DelayedDisconnect(conn, 1f));
+            RejectAuth(conn, 2, isLogin);
+            return;
         }
+
+        if (payload == null)
+        {
+            // the caller has already logged why
+            RejectAuth(conn, 3, isLogin);
+            return;
+        }
+
+        try
+        {
+            Debug.Log($"loginResponse code = {payload.code}");
+            if (payload.code == 200)
+            {
+                Guid playerUuid = Guid.Parse(JwtUtils.GetUuidFromJwt(payload.jwt));
+                GameNetworkManager.connUUID.Add(conn, playerUuid);
+                SendResponse(0, isLogin, conn);
+
+                // Accept the successful authentication
+                ServerAccept(conn);
+            }
+            else
+            {
+                RejectAuth(conn, payload.code, isLogin);
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogError(e);
+            RejectAuth(conn, 3, isLogin);
+        }
+    }
+
+    void RejectAuth(NetworkConnectionToClient conn, int code, bool isLogin)
+    {
+        SendResponse(code, isLogin, conn);
+
+        // must set NetworkConnection isAuthenticated = false
+        conn.isAuthenticated = false;
+
+        // disconnect the client after 1 second so that response message gets delivered
+        StartCoroutine(DelayedDisconnect(conn, 1f));
     }
 
     void SendResponse(int _code, bool isLogin, NetworkConnectionToClient conn)
