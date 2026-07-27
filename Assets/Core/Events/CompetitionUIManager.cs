@@ -105,23 +105,39 @@ namespace  GlobalCompetitionSystem
             }
             currentCompetitionView.SetActive(true);
             CompetitionNotStarted.SetActive(false);
+            
             GetComponentInParent<PlayerData>().CmdGetTopPerformers();
         }
 
         private void LoadUpcomingCompetitions(SyncSortedSet<Competition> upcomingCompetitions)
         {
+            // Clear existing entries
+            foreach (Transform child in upcomingCompetitionsContainerTransform)
+            {
+                Destroy(child.gameObject);
+            }
+            
+            // Create new entries with data
             foreach (Competition upcomingCompetition in upcomingCompetitions)
             {
                 GameObject newObject = Instantiate(upcomingCompetitionPreviewObject, upcomingCompetitionsContainerTransform);
+                UpcomingCompetitionUIManager upcomingUI = newObject.GetComponent<UpcomingCompetitionUIManager>();
+                if (upcomingUI != null)
+                {
+                    upcomingUI.SetUpcomingCompetition(upcomingCompetition);
+                }
             }
         }
 
         public void LoadCurrentCompetition(SortedList<int, PlayerResult> rankedPlayerResults, List<int> prizes)
         {
-            if (rankedPlayerResults == null || prizes == null)
+            if (rankedPlayerResults == null)
             {
                 return;
             }
+            
+            List<int> prizePool = prizes;
+            
             foreach (Transform child in currentCompetitionsContainerTransform)
             {
                 Destroy(child.gameObject);
@@ -135,12 +151,16 @@ namespace  GlobalCompetitionSystem
             // Convert back to SortedList if absolutely needed
             SortedList<int, PlayerResult> cleanResults = new SortedList<int, PlayerResult>(filtered);
 
+            // Only show leaderboard entries up to the prize pool length (or show all if we want to display non-winners too)
+            // Current implementation shows all players but only awards prizes to top N
             foreach (var kvp in cleanResults)
             {
                 PlayerResult result = kvp.Value;
                 GameObject newObject = Instantiate(currentCompetitionResultObject, currentCompetitionsContainerTransform);
                 PersonalResultsUIManager resultUI = newObject.GetComponent<PersonalResultsUIManager>();
-                int prize = (kvp.Key < prizes.Count) ? prizes[kvp.Key] : 0;
+                
+                // Prize amount is 0 if player rank exceeds prize pool length
+                int prize = (kvp.Key - 1 < prizePool.Count) ? prizePool[kvp.Key - 1] : 0;
                 resultUI.SetResults(kvp.Key, result.PlayerName, result.Result, prize, CompetitionManager.GetCurrentCompetition().CompetitionData.RunningCompetition.RewardCurrency);
             }
         }

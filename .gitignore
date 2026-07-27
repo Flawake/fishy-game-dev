@@ -80,3 +80,7 @@ crashlytics-build.properties
 
 # Ignore auto generated files by Unity when creating the project
 Fishy Game/
+
+# Ignore the database folder
+# Added for easier development, has it's own git repository and should not be included in the main repository
+fishy-game-server-database/

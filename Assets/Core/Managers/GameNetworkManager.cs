@@ -134,6 +134,7 @@ public class GameNetworkManager : NetworkManager
         NetworkServer.RegisterHandler<MovePlayerMessage>(OnPlayerMoveMessage);
         TradeServer.ServerBindCommands();
         
+        StartCoroutine(CompetitionManager.PollCompetitionsFromBackend());
         StartCoroutine(CompetitionManager.UpdateCompetitions());
     }
 
