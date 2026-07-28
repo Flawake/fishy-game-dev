@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a04916a94903945d1afdeb7e0035e222, type: 3}
-  m_Name: 5_Fishcoins
+  m_Name: Fishcoins_5
   m_EditorClassIdentifier: 
   rewardCurrency: 0
   rewardAmount: 5

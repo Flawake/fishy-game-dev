@@ -3039,3 +3039,6 @@ MonoBehaviour:
   syncMode: 1
   syncInterval: 0.1
   fishdex: {fileID: 1917053837910666563}
+  syncManager: {fileID: 2600673011262952092}
+  playerData: {fileID: 3625476836490181}
+  inventory: {fileID: 1831225255022429458}

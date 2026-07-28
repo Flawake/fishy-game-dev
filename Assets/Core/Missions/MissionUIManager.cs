@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -21,17 +24,33 @@ public class MissionUIManager : MonoBehaviour
     [SerializeField]
     TMP_Text rewardDescription;
     
-
-    public void RenderMission(MissionWrapper mission)
+    private enum MissionsRendering
     {
-        missionTitle.text = mission.Mission.MissionTitle;
-        missionDescription.text = mission.Mission.MissionDescription;
-        progressDescription.text = $"{mission.Progress}/{mission.Mission.RequiredProgress}";
-        missionIcon.sprite = mission.Mission.GetMissionIcon();
+        ACTIVE,
+        COMPLETED,
+    }
 
-        rewardIcon.sprite = mission.Mission.completionReward.GetIcon();
-        rewardDescription.text = mission.Mission.completionReward.GetRewardDescription();
+    MissionsRendering missionsRendering = MissionsRendering.ACTIVE;
+    
+    int renderingMissionIndex = 0;
 
+    public void RenderMission(Mission mission, int missionProgress)
+    {
+        missionTitle.text = mission.MissionTitle;
+        missionDescription.text = mission.MissionDescription;
+        progressDescription.text = $"{missionProgress}/{mission.RequiredProgress}";
+        missionIcon.sprite = mission.GetMissionIcon();
+
+        rewardIcon.sprite = mission.completionReward.GetIcon();
+        rewardDescription.text = mission.completionReward.GetRewardDescription();
+
+        SetProgressSlider(missionProgress, mission.RequiredProgress);
+    }
+
+    // Called from button in game
+    public void OpenMissionCanvas()
+    {
+        LoadActiveMissions(0);
     }
 
     // Called from button in game
@@ -43,5 +62,52 @@ public class MissionUIManager : MonoBehaviour
     private void SetProgressSlider(int progress, int goal)
     {
         progressSlider.value = goal / progress;
+    }
+
+    //Called from button in game
+    public void LoadActiveMissions(int index)
+    {
+        List<MissionState> activeMissions = GetComponentInParent<MissionManager>().ClientGetActiveMissions();
+        if (activeMissions.Count() < index + 1)
+        {
+            Debug.Log("No missions were active");
+            return;
+        }
+        Mission firstActiveMission = MissionRegistry.Get(activeMissions[index].missionID);
+        RenderMission(firstActiveMission, activeMissions[index].progress);
+    }
+
+    //Called from button in game
+    public void LoadCompletedMissions(int index)
+    {
+        List<int> completedMissionIDs = GetComponentInParent<MissionManager>().GetCompletedMissionsIDs();
+    }
+
+    //Called from button in game
+    public void NextMissionButton()
+    {
+        if (missionsRendering == MissionsRendering.ACTIVE)
+        {
+            LoadActiveMissions(renderingMissionIndex + 1 % GetComponentInParent<MissionManager>().ClientGetActiveMissions().Count());
+        }
+        else if (missionsRendering == MissionsRendering.COMPLETED)
+        {
+            LoadCompletedMissions(renderingMissionIndex + 1 % GetComponentInParent<MissionManager>().GetCompletedMissionsIDs().Count());
+        }
+    }
+
+    //Called from button in game
+    public void PreviousMissionButton()
+    {
+
+            int max = GetComponentInParent<MissionManager>().ClientGetActiveMissions().Count();
+        if (missionsRendering == MissionsRendering.ACTIVE)
+        {
+            LoadActiveMissions((renderingMissionIndex - 1 % max + max) % max);
+        }
+        else if (missionsRendering == MissionsRendering.COMPLETED)
+        {
+            LoadCompletedMissions((renderingMissionIndex - 1 % max + max) % max);
+        }
     }
 }

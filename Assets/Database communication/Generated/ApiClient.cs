@@ -172,7 +172,7 @@ namespace FishyGame.Api
     public static class MissionsApi
     {
         /// <summary>
-        /// complete mission
+        /// Completes a mission and pays out its reward in a single transaction.
         /// </summary>
         /// <remarks>POST /missions/complete_mission</remarks>
         public static void CompleteMission(CompleteMissionRequest body, Action<ApiResult<bool>>? onComplete = null)

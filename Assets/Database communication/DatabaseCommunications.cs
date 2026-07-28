@@ -93,6 +93,52 @@ public static class DatabaseCommunications
     }
 
     [Server]
+    public static void StartMission(Guid userID, int missionID, Action<ApiResult<bool>> callback = null)
+    {
+        MissionsApi.StartMission(
+            new StartMissionRequest
+            {
+                user_id = userID.ToString(),
+                mission_id = missionID,
+            },
+            callback);
+    }
+
+    [Server]
+    public static void ProgressMission(Guid userID, int missionID, int newProgress, Action<ApiResult<bool>> callback = null)
+    {
+        MissionsApi.ProgressMission(
+            new ProgressMissionRequest
+            {
+                user_id = userID.ToString(),
+                mission_id = missionID,
+                new_progress = newProgress,
+            },
+            callback);
+    }
+
+    /// <summary>
+    /// Records the completion and pays the reward in one transaction, so the player
+    /// can never be marked complete without being paid, or paid twice.
+    /// </summary>
+    [Server]
+    public static void CompleteMission(Guid userID, int missionID, MissionRewardDraft reward, Action<ApiResult<bool>> callback = null)
+    {
+        MissionsApi.CompleteMission(
+            new CompleteMissionRequest
+            {
+                user_id = userID.ToString(),
+                mission_id = missionID,
+                reward_coins = reward.Coins,
+                reward_bucks = reward.Bucks,
+                reward_item_definition_id = reward.ItemDefinitionId,
+                reward_item_uuid = reward.ItemUuid.ToString(),
+                reward_item_state_blob = reward.ItemStateBlob,
+            },
+            callback);
+    }
+
+    [Server]
     public static void AddFriendRequest(Guid userOne, Guid userTwo, Guid senderID, Action<ApiResult<bool>> callback = null)
     {
         FriendsApi.AddFriendRequest(

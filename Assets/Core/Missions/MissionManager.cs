@@ -29,11 +29,21 @@ public class MissionManager : NetworkBehaviour
     // --- Server-only authoritative state ---
     readonly List<MissionWrapper> activeMissions = new List<MissionWrapper>();
 
+    // Missions whose missions_started row is still being inserted.
+    readonly HashSet<int> missionsAwaitingStart = new HashSet<int>();
+
+    // Missions already gone from activeMissions but not yet confirmed complete by
+    // the database. They belong to neither list, so they need their own guard.
+    readonly HashSet<int> missionsAwaitingCompletion = new HashSet<int>();
+
     // --- Owner-only mirrors, index-aligned with activeMissions ---
     public readonly SyncList<MissionState> syncedMissions = new();
     public readonly SyncList<int> completedMissionIDs = new();
 
     [SerializeField] PlayerFishdexFishes fishdex;
+    [SerializeField] PlayerDataSyncManager syncManager;
+    [SerializeField] PlayerData playerData;
+    [SerializeField] PlayerInventory inventory;
 
     static int[] missionIDSequence = { 0, 1, 2, 3 };
 
@@ -41,6 +51,17 @@ public class MissionManager : NetworkBehaviour
     {
         // Mission progress is nobody else's business.
         syncMode = SyncMode.Owner;
+    }
+
+    public List<int> GetCompletedMissionsIDs()
+    {
+        return completedMissionIDs.ToList();
+    }
+
+    [Client]
+    public List<MissionState> ClientGetActiveMissions()
+    {
+        return syncedMissions.ToList();
     }
 
     [Server]
@@ -98,13 +119,13 @@ public class MissionManager : NetworkBehaviour
             {
                 activeMissions.RemoveAt(i);
                 syncedMissions.RemoveAt(i);
-                completedMissionIDs.Add(wrapper.MissionID);
-                TargetMissionCompleted(wrapper.MissionID);
             }
             else
             {
                 syncedMissions[i] = Snapshot(wrapper);
             }
+
+            ServerPersistState(wrapper);
         }
     }
 
@@ -135,7 +156,10 @@ public class MissionManager : NetworkBehaviour
             return false;
         }
 
-        if (completedMissionIDs.Contains(missionID) || IsActive(missionID))
+        if (completedMissionIDs.Contains(missionID)
+            || missionsAwaitingStart.Contains(missionID)
+            || missionsAwaitingCompletion.Contains(missionID)
+            || IsActive(missionID))
         {
             return false;
         }
@@ -152,16 +176,131 @@ public class MissionManager : NetworkBehaviour
         // by someone who already has 20 shows 20/25 rather than 0/25.
         wrapper.Deliver(new FishdexUpdatedEvent(fishdex.DiscoveredSpeciesCount));
 
+        ServerPersistStart(wrapper);
+
         if (wrapper.Completed)
         {
-            completedMissionIDs.Add(wrapper.MissionID);
-            TargetMissionCompleted(wrapper.MissionID);
+            // The start is still in flight; its callback sends the completion.
+            missionsAwaitingCompletion.Add(missionID);
             return true;
         }
 
         activeMissions.Add(wrapper);
         syncedMissions.Add(Snapshot(wrapper));
         return true;
+    }
+
+    /// <summary>
+    /// Sends the completion together with its reward, and hands the reward to the
+    /// player only once the database has committed both.
+    ///
+    /// A rolled back transaction grants nothing and leaves the missions_started row
+    /// alone, so the mission comes back intact on the next login. A commit whose
+    /// response is lost looks identical from here, but the database already holds
+    /// both the completion and the reward, so the player simply sees them after the
+    /// next login. Either way nothing is paid twice.
+    /// </summary>
+    [Server]
+    void ServerCompleteMission(MissionWrapper wrapper)
+    {
+        int missionID = wrapper.MissionID;
+        missionsAwaitingCompletion.Add(missionID);
+
+        MissionRewardDraft reward = new MissionRewardDraft(inventory, syncManager);
+        wrapper.Mission.completionReward?.BuildReward(reward);
+
+        DatabaseCommunications.CompleteMission(playerData.GetUuid(), missionID, reward, result =>
+        {
+            if (this == null)
+            {
+                return;
+            }
+
+            missionsAwaitingCompletion.Remove(missionID);
+
+            if (!result.Success || !result.Value)
+            {
+                Debug.LogError($"Could not complete mission {missionID} in the database: {result.Error}");
+                return;
+            }
+
+            reward.Apply();
+            completedMissionIDs.Add(missionID);
+            TargetMissionCompleted(missionID);
+        });
+    }
+
+    /// <summary>
+    /// Inserts the missions_started row. Nothing else may be written for this
+    /// mission until the insert lands: progress_mission updates an existing row and
+    /// fails without one, start_mission always writes a progress of 0, and a
+    /// completion that overtakes the start leaves an orphaned started row behind.
+    /// </summary>
+    [Server]
+    void ServerPersistStart(MissionWrapper wrapper)
+    {
+        int missionID = wrapper.MissionID;
+        missionsAwaitingStart.Add(missionID);
+
+        DatabaseCommunications.StartMission(playerData.GetUuid(), missionID, result =>
+        {
+            if (this == null)
+            {
+                return;
+            }
+
+            missionsAwaitingStart.Remove(missionID);
+
+            if (!result.Success || !result.Value)
+            {
+                // Release the completion guard too, otherwise a mission that finished
+                // while the failed insert was in flight stays blocked for the session.
+                missionsAwaitingCompletion.Remove(missionID);
+                Debug.LogError($"Could not start mission {missionID} in the database: {result.Error}");
+
+                // There is no row to progress against, so drop the mission rather than
+                // show the player one that can never be saved.
+                ServerDropMission(wrapper);
+                return;
+            }
+
+            // Whatever happened while the insert was in flight is written now.
+            ServerPersistState(wrapper);
+        });
+    }
+
+    /// <summary>
+    /// Forgets a mission the database never accepted, keeping the lists index-aligned.
+    /// </summary>
+    [Server]
+    void ServerDropMission(MissionWrapper wrapper)
+    {
+        int index = activeMissions.IndexOf(wrapper);
+        if (index < 0)
+        {
+            return;
+        }
+
+        activeMissions.RemoveAt(index);
+        syncedMissions.RemoveAt(index);
+    }
+
+    [Server]
+    void ServerPersistState(MissionWrapper wrapper)
+    {
+        if (missionsAwaitingStart.Contains(wrapper.MissionID))
+        {
+            return;
+        }
+
+        if (wrapper.Completed)
+        {
+            ServerCompleteMission(wrapper);
+        }
+        else if (wrapper.Progress > 0)
+        {
+            DatabaseCommunications.ProgressMission(playerData.GetUuid(), wrapper.MissionID, wrapper.Progress);
+        }
     }
 
     public bool IsActive(int missionID)

@@ -76,10 +76,11 @@ public class MissionWrapper
         }
     }
 
+    // The reward is handed out by MissionManager, which is the only place with a
+    // player to hand it to.
     private void Complete()
     {
         completed = true;
-        mission.completionReward?.DistributeReward();
         MissionCompleted?.Invoke(this);
     }
 }
