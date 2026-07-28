@@ -4,24 +4,34 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Item reward", menuName = "Mission rewards/Item reward")]
 public class MissionRewardItem : IMissionReward
 {
-    public ItemInstance rewardItem;
-    public override void DistributeReward()
+    [SerializeField]
+    ItemDefinition rewardItem;
+    [SerializeField, Min(1)]
+    int rewardAmount = 1;
+
+    public ItemDefinition RewardItem => rewardItem;
+    public int RewardAmount => rewardAmount;
+
+    public override void BuildReward(MissionRewardDraft draft)
     {
-        
+        draft.AddItem(rewardItem, rewardAmount);
     }
 
-    public override string GetRewardDescription()
+    void OnValidate()
     {
-        string amount = "";
-        if (rewardItem.GetState<StackState>() != null)
+        if (rewardItem != null && rewardAmount > Mathf.Max(1, rewardItem.MaxStack))
         {
-            amount = rewardItem.GetState<StackState>().currentAmount.ToString();
+            Debug.LogWarning(
+                $"'{name}' rewards {rewardAmount}x {rewardItem.DisplayName} but a stack holds "
+                + $"{rewardItem.MaxStack}. A mission reward writes a single inventory row, so the amount will be clamped.",
+                this);
         }
-        return $"{amount} {rewardItem.def.name}";
     }
+
+    public override string GetRewardDescription() => rewardItem == null ? "" : $"{rewardAmount} {rewardItem.DisplayName}";
 
     public override Sprite GetIcon()
     {
-        return rewardItem.def.Icon;
+        return rewardItem == null ? null : rewardItem.Icon;
     }
 }

@@ -9,12 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: 297bfaa133dc84ce6ac725d35ffc2065, type: 3}
   m_Name: 0_Catch_25_Species 1
   m_EditorClassIdentifier: Assembly-CSharp::FishdexMilestoneMission
   MissionID: 0
-  MissionTitle: Catch 25 different species
-  MissionDescription: You just learned the basics of fishing. Time to start completing
-    the fishdex. Start by catching 25 different species.
+  MissionTitle: 
+  MissionDescription: 
   completionReward: {fileID: 11400000, guid: 822b9b55455fa493f82db4dde76fc7f3, type: 2}
   RequiredProgress: 25

@@ -765,7 +765,7 @@
                 "tags": [
                     "Missions"
                 ],
-                "description": "complete mission",
+                "description": "Completes a mission and pays out its reward in a single transaction.",
                 "operationId": "complete_mission",
                 "requestBody": {
                     "content": {
@@ -779,7 +779,7 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Set successfully",
+                        "description": "Mission completed and reward paid",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1323,15 +1323,40 @@
             },
             "CompleteMissionRequest": {
                 "type": "object",
-                "description": "Request body for completing a mission.",
+                "description": "Request body for completing a mission.\n\nThe reward is applied in the same transaction as the completion itself, so a\nplayer can never end up marked complete without being paid, or paid twice.\nThe game server owns the mission definitions, so the amounts are taken as\ngiven rather than re-derived here.\n\nThe item fields are flat and always present rather than a nested optional:\nthe game serialises with Unity's JsonUtility, which writes a default-filled\nobject where a null would belong. `reward_item_definition_id` of 0 means the\nmission rewards no item.",
                 "required": [
                     "user_id",
-                    "mission_id"
+                    "mission_id",
+                    "reward_coins",
+                    "reward_bucks",
+                    "reward_item_definition_id",
+                    "reward_item_uuid",
+                    "reward_item_state_blob"
                 ],
                 "properties": {
                     "mission_id": {
                         "type": "integer",
                         "format": "int32"
+                    },
+                    "reward_bucks": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "reward_coins": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "reward_item_definition_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "reward_item_state_blob": {
+                        "type": "string",
+                        "description": "Full state of the resulting stack, already merged by the game server."
+                    },
+                    "reward_item_uuid": {
+                        "type": "string",
+                        "format": "uuid"
                     },
                     "user_id": {
                         "type": "string",

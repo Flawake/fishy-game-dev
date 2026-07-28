@@ -70,11 +70,11 @@ public class PlayerDataSyncManager : MonoBehaviour
 		ItemInstance toUpdate = inventory.ServerMergeOrAdd(instace, false);
 		if (currencyType == StoreManager.CurrencyType.BUCKS)
 		{
-			playerData.ChangeFishBucksAmount(price, false);
+			playerData.ChangeFishBucksAmount(-price, false);
 		}
 		else if (currencyType == StoreManager.CurrencyType.COINS)
 		{
-			playerData.ChangeFishCoinsAmount(price, false);
+			playerData.ChangeFishCoinsAmount(-price, false);
 		}
 		DatabaseCommunications.BuyItem(playerData.GetUuid(), toUpdate, price, currencyType);
 		return toUpdate;
@@ -84,6 +84,28 @@ public class PlayerDataSyncManager : MonoBehaviour
 	public ItemInstance ServerAddItem(ItemInstance item, bool needsTargetSync)
 	{
 		return ServerAddItem(item, null, false, needsTargetSync);
+	}
+
+	/// <summary>
+	/// Adds currency to the player and pushes the new balance to the owning client.
+	/// Persistence is the responsibility of whatever domain endpoint caused the
+	/// grant; there is no standalone balance endpoint.
+	/// </summary>
+	[Server]
+	public void ServerAddCurrency(StoreManager.CurrencyType currencyType, int amount)
+	{
+		switch (currencyType)
+		{
+			case StoreManager.CurrencyType.COINS:
+				playerData.ChangeFishCoinsAmount(amount, true);
+				break;
+			case StoreManager.CurrencyType.BUCKS:
+				playerData.ChangeFishBucksAmount(amount, true);
+				break;
+			default:
+				Debug.LogError($"Unhandled currency type {currencyType}.");
+				break;
+		}
 	}
 
 	// Client-side version for optimistic updates

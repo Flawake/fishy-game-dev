@@ -147,11 +147,29 @@ namespace FishyGame.Api
 
     /// <summary>
     /// Request body for completing a mission.
+    /// 
+    /// The reward is applied in the same transaction as the completion itself, so a
+    /// player can never end up marked complete without being paid, or paid twice.
+    /// The game server owns the mission definitions, so the amounts are taken as
+    /// given rather than re-derived here.
+    /// 
+    /// The item fields are flat and always present rather than a nested optional:
+    /// the game serialises with Unity's JsonUtility, which writes a default-filled
+    /// object where a null would belong. `reward_item_definition_id` of 0 means the
+    /// mission rewards no item.
     /// </summary>
     [Serializable]
     public partial class CompleteMissionRequest
     {
         public int mission_id = 0;
+        public int reward_bucks = 0;
+        public int reward_coins = 0;
+        public int reward_item_definition_id = 0;
+        /// <summary>
+        /// Full state of the resulting stack, already merged by the game server.
+        /// </summary>
+        public string reward_item_state_blob = string.Empty;
+        public string reward_item_uuid = string.Empty;
         public string user_id = string.Empty;
     }
 
