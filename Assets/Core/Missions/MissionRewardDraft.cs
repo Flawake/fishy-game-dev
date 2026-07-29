@@ -21,20 +21,14 @@ public class MissionRewardDraft
     int coins;
     int bucks;
 
-    ItemInstance grantedItem;
+    DeltaItem grantedItemDelta;
     int itemDefinitionId;
     Guid itemUuid;
 
     public int Coins => coins;
     public int Bucks => bucks;
 
-    public int ItemDefinitionId => itemDefinitionId;
-
-    /// <summary>
-    /// <see cref="Guid.Empty"/> when the mission rewards no item. The definition id
-    /// cannot carry that signal, because 0 is a real item id.
-    /// </summary>
-    public Guid ItemUuid => itemUuid;
+    public DeltaItem GrantedItemDelta => grantedItemDelta;
 
     public MissionRewardDraft(PlayerInventory inventory, PlayerDataSyncManager syncManager)
     {

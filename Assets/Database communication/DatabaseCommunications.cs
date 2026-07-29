@@ -4,14 +4,35 @@ using Mirror;
 using ItemSystem;
 using System.Collections.Generic;
 using FishyGame.Api;
+using System.Linq;
 
 
 #nullable enable
 
-// Extension helpers for ItemInstance behaviour checks
-static class ItemInstanceExtensions {
-    public static bool HasBehaviour<T>(this ItemInstance inst) where T : class, IItemBehaviour {
-        return inst.def.GetBehaviour<T>() != null;
+public static class DatabaseCommunicationsHelper
+{
+    public static Durability? DeltaItemToDurability(DeltaItem item)
+    {
+        DurabilityState? durabilityState = item.GetState<DurabilityState>();
+        if (durabilityState != null)
+        {
+            return new Durability {
+                durability = durabilityState.remaining,
+            };
+        }
+        return null;
+    }
+
+    public static Stack? DeltaItemToStack(DeltaItem item)
+    {
+        StackState? stackState = item.GetState<StackState>();
+        if (stackState != null)
+        {
+            return new Stack {
+                stack = stackState.currentAmount,
+            };
+        }
+        return null;
     }
 }
 
@@ -135,9 +156,10 @@ public static class DatabaseCommunications
                 reward_bucks = reward.Bucks,
                 reward_item = new InventoryItem
                 {
-                    definition_id = reward.ItemDefinitionId,
-                    item_uuid = reward.ItemUuid,
-                    durability = ,
+                    definition_id = reward.GrantedItemDelta.ItemDefinition.Id,
+                    item_uuid = reward.GrantedItemDelta.ItemUUID.ToString(),
+                    durability = DatabaseCommunicationsHelper.DeltaItemToDurability(reward.GrantedItemDelta),
+                    stack = DatabaseCommunicationsHelper.DeltaItemToStack(reward.GrantedItemDelta),
 
                 },
             },
@@ -222,31 +244,17 @@ public static class DatabaseCommunications
     }
 
     [Server]
-    public static void BuyItem(Guid buyerID, ItemInstance deltaItem, int price, StoreManager.CurrencyType currencyType, Action<ApiResult<bool>>? callback = null)
-    {
-        Durability? delta_durability = 
-            deltaItem.GetState<DurabilityState>() == null ? 
-                null : 
-                new Durability { 
-                    durability = deltaItem.GetState<DurabilityState>().remaining 
-                };
-
-        Stack? delta_stack = 
-        deltaItem.GetState<StackState>() == null ? 
-            null : 
-            new Stack { 
-                stack = deltaItem.GetState<StackState>().currentAmount 
-            };
-        
+    public static void BuyItem(Guid buyerID, DeltaItem deltaItem, int price, StoreManager.CurrencyType currencyType, Action<ApiResult<bool>>? callback = null)
+    {   
         ShopApi.BuyItem(
             new BuyItemRequest
             {
                 buyer_id = buyerID.ToString(),
                 item = new InventoryItem {
-                    definition_id = deltaItem.def.Id,
-                    item_uuid = deltaItem.uuid.ToString(),
-                    durability = delta_durability,
-                    stack = delta_stack,
+                    definition_id = deltaItem.ItemDefinition.Id,
+                    item_uuid = deltaItem.ItemUUID.ToString(),
+                    durability = DatabaseCommunicationsHelper.DeltaItemToDurability(deltaItem),
+                    stack = DatabaseCommunicationsHelper.DeltaItemToStack(deltaItem),
                 },
                 item_price = price,
                 bought_using = currencyType.ToString(),
@@ -269,52 +277,56 @@ public static class DatabaseCommunications
     }
 
     [Server]
-    public static void AddOrUpdateItem(ItemInstance item, Guid userID, Action<ApiResult<bool>>? callback = null)
+    public static void AddOrUpdateItem(DeltaItem deltaItem, Guid userID, Action<ApiResult<bool>>? callback = null)
     {
         InventoryApi.AddOrUpdateItem(
             new AddOrUpdateItemRequest
             {
                 user_id = userID.ToString(),
-                item_uuid = item.uuid.ToString(),
-                definition_id = item.def.Id,
-                state_blob = Convert.ToBase64String(StatePacker.Pack(item.state)),
+                item_uuid = deltaItem.ItemUUID.ToString(),
+                definition_id = deltaItem.ItemDefinition.Id,
+                durability = DatabaseCommunicationsHelper.DeltaItemToDurability(deltaItem),
+                stack = DatabaseCommunicationsHelper.DeltaItemToStack(deltaItem),
             },
             callback);
     }
 
     [Server]
-    public static void DestroyItem(ItemInstance item, Guid userID, Action<ApiResult<bool>>? callback = null)
+    public static void DestroyItem(DeltaItem deltaItem, Guid userID, Action<ApiResult<bool>>? callback = null)
     {
         InventoryApi.DestroyItem(
             new DestroyItemRequest
             {
                 user_id = userID.ToString(),
-                item_uid = item.uuid.ToString(),
+                item_uid = deltaItem.ItemUUID.ToString(),
             },
             callback);
     }
 
     [Server]
-    public static void SelectOtherItem(ItemInstance item, Guid userID, Action<ApiResult<bool>>? callback = null)
+    public static void SelectOtherItem(DeltaItem deltaItem, Guid userID, Action<ApiResult<bool>>? callback = null)
     {
-        // Left as literals on purpose: the generated FishyGame.Api.ItemType constants
-        // are shadowed by the global ItemType enum in items/ItemObject.cs.
-        string itemType;
-        if (item.HasBehaviour<RodBehaviour>())
-            itemType = FishyGame.Api.ItemType.Rod.ToString();
-        else if (item.HasBehaviour<BaitBehaviour>())
-            itemType = FishyGame.Api.ItemType.Bait.ToString();
-        else {
+        var itemType = new[]
+        {
+            (typeof(RodBehaviour), ItemType.Rod),
+            (typeof(BaitBehaviour), ItemType.Bait)
+        }
+        .FirstOrDefault(x => deltaItem.ItemDefinition.GetBehaviour(x.Item1) != null);
+
+        if (itemType == default)
+        {
             Debug.Log("Only a bait and a rod should be selectable");
             return;
         }
+
+        string itemTypeString = itemType.Item2.ToString();
 
         StatsApi.SelectItem(
             new SelectItemRequest
             {
                 user_id = userID.ToString(),
-                item_uid = item.uuid.ToString(),
-                item_type = itemType,
+                item_uid = deltaItem.ItemUUID.ToString(),
+                item_type = itemTypeString,
             },
             callback);
     }
