@@ -79,8 +79,9 @@ namespace FishyGame.Api
     public partial class AddOrUpdateItemRequest
     {
         public int definition_id = 0;
+        public Durability? durability = null;
         public string item_uuid = string.Empty;
-        public string state_blob = string.Empty;
+        public Stack? stack = null;
         public string user_id = string.Empty;
     }
 
@@ -113,10 +114,8 @@ namespace FishyGame.Api
     {
         public string bought_using = string.Empty;
         public string buyer_id = string.Empty;
-        public int item_def_id = 0;
+        public InventoryItem item = new InventoryItem();
         public int item_price = 0;
-        public string item_state_blob = string.Empty;
-        public string item_uuid = string.Empty;
     }
 
     /// <summary>
@@ -155,8 +154,8 @@ namespace FishyGame.Api
     /// 
     /// The item fields are flat and always present rather than a nested optional:
     /// the game serialises with Unity's JsonUtility, which writes a default-filled
-    /// object where a null would belong. `reward_item_definition_id` of 0 means the
-    /// mission rewards no item.
+    /// object where a null would belong. A nil `reward_item_uuid` means the mission
+    /// rewards no item. Definition id 0 is a real item, so it cannot be the sentinel.
     /// </summary>
     [Serializable]
     public partial class CompleteMissionRequest
@@ -164,12 +163,7 @@ namespace FishyGame.Api
         public int mission_id = 0;
         public int reward_bucks = 0;
         public int reward_coins = 0;
-        public int reward_item_definition_id = 0;
-        /// <summary>
-        /// Full state of the resulting stack, already merged by the game server.
-        /// </summary>
-        public string reward_item_state_blob = string.Empty;
-        public string reward_item_uuid = string.Empty;
+        public InventoryItem? reward_item = null;
         public string user_id = string.Empty;
     }
 
@@ -234,6 +228,12 @@ namespace FishyGame.Api
     }
 
     [Serializable]
+    public partial class Durability
+    {
+        public int durability = 0;
+    }
+
+    [Serializable]
     public partial class FishData
     {
         public int amount = 0;
@@ -242,15 +242,6 @@ namespace FishyGame.Api
         public string first_caught = string.Empty;
         public int fish_id = 0;
         public int max_length = 0;
-    }
-
-    [Serializable]
-    public partial class FishToSell
-    {
-        public int fish_amount = 0;
-        public int fish_id = 0;
-        public string fish_uid = string.Empty;
-        public string new_state_blob = string.Empty;
     }
 
     [Serializable]
@@ -286,12 +277,12 @@ namespace FishyGame.Api
     public partial class HandInFish
     {
         /// <summary>
-        /// The amount left in the stack after handing in; 0 or less destroys the stack.
+        /// How many fishes of this stack are handed in. Subtracted from the stored stack,
+        /// which is destroyed when it reaches zero. Must be positive.
         /// </summary>
-        public int fish_amount = 0;
+        public int amount_handed_in = 0;
         public int fish_id = 0;
         public string fish_uid = string.Empty;
-        public string? new_state_blob = null;
     }
 
     [Serializable]
@@ -316,8 +307,9 @@ namespace FishyGame.Api
     public partial class InventoryItem
     {
         public int definition_id = 0;
+        public Durability? durability = null;
         public string item_uuid = string.Empty;
-        public string state_blob = string.Empty;
+        public Stack? stack = null;
     }
 
     [Serializable]
@@ -423,9 +415,15 @@ namespace FishyGame.Api
     [Serializable]
     public partial class SellFishesRequest
     {
-        public List<FishToSell> fishes = new List<FishToSell>();
+        public List<InventoryItem> fishes = new List<InventoryItem>();
         public int price = 0;
         public string seller_id = string.Empty;
+    }
+
+    [Serializable]
+    public partial class Stack
+    {
+        public int stack = 0;
     }
 
     /// <summary>
@@ -439,23 +437,14 @@ namespace FishyGame.Api
     }
 
     [Serializable]
-    public partial class TradeItemRequest
-    {
-        public int item_amount = 0;
-        public int item_id = 0;
-        public string item_uid = string.Empty;
-        public string state_blob = string.Empty;
-    }
-
-    [Serializable]
     public partial class TradeRequest
     {
         public int user_one_bucks_received = 0;
         public string user_one_id = string.Empty;
-        public List<TradeItemRequest> user_one_receives = new List<TradeItemRequest>();
+        public List<InventoryItem> user_one_receives = new List<InventoryItem>();
         public int user_two_bucks_received = 0;
         public string user_two_id = string.Empty;
-        public List<TradeItemRequest> user_two_receives = new List<TradeItemRequest>();
+        public List<InventoryItem> user_two_receives = new List<InventoryItem>();
     }
 
     [Serializable]

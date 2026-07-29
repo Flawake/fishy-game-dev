@@ -1,10 +1,12 @@
 using System;
-using System.Text;
 using UnityEngine;
 using Mirror;
 using ItemSystem;
 using System.Collections.Generic;
 using FishyGame.Api;
+
+
+#nullable enable
 
 // Extension helpers for ItemInstance behaviour checks
 static class ItemInstanceExtensions {
@@ -43,7 +45,7 @@ public static class DatabaseCommunications
     }
 
     [Server]
-    public static void CommitTradeRequest(Guid userOneID, Guid userTwoID, List<TradeItemRequest> userOneItemsReceived, List<TradeItemRequest> userTwoItemsReceived, int userOneBucksReceived, int userTwoBucksReceived, Action<ApiResult<bool>> callback = null)
+    public static void CommitTradeRequest(Guid userOneID, Guid userTwoID, List<InventoryItem> userOneItemsReceived, List<InventoryItem> userTwoItemsReceived, int userOneBucksReceived, int userTwoBucksReceived, Action<ApiResult<bool>>? callback = null)
     {
         TradingApi.CommitTrade(
             new TradeRequest
@@ -67,7 +69,7 @@ public static class DatabaseCommunications
     }
 
     [Server]
-    public static void CompleteHerbQuest(Guid userID, Guid herbQuestId, int rewardCoins, List<HandInFish> fishes, Action<ApiResult<bool>> callback = null)
+    public static void CompleteHerbQuest(Guid userID, Guid herbQuestId, int rewardCoins, List<HandInFish> fishes, Action<ApiResult<bool>>? callback = null)
     {
         HerbQuestApi.CompleteDailyQuest(
             new CompleteDailyQuestRequest
@@ -81,7 +83,7 @@ public static class DatabaseCommunications
     }
 
     [Server]
-    public static void AcceptHerbQuest(Guid userID, Guid herbQuestId, Action<ApiResult<bool>> callback = null)
+    public static void AcceptHerbQuest(Guid userID, Guid herbQuestId, Action<ApiResult<bool>>? callback = null)
     {
         HerbQuestApi.AcceptDailyQuest(
             new AcceptDailyQuestRequest
@@ -93,7 +95,7 @@ public static class DatabaseCommunications
     }
 
     [Server]
-    public static void StartMission(Guid userID, int missionID, Action<ApiResult<bool>> callback = null)
+    public static void StartMission(Guid userID, int missionID, Action<ApiResult<bool>>? callback = null)
     {
         MissionsApi.StartMission(
             new StartMissionRequest
@@ -105,7 +107,7 @@ public static class DatabaseCommunications
     }
 
     [Server]
-    public static void ProgressMission(Guid userID, int missionID, int newProgress, Action<ApiResult<bool>> callback = null)
+    public static void ProgressMission(Guid userID, int missionID, int newProgress, Action<ApiResult<bool>>? callback = null)
     {
         MissionsApi.ProgressMission(
             new ProgressMissionRequest
@@ -122,7 +124,7 @@ public static class DatabaseCommunications
     /// can never be marked complete without being paid, or paid twice.
     /// </summary>
     [Server]
-    public static void CompleteMission(Guid userID, int missionID, MissionRewardDraft reward, Action<ApiResult<bool>> callback = null)
+    public static void CompleteMission(Guid userID, int missionID, MissionRewardDraft reward, Action<ApiResult<bool>>? callback = null)
     {
         MissionsApi.CompleteMission(
             new CompleteMissionRequest
@@ -131,15 +133,19 @@ public static class DatabaseCommunications
                 mission_id = missionID,
                 reward_coins = reward.Coins,
                 reward_bucks = reward.Bucks,
-                reward_item_definition_id = reward.ItemDefinitionId,
-                reward_item_uuid = reward.ItemUuid.ToString(),
-                reward_item_state_blob = reward.ItemStateBlob,
+                reward_item = new InventoryItem
+                {
+                    definition_id = reward.ItemDefinitionId,
+                    item_uuid = reward.ItemUuid,
+                    durability = ,
+
+                },
             },
             callback);
     }
 
     [Server]
-    public static void AddFriendRequest(Guid userOne, Guid userTwo, Guid senderID, Action<ApiResult<bool>> callback = null)
+    public static void AddFriendRequest(Guid userOne, Guid userTwo, Guid senderID, Action<ApiResult<bool>>? callback = null)
     {
         FriendsApi.AddFriendRequest(
             new FriendRequests
@@ -152,7 +158,7 @@ public static class DatabaseCommunications
     }
 
     [Server]
-    public static void HandleFriendRequest(Guid userOne, Guid userTwo, bool accepted, Action<ApiResult<bool>> callback = null)
+    public static void HandleFriendRequest(Guid userOne, Guid userTwo, bool accepted, Action<ApiResult<bool>>? callback = null)
     {
         FriendsApi.HandleFriendRequest(
             new HandleFriendRequest
@@ -165,7 +171,7 @@ public static class DatabaseCommunications
     }
 
     [Server]
-    public static void RemoveFriend(Guid userOne, Guid userTwo, Action<ApiResult<bool>> callback = null)
+    public static void RemoveFriend(Guid userOne, Guid userTwo, Action<ApiResult<bool>>? callback = null)
     {
         FriendsApi.RemoveFriend(
             new RemoveFriend
@@ -188,7 +194,7 @@ public static class DatabaseCommunications
     }
 
     [Server]
-    public static void AddStatFish(CurrentFish fish, Guid userID, Action<ApiResult<bool>> callback = null)
+    public static void AddStatFish(CurrentFish fish, Guid userID, Action<ApiResult<bool>>? callback = null)
     {
         StatsApi.AddFish(
             new AddFishRequest
@@ -204,7 +210,7 @@ public static class DatabaseCommunications
     }
 
     [Server]
-    public static void AddPlaytime(int amount, Guid userID, Action<ApiResult<bool>> callback = null)
+    public static void AddPlaytime(int amount, Guid userID, Action<ApiResult<bool>>? callback = null)
     {
         StatsApi.AddPlaytime(
             new AddPlayTimeRequest
@@ -216,16 +222,32 @@ public static class DatabaseCommunications
     }
 
     [Server]
-    public static void BuyItem(Guid buyerID, ItemInstance item, int price, StoreManager.CurrencyType currencyType, Action<ApiResult<bool>> callback = null)
+    public static void BuyItem(Guid buyerID, ItemInstance deltaItem, int price, StoreManager.CurrencyType currencyType, Action<ApiResult<bool>>? callback = null)
     {
-        Debug.Log("Buying item");
+        Durability? delta_durability = 
+            deltaItem.GetState<DurabilityState>() == null ? 
+                null : 
+                new Durability { 
+                    durability = deltaItem.GetState<DurabilityState>().remaining 
+                };
+
+        Stack? delta_stack = 
+        deltaItem.GetState<StackState>() == null ? 
+            null : 
+            new Stack { 
+                stack = deltaItem.GetState<StackState>().currentAmount 
+            };
+        
         ShopApi.BuyItem(
             new BuyItemRequest
             {
                 buyer_id = buyerID.ToString(),
-                item_def_id = item.def.Id,
-                item_uuid = item.uuid.ToString(),
-                item_state_blob = Convert.ToBase64String(StatePacker.Pack(item.state)),
+                item = new InventoryItem {
+                    definition_id = deltaItem.def.Id,
+                    item_uuid = deltaItem.uuid.ToString(),
+                    durability = delta_durability,
+                    stack = delta_stack,
+                },
                 item_price = price,
                 bought_using = currencyType.ToString(),
             },
@@ -233,7 +255,7 @@ public static class DatabaseCommunications
     }
 
     [Server]
-    public static void SellFishes(Guid sellerID, List<FishToSell> fishes, int earnings, Action<ApiResult<bool>> callback = null)
+    public static void SellFishes(Guid sellerID, List<InventoryItem> fishes, int earnings, Action<ApiResult<bool>>? callback = null)
     {
         Debug.Log("Selling fishes");
         FishMarketApi.SellFishes(
@@ -247,7 +269,7 @@ public static class DatabaseCommunications
     }
 
     [Server]
-    public static void AddOrUpdateItem(ItemInstance item, Guid userID, Action<ApiResult<bool>> callback = null)
+    public static void AddOrUpdateItem(ItemInstance item, Guid userID, Action<ApiResult<bool>>? callback = null)
     {
         InventoryApi.AddOrUpdateItem(
             new AddOrUpdateItemRequest
@@ -261,7 +283,7 @@ public static class DatabaseCommunications
     }
 
     [Server]
-    public static void DestroyItem(ItemInstance item, Guid userID, Action<ApiResult<bool>> callback = null)
+    public static void DestroyItem(ItemInstance item, Guid userID, Action<ApiResult<bool>>? callback = null)
     {
         InventoryApi.DestroyItem(
             new DestroyItemRequest
@@ -273,7 +295,7 @@ public static class DatabaseCommunications
     }
 
     [Server]
-    public static void SelectOtherItem(ItemInstance item, Guid userID, Action<ApiResult<bool>> callback = null)
+    public static void SelectOtherItem(ItemInstance item, Guid userID, Action<ApiResult<bool>>? callback = null)
     {
         // Left as literals on purpose: the generated FishyGame.Api.ItemType constants
         // are shadowed by the global ItemType enum in items/ItemObject.cs.
@@ -298,7 +320,7 @@ public static class DatabaseCommunications
     }
 
     [Server]
-    public static void AddMail(Mail mail, Action<ApiResult<bool>> callback = null)
+    public static void AddMail(Mail mail, Action<ApiResult<bool>>? callback = null)
     {
         MailsApi.CreateMail(
             new CreateMailRequest
@@ -313,7 +335,7 @@ public static class DatabaseCommunications
     }
 
     [Server]
-    public static void ReadMail(Guid mailUID, Guid userID, bool read, Action<ApiResult<bool>> callback = null)
+    public static void ReadMail(Guid mailUID, Guid userID, bool read, Action<ApiResult<bool>>? callback = null)
     {
         MailsApi.ReadMail(
             new ReadMailRequest
@@ -326,7 +348,7 @@ public static class DatabaseCommunications
     }
 
     [Server]
-    public static void AddActiveEffect(Guid userID, int itemId, DateTime expiryTime, Action<ApiResult<bool>> callback = null)
+    public static void AddActiveEffect(Guid userID, int itemId, DateTime expiryTime, Action<ApiResult<bool>>? callback = null)
     {
         EffectsApi.AddEffect(
             new AddActiveEffectRequest
@@ -339,7 +361,7 @@ public static class DatabaseCommunications
     }
 
     [Server]
-    public static void RemoveExpiredEffect(Guid userID, int itemId, Action<ApiResult<bool>> callback = null)
+    public static void RemoveExpiredEffect(Guid userID, int itemId, Action<ApiResult<bool>>? callback = null)
     {
         EffectsApi.RemoveExpiredEffects(
             new RemoveExpiredEffectRequest

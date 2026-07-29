@@ -24,7 +24,6 @@ public class MissionRewardDraft
     ItemInstance grantedItem;
     int itemDefinitionId;
     Guid itemUuid;
-    string itemStateBlob = string.Empty;
 
     public int Coins => coins;
     public int Bucks => bucks;
@@ -36,7 +35,6 @@ public class MissionRewardDraft
     /// cannot carry that signal, because 0 is a real item id.
     /// </summary>
     public Guid ItemUuid => itemUuid;
-    public string ItemStateBlob => itemStateBlob;
 
     public MissionRewardDraft(PlayerInventory inventory, PlayerDataSyncManager syncManager)
     {
