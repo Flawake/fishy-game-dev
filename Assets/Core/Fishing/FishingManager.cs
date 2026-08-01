@@ -351,8 +351,11 @@ public class FishingManager : NetworkBehaviour
             TargetShowCaughtDialog();
             CompetitionManager.AddToRunningCompetition(currentFish, playerData);
             ItemDefinition fishDef = ItemRegistry.Get(currentFish.id);
-            ItemInstance fishInstance = new ItemInstance(fishDef);
-            playerDataManager.ServerAddItem(fishInstance, currentFish, true, true);
+            DeltaItem deltaFish = new DeltaItem(fishDef, 1);
+            if(!playerDataManager.ServerAddItem(deltaFish, currentFish, true, true, out InventoryChange _))
+            {
+                Debug.LogWarning("Failed adding newly caught fish to inventory");
+            }
             missionManager.FishCaught(currentFish.id);
         }
     }

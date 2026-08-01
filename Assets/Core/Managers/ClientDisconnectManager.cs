@@ -9,6 +9,7 @@ public enum ClientDisconnectReason
     InvalidLoginCredentials,
     InvalidPlayerData,
     Cheating,
+    TradingError,
 };
 
 public struct DisconnectMessage : NetworkMessage

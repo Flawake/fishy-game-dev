@@ -6,7 +6,6 @@ using System.Linq;
 using GlobalCompetitionSystem;
 using ItemSystem;
 using UnityEngine;
-using Mirror.BouncyCastle.Ocsp;
 using FishyGame.Api;
 
 public partial class PlayerData : NetworkBehaviour
@@ -285,7 +284,7 @@ public partial class PlayerData : NetworkBehaviour
         {
             if (newRod != null)
             {
-                DatabaseCommunications.SelectOtherItem(newRod, GetUuid());
+                DatabaseCommunications.SelectOtherItem(newRod.uuid, ItemType.Rod, GetUuid());
             }
         }
         selectedRod = newRod;
@@ -322,7 +321,7 @@ public partial class PlayerData : NetworkBehaviour
             return;
         }
 
-        if (!rodInventoryReference.HasBehaviour<RodBehaviour>())
+        if (!rodInventoryReference.def.HasBehaviour<RodBehaviour>())
         {
             Debug.Log("Given item has no RodBehaviour attached");
         }
@@ -337,7 +336,7 @@ public partial class PlayerData : NetworkBehaviour
         {
             if (newBait != null)
             {
-                DatabaseCommunications.SelectOtherItem(newBait, GetUuid());
+                DatabaseCommunications.SelectOtherItem(newBait.uuid, ItemType.Bait, GetUuid());
             }
         }
         selectedBait = newBait;
@@ -653,8 +652,13 @@ public partial class PlayerData : NetworkBehaviour
             if (rodDef != null)
             {
                 ItemInstance newRod = new ItemInstance { def = rodDef, uuid = Guid.NewGuid() };
-                playerDataManager.ServerAddItem(newRod, true);
-                Debug.Log("Added default Bamboo Rod to player inventory");
+                if(!playerDataManager.ServerAddItem(DeltaItem.FromItemInstance(newRod), true, out InventoryChange _))
+                {
+                    Debug.LogWarning("Default rod was missing, adding it failed too");
+                } 
+                else {
+                    Debug.Log("Added default Bamboo Rod to player inventory");
+                }
             }
         }
         
@@ -667,7 +671,13 @@ public partial class PlayerData : NetworkBehaviour
             if (baitDef != null)
             {
                 ItemInstance newBait = new ItemInstance { def = baitDef, uuid = Guid.NewGuid() };
-                playerDataManager.ServerAddItem(newBait, true);
+                if(!playerDataManager.ServerAddItem(DeltaItem.FromItemInstance(newBait), true, out InventoryChange _))
+                {
+                    Debug.LogWarning("Default hook was missing, adding it failed too");
+                } 
+                else {
+                    Debug.Log("Added default hook to player inventory");
+                }
                 Debug.Log("Added default Hook to player inventory");
             }
         }

@@ -34,6 +34,17 @@ public static class DatabaseCommunicationsHelper
         }
         return null;
     }
+
+    public static InventoryItem DeltaItemToInventoryItem(DeltaItem deltaItem)
+    {
+        return new InventoryItem
+        {
+            definition_id = deltaItem.ItemDefinition.Id,
+            item_uuid = deltaItem.ItemUUID.ToString(),
+            durability = DeltaItemToDurability(deltaItem),
+            stack = DeltaItemToStack(deltaItem),
+        };
+    }
 }
 
 public static class DatabaseCommunications
@@ -66,15 +77,15 @@ public static class DatabaseCommunications
     }
 
     [Server]
-    public static void CommitTradeRequest(Guid userOneID, Guid userTwoID, List<InventoryItem> userOneItemsReceived, List<InventoryItem> userTwoItemsReceived, int userOneBucksReceived, int userTwoBucksReceived, Action<ApiResult<bool>>? callback = null)
+    public static void CommitTradeRequest(Guid userOneID, Guid userTwoID, List<DeltaItem> userOneItemsReceived, List<DeltaItem> userTwoItemsReceived, int userOneBucksReceived, int userTwoBucksReceived, Action<ApiResult<bool>>? callback = null)
     {
         TradingApi.CommitTrade(
             new TradeRequest
             {
                 user_one_id = userOneID.ToString(),
                 user_two_id = userTwoID.ToString(),
-                user_one_receives = userOneItemsReceived,
-                user_two_receives = userTwoItemsReceived,
+                user_one_receives = userOneItemsReceived.Select(item => DatabaseCommunicationsHelper.DeltaItemToInventoryItem(item)).ToList(),
+                user_two_receives = userTwoItemsReceived.Select(item => DatabaseCommunicationsHelper.DeltaItemToInventoryItem(item)).ToList(),
                 user_one_bucks_received = userOneBucksReceived,
                 user_two_bucks_received = userTwoBucksReceived,
             },
@@ -154,14 +165,9 @@ public static class DatabaseCommunications
                 mission_id = missionID,
                 reward_coins = reward.Coins,
                 reward_bucks = reward.Bucks,
-                reward_item = new InventoryItem
-                {
-                    definition_id = reward.GrantedItemDelta.ItemDefinition.Id,
-                    item_uuid = reward.GrantedItemDelta.ItemUUID.ToString(),
-                    durability = DatabaseCommunicationsHelper.DeltaItemToDurability(reward.GrantedItemDelta),
-                    stack = DatabaseCommunicationsHelper.DeltaItemToStack(reward.GrantedItemDelta),
-
-                },
+                reward_item = reward.GrantedItemDelta == null
+                    ? null
+                    : DatabaseCommunicationsHelper.DeltaItemToInventoryItem(reward.GrantedItemDelta),
             },
             callback);
     }
@@ -244,18 +250,18 @@ public static class DatabaseCommunications
     }
 
     [Server]
-    public static void BuyItem(Guid buyerID, DeltaItem deltaItem, int price, StoreManager.CurrencyType currencyType, Action<ApiResult<bool>>? callback = null)
+    public static void BuyItem(Guid buyerID, List<DeltaItem> deltaItems, int price, StoreManager.CurrencyType currencyType, Action<ApiResult<bool>>? callback = null)
     {   
         ShopApi.BuyItem(
             new BuyItemRequest
             {
                 buyer_id = buyerID.ToString(),
-                item = new InventoryItem {
+                item_updates = deltaItems.Select(deltaItem => new InventoryItem {
                     definition_id = deltaItem.ItemDefinition.Id,
                     item_uuid = deltaItem.ItemUUID.ToString(),
                     durability = DatabaseCommunicationsHelper.DeltaItemToDurability(deltaItem),
                     stack = DatabaseCommunicationsHelper.DeltaItemToStack(deltaItem),
-                },
+                }).ToList(),
                 item_price = price,
                 bought_using = currencyType.ToString(),
             },
@@ -263,70 +269,57 @@ public static class DatabaseCommunications
     }
 
     [Server]
-    public static void SellFishes(Guid sellerID, List<InventoryItem> fishes, int earnings, Action<ApiResult<bool>>? callback = null)
+    public static void SellFishes(Guid sellerID, List<DeltaItem> fishes, int earnings, Action<ApiResult<bool>>? callback = null)
     {
         Debug.Log("Selling fishes");
         FishMarketApi.SellFishes(
             new SellFishesRequest
             {
                 seller_id = sellerID.ToString(),
-                fishes = fishes,
+                fishes = fishes.Select(fish => DatabaseCommunicationsHelper.DeltaItemToInventoryItem(fish)).ToList(),
                 price = earnings,
             },
             callback);
     }
 
     [Server]
-    public static void AddOrUpdateItem(DeltaItem deltaItem, Guid userID, Action<ApiResult<bool>>? callback = null)
+    public static void AddOrUpdateItem(List<DeltaItem> deltaItems, Guid userID, Action<ApiResult<bool>>? callback = null)
     {
         InventoryApi.AddOrUpdateItem(
             new AddOrUpdateItemRequest
             {
                 user_id = userID.ToString(),
-                item_uuid = deltaItem.ItemUUID.ToString(),
-                definition_id = deltaItem.ItemDefinition.Id,
-                durability = DatabaseCommunicationsHelper.DeltaItemToDurability(deltaItem),
-                stack = DatabaseCommunicationsHelper.DeltaItemToStack(deltaItem),
+                items = deltaItems.Select(deltaItem => new InventoryItem {
+                    definition_id = deltaItem.ItemDefinition.Id,
+                    item_uuid = deltaItem.ItemUUID.ToString(),
+                    durability = DatabaseCommunicationsHelper.DeltaItemToDurability(deltaItem),
+                    stack = DatabaseCommunicationsHelper.DeltaItemToStack(deltaItem),
+                }).ToList(),
             },
             callback);
     }
 
     [Server]
-    public static void DestroyItem(DeltaItem deltaItem, Guid userID, Action<ApiResult<bool>>? callback = null)
+    public static void DestroyItem(Guid itemUUID, Guid userID, Action<ApiResult<bool>>? callback = null)
     {
         InventoryApi.DestroyItem(
             new DestroyItemRequest
             {
                 user_id = userID.ToString(),
-                item_uid = deltaItem.ItemUUID.ToString(),
+                item_uid = itemUUID.ToString(),
             },
             callback);
     }
 
     [Server]
-    public static void SelectOtherItem(DeltaItem deltaItem, Guid userID, Action<ApiResult<bool>>? callback = null)
+    public static void SelectOtherItem(Guid itemUUID, ItemType itemType, Guid userID, Action<ApiResult<bool>>? callback = null)
     {
-        var itemType = new[]
-        {
-            (typeof(RodBehaviour), ItemType.Rod),
-            (typeof(BaitBehaviour), ItemType.Bait)
-        }
-        .FirstOrDefault(x => deltaItem.ItemDefinition.GetBehaviour(x.Item1) != null);
-
-        if (itemType == default)
-        {
-            Debug.Log("Only a bait and a rod should be selectable");
-            return;
-        }
-
-        string itemTypeString = itemType.Item2.ToString();
-
         StatsApi.SelectItem(
             new SelectItemRequest
             {
                 user_id = userID.ToString(),
-                item_uid = deltaItem.ItemUUID.ToString(),
-                item_type = itemTypeString,
+                item_uid = itemUUID.ToString(),
+                item_type = itemType.ToString(),
             },
             callback);
     }

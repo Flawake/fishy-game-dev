@@ -51,6 +51,9 @@ public class StartupSceneManager : MonoBehaviour
             case ClientDisconnectReason.InvalidPlayerData:
                 ShowErrortWindow(message.reasonText);
                 break;
+            case ClientDisconnectReason.TradingError:
+                ShowErrortWindow(message.reasonText);
+                break;
         }
     }
 }

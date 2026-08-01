@@ -1,5 +1,4 @@
-using System;
-using System.Collections.Generic;
+using System.Linq;
 using ItemSystem;
 using Mirror;
 using UnityEngine;
@@ -22,8 +21,6 @@ public class MissionRewardDraft
     int bucks;
 
     DeltaItem grantedItemDelta;
-    int itemDefinitionId;
-    Guid itemUuid;
 
     public int Coins => coins;
     public int Bucks => bucks;
@@ -53,10 +50,10 @@ public class MissionRewardDraft
     }
 
     /// <summary>
-    /// Resolves the single inventory row this reward will write. The row is either
-    /// an existing stack grown by <paramref name="amount"/> or a brand new stack,
-    /// mirroring the decision <see cref="PlayerInventory.TryMergeOrAdd"/> makes, so
-    /// that what is stored matches what the inventory does with it later.
+    /// Decides the single inventory row this reward writes: an existing stack that
+    /// can take the whole amount, or a stack of its own. <see cref="Apply"/> carries
+    /// that decision out instead of deciding again, so what ends up in memory cannot
+    /// disagree with what was stored.
     /// </summary>
     public void AddItem(ItemDefinition definition, int amount)
     {
@@ -66,7 +63,7 @@ public class MissionRewardDraft
             return;
         }
 
-        if (grantedItem != null)
+        if (grantedItemDelta != null)
         {
             Debug.LogError($"A mission reward can only grant one item; ignoring {definition.DisplayName}.");
             return;
@@ -86,18 +83,15 @@ public class MissionRewardDraft
             amount = maxStack;
         }
 
-        grantedItem = new ItemInstance(definition, amount);
-        itemDefinitionId = definition.Id;
-
-        if (TryResolveMergeTarget(definition, amount, maxStack, out ItemInstance target, out int mergedAmount))
+        ItemInstance target = ResolveMergeTarget(definition, amount, maxStack);
+        if (target == null)
         {
-            itemUuid = target.uuid;
-            itemStateBlob = PackWithStackAmount(target, mergedAmount);
+            grantedItemDelta = new DeltaItem(definition, amount);
             return;
         }
 
-        itemUuid = grantedItem.uuid;
-        itemStateBlob = Convert.ToBase64String(StatePacker.Pack(grantedItem.state));
+        grantedItemDelta = DeltaItem.FromItemInstance(target);
+        grantedItemDelta.SetState(new StackState { currentAmount = amount });
     }
 
     /// <summary>
@@ -117,48 +111,26 @@ public class MissionRewardDraft
             syncManager.ServerAddCurrency(StoreManager.CurrencyType.BUCKS, bucks);
         }
 
-        if (grantedItem != null)
+        if (grantedItemDelta != null && !inventory.ServerApplyDelta(grantedItemDelta))
         {
-            inventory.ServerMergeOrAdd(grantedItem, true);
+            Debug.LogError($"Mission reward row {grantedItemDelta.ItemUUID} was stored but could not be applied.");
         }
-    }
-
-    bool TryResolveMergeTarget(ItemDefinition definition, int amount, int maxStack, out ItemInstance target, out int mergedAmount)
-    {
-        target = null;
-        mergedAmount = 0;
-
-        // Items that wear out are never stacked.
-        if (definition.GetBehaviour<DurabilityBehaviour>() != null)
-        {
-            return false;
-        }
-
-        ItemInstance candidate = inventory.GetFirstNonFullStack(definition.Id);
-        if (candidate == null)
-        {
-            return false;
-        }
-
-        StackState stack = candidate.GetState<StackState>();
-        if (stack == null || stack.currentAmount + amount > maxStack)
-        {
-            return false;
-        }
-
-        target = candidate;
-        mergedAmount = stack.currentAmount + amount;
-        return true;
     }
 
     /// <summary>
-    /// Packs a copy of the item's state with a different stack amount, so the blob
-    /// can be built without mutating the live instance.
+    /// The stack the reward can be folded into whole, if there is one. Anything that
+    /// would split across two stacks is refused, because the payload holds one row.
     /// </summary>
-    static string PackWithStackAmount(ItemInstance item, int stackAmount)
+    ItemInstance ResolveMergeTarget(ItemDefinition definition, int amount, int maxStack)
     {
-        Dictionary<Type, IRuntimeBehaviourState> copy = new Dictionary<Type, IRuntimeBehaviourState>(item.state);
-        copy[typeof(StackState)] = new StackState { currentAmount = stackAmount };
-        return Convert.ToBase64String(StatePacker.Pack(copy));
+        if (definition.GetBehaviour<DurabilityBehaviour>() != null)
+        {
+            return null;
+        }
+
+        return inventory.GetNonFullStacks(definition.Id)
+            .FirstOrDefault(stack =>
+                stack.GetState<StackState>() is { } state &&
+                state.currentAmount + amount <= maxStack);
     }
 }

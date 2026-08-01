@@ -21,7 +21,7 @@ public class SellFishUIManager : MonoBehaviour
         }
         
         List<ItemInstance> items = NetworkClient.localPlayer.GetComponentInChildren<PlayerInventory>().GetItems();
-        items.Where(item => item.HasBehaviour<FishBehaviour>())
+        items.Where(item => item.def.HasBehaviour<FishBehaviour>())
         .ToList()
         .ForEach(item =>
         {

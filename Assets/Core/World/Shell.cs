@@ -29,12 +29,12 @@ public class Shell : MonoBehaviour
             ItemGrantService grantService = other.gameObject.GetComponentInParent<ItemGrantService>();
             ItemDefinition shellDef = shellSpawner.GetShellDefinition();
             // Register optimistic shell pickup (1 item)
-            System.Guid operationId = System.Guid.Empty;
+            GrantId grantId = GrantId.None;
             if (grantService != null && shellDef != null)
             {
-                operationId = grantService.ClientRegisterOptimistic(shellDef, 1);
+                grantId = grantService.ClientRegisterOptimistic(shellDef, 1);
             }
-            shellSpawner.CmdCollectShell(transform.position, operationId);
+            shellSpawner.CmdCollectShell(transform.position, grantId);
             // Directly remove the shell locally, don't wait on the server for this.
             shellSpawner.ShellRemoved(new ComparableVector3(transform.position));
         }

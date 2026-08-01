@@ -538,7 +538,7 @@
                 }
             }
         },
-        "/inventory/addOrUpdate": {
+        "/inventory/add_or_update": {
             "post": {
                 "tags": [
                     "Inventory"
@@ -1176,37 +1176,14 @@
                 "type": "object",
                 "required": [
                     "user_id",
-                    "item_uuid",
-                    "definition_id"
+                    "items"
                 ],
                 "properties": {
-                    "definition_id": {
-                        "type": "integer",
-                        "format": "int32"
-                    },
-                    "durability": {
-                        "oneOf": [
-                            {
-                                "type": "null"
-                            },
-                            {
-                                "$ref": "#/components/schemas/Durability"
-                            }
-                        ]
-                    },
-                    "item_uuid": {
-                        "type": "string",
-                        "format": "uuid"
-                    },
-                    "stack": {
-                        "oneOf": [
-                            {
-                                "type": "null"
-                            },
-                            {
-                                "$ref": "#/components/schemas/Stack"
-                            }
-                        ]
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/InventoryItem"
+                        }
                     },
                     "user_id": {
                         "type": "string",
@@ -1259,7 +1236,7 @@
                 "description": "Request body for buying an item.",
                 "required": [
                     "buyer_id",
-                    "item",
+                    "item_updates",
                     "item_price",
                     "bought_using"
                 ],
@@ -1271,12 +1248,15 @@
                         "type": "string",
                         "format": "uuid"
                     },
-                    "item": {
-                        "$ref": "#/components/schemas/InventoryItem"
-                    },
                     "item_price": {
                         "type": "integer",
                         "format": "int32"
+                    },
+                    "item_updates": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/InventoryItem"
+                        }
                     }
                 }
             },

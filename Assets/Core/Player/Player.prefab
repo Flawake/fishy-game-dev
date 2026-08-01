@@ -2278,6 +2278,7 @@ MonoBehaviour:
   fishdexFishes: {fileID: 1917053837910666563}
   mail: {fileID: 871487665807593460}
   friendSystem: {fileID: 3391836200202609913}
+  missionManager: {fileID: 5312884471096330175}
   availableFishCoins: 0
   availableFishBucks: 0
   playerName: 

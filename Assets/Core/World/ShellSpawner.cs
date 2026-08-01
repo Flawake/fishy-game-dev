@@ -120,7 +120,7 @@ public class ShellSpawner : NetworkBehaviour
     }
     
     [Command(requiresAuthority = false)]
-    public void CmdCollectShell(Vector3 shellPosition, Guid operationId, NetworkConnectionToClient sender = null)
+    public void CmdCollectShell(Vector3 shellPosition, GrantId grantId, NetworkConnectionToClient sender = null)
     {
         PlayerController controller = sender.identity.GetComponent<PlayerController>();
         PlayerDataSyncManager syncManager = sender.identity.GetComponent<PlayerDataSyncManager>();
@@ -128,30 +128,40 @@ public class ShellSpawner : NetworkBehaviour
         // This function checks if the player could have moved to this position, and moves the player on the server if the location is valid
         if (!controller.ServerHandleMovement(shellPosition))
         {
-            if (grantService != null && operationId != Guid.Empty)
-            {
-                grantService.ServerDeny(operationId, 1);
-            }
+            DenyShell(grantService, grantId);
             return;
         }
 
         ComparableVector3 shellPos = new ComparableVector3(shellPosition);
-        if (spawnedShellPositions.Remove(shellPos))
+        if (!spawnedShellPositions.Remove(shellPos))
         {
-            ShellRemoved(shellPos);
-            ItemInstance shell = new ItemInstance(shellDefinition);
-            shell = syncManager.ServerAddItem(shell, null, false, false);
-            if (grantService != null && operationId != Guid.Empty)
-            {
-                grantService.ServerConfirm(operationId, shell.uuid);
-            }
+            DenyShell(grantService, grantId);
+            return;
         }
-        else
+
+        ShellRemoved(shellPos);
+
+        // With a grant the client already added the shell itself and the confirmation is what corrects
+        // it; without one there is nothing local to correct, so the state has to be pushed instead.
+        bool hasGrant = grantService != null && grantId.IsValid;
+        DeltaItem shell = new DeltaItem(shellDefinition, 1);
+        if (!syncManager.ServerAddItem(shell, !hasGrant, out InventoryChange change))
         {
-            if (grantService != null && operationId != Guid.Empty)
-            {
-                grantService.ServerDeny(operationId, 1);
-            }
+            DenyShell(grantService, grantId);
+            return;
+        }
+
+        if (hasGrant)
+        {
+            grantService.ServerConfirm(grantId, change);
+        }
+    }
+
+    private static void DenyShell(ItemGrantService grantService, GrantId grantId)
+    {
+        if (grantService != null)
+        {
+            grantService.ServerDeny(grantId);
         }
     }
 }

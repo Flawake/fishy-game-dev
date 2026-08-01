@@ -1,6 +1,7 @@
 // ItemDefinition.cs
 using System;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace ItemSystem {
@@ -39,6 +40,12 @@ namespace ItemSystem {
         public IItemBehaviour GetBehaviour(Type behaviourType)
         {
             return Behaviours.FirstOrDefault(b => behaviourType.IsAssignableFrom(b.GetType()));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool HasBehaviour<TBehaviour>() where TBehaviour : class, IItemBehaviour
+        {
+            return GetBehaviour<TBehaviour>() != null;
         }
 
 #if UNITY_EDITOR
