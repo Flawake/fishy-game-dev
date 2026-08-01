@@ -78,10 +78,7 @@ namespace FishyGame.Api
     [Serializable]
     public partial class AddOrUpdateItemRequest
     {
-        public int definition_id = 0;
-        public Durability? durability = null;
-        public string item_uuid = string.Empty;
-        public Stack? stack = null;
+        public List<InventoryItem> items = new List<InventoryItem>();
         public string user_id = string.Empty;
     }
 
@@ -114,8 +111,8 @@ namespace FishyGame.Api
     {
         public string bought_using = string.Empty;
         public string buyer_id = string.Empty;
-        public InventoryItem item = new InventoryItem();
         public int item_price = 0;
+        public List<InventoryItem> item_updates = new List<InventoryItem>();
     }
 
     /// <summary>

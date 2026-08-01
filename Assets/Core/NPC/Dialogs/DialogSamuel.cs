@@ -76,38 +76,49 @@ public class DialogSamuel : NetworkBehaviour
         }
         
         ItemGrantService grantService = NetworkClient.connection.identity.GetComponent<ItemGrantService>();
-        Guid operationId = Guid.Empty;
+        GrantId grantId = GrantId.None;
         if (grantService != null)
         {
-            operationId = grantService.ClientRegisterOptimistic(doughDefinition, 40);
+            grantId = grantService.ClientRegisterOptimistic(doughDefinition, 40);
         }
-        CmdRequestDough(operationId);
+        CmdRequestDough(grantId);
     }
 
     [Command(requiresAuthority = false)]
-    void CmdRequestDough(Guid operationId, NetworkConnectionToClient sender = null)
+    void CmdRequestDough(GrantId grantId, NetworkConnectionToClient sender = null)
     {
         PlayerInventory inv = sender.identity.GetComponent<PlayerInventory>();
         ItemGrantService grantService = sender.identity.GetComponent<ItemGrantService>();
         ItemInstance currentDoughReference = inv.GetBaitByDefinitionId(doughDefinition.Id);
-        
+
+        bool hasGrant = grantService != null && grantId.IsValid;
+
         if (currentDoughReference != null && currentDoughReference.GetState<StackState>().currentAmount > 70)
         {
-            if (grantService != null && operationId != Guid.Empty)
+            if (hasGrant)
             {
-                grantService.ServerDeny(operationId, 40);
+                grantService.ServerDeny(grantId);
             }
             GameNetworkManager.KickPlayerForCheating(sender, "Tried claiming too much dough");
             return;
         }
 
-        // Authoritative add (no extra RPCs; client already holds optimistic item)
-        if (grantService != null && operationId != Guid.Empty)
+        // With a grant the client already holds the dough optimistically and the confirmation corrects
+        // it; without one the new state has to be pushed to the client instead.
+        PlayerDataSyncManager syncManager = sender.identity.GetComponent<PlayerDataSyncManager>();
+        DeltaItem dough = new DeltaItem(doughDefinition, 40);
+        if (!syncManager.ServerAddItem(dough, !hasGrant, out InventoryChange change))
         {
-            PlayerDataSyncManager syncManager = sender.identity.GetComponent<PlayerDataSyncManager>();
-            ItemInstance dough = new ItemInstance(doughDefinition, 40);
-            dough = syncManager.ServerAddItem(dough, false);
-            grantService.ServerConfirm(operationId, dough.uuid);
+            if (hasGrant)
+            {
+                grantService.ServerDeny(grantId);
+            }
+            return;
+        }
+
+        if (hasGrant)
+        {
+            grantService.ServerConfirm(grantId, change);
         }
     }
 

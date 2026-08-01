@@ -6,6 +6,7 @@ namespace TradeSystem
     using System.Collections.Generic;
     using UnityEngine;
     using FishyGame.Api;
+    using System.Collections;
 
     public static class TradeService
     {
@@ -558,6 +559,25 @@ namespace TradeSystem
         }
 
         [Server]
+        static IEnumerator TradeErrorDisconnect(NetworkConnectionToClient conn1, NetworkConnectionToClient conn2)
+        {
+            string disconnectMessage = "Something went wrong while finishing the trade. You were automatically kicked to keep your inventory safe";
+            conn1.Send(new DisconnectMessage
+            {
+                reason = ClientDisconnectReason.TradingError,
+                reasonText = disconnectMessage,
+            });
+            conn2.Send(new DisconnectMessage
+            {
+                reason = ClientDisconnectReason.TradingError,
+                reasonText = disconnectMessage,
+            });
+            yield return new WaitForSeconds(3);
+            conn1.Disconnect();
+            conn2.Disconnect();
+        }
+
+        [Server]
         static void CommitTrade(TradeSession session)
         {
             GameNetworkManager.connUUID.TryGetValue(session.requesterId, out NetworkConnectionToClient requesterConn);
@@ -576,8 +596,8 @@ namespace TradeSystem
             int requesterMoneySend = 0;
             int receiverMoneySend = 0;
 
-            HashSet<ItemInstance> requesterUpdatedItems = new HashSet<ItemInstance>();
-            HashSet<ItemInstance> receiverUpdatedItems = new HashSet<ItemInstance>();
+            InventoryChange requesterUpdatedItems = new();
+            InventoryChange receiverUpdatedItems = new();
 
             // Add items
             foreach (TradableItem item in session.requesterTradeItems)
@@ -586,12 +606,14 @@ namespace TradeSystem
                 if (item.Type == TradableItemType.Item)
                 {
                     // Don't use the item referenced by the other player
-                    ItemInstance newItem = new ItemInstance(item.ItemInst.def, item.Amount);
-                    ItemInstance updated = receiverInv.ServerMergeOrAdd(newItem, true);
-                    if (!receiverUpdatedItems.Contains(updated))
+                    DeltaItem newItem = new DeltaItem(item.ItemInst.def, item.Amount);
+                    if(!receiverInv.ServerMergeOrAdd(newItem, true, out InventoryChange changed))
                     {
-                        receiverUpdatedItems.Add(updated);
+                        Debug.LogWarning("Could not add item to trade list, kick both players so a inventory re-fetch will be done at next login");
+                        TradeErrorDisconnect(requesterConn, receiverConn);
+                        return;
                     }
+                    receiverUpdatedItems.MergeChanges(changed);
                 }
                 else if (item.Type == TradableItemType.Bucks)
                 {
@@ -606,12 +628,14 @@ namespace TradeSystem
                 if (item.Type == TradableItemType.Item)
                 {
                     // Don't use the item referenced by the other player
-                    ItemInstance newItem = new ItemInstance(item.ItemInst.def, item.Amount);
-                    ItemInstance updated =  requesterInv.ServerMergeOrAdd(newItem, true);
-                    if (!requesterUpdatedItems.Contains(updated))
+                    DeltaItem newItem = new DeltaItem(item.ItemInst.def, item.Amount);
+                    if(!requesterInv.ServerMergeOrAdd(newItem, true, out InventoryChange changed))
                     {
-                        requesterUpdatedItems.Add(updated);
+                        Debug.LogWarning("Could not add item to trade list, kick both players so a inventory re-fetch will be done at next login");
+                        TradeErrorDisconnect(requesterConn, receiverConn);
+                        return;
                     }
+                    requesterUpdatedItems.MergeChanges(changed);
                 }
                 else if (item.Type == TradableItemType.Bucks)
                 {
@@ -626,60 +650,30 @@ namespace TradeSystem
             {
                 if (item.Type == TradableItemType.Item)
                 {
-                    ItemInstance refItem = requesterInv.GetFirstNonFullStack(item.ItemInst.def.Id);
-                    requesterInv.ServerRemoveAmountFromStack(refItem, item.Amount, true);
-                    if (!requesterUpdatedItems.Contains(refItem))
+                    if(!requesterInv.ServerRemoveAmountFromSpecifiedStack(item.ItemInst, item.Amount, true, out InventoryChange change))
                     {
-                        requesterUpdatedItems.Add(refItem);
+                        Debug.LogWarning("Could remove item from inventory, kick both players so a inventory re-fetch will be done at next login");
+                        TradeErrorDisconnect(requesterConn, receiverConn);
+                        return;
                     }
-                    StackState stack = refItem.GetState<StackState>();
-                    if (stack != null && stack.currentAmount <= 0)
-                    {
-                        requesterInv.RemoveItem(refItem.uuid);
-                    }
+                    requesterUpdatedItems.MergeChanges(change);
                 }
             }
             foreach (TradableItem item in session.receiverTradeItems)
             {
                 if (item.Type == TradableItemType.Item)
                 {
-                    ItemInstance refItem = receiverInv.GetFirstNonFullStack(item.ItemInst.def.Id);
-                    receiverInv.ServerRemoveAmountFromStack(refItem, item.Amount, true);
-                    if (!receiverUpdatedItems.Contains(refItem))
+                    if(!receiverInv.ServerRemoveAmountFromSpecifiedStack(item.ItemInst, item.Amount, true, out InventoryChange change))
                     {
-                        receiverUpdatedItems.Add(refItem);
+                        Debug.LogWarning("Could remove item from inventory, kick both players so a inventory re-fetch will be done at next login");
+                        TradeErrorDisconnect(requesterConn, receiverConn);
+                        return;
                     }
-                    StackState stack = refItem.GetState<StackState>();
-                    if (stack != null && stack.currentAmount <= 0)
-                    {
-                        receiverInv.RemoveItem(refItem.uuid);
-                    }
+                    receiverUpdatedItems.MergeChanges(change);
                 }
             }
 
-            List<TradeItemRequest> requesterItemsUpdated = new List<TradeItemRequest>();
-            List<TradeItemRequest> receiverItemsUpdated = new List<TradeItemRequest>();
-            foreach (ItemInstance item in requesterUpdatedItems)
-            {
-                requesterItemsUpdated.Add(new TradeItemRequest
-                {
-                    item_uid = item.uuid.ToString(),
-                    item_id = item.def.Id,
-                    item_amount = item.GetState<StackState>().currentAmount,
-                    state_blob = Convert.ToBase64String(StatePacker.Pack(item.state)),
-                });
-            }
-            foreach (ItemInstance item in receiverUpdatedItems)
-            {
-                receiverItemsUpdated.Add(new TradeItemRequest
-                {
-                    item_uid = item.uuid.ToString(),
-                    item_id = item.def.Id,
-                    item_amount = item.GetState<StackState>().currentAmount,
-                    state_blob = Convert.ToBase64String(StatePacker.Pack(item.state)),
-                });
-            }
-            DatabaseCommunications.CommitTradeRequest(session.requesterId, session.receiverId, requesterItemsUpdated, receiverItemsUpdated, receiverMoneySend, requesterMoneySend);
+            DatabaseCommunications.CommitTradeRequest(session.requesterId, session.receiverId, requesterUpdatedItems.All, receiverUpdatedItems.All, receiverMoneySend, requesterMoneySend);
         }
 
         [Server]

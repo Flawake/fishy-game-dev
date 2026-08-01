@@ -167,18 +167,20 @@ public partial class PlayerData
                 int take = Math.Min(remaining, stack.currentAmount);
                 // Only touch the in-memory inventory here, the database is updated
                 // atomically by the complete endpoint afterwards.
-                inventory.ServerRemoveAmountFromStack(item, take, true);
+                if(!inventory.ServerRemoveAmountFromSpecifiedStack(item, take, true, out InventoryChange _)) {
+                   Debug.LogWarning("Could not remove items from stack of players inventory");
+                   return null;
+                }
                 remaining -= take;
 
                 if (stack.currentAmount <= 0)
                 {
-                    inventory.RemoveItem(item.uuid);
+                    inventory.RemoveItem(item.uuid, true);
                     handedInFishes.Add(new HandInFish
                     {
                         fish_uid = item.uuid.ToString(),
                         fish_id = item.def.Id,
-                        fish_amount = 0,
-                        new_state_blob = null,
+                        amount_handed_in = 0,
                     });
                 }
                 else
@@ -187,8 +189,7 @@ public partial class PlayerData
                     {
                         fish_uid = item.uuid.ToString(),
                         fish_id = item.def.Id,
-                        fish_amount = stack.currentAmount,
-                        new_state_blob = Convert.ToBase64String(StatePacker.Pack(item.state)),
+                        amount_handed_in = -take,
                     });
                 }
             }

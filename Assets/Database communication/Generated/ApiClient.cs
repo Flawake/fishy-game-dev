@@ -114,10 +114,10 @@ namespace FishyGame.Api
         /// <summary>
         /// Inserts an item in the database or updates it if it did already exist
         /// </summary>
-        /// <remarks>POST /inventory/addOrUpdate</remarks>
+        /// <remarks>POST /inventory/add_or_update</remarks>
         public static void AddOrUpdateItem(AddOrUpdateItemRequest body, Action<ApiResult<bool>>? onComplete = null)
         {
-            ApiDispatch.Send("POST", "/inventory/addOrUpdate", JsonUtility.ToJson(body), ApiParse.Bool, onComplete);
+            ApiDispatch.Send("POST", "/inventory/add_or_update", JsonUtility.ToJson(body), ApiParse.Bool, onComplete);
         }
 
         /// <summary>

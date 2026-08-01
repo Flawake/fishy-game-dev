@@ -21,23 +21,25 @@ public class PlayerDataSyncManager : MonoBehaviour
 	[Server]
 	public void SellFish(ItemInstance fish, int sellAmount, int earnings)
 	{
-		inventory.ServerRemoveAmountFromStack(fish, sellAmount, false);
+		if(!inventory.ServerRemoveAmountFromSpecifiedStack(fish, sellAmount, false, out InventoryChange change))
+		{
+			Debug.LogWarning("Failed to remove amount from stack");
+			return;
+		}
+		if (change == null)
+		{
+			// Static and infinite use definitions come back with nothing taken, so there is nothing
+			// to sell either. Bailing out here keeps the payout tied to an actual removal.
+			Debug.LogWarning($"Nothing was taken from {fish.def.Id}, so it cannot be sold");
+			return;
+		}
 		if (fish.GetState<StackState>().currentAmount <= 0)
 		{
-			inventory.RemoveItem(fish.uuid);
+			inventory.RemoveItem(fish.uuid, true);
 		}
 
 
-		List<FishToSell> fishesList = new List<FishToSell>
-		{
-    		new FishToSell
-    		{
-        		fish_uid = fish.uuid.ToString(),
-	        	fish_id = fish.def.Id,
-				fish_amount = fish.GetState<StackState>().currentAmount,
-    	    	new_state_blob = Convert.ToBase64String(StatePacker.Pack(fish.state))
-    		}
-		};
+		List<DeltaItem> fishesList = change.All;
 
 		DatabaseCommunications.SellFishes(playerData.GetUuid(), fishesList, earnings);
 	}
@@ -47,26 +49,39 @@ public class PlayerDataSyncManager : MonoBehaviour
 	{
 		foreach (ItemInstance fish in fishes)
 		{
-			inventory.RemoveItem(fish.uuid);
+			inventory.RemoveItem(fish.uuid, true);
 		}
 
-		List<FishToSell> fishesList = fishes
-            .Select(fish => new FishToSell
-            {
-                fish_uid = fish.uuid.ToString(),
-                fish_id = fish.def.Id,
-				fish_amount = fish.GetState<StackState>().currentAmount,
-                new_state_blob = null,
-            })
-            .ToList();
+		List<DeltaItem> fishesList = fishes
+    	.Select(fish =>
+    	{
+    	    var states = new List<(Type, IRuntimeBehaviourState)>();
+
+    	    if (fish.GetState<StackState>() is { } stack)
+    	    {
+    	        states.Add((
+    	            typeof(StackState),
+    	            new StackState
+    	            {
+    	                currentAmount = -stack.currentAmount
+    	            }
+    	        ));
+    	    }
+
+    	    return new DeltaItem(fish.def, fish.uuid, states);
+    	})
+    	.ToList();
 
 		DatabaseCommunications.SellFishes(playerData.GetUuid(), fishesList, earnings);
 	}
 
 	[Server]
-	public ItemInstance ServerBuyItem(ItemInstance instace, int price, StoreManager.CurrencyType currencyType)
+	public bool ServerBuyItem(DeltaItem instace, int price, StoreManager.CurrencyType currencyType, out InventoryChange change)
 	{
-		ItemInstance toUpdate = inventory.ServerMergeOrAdd(instace, false);
+		if(!inventory.ServerMergeOrAdd(instace, false, out change))
+		{
+			return false;
+		}
 		if (currencyType == StoreManager.CurrencyType.BUCKS)
 		{
 			playerData.ChangeFishBucksAmount(-price, false);
@@ -75,14 +90,14 @@ public class PlayerDataSyncManager : MonoBehaviour
 		{
 			playerData.ChangeFishCoinsAmount(-price, false);
 		}
-		DatabaseCommunications.BuyItem(playerData.GetUuid(), toUpdate, price, currencyType);
-		return toUpdate;
+		DatabaseCommunications.BuyItem(playerData.GetUuid(), change.All, price, currencyType);
+		return true;
 	}
 
 	[Server]
-	public ItemInstance ServerAddItem(ItemInstance item, bool needsTargetSync)
+	public bool ServerAddItem(DeltaItem item, bool needsTargetSync, out InventoryChange change)
 	{
-		return ServerAddItem(item, null, false, needsTargetSync);
+		return ServerAddItem(item, null, false, needsTargetSync, out change);
 	}
 
 	/// <summary>
@@ -107,31 +122,27 @@ public class PlayerDataSyncManager : MonoBehaviour
 		}
 	}
 
-	// Client-side version for optimistic updates
-	[Client]
-	public ItemInstance ClientAddItem(ItemInstance item)
-	{
-		return inventory.TryMergeOrAdd(item);
-	}
-
 	[Server]
-	public ItemInstance ServerAddItem(ItemInstance item, CurrentFish fish, bool fromCaught, bool needsTargetSync)
+	public bool ServerAddItem(DeltaItem item, CurrentFish fish, bool fromCaught, bool needsTargetSync, out InventoryChange change)
 	{
 		if (fish != null && fromCaught)
 		{
 			fishdexFishes.AddStatFish(fish);
 			DatabaseCommunications.AddStatFish(fish, playerData.GetUuid());
 		}
-		ItemInstance toUpdate = inventory.ServerMergeOrAdd(item, needsTargetSync);
-		DatabaseCommunications.AddOrUpdateItem(toUpdate, playerData.GetUuid());
-		return toUpdate;
+		if(!inventory.ServerMergeOrAdd(item, needsTargetSync, out change))
+		{
+			return false;
+		}
+		DatabaseCommunications.AddOrUpdateItem(change.All, playerData.GetUuid());
+		return true;
 	}
 
 	[Server]
 	public void DestroyItem(ItemInstance item)
 	{
-		inventory.RemoveItem(item.uuid);
-		DatabaseCommunications.DestroyItem(item, playerData.GetUuid());
+		inventory.RemoveItem(item.uuid, true);
+		DatabaseCommunications.DestroyItem(item.uuid, playerData.GetUuid());
 	}
 
 	/// <summary>
@@ -143,22 +154,26 @@ public class PlayerDataSyncManager : MonoBehaviour
 	public bool ServerTryUseItem(ItemInstance itemReference)
 	{
 		if (itemReference == null)
+		{
+			Debug.LogWarning("Cannot use null item reference");
+			return false;
+		}
+		bool success = inventory.ServerTryUseItem(itemReference, out DeltaItem deltaItem);
+		if (success)
+		{
+			// Might be null when the item has infiniteUse set
+			if (deltaItem != null)
 			{
-				Debug.LogWarning("Cannot use null item reference");
-				return false;
-			}
-			bool success = inventory.ServerTryUseItem(itemReference);
-			if (success)
-			{
-				DatabaseCommunications.AddOrUpdateItem(itemReference, playerData.GetUuid());
+				DatabaseCommunications.AddOrUpdateItem(new() {deltaItem}, playerData.GetUuid());
 				DurabilityState durabilityState = itemReference.GetState<DurabilityState>();
 				if (durabilityState != null && durabilityState.remaining <= 0)
 				{
-					inventory.RemoveItem(itemReference.uuid);
-					DatabaseCommunications.DestroyItem(itemReference, playerData.GetUuid());
+					inventory.RemoveItem(itemReference.uuid, true);
+					DatabaseCommunications.DestroyItem(itemReference.uuid, playerData.GetUuid());
 				}
 			}
-			return success;
+		}
+		return success;
 	}
 
 	/// <summary>
@@ -188,19 +203,19 @@ public class PlayerDataSyncManager : MonoBehaviour
 			return false;
 		}
 
-		bool success = inventory.ServerRemoveAmountFromStack(itemReference, removeAmount, needsTargetSync);
+		bool success = inventory.ServerRemoveAmountFromSpecifiedStack(itemReference, removeAmount, needsTargetSync, out InventoryChange change);
 
 		if (success)
 		{
 			if (stackState.currentAmount <= 0)
 			{
-				inventory.RemoveItem(itemReference.uuid);
-				DatabaseCommunications.DestroyItem(itemReference, playerData.GetUuid());
+				inventory.RemoveItem(itemReference.uuid, true);
+				DatabaseCommunications.DestroyItem(itemReference.uuid, playerData.GetUuid());
 				Debug.Log($"Stack of {itemReference.def.DisplayName} is now empty and has been removed");
 			}
 			else
 			{
-				DatabaseCommunications.AddOrUpdateItem(itemReference, playerData.GetUuid());
+				DatabaseCommunications.AddOrUpdateItem(change.All, playerData.GetUuid());
 			}
 		}
 		return success;
