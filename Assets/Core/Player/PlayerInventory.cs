@@ -25,6 +25,36 @@ public class PlayerInventory : NetworkBehaviour
     public uint Generation => generation;
     public uint LastKnownGeneration => lastKnownGeneration;
 
+    /// <summary>
+    /// Raised at most once per frame, after anything about this inventory changed: which items it
+    /// holds, or the state of an item it holds. It carries nothing on purpose, because a stack
+    /// amount can change without the list changing and vice versa: a subscriber re-reads whatever
+    /// it displays rather than trying to patch itself from an argument.
+    /// </summary>
+    public event Action Changed;
+
+    private bool changedThisFrame;
+
+    /// <summary>
+    /// Every mutator calls this rather than raising <see cref="Changed"/> itself, so one logical
+    /// operation that touches five stacks still costs each subscriber a single refresh. It is why
+    /// marking a change is cheap enough to do unconditionally.
+    /// </summary>
+    private void MarkChanged()
+    {
+        changedThisFrame = true;
+    }
+
+    private void LateUpdate()
+    {
+        if (!changedThisFrame)
+        {
+            return;
+        }
+        changedThisFrame = false;
+        Changed?.Invoke();
+    }
+
     // ------------------------------------------------------------------
     // Inventory loading -------------------------------------------------
     // ------------------------------------------------------------------
@@ -73,6 +103,8 @@ public class PlayerInventory : NetworkBehaviour
             playerData.SelectNewBait(selectedBait, true);
         }
 
+        MarkChanged();
+
         // Sync the initial inventory to the client
         TargetSyncInitialInventory(items.ToArray(), ServerBumpGeneration());
     }
@@ -83,7 +115,10 @@ public class PlayerInventory : NetworkBehaviour
     {
         items.Clear();
         items.AddRange(inventoryItems);
+        // Assigned rather than tracked: this is a full replacement, so it is the new baseline even
+        // if the generation went backwards. TrackGeneration would refuse that and warn about it.
         lastKnownGeneration = serverGeneration;
+        MarkChanged();
     }
 
     [TargetRpc]
@@ -153,6 +188,7 @@ public class PlayerInventory : NetworkBehaviour
 	public void RemoveItem(Guid uuid, bool needsTargetSync)
 	{
 		items.RemoveAll(item => item.uuid == uuid);
+		MarkChanged();
 
 		// Sync the specific item removal to the client
         if (needsTargetSync)
@@ -239,6 +275,7 @@ public class PlayerInventory : NetworkBehaviour
                 return false;
             }
             items.Add(delta.IntoItemInstance(false));
+            MarkChanged();
             return true;
         }
 
@@ -255,6 +292,7 @@ public class PlayerInventory : NetworkBehaviour
         {
             items.Remove(existing);
         }
+        MarkChanged();
         return true;
     }
 
@@ -267,6 +305,9 @@ public class PlayerInventory : NetworkBehaviour
             return;
         }
         lastKnownGeneration = serverGeneration;
+        // Reached by every path that applies server state: ApplyAuthoritative, TargetRemoveItem and
+        // TargetUpdateItem all land here, so none of them mark the change themselves.
+        MarkChanged();
     }
 
     // The current state of every stack a change touched, to be shipped to a client as truth.
@@ -317,6 +358,7 @@ public class PlayerInventory : NetworkBehaviour
     public void RemoveLocal(Guid uuid)
     {
         items.RemoveAll(item => item.uuid == uuid);
+        MarkChanged();
     }
 
     // Takes an amount back out of a stack, dropping the stack when nothing is left. Used to roll an
@@ -334,6 +376,7 @@ public class PlayerInventory : NetworkBehaviour
         if (stack == null)
         {
             items.Remove(local);
+            MarkChanged();
             return;
         }
 
@@ -343,6 +386,7 @@ public class PlayerInventory : NetworkBehaviour
         {
             items.Remove(local);
         }
+        MarkChanged();
     }
 
     public ItemInstance GetItem(Guid uuid)
@@ -495,6 +539,8 @@ public class PlayerInventory : NetworkBehaviour
             change.AddCreated(RecordDelta(created, stackAmount));
         }
 
+        // Covers every add: TryMergeOrAdd and ServerMergeOrAdd both land here.
+        MarkChanged();
         return true;
     }
 
@@ -529,6 +575,7 @@ public class PlayerInventory : NetworkBehaviour
         }
         durabilityState.remaining -= 1;
         itemReference.SetState(durabilityState);
+        MarkChanged();
         TargetUpdateItem(itemReference, ServerBumpGeneration());
 
         // The delta describes the change rather than the new total, and gets a state object of its
@@ -621,6 +668,7 @@ public class PlayerInventory : NetworkBehaviour
         }
         stackState.currentAmount -= amount;
         itemReference.SetState(stackState);
+        MarkChanged();
 
         // As above: a state object of its own, so that recording the change cannot corrupt the stack
         // the change was made to.
