@@ -10,7 +10,7 @@
 // capturing it in the callback closure at the call site.
 
 using System;
-using UnityEngine;
+using Newtonsoft.Json;
 
 #nullable enable
 
@@ -82,7 +82,31 @@ namespace FishyGame.Api
         public static IApiTransport? Transport;
     }
 
-    /// <summary>Body parsers. JsonUtility cannot handle bare primitives, hence the split.</summary>
+    /// <summary>
+    /// Body serialisation for the generated models.
+    ///
+    /// Newtonsoft rather than JsonUtility, because JsonUtility has no concept of null for a
+    /// nested [Serializable] class: it writes a default-constructed object where a null one
+    /// belongs, and reads a null one back as a default-constructed object. Optional nested
+    /// schemas cannot round trip through it -- absent silently becomes present-and-zero.
+    /// </summary>
+    public static class ApiJson
+    {
+        static readonly JsonSerializerSettings Settings = new JsonSerializerSettings
+        {
+            // Absent rather than explicitly null: serde reads a missing field as None either
+            // way, and it keeps the payload to what the caller actually filled in.
+            NullValueHandling = NullValueHandling.Ignore,
+        };
+
+        public static string Serialize(object? body) =>
+            JsonConvert.SerializeObject(body, Settings);
+
+        public static T Deserialize<T>(string? body) =>
+            JsonConvert.DeserializeObject<T>(body ?? string.Empty, Settings)!;
+    }
+
+    /// <summary>Body parsers. The serializer cannot handle bare primitives, hence the split.</summary>
     public static class ApiParse
     {
         public static bool Bool(string? body) =>
@@ -95,7 +119,7 @@ namespace FishyGame.Api
 
         public static string Raw(string? body) => body ?? string.Empty;
 
-        public static T Object<T>(string? body) => JsonUtility.FromJson<T>(body ?? string.Empty);
+        public static T Object<T>(string? body) => ApiJson.Deserialize<T>(body);
     }
 
     public static class ApiDispatch
