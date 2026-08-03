@@ -3354,6 +3354,7 @@ GameObject:
   - component: {fileID: 898739934}
   - component: {fileID: 898739933}
   - component: {fileID: 898739932}
+  - component: {fileID: 898739935}
   m_Layer: 0
   m_Name: GlobalState
   m_TagString: Untagged
@@ -3400,6 +3401,23 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &898739935
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 898739931}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee808345d51a54afb9fae1461802c04a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  areaWalkSounds: []
+  defaultWalkSound: {fileID: 11400000, guid: 72491563e1459457f8945129e841585d, type: 2}
+  areaThrowInSounds: []
+  defaultThrowInSound: {fileID: 11400000, guid: b7aeb222e03964d21b9a57f86b5b583e, type: 2}
+  buttonHoverSound: {fileID: 11400000, guid: 3bd6e4a119f274571b9e2488f65d3490, type: 2}
 --- !u!1 &911502124
 GameObject:
   m_ObjectHideFlags: 0

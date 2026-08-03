@@ -1,3 +1,4 @@
+using Sounds;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -14,6 +15,9 @@ public class MapAreaMouseHover : MonoBehaviour, IPointerEnterHandler, IPointerEx
     TMP_Text areaOnlinePlayersText;
     [SerializeField]
     AreaComponent area;
+    [SerializeField]
+    AudioSource audioSource;
+
 
     public void OnPointerEnter(PointerEventData eventData)
     {
@@ -26,6 +30,8 @@ public class MapAreaMouseHover : MonoBehaviour, IPointerEnterHandler, IPointerEx
             }
             areaNameBoxObject.SetActive(true);
         }
+
+        SoundManager.instance.Play(SoundManager.instance.buttonHoverSound, audioSource);
     }
 
     public void OnPointerExit(PointerEventData eventData)

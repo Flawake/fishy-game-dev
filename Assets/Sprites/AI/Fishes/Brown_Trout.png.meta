@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Brown_Trout_0: 4200480953078691552
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -27,7 +27,6 @@ public class FishingManager : NetworkBehaviour
     CaughtDialogData caughtData;
 
     //gameObjects
-    [SerializeField] Camera playerCamera;
     GameObject fishFightDialog;
     GameObject caughtDialog;
 

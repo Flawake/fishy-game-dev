@@ -1,4 +1,5 @@
 using Mirror;
+using Sounds;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,6 +9,7 @@ public class FishingLine : NetworkBehaviour
     [SerializeField] LineRenderer lineRenderer;
     [SerializeField] GameObject linePoint;
     [SerializeField] RodAnimator rodAnimator;
+    [SerializeField] AudioSource audioSource;
     [SerializeField] int z;
 
     enum LineState
@@ -145,7 +147,9 @@ public class FishingLine : NetworkBehaviour
         if (currentDrawnSegments == maxLineSegmentsAmount && lineState == LineState.Extending)
         {
             lineState = LineState.Normal;
-        } 
+            //The line is fully extended, so its end just reached the water at placeToThrow
+            SoundManager.instance.Play(SoundManager.instance.GetThrowInSound(SoundManager.CurrentClientArea), audioSource);
+        }
         else if (currentDrawnSegments == 0 && lineState == LineState.Retracting)
         {
             lineState = LineState.Normal;

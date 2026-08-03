@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13a6766f6bd614f8cbccc1f0aed539d2, type: 3}
+  m_Name: DefaultWalkSound
+  m_EditorClassIdentifier: 
+  clips:
+  - {fileID: 8300000, guid: 8262cdf6ba24b425ebadaf8b36c2a786, type: 3}
+  - {fileID: 8300000, guid: f0fb3a14c2fa54d0d8a3a658aa06dedd, type: 3}
+  - {fileID: 8300000, guid: 3cb807ff35c344af8b5848c6728f302c, type: 3}
+  - {fileID: 8300000, guid: 5fd4e8aa0f8d74e8b96ed2a7a65b6d81, type: 3}
+  volume: 0.2
+  pitch: 0.5
+  randomClip: 1
